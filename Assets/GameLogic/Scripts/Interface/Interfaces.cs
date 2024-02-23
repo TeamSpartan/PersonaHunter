@@ -32,5 +32,13 @@ public interface ISavablePlayerInfo
     /// <summary>
     /// プレイヤーのトランスフォーム情報を返す 
     /// </summary>
+    public Transform GetPlayerTransform(); // データセーバから呼ばれる
+}
+
+/// <summary>
+/// クライアントデータセーバが継承するべきインターフェイス
+/// </summary>
+public interface IClientDataInfo
+{
     public Transform GetPlayerTransform();
 }
