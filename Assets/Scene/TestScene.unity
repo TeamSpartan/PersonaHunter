@@ -153,7 +153,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isDebugging: 0
-  _sceneInfo: {fileID: 0}
 --- !u!4 &161436959
 Transform:
   m_ObjectHideFlags: 0
@@ -507,8 +506,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1a06d2f2261de34295c493cb7383937, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneStatus: 0
-  sInfo: {fileID: 11400000, guid: 9642e78069dd43647b362d45134c5608, type: 2}
+  _sceneStatus: 0
+  _sInfo: {fileID: 11400000, guid: 9642e78069dd43647b362d45134c5608, type: 2}
 --- !u!4 &1556495332
 Transform:
   m_ObjectHideFlags: 0
