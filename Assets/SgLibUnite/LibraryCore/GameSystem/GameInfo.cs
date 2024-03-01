@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 // auth 菅沼
 public class GameInfo : SingletonBaseClass<GameInfo>
@@ -16,13 +17,18 @@ public class GameInfo : SingletonBaseClass<GameInfo>
         WentToInGameScene, // インゲームシーン
     }
 
-    [SerializeField] SceneTransitStatus sceneStatus;
+    [SerializeField] SceneTransitStatus _sceneStatus;
 
-    [SerializeField] SceneInfo sInfo;
+    [SerializeField] SceneInfo _sInfo;
 
     public SceneTransitStatus GetSceneStatus
     {
-        get { return sceneStatus; }
+        get { return _sceneStatus; }
+    }
+
+    public SceneInfo GetSceneInfo
+    {
+        get { return _sInfo; }
     }
 
     protected override void ToDoAtAwakeSingleton()
@@ -33,15 +39,15 @@ public class GameInfo : SingletonBaseClass<GameInfo>
         {
             #region [For-Each Loop]
 
-            var titles = sInfo.TitleScenes.Select(_ => _.name).ToList();
-            var ingames = sInfo.IngameScenes.Select(_ => _.name).ToList();
-            var uniques = sInfo.UniqueScenes.Select(_ => _.name).ToList();
+            var titles = _sInfo.TitleScenesName.Select(_ => _).ToList();
+            var ingames = _sInfo.IngameScenesName.Select(_ => _).ToList();
+            var uniques = _sInfo.UniqueScenesName.Select(_ => _).ToList();
 
             foreach (var title in titles)
             {
                 if (title == arg1.name)
                 {
-                    sceneStatus = SceneTransitStatus.WentToTitleScene;
+                    _sceneStatus = SceneTransitStatus.WentToTitleScene;
                     break;
                 }
             }
@@ -51,7 +57,7 @@ public class GameInfo : SingletonBaseClass<GameInfo>
             {
                 if (ingame == arg1.name)
                 {
-                    sceneStatus = SceneTransitStatus.WentToInGameScene;
+                    _sceneStatus = SceneTransitStatus.WentToInGameScene;
                     break;
                 }
             }
@@ -60,7 +66,7 @@ public class GameInfo : SingletonBaseClass<GameInfo>
             {
                 if (unique == arg1.name)
                 {
-                    sceneStatus = SceneTransitStatus.WentToUniqueScene;
+                    _sceneStatus = SceneTransitStatus.WentToUniqueScene;
                     break;
                 }
             }
