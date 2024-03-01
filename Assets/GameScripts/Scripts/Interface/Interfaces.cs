@@ -36,9 +36,17 @@ public interface ISavablePlayerInfo
 }
 
 /// <summary>
-/// クライアントデータセーバが継承するべきインターフェイス
+/// 集中モードの時に鈍化するオブジェクトが継承すべきインターフェイス
 /// </summary>
-public interface IClientDataInfo
+public interface IDulledTarget
 {
-    public Transform GetPlayerTransform();
+    /// <summary>
+    /// 集中モード開始時に呼ばれる
+    /// </summary>
+    public void StartDull();
+
+    /// <summary>
+    /// 集中モード終了時に呼ばれる
+    /// </summary>
+    public void EndDull();
 }

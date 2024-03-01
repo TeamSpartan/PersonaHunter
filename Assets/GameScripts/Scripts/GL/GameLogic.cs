@@ -3,25 +3,40 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// オモテガリ ゲームロジック：メイン
+/// </summary>
 public class GameLogic
     : MonoBehaviour
 {
+    /// <summary>
+    /// タイトルシーン インゲーム ムービー のシーンをリスト登録しているSO
+    /// </summary>
     private SceneInfo _sceneInfo;
+    /// <summary>
+    /// シーンが １．タイトル ２．インゲーム ３．ユニーク（ムービー） かの区分
+    /// </summary>
     private SceneCategory _currentSceneCategory;
 
     private void SceneManagerOnactiveSceneChanged(Scene arg0, Scene arg1)
     {
         // タイトルへ遷移した場合
         if (_sceneInfo.TitleScenes.Select(_ => _ == arg1).ToList().Count > 0)
+        {
             _currentSceneCategory = SceneCategory.TitleScene;
+        }
 
         // インゲームへ遷移した場合
         if (_sceneInfo.IngameScenes.Select(_ => _ == arg1).ToList().Count > 0)
+        {
             _currentSceneCategory = SceneCategory.InGameScene;
+        }
 
         // ユニークシーン（ムービー）へ遷移した場合
         if (_sceneInfo.UniqueScenes.Select(_ => _ == arg1).ToList().Count > 0)
+        {
             _currentSceneCategory = SceneCategory.UniqueScene;
+        }
     }
 
     private void InitializeGame()
@@ -56,6 +71,9 @@ public class GameLogic
     {
     }
 
+    /// <summary>
+    /// ゲームシーンが開始したときのイベント １回のみ呼び出される。 ライフサイクルでおけるStart
+    /// </summary>
     private void TaskOnSceneStart()
     {
         // switch task on start
@@ -70,7 +88,10 @@ public class GameLogic
                 break;
         }
     }
-    
+
+    /// <summary>
+    /// ゲームシーンの毎フレームのイベント 毎フレーム呼び出される。 ライフサイクルでおけるFixedUpdate
+    /// </summary>
     private void TaskOnSceneTick()
     {
         // switch task on start
@@ -79,12 +100,16 @@ public class GameLogic
             case SceneCategory.TitleScene:
                 break;
             case SceneCategory.InGameScene:
+                GameLoop();
                 break;
             case SceneCategory.UniqueScene:
                 break;
         }
     }
 
+    /// <summary>
+    /// ゲームシーンが終了するときに呼び出される。 ライフサイクルでおけるOnApplicationQuit
+    /// </summary>
     private void TaskOnSceneEnd()
     {
         // switch task on start
@@ -107,8 +132,21 @@ public class GameLogic
         if (_sceneInfo.TitleScenes.Select(_ => _ == s).ToList().Count > 0)
         {
             _currentSceneCategory = SceneCategory.TitleScene;
-            SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged;
         }
+
+        // インゲームシーン
+        if (_sceneInfo.IngameScenes.Select(_ => _ == s).ToList().Count > 0)
+        {
+            _currentSceneCategory = SceneCategory.InGameScene;
+        }
+
+        // ユニーク（ムービー）シーン
+        if (_sceneInfo.UniqueScenes.Select(_ => _ == s).ToList().Count > 0)
+        {
+            _currentSceneCategory = SceneCategory.UniqueScene;
+        }
+
+        SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged;
     }
 
     private void Start()
@@ -121,7 +159,7 @@ public class GameLogic
         TaskOnSceneTick();
     }
 
-    private void OnDisable()
+    private void OnApplicationQuit()
     {
         TaskOnSceneEnd();
     }
