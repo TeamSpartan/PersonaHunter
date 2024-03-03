@@ -1,4 +1,5 @@
-﻿using SgLibUnite.StateSequencer;
+﻿using System.Linq;
+using SgLibUnite.StateSequencer;
 using SgLibUnite.AI;
 using UnityEngine;
 using UnityEngine.AI;
@@ -9,42 +10,92 @@ namespace MOBState
     /// オモテガリ デフォルトステート
     /// </summary>
     public class MOBStateDefault
-    :   EnemyStateBaseClass
-        ,ISequensableState
+        : EnemyStateBaseClass
+            , ISequensableState
     {
-        /// <summary>
-        /// パトロールの道筋
-        /// </summary>
-        private PatrollerPathContainer _pathContainer;
-
         private NavMeshAgent _agent;
 
-        private Transform _target, _selfTransform;
+        private Transform _destination, _selfTransform;
 
-        public MOBStateDefault(NavMeshAgent agent)
+        private int _currentPathIndex;
+
+        private Vector3[] _patrollingPath;
+
+        private float _threshordDistToGoNext;
+
+        /// <summary>
+        /// 次の目標地点へ行くと判定する距離の閾（しきい）値
+        /// </summary>
+        public float ThreshordToGoNext
+        {
+            get { return this._threshordDistToGoNext; }
+            set { this._threshordDistToGoNext = value; }
+        }
+
+        public MOBStateDefault(NavMeshAgent agent
+            , PatrollerPathContainer pathContainer
+            , Transform aiPosition
+            , Transform playerDestination)
         {
             _agent = agent;
+            _patrollingPath = null;
+            _patrollingPath = new Vector3[pathContainer.GetPatrollingPath.Length];
+            _patrollingPath = pathContainer.GetPatrollingPath;
+
+            _selfTransform = aiPosition;
+            _destination = playerDestination;
+
+            _currentPathIndex = 0;
         }
-        
+
+        void SetDestinationAuto()
+        {
+            _agent.SetDestination(_patrollingPath[_currentPathIndex]);
+        }
+
+        Vector3 GetCurrentDestination()
+        {
+            return _patrollingPath[_currentPathIndex];
+        }
+
         public void Entry()
         {
-            throw new System.NotImplementedException();
+            // ここで一番近い目標地点を探索
+            float minDis = 0f;
+
+            for (int i = 0; i < _patrollingPath.Length; i++)
+            {
+                var dis = Vector3.Distance(_selfTransform.position, _patrollingPath[i]);
+                if (dis < minDis)
+                {
+                    minDis = dis;
+                    _currentPathIndex = i;
+                } // update minimum distance index of array
+            } // 現状の座標から一番近いポイントを探索
+
+            SetDestinationAuto();
         }
 
         public void Update()
         {
-            throw new System.NotImplementedException();
+            // ここでパトロール処理
+            float dis = Vector3.Distance(_selfTransform.position, GetCurrentDestination());
+            if (dis < this._threshordDistToGoNext)
+            {
+                ++_currentPathIndex;
+                SetDestinationAuto();
+            }
         }
 
         public void Exit()
         {
-            throw new System.NotImplementedException();
+            _agent.ResetPath(); // とりあえずリセット
         }
 
-        public override void TaskOnUpdate(Transform position, Transform destination)
+        public override void TaskOnUpdate(Transform aiPosition, Transform playerDestination)
         {
-            _selfTransform = position;
-            _target = destination;
+            _selfTransform = aiPosition;
+            _destination = playerDestination;
         }
     }
 }

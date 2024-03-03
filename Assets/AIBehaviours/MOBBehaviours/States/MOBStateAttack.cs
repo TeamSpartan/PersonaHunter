@@ -22,7 +22,7 @@ namespace MOBState
             throw new System.NotImplementedException();
         }
 
-        public override void TaskOnUpdate(Transform position, Transform destination)
+        public override void TaskOnUpdate(Transform aiPosition, Transform playerDestination)
         {
             
         }

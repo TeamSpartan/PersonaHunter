@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using SgLibUnite.StateSequencer;
 using UnityEngine.AI;
 using MOBState;
+using SgLibUnite.AI;
 
 // 作成 ： 菅沼
 /// <summary>
@@ -15,6 +17,9 @@ public class MOBBehaviour
 {
     #region Component Parameter
 
+    [SerializeField, Header("The Patrolling Path To Patrol")]
+    private PatrollerPathContainer PathContainer;
+    
     [SerializeField, Header("The Health MOB Has")]
     private float Health;
 
@@ -49,6 +54,7 @@ public class MOBBehaviour
 
     private StateSequencer _sSeq;
     private NavMeshAgent _agent;
+    private Transform _playerTransform;
 
     #region States
 
@@ -58,10 +64,53 @@ public class MOBBehaviour
     private MOBStateDeath _stateDeath;
 
     #endregion
+
+    #region TransitionNames
+
+    /// <summary>
+    /// パトロールから追跡
+    /// </summary>
+    private string _gonnaTrack = "StartingTrack";
+
+    private bool _cGonnaTrack = false;
+    
+    #endregion
+
+    void InitStates()
+    {
+        // パトロールステート
+        this._stateDefault = new MOBStateDefault(_agent
+            , PathContainer
+            , this.gameObject.transform
+            , _playerTransform);
+    }
+
+    void SetUpTransitions()
+    {
+        List<ISequensableState> states = new List<ISequensableState>()
+            { _stateDefault, _stateTrack, _stateAttack, _stateDeath };
+        _sSeq.ResistStates(states);
+        
+        _sSeq.MakeTransition(_stateDefault, _stateTrack, _gonnaTrack);
+    }
+
+    void UpdateEachState()
+    {
+        _stateDefault.TaskOnUpdate(this.gameObject.transform, _playerTransform);
+    }
+
+    void TickStates()
+    {
+        
+    }
     
     public void InitializeThisComp()
     {
-        throw new NotImplementedException();
+        InitStates();
+
+        _sSeq = new StateSequencer();
+        
+        SetUpTransitions();
     }
 
     public void FinalizeThisComp()
@@ -77,5 +126,13 @@ public class MOBBehaviour
     public void EndDull()
     {
         throw new NotImplementedException();
+    }
+
+    private void FixedUpdate()
+    {
+        TickStates();
+        UpdateEachState();
+        // 遷移を更新
+        _sSeq.UpdateTransition(_gonnaTrack, ref _cGonnaTrack);
     }
 }

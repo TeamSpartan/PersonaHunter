@@ -7,6 +7,6 @@ namespace MOBState
         /// <summary>
         /// 毎フレームのタスク
         /// </summary>
-        public abstract void TaskOnUpdate(Transform position, Transform destination);
+        public abstract void TaskOnUpdate(Transform aiPosition, Transform playerDestination);
     }
 }
