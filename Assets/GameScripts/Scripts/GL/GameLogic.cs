@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -58,7 +57,9 @@ public class GameLogic
         this._sceneInfo = GameObject.FindFirstObjectByType<GameInfo>().GetSceneInfo;
 
         if (_isDebugging)
+        {
             Debug.Log($"ゲームの初期化処理");
+        }
     }
 
     private void FinalizeGame()
@@ -75,13 +76,17 @@ public class GameLogic
         #endregion
 
         if (_isDebugging)
+        {
             Debug.Log($"ゲームの終了処理");
+        }
     }
 
     private void GameLoop()
     {
         if (_isDebugging)
+        {
             Debug.Log($"毎フレーム処理");
+        }
     }
 
     /// <summary>

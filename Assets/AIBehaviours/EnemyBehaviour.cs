@@ -1,8 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using SgLibUnite.StateSequencer;
 
+// 作成 菅沼
+/// <summary>
+/// オモテガリ 敵AI 基底クラス
+/// </summary>
 public abstract class EnemyBehaviour : MonoBehaviour
 {
    /// <summary>
