@@ -1,13 +1,11 @@
 ﻿using SgLibUnite.Singleton;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 // auth 菅沼
-public class GameInfo : SingletonBaseClass<GameInfo>
+public class GameInfo
+    : SingletonBaseClass<GameInfo>
 {
     /// <summary> 遷移先シーンがどのようなものかを選択、保持する </summary>
     public enum SceneTransitStatus
@@ -37,7 +35,7 @@ public class GameInfo : SingletonBaseClass<GameInfo>
 
         void SceneManager_activeSceneChanged(Scene arg0, Scene arg1)
         {
-            #region [For-Each Loop]
+            #region find matching scene type
 
             var titles = _sInfo.TitleScenesName.Select(_ => _).ToList();
             var ingames = _sInfo.IngameScenesName.Select(_ => _).ToList();
