@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,10 +8,13 @@ using UnityEngine.SceneManagement;
 public class GameLogic
     : MonoBehaviour
 {
+    [SerializeField] private bool _isDebugging;
+
     /// <summary>
     /// タイトルシーン インゲーム ムービー のシーンをリスト登録しているSO
     /// </summary>
     private SceneInfo _sceneInfo;
+
     /// <summary>
     /// シーンが １．タイトル ２．インゲーム ３．ユニーク（ムービー） かの区分
     /// </summary>
@@ -21,19 +23,19 @@ public class GameLogic
     private void SceneManagerOnactiveSceneChanged(Scene arg0, Scene arg1)
     {
         // タイトルへ遷移した場合
-        if (_sceneInfo.TitleScenes.Select(_ => _ == arg1).ToList().Count > 0)
+        if (_sceneInfo.TitleScenesName.Select(_ => _ == arg1.name).ToList().Count > 0)
         {
             _currentSceneCategory = SceneCategory.TitleScene;
         }
 
         // インゲームへ遷移した場合
-        if (_sceneInfo.IngameScenes.Select(_ => _ == arg1).ToList().Count > 0)
+        if (_sceneInfo.IngameScenesName.Select(_ => _ == arg1.name).ToList().Count > 0)
         {
             _currentSceneCategory = SceneCategory.InGameScene;
         }
 
         // ユニークシーン（ムービー）へ遷移した場合
-        if (_sceneInfo.UniqueScenes.Select(_ => _ == arg1).ToList().Count > 0)
+        if (_sceneInfo.UniqueScenesName.Select(_ => _ == arg1.name).ToList().Count > 0)
         {
             _currentSceneCategory = SceneCategory.UniqueScene;
         }
@@ -51,6 +53,13 @@ public class GameLogic
             obj.InitializeThisComp();
 
         #endregion
+
+        this._sceneInfo = GameObject.FindFirstObjectByType<GameInfo>().GetSceneInfo;
+
+        if (_isDebugging)
+        {
+            Debug.Log($"ゲームの初期化処理");
+        }
     }
 
     private void FinalizeGame()
@@ -65,10 +74,19 @@ public class GameLogic
             obj.FinalizeThisComp();
 
         #endregion
+
+        if (_isDebugging)
+        {
+            Debug.Log($"ゲームの終了処理");
+        }
     }
 
     private void GameLoop()
     {
+        if (_isDebugging)
+        {
+            Debug.Log($"毎フレーム処理");
+        }
     }
 
     /// <summary>
@@ -129,19 +147,19 @@ public class GameLogic
     {
         var s = SceneManager.GetActiveScene();
         // タイトルシーンなら
-        if (_sceneInfo.TitleScenes.Select(_ => _ == s).ToList().Count > 0)
+        if (_sceneInfo.TitleScenesName.Select(_ => _ == s.name).ToList().Count > 0)
         {
             _currentSceneCategory = SceneCategory.TitleScene;
         }
 
         // インゲームシーン
-        if (_sceneInfo.IngameScenes.Select(_ => _ == s).ToList().Count > 0)
+        if (_sceneInfo.IngameScenesName.Select(_ => _ == s.name).ToList().Count > 0)
         {
             _currentSceneCategory = SceneCategory.InGameScene;
         }
 
         // ユニーク（ムービー）シーン
-        if (_sceneInfo.UniqueScenes.Select(_ => _ == s).ToList().Count > 0)
+        if (_sceneInfo.UniqueScenesName.Select(_ => _ == s.name).ToList().Count > 0)
         {
             _currentSceneCategory = SceneCategory.UniqueScene;
         }
