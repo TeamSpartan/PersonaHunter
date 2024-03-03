@@ -112,10 +112,19 @@ public class MOBBehaviour
         
         SetUpTransitions();
     }
+    
+    private void FixedUpdate()
+    {
+        TickStates();
+        UpdateEachState();
+        
+        // 遷移を更新
+        _sSeq.UpdateTransition(_gonnaTrack, ref _cGonnaTrack);
+    }
 
     public void FinalizeThisComp()
     {
-        throw new NotImplementedException();
+        _agent.ResetPath();
     }
 
     public void StartDull()
@@ -128,11 +137,4 @@ public class MOBBehaviour
         throw new NotImplementedException();
     }
 
-    private void FixedUpdate()
-    {
-        TickStates();
-        UpdateEachState();
-        // 遷移を更新
-        _sSeq.UpdateTransition(_gonnaTrack, ref _cGonnaTrack);
-    }
 }
