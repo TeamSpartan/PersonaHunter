@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: SceneInfo
   m_EditorClassIdentifier: 
   TitleScenesName:
-  - 
+  - Hoge
   IngameScenesName:
   - TestScene
+  - EnemyAI
+  - GameLogicDev
   UniqueScenesName:
-  - 
+  - Fuga

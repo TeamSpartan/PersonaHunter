@@ -11,12 +11,12 @@ public interface IInitializableComponent
     /// <summary>
     /// 起動の時に呼び出される
     /// </summary>
-    public void InitializeThisComp();
+    public void InitializeThisComponent();
 
     /// <summary>
     /// リセットの時に呼び出される
     /// </summary>
-    public void FinalizeThisComp();
+    public void FinalizeThisComponent();
 }
 
 /// <summary>
@@ -49,4 +49,33 @@ public interface IDulledTarget
     /// 集中モード終了時に呼ばれる
     /// </summary>
     public void EndDull();
+}
+
+public interface IEnemyBehaviourParameter
+{
+    /// <summary>
+    /// 体力値を返す
+    /// </summary>
+    /// <returns></returns>
+    public abstract float GetHealth();
+    /// <summary>
+    /// 体力値を初期化する
+    /// </summary>
+    /// <param name="val"></param>
+    public abstract void SetHealth(float val);
+    /// <summary>
+    /// ひるみ値を返す
+    /// </summary>
+    /// <returns></returns>
+    public abstract float GetFlinchValue();
+    /// <summary>
+    /// ひるみ値を初期化する
+    /// </summary>
+    /// <param name="val"></param>
+    public abstract void SetFlinchValue(float val);
+}
+
+public interface IEnemyState
+{
+    public void UpdateState(Transform selfTransform, Transform targetTransform);
 }

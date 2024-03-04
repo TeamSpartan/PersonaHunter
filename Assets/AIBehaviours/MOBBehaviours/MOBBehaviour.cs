@@ -1,130 +1,137 @@
 ﻿using System;
 using System.Collections.Generic;
+using AIBehaviours.MOBBehaviours.States;
 using UnityEngine;
-using SgLibUnite.StateSequencer;
 using UnityEngine.AI;
-using MOBState;
 using SgLibUnite.AI;
+using SgLibUnite.StateSequencer;
 
+[RequireComponent(typeof(NavMeshAgent))]
 // 作成 ： 菅沼
 /// <summary>
 /// オモテガリ MOB AI
 /// </summary>
-public class MOBBehaviour
-    : EnemyBehaviour
-    , IInitializableComponent
-    , IDulledTarget
+public class MobBehaviourParameter
+    : MonoBehaviour
+        , IEnemyBehaviourParameter
+        , IInitializableComponent
+        , IDulledTarget
 {
     #region Component Parameter
 
     [SerializeField, Header("The Patrolling Path To Patrol")]
     private PatrollerPathContainer PathContainer;
-    
+
     [SerializeField, Header("The Health MOB Has")]
     private float Health;
 
     [SerializeField, Header("THe Flinch Value MOB Has")]
     private float Flinch;
 
+    [SerializeField, Header("The Tag Of Player")]
+    private string PlayerTag;
+
     #endregion
 
     #region The Default Interface To Get Parameter
 
-    public override float GetHealth()
+    public float GetHealth()
     {
-        return Health;
+        return this.Health;
     }
 
-    public override void SetHealth(float val)
+    public void SetHealth(float val)
     {
         this.Health = val;
     }
 
-    public override float GetFlinchValue()
+    public float GetFlinchValue()
     {
-        return Flinch;
+        return this.Flinch;
     }
 
-    public override void SetFlinchValue(float val)
+    public void SetFlinchValue(float val)
     {
         this.Flinch = val;
     }
 
     #endregion
 
-    private StateSequencer _sSeq;
-    private NavMeshAgent _agent;
-    private Transform _playerTransform;
-
     #region States
 
-    private MOBStateDefault _stateDefault;
-    private MOBStateTrack _stateTrack;
-    private MOBStateAttack _stateAttack;
-    private MOBStateDeath _stateDeath;
+    private MobStateIdle _stateIdle;
+    private MobStatePatrol _statePatrol;
+    private MobStateTrack _stateTrack;
+    private MobStateAttack _stateAttack;
+    private MobStateDeath _stateDeath;
 
     #endregion
 
-    #region TransitionNames
+    #region Condition
 
     /// <summary>
-    /// パトロールから追跡
+    /// アイドルからパトロール
     /// </summary>
-    private string _gonnaTrack = "StartingTrack";
+    private bool _initialized;
 
-    private bool _cGonnaTrack = false;
-    
+    /// <summary>
+    /// プレイヤーを発見したら
+    /// </summary>
+    private bool _foundPlayer;
+
+    /// <summary>
+    /// 攻撃範囲内に入ったら
+    /// </summary>
+    private bool _playerIsInAttackRange;
+
+    /// <summary>
+    /// ＨＰを削られきったら
+    /// </summary>
+    private bool _death;
+
     #endregion
 
-    void InitStates()
-    {
-        // パトロールステート
-        this._stateDefault = new MOBStateDefault(_agent
-            , PathContainer
-            , this.gameObject.transform
-            , _playerTransform);
-    }
+    private StateSequencer _sequencer;
+    private Animator _animator;
 
-    void SetUpTransitions()
+    public void InitializeThisComponent()
     {
-        List<ISequensableState> states = new List<ISequensableState>()
-            { _stateDefault, _stateTrack, _stateAttack, _stateDeath };
-        _sSeq.ResistStates(states);
+        _sequencer = new();
+
+        // Try Get Animator
+        if (this.gameObject.GetComponent<Animator>() != null)
+        {
+            _animator = GetComponent<Animator>();
+        } // if animator is attached on root object
+        else if (this.gameObject.GetComponentInChildren<Animator>() != null)
+        {
+            _animator = GetComponentInChildren<Animator>();
+        } // if animator is attached on child object
+
+        _stateIdle = new MobStateIdle();
+        _statePatrol = new MobStatePatrol();
+        _stateTrack = new MobStateTrack();
+        _stateAttack = new MobStateAttack();
+        _stateDeath = new MobStateDeath();
+
+        // ステートを追加
+        var states =
+            new List<ISequensableState>()
+                { _stateIdle, _statePatrol, _stateTrack, _stateAttack, _stateDeath };
+        _sequencer.ResistStates(states);
         
-        _sSeq.MakeTransition(_stateDefault, _stateTrack, _gonnaTrack);
+        // 
+
+        // 起動
+        _sequencer.PopStateMachine();
     }
 
-    void UpdateEachState()
-    {
-        _stateDefault.TaskOnUpdate(this.gameObject.transform, _playerTransform);
-    }
-
-    void TickStates()
-    {
-        
-    }
-    
-    public void InitializeThisComp()
-    {
-        InitStates();
-
-        _sSeq = new StateSequencer();
-        
-        SetUpTransitions();
-    }
-    
     private void FixedUpdate()
     {
-        TickStates();
-        UpdateEachState();
-        
-        // 遷移を更新
-        _sSeq.UpdateTransition(_gonnaTrack, ref _cGonnaTrack);
     }
 
-    public void FinalizeThisComp()
+    public void FinalizeThisComponent()
     {
-        _agent.ResetPath();
     }
 
     public void StartDull()
@@ -136,5 +143,4 @@ public class MOBBehaviour
     {
         throw new NotImplementedException();
     }
-
 }
