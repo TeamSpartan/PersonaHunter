@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
-using SgLibUnite.StateSequencer;
 using UnityEngine.AI;
-using MOBState;
 using SgLibUnite.AI;
 
 [RequireComponent(typeof(Animator))]
@@ -13,7 +10,7 @@ using SgLibUnite.AI;
 /// オモテガリ MOB AI
 /// </summary>
 public class MOBBehaviour
-    : EnemyBehaviour
+    : IEnemyBehaviour
     , IInitializableComponent
     , IDulledTarget
 {
@@ -34,101 +31,37 @@ public class MOBBehaviour
     #endregion
 
     #region The Default Interface To Get Parameter
-
-    public override float GetHealth()
+    
+    public float GetHealth()
     {
-        return Health;
+        return this.Health;
     }
 
-    public override void SetHealth(float val)
+    public void SetHealth(float val)
     {
         this.Health = val;
     }
 
-    public override float GetFlinchValue()
+    public float GetFlinchValue()
     {
-        return Flinch;
+        return this.Flinch;
     }
 
-    public override void SetFlinchValue(float val)
+    public void SetFlinchValue(float val)
     {
         this.Flinch = val;
     }
-
-    #endregion
-
-    private StateSequencer _sSeq;
-    private NavMeshAgent _agent;
-    private Animator _anim;
-    private Transform _playerTransform;
-
-    #region States
-
-    private MOBStateIdle _idle;
-    private MOBStatePatrol _patrol;
-    private MOBStateTrack _track;
-    private MOBStateAttack _attack;
-    private MOBStateDeath _death;
-
-    #endregion
-
-    #region TransitionNames
-
-    /// <summary>
-    /// パトロールから追跡
-    /// </summary>
-    private string _gonnaTrack = "StartingTrack";
-    private bool _cGonnaTrack = false;
     
     #endregion
-
-    void InitStates()
-    {
-        // パトロールステート
-        this._patrol = new MOBStatePatrol(_agent
-            , PathContainer
-            , this.gameObject.transform
-            , _playerTransform);
-    }
-
-    void SetUpTransitions()
-    {
-        List<ISequensableState> states = new List<ISequensableState>()
-            { _patrol, _track, _attack, _death };
-        _sSeq.ResistStates(states);
-        
-    }
-
-    void UpdateEachState()  // 各ステートの更新 
-    {
-        _patrol.TaskOnUpdate(this.gameObject.transform, _playerTransform);
-    }
-    
-    void UpdateTransitions() // 各遷移の更新
-    {
-    }
     
     public void InitializeThisComponent()
     {
-
-        _sSeq = new StateSequencer();
-        _anim = GetComponent<Animator>();
-        _agent = GetComponent<NavMeshAgent>();
-        _playerTransform = GameObject.FindWithTag(PlayerTag).transform;
-        
-        InitStates();
-        SetUpTransitions();
-    }
-    
-    private void FixedUpdate()
-    {
-        UpdateTransitions();
-        UpdateEachState();
+        Debug.Log("Init");
     }
 
     public void FinalizeThisComp()
     {
-        _agent.ResetPath();
+        Debug.Log("Fin");
     }
 
     public void StartDull()
@@ -140,5 +73,4 @@ public class MOBBehaviour
     {
         throw new NotImplementedException();
     }
-
 }
