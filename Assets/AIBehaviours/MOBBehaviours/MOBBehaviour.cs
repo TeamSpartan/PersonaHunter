@@ -96,6 +96,7 @@ public class MobBehaviourParameter
 
     public void InitializeThisComponent()
     {
+        // ステートマシン
         _sequencer = new();
 
         // Try Get Animator
