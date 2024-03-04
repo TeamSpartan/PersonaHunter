@@ -75,7 +75,7 @@ public class MobBehaviourParameter
     /// <summary>
     /// アイドルからパトロール
     /// </summary>
-    private bool _initialized;
+    [SerializeField] private bool _initialized;
 
     private string _tnPlayerFound = "PlayerFound";
     private string _tnPlayerFoundBack = "PlayerFound_Back";
@@ -83,7 +83,7 @@ public class MobBehaviourParameter
     /// <summary>
     /// プレイヤーを発見したら
     /// </summary>
-    private bool _foundPlayer;
+    [SerializeField] private bool _foundPlayer;
 
     private string _tnIsInAttackingRange = "IsInAttackingRange";
     private string _tnIsInAttackingRangeBack = "IsInAttackingRange_Back";
@@ -91,14 +91,14 @@ public class MobBehaviourParameter
     /// <summary>
     /// 攻撃範囲内に入ったら
     /// </summary>
-    private bool _playerIsInAttackRange;
+    [SerializeField] private bool _playerIsInAttackRange;
 
     private string _tnDeath = "Death";
 
     /// <summary>
     /// ＨＰを削られきったら
     /// </summary>
-    private bool _death;
+    [SerializeField] private bool _death;
 
     #endregion
 
@@ -151,12 +151,21 @@ public class MobBehaviourParameter
 
     void UpdateTransitions()
     {
-        
+        _sequencer.UpdateTransition(_tnInit, ref _initialized);
+        _sequencer.UpdateTransition(_tnInitBack, ref _initialized, false);
+
+        _sequencer.UpdateTransition(_tnPlayerFound, ref _foundPlayer);
+        _sequencer.UpdateTransition(_tnPlayerFoundBack, ref _foundPlayer, false);
+
+        _sequencer.UpdateTransition(_tnIsInAttackingRange, ref _playerIsInAttackRange);
+        _sequencer.UpdateTransition(_tnIsInAttackingRangeBack, ref _playerIsInAttackRange, false);
+
+        _sequencer.UpdateTransitionFromAnyState(_tnDeath, ref _death, true, true);
     }
 
     private void FixedUpdate()
     {
-        
+        UpdateTransitions();
     }
 
     public void FinalizeThisComponent()
