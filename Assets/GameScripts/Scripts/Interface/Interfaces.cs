@@ -16,7 +16,7 @@ public interface IInitializableComponent
     /// <summary>
     /// リセットの時に呼び出される
     /// </summary>
-    public void FinalizeThisComp();
+    public void FinalizeThisComponent();
 }
 
 /// <summary>
@@ -51,7 +51,7 @@ public interface IDulledTarget
     public void EndDull();
 }
 
-public interface IEnemyBehaviour
+public interface IEnemyBehaviourParameter
 {
     /// <summary>
     /// 体力値を返す
@@ -73,4 +73,9 @@ public interface IEnemyBehaviour
     /// </summary>
     /// <param name="val"></param>
     public abstract void SetFlinchValue(float val);
+}
+
+public interface IEnemyState
+{
+    public void UpdateState(Transform selfTransform, Transform targetTransform);
 }

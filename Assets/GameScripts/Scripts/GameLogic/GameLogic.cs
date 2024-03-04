@@ -1,10 +1,12 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
+using SgLibUnite.Singleton;
 using UnityEngine;
-
-public class GameLogic : MonoBehaviour
+// 作成：菅沼
+/// <summary>
+/// オモテガリ ゲームロジック
+/// </summary>
+public class GameLogic
+    : SingletonBaseClass<GameLogic>
 {
     [SerializeField] private bool _debugging;
     
@@ -38,7 +40,7 @@ public class GameLogic : MonoBehaviour
         GameObject.FindObjectsOfType<GameObject>()
             .Where(_ => _.GetComponent<IInitializableComponent>() != null)
             .Select(_ => _.GetComponent<IInitializableComponent>())
-            .ToList().ForEach(_ => _.FinalizeThisComp());
+            .ToList().ForEach(_ => _.FinalizeThisComponent());
 
         if (_debugging)
         {
@@ -46,7 +48,7 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    private void Awake()
+    protected override void ToDoAtAwakeSingleton()
     {
         InitializeGame();
     }

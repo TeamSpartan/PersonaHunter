@@ -11,7 +11,7 @@ public class Unnko
         // Debug.Log($"{nameof(Unnko)} : Is Init");
     }
 
-    public void FinalizeThisComp()
+    public void FinalizeThisComponent()
     {
         // Debug.Log($"{nameof(Unnko)} : Is Finalized");
     }
