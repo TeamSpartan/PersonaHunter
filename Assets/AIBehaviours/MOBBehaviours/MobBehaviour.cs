@@ -11,7 +11,7 @@ using SgLibUnite.StateSequencer;
 /// <summary>
 /// オモテガリ MOB AI
 /// </summary>
-public class MobBehaviourParameter
+public class MobBehaviour
     : MonoBehaviour
         , IEnemyBehaviourParameter
         , IInitializableComponent
@@ -31,6 +31,15 @@ public class MobBehaviourParameter
     [SerializeField, Header("The Tag Of Player")]
     private string PlayerTag;
 
+    [SerializeField, Header("The Range Of Sight")]
+    private float SightRange;
+    
+    [SerializeField, Header("The Range Of Attacking")]
+    private float AttackingRange;
+
+    [SerializeField, Header("The LayerMask Of Player")]
+    private LayerMask PlayerLayerMask;
+    
     #endregion
 
     #region The Default Interface To Get Parameter
@@ -101,9 +110,14 @@ public class MobBehaviourParameter
     [SerializeField] private bool _death;
 
     #endregion
-
+    
     private StateSequencer _sequencer;
     private Animator _animator;
+
+    public void StartUp()
+    {
+        _initialized = true;
+    }
 
     public void InitializeThisComponent()
     {
@@ -150,8 +164,20 @@ public class MobBehaviourParameter
         _sequencer.PopStateMachine();
     }
 
+    void UpdateConditions()
+    {
+        // 各コンディションの更新
+            // プレイヤ視認フラグ
+        _foundPlayer = Physics.CheckSphere(this.transform.position, SightRange, PlayerLayerMask);
+        
+            // 攻撃可能判定フラグ
+        _playerIsInAttackRange = Physics.CheckSphere(this.transform.position, AttackingRange, PlayerLayerMask);
+    }
+
     void UpdateTransitions()
     {
+        UpdateConditions();
+        
         _sequencer.UpdateTransition(_tnInit, ref _initialized);
         _sequencer.UpdateTransition(_tnInitBack, ref _initialized, false);
 
