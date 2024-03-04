@@ -69,20 +69,31 @@ public class MobBehaviourParameter
 
     #region Condition
 
+    private string _tnInit = "Initialize";
+    private string _tnInitBack = "Initialize_Back";
+
     /// <summary>
     /// アイドルからパトロール
     /// </summary>
     private bool _initialized;
+
+    private string _tnPlayerFound = "PlayerFound";
+    private string _tnPlayerFoundBack = "PlayerFound_Back";
 
     /// <summary>
     /// プレイヤーを発見したら
     /// </summary>
     private bool _foundPlayer;
 
+    private string _tnIsInAttackingRange = "IsInAttackingRange";
+    private string _tnIsInAttackingRangeBack = "IsInAttackingRange_Back";
+
     /// <summary>
     /// 攻撃範囲内に入ったら
     /// </summary>
     private bool _playerIsInAttackRange;
+
+    private string _tnDeath = "Death";
 
     /// <summary>
     /// ＨＰを削られきったら
@@ -118,21 +129,39 @@ public class MobBehaviourParameter
         // ステートを追加
         var states =
             new List<ISequensableState>()
-                { _stateIdle, _statePatrol, _stateTrack, _stateAttack, _stateDeath };
+                { _stateIdle, _statePatrol, _stateTrack, _stateAttack };
         _sequencer.ResistStates(states);
-        
-        // 
+        _sequencer.ResistStateFromAny(_stateDeath);
+
+        // 遷移の登録
+        _sequencer.MakeTransition(_stateIdle, _statePatrol, _tnInit);
+        _sequencer.MakeTransition(_statePatrol, _stateIdle, _tnInitBack);
+
+        _sequencer.MakeTransition(_statePatrol, _stateTrack, _tnPlayerFound);
+        _sequencer.MakeTransition(_stateTrack, _statePatrol, _tnPlayerFoundBack);
+
+        _sequencer.MakeTransition(_stateTrack, _stateAttack, _tnIsInAttackingRange);
+        _sequencer.MakeTransition(_stateAttack, _stateTrack, _tnIsInAttackingRangeBack);
+
+        _sequencer.MakeTransitionFromAny(_stateDeath, _tnDeath);
 
         // 起動
         _sequencer.PopStateMachine();
     }
 
+    void UpdateTransitions()
+    {
+        
+    }
+
     private void FixedUpdate()
     {
+        
     }
 
     public void FinalizeThisComponent()
     {
+        _sequencer.PushStateMachine();
     }
 
     public void StartDull()
