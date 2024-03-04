@@ -26,6 +26,9 @@ public class MOBBehaviour
     [SerializeField, Header("THe Flinch Value MOB Has")]
     private float Flinch;
 
+    [SerializeField, Header("The Tag Of Player")]
+    private string PlayerTag;
+
     #endregion
 
     #region The Default Interface To Get Parameter
@@ -98,10 +101,10 @@ public class MOBBehaviour
     {
         _stateDefault.TaskOnUpdate(this.gameObject.transform, _playerTransform);
     }
-
-    void TickStates()
+    
+    void TickTransitions()
     {
-        
+        _sSeq.UpdateTransition(_gonnaTrack, ref _cGonnaTrack);
     }
     
     public void InitializeThisComp()
@@ -109,13 +112,14 @@ public class MOBBehaviour
         InitStates();
 
         _sSeq = new StateSequencer();
+        _playerTransform = GameObject.FindWithTag(PlayerTag).transform;
         
         SetUpTransitions();
     }
     
     private void FixedUpdate()
     {
-        TickStates();
+        TickTransitions();
         UpdateEachState();
         
         // 遷移を更新
