@@ -17,5 +17,6 @@ MonoBehaviour:
   IngameScenesName:
   - TestScene
   - EnemyAI
+  - GameLogicDev
   UniqueScenesName:
   - Fuga

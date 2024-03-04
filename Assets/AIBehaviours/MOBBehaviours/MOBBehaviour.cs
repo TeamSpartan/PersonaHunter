@@ -57,12 +57,10 @@ public class MOBBehaviour
 
     public void InitializeThisComponent()
     {
-        Debug.Log("Init");
     }
 
     public void FinalizeThisComp()
     {
-        Debug.Log("Fin");
     }
 
     public void StartDull()
