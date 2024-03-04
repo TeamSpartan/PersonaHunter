@@ -50,7 +50,7 @@ public class GameLogic
             = c.Where(obj => (IInitializableComponent)obj != null).ToList()
                 .Select(_ => (IInitializableComponent)_).ToList();
         foreach (var obj in initializableObj)
-            obj.InitializeThisComp();
+            obj.InitializeThisComponent();
 
         #endregion
 

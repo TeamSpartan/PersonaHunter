@@ -6,6 +6,8 @@ using UnityEngine.AI;
 using MOBState;
 using SgLibUnite.AI;
 
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(NavMeshAgent))]
 // 作成 ： 菅沼
 /// <summary>
 /// オモテガリ MOB AI
@@ -57,14 +59,16 @@ public class MOBBehaviour
 
     private StateSequencer _sSeq;
     private NavMeshAgent _agent;
+    private Animator _anim;
     private Transform _playerTransform;
 
     #region States
 
-    private MOBStateDefault _stateDefault;
-    private MOBStateTrack _stateTrack;
-    private MOBStateAttack _stateAttack;
-    private MOBStateDeath _stateDeath;
+    private MOBStateIdle _idle;
+    private MOBStatePatrol _patrol;
+    private MOBStateTrack _track;
+    private MOBStateAttack _attack;
+    private MOBStateDeath _death;
 
     #endregion
 
@@ -74,7 +78,6 @@ public class MOBBehaviour
     /// パトロールから追跡
     /// </summary>
     private string _gonnaTrack = "StartingTrack";
-
     private bool _cGonnaTrack = false;
     
     #endregion
@@ -82,7 +85,7 @@ public class MOBBehaviour
     void InitStates()
     {
         // パトロールステート
-        this._stateDefault = new MOBStateDefault(_agent
+        this._patrol = new MOBStatePatrol(_agent
             , PathContainer
             , this.gameObject.transform
             , _playerTransform);
@@ -91,39 +94,36 @@ public class MOBBehaviour
     void SetUpTransitions()
     {
         List<ISequensableState> states = new List<ISequensableState>()
-            { _stateDefault, _stateTrack, _stateAttack, _stateDeath };
+            { _patrol, _track, _attack, _death };
         _sSeq.ResistStates(states);
         
-        _sSeq.MakeTransition(_stateDefault, _stateTrack, _gonnaTrack);
     }
 
-    void UpdateEachState()
+    void UpdateEachState()  // 各ステートの更新 
     {
-        _stateDefault.TaskOnUpdate(this.gameObject.transform, _playerTransform);
+        _patrol.TaskOnUpdate(this.gameObject.transform, _playerTransform);
     }
     
-    void TickTransitions()
+    void UpdateTransitions() // 各遷移の更新
     {
-        _sSeq.UpdateTransition(_gonnaTrack, ref _cGonnaTrack);
     }
     
-    public void InitializeThisComp()
+    public void InitializeThisComponent()
     {
-        InitStates();
 
         _sSeq = new StateSequencer();
+        _anim = GetComponent<Animator>();
+        _agent = GetComponent<NavMeshAgent>();
         _playerTransform = GameObject.FindWithTag(PlayerTag).transform;
         
+        InitStates();
         SetUpTransitions();
     }
     
     private void FixedUpdate()
     {
-        TickTransitions();
+        UpdateTransitions();
         UpdateEachState();
-        
-        // 遷移を更新
-        _sSeq.UpdateTransition(_gonnaTrack, ref _cGonnaTrack);
     }
 
     public void FinalizeThisComp()

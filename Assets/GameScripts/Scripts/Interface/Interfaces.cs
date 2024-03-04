@@ -11,7 +11,7 @@ public interface IInitializableComponent
     /// <summary>
     /// 起動の時に呼び出される
     /// </summary>
-    public void InitializeThisComp();
+    public void InitializeThisComponent();
 
     /// <summary>
     /// リセットの時に呼び出される
