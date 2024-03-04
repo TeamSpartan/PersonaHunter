@@ -120,6 +120,7 @@ public class MobBehaviourParameter
             _animator = GetComponentInChildren<Animator>();
         } // if animator is attached on child object
 
+        // ステートをインスタンス化
         _stateIdle = new MobStateIdle();
         _statePatrol = new MobStatePatrol();
         _stateTrack = new MobStateTrack();

@@ -4,27 +4,37 @@ using UnityEngine;
 namespace AIBehaviours.MOBBehaviours.States
 {
     public class MobStateTrack
-    : ISequensableState
-    , IEnemyState
+        : ISequensableState
+            , IEnemyState
     {
+        private bool _debugging = false;
+
         public void Entry()
         {
-            Debug.Log($"{nameof(MobStateTrack)}: Enter");
+            if (_debugging)
+            {
+                Debug.Log($"{nameof(MobStateTrack)}: Enter");
+            }
         }
 
         public void Update()
         {
-            Debug.Log($"{nameof(MobStateTrack)}: Update");
+            if (_debugging)
+            {
+                Debug.Log($"{nameof(MobStateTrack)}: Update");
+            }
         }
 
         public void Exit()
         {
-            Debug.Log($"{nameof(MobStateTrack)}: Exit");
+            if (_debugging)
+            {
+                Debug.Log($"{nameof(MobStateTrack)}: Exit");
+            }
         }
 
         public void UpdateState(Transform selfTransform, Transform targetTransform)
         {
-            
         }
     }
 }
