@@ -9,7 +9,7 @@ namespace MOBState
     /// <summary>
     /// オモテガリ デフォルトステート
     /// </summary>
-    public class MOBStateDefault
+    public class MOBStatePatrol
         : EnemyStateBaseClass
             , ISequensableState
     {
@@ -32,7 +32,7 @@ namespace MOBState
             set { this._threshordDistToGoNext = value; }
         }
 
-        public MOBStateDefault(NavMeshAgent agent
+        public MOBStatePatrol(NavMeshAgent agent
             , PatrollerPathContainer pathContainer
             , Transform aiPosition
             , Transform playerDestination)
@@ -74,6 +74,8 @@ namespace MOBState
             } // 現状の座標から一番近いポイントを探索
 
             SetDestinationAuto();
+            
+            Debug.Log($"{nameof(MOBStatePatrol)} Entry");
         }
 
         public void Update()
@@ -85,11 +87,16 @@ namespace MOBState
                 ++_currentPathIndex;
                 SetDestinationAuto();
             }
+            
+            Debug.Log($"{nameof(MOBStatePatrol)} Tick");
+            
         }
 
         public void Exit()
         {
             _agent.ResetPath(); // とりあえずリセット
+            
+            Debug.Log($"{nameof(MOBStatePatrol)} Exit");
         }
 
         public override void TaskOnUpdate(Transform aiPosition, Transform playerDestination)
