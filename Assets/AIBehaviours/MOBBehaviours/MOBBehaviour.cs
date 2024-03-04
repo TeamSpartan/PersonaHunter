@@ -10,15 +10,16 @@ using SgLibUnite.AI;
 /// オモテガリ MOB AI
 /// </summary>
 public class MOBBehaviour
-    : IEnemyBehaviour
-    , IInitializableComponent
-    , IDulledTarget
+    : MonoBehaviour
+        , IEnemyBehaviour
+        , IInitializableComponent
+        , IDulledTarget
 {
     #region Component Parameter
 
     [SerializeField, Header("The Patrolling Path To Patrol")]
     private PatrollerPathContainer PathContainer;
-    
+
     [SerializeField, Header("The Health MOB Has")]
     private float Health;
 
@@ -31,7 +32,7 @@ public class MOBBehaviour
     #endregion
 
     #region The Default Interface To Get Parameter
-    
+
     public float GetHealth()
     {
         return this.Health;
@@ -51,9 +52,9 @@ public class MOBBehaviour
     {
         this.Flinch = val;
     }
-    
+
     #endregion
-    
+
     public void InitializeThisComponent()
     {
         Debug.Log("Init");

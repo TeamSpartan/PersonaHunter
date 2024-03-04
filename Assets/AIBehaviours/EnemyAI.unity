@@ -735,7 +735,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7011287017779250007, guid: 0542c10f928e8bd43bfa09ba7aa9a445,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1911203759}
+      addedObject: {fileID: 1911203763}
   m_SourcePrefab: {fileID: 100100000, guid: 0542c10f928e8bd43bfa09ba7aa9a445, type: 3}
 --- !u!1 &1911203758 stripped
 GameObject:
@@ -743,22 +743,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1911203757}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1911203759
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1911203758}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65fd1a677d4f4f79972499056b039641, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PathContainer: {fileID: 1725221286}
-  Health: 100
-  Flinch: 0
-  PlayerTag: Player
 --- !u!195 &1911203760
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -802,6 +786,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1911203763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911203758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65fd1a677d4f4f79972499056b039641, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PathContainer: {fileID: 1725221286}
+  Health: 100
+  Flinch: 0
+  PlayerTag: Player
 --- !u!1 &1999064871
 GameObject:
   m_ObjectHideFlags: 0
