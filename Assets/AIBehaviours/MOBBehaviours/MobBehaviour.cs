@@ -223,6 +223,9 @@ public class MobBehaviour
         
         // ダウン値がたまり切ったら
         _flinch = _flinchValue >= FlinchThreshold;
+        
+        // animator-controller のパラメータを初期化
+        _animator.SetBool("Initialized", _initialized);
     }
 
     void UpdateTransitions()
