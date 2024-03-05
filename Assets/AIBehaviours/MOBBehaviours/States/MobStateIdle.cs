@@ -1,5 +1,6 @@
 ﻿using SgLibUnite.StateSequencer;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace AIBehaviours.MOBBehaviours.States
 {
@@ -9,12 +10,24 @@ namespace AIBehaviours.MOBBehaviours.States
     {
         private bool _debugging = !false;
 
+        #region Parameter Inside
+
+        private Transform _selfTransform;
+        private Transform _playerTransform;
+        private NavMeshAgent _agent;
+
+        #endregion
+
         public void Entry()
         {
             if (_debugging)
             {
                 Debug.Log($"{nameof(MobStateIdle)}: Enter");
             }
+            
+            // その場所にとどまる。
+            if(_agent.hasPath)
+            {_agent.ResetPath();}
         }
 
         public void Update()
@@ -33,8 +46,11 @@ namespace AIBehaviours.MOBBehaviours.States
             }
         }
 
-        public void UpdateState(Transform selfTransform, Transform targetTransform)
+        public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent)
         {
+            _selfTransform = selfTransform;
+            _playerTransform = targetTransform;
+            _agent = agent;
         }
     }
 }

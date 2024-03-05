@@ -695,7 +695,7 @@ PrefabInstance:
     - target: {fileID: 8644846631195485811, guid: 0542c10f928e8bd43bfa09ba7aa9a445,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -6.79
       objectReference: {fileID: 0}
     - target: {fileID: 8644846631195485811, guid: 0542c10f928e8bd43bfa09ba7aa9a445,
         type: 3}
@@ -705,7 +705,7 @@ PrefabInstance:
     - target: {fileID: 8644846631195485811, guid: 0542c10f928e8bd43bfa09ba7aa9a445,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -7.86
       objectReference: {fileID: 0}
     - target: {fileID: 8644846631195485811, guid: 0542c10f928e8bd43bfa09ba7aa9a445,
         type: 3}
@@ -889,10 +889,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PathContainer: {fileID: 1725221286}
   Health: 100
-  Flinch: 0
+  FlinchThreshold: 100
   PlayerTag: Player
   SightRange: 11.22
-  AttackingRange: 2.29
+  AttackingRange: 5.88
   PlayerLayerMask:
     serializedVersion: 2
     m_Bits: 64

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AIBehaviours.MOBBehaviours.States;
 using UnityEngine;
 using UnityEngine.AI;
@@ -17,7 +16,7 @@ public class MobBehaviour
         , IInitializableComponent
         , IDulledTarget
 {
-    #region Component Parameter
+    #region Component Parameter Exposing
 
     [SerializeField, Header("The Patrolling Path To Patrol")]
     private PatrollerPathContainer PathContainer;
@@ -25,8 +24,8 @@ public class MobBehaviour
     [SerializeField, Header("The Health MOB Has")]
     private float Health;
 
-    [SerializeField, Header("THe Flinch Value MOB Has")]
-    private float Flinch;
+    [SerializeField, Header("THe Flinch Threshold Value MOB Has")]
+    private float FlinchThreshold;
 
     [SerializeField, Header("The Tag Of Player")]
     private string PlayerTag;
@@ -56,12 +55,12 @@ public class MobBehaviour
 
     public float GetFlinchValue()
     {
-        return this.Flinch;
+        return this._flinchValue;
     }
 
     public void SetFlinchValue(float val)
     {
-        this.Flinch = val;
+        this._flinchValue = val;
     }
 
     #endregion
@@ -129,7 +128,16 @@ public class MobBehaviour
     private StateSequencer _sequencer;
     private Animator _animator;
     private Transform _playerTransform;
+    private NavMeshAgent _agent;
+    
+    /// <summary>
+    /// 内部パラメータ ひるみ値
+    /// </summary>
+    private float _flinchValue;
 
+    /// <summary>
+    /// このAIを起動する
+    /// </summary>
     public void StartUp()
     {
         _initialized = true;
@@ -139,6 +147,9 @@ public class MobBehaviour
     {
         // ステートマシン
         _sequencer = new();
+        
+        // Navigation Mesh
+        _agent = GetComponent<NavMeshAgent>();
 
         // Try Get Animator
         if (this.gameObject.GetComponent<Animator>() != null)
@@ -152,7 +163,7 @@ public class MobBehaviour
 
         // ステートをインスタンス化
         _stateIdle = new MobStateIdle();
-        _statePatrol = new MobStatePatrol();
+        _statePatrol = new MobStatePatrol(PathContainer);
         _stateTrack = new MobStateTrack();
         _stateAttack = new MobStateAttack();
         _stateFlinch = new MobStateFlinch();
@@ -167,12 +178,13 @@ public class MobBehaviour
         _sequencer.ResistStateFromAny(_stateFlinch);
 
         // 遷移の登録
+            // アイドルからパトロール
         _sequencer.MakeTransition(_stateIdle, _statePatrol, _tnInit);
         _sequencer.MakeTransition(_statePatrol, _stateIdle, _tnInitBack);
-
+            // パトロールから追跡
         _sequencer.MakeTransition(_statePatrol, _stateTrack, _tnPlayerFound);
         _sequencer.MakeTransition(_stateTrack, _statePatrol, _tnPlayerFoundBack);
-
+            // 追跡から攻撃
         _sequencer.MakeTransition(_stateTrack, _stateAttack, _tnIsInAttackingRange);
         _sequencer.MakeTransition(_stateAttack, _stateTrack, _tnIsInAttackingRangeBack);
     
@@ -183,8 +195,16 @@ public class MobBehaviour
         // Anyステートからのアイドルステートへの強制的な遷移
         _sequencer.MakeTransitionFromAny(_stateIdle, _tnBackToIdleAnyWhere);
 
+        // 内部パラメータの初期化
+        _flinchValue = 0f;
+        
         // 起動
         _sequencer.PopStateMachine();
+        
+        // 各アニメーションレイヤのweightを初期化
+            // レイヤ添え字 = 1 → 鈍化 アニメーションレイヤ
+        _animator.SetLayerWeight(0, 1f);
+        _animator.SetLayerWeight(1, 0f);
     }
 
     void UpdateConditions()
@@ -194,8 +214,15 @@ public class MobBehaviour
         _foundPlayer = Physics.CheckSphere(this.transform.position, SightRange, PlayerLayerMask);
             // 攻撃可能判定フラグ
         _playerIsInAttackRange = Physics.CheckSphere(this.transform.position, AttackingRange, PlayerLayerMask);
+        
         // プレイヤー（目標）のトランスフォーム
         _playerTransform = GameObject.FindWithTag(PlayerTag).transform;
+        
+        // HPを削り切ったら
+        _death = Health <= 0;
+        
+        // ダウン値がたまり切ったら
+        _flinch = _flinchValue >= FlinchThreshold;
     }
 
     void UpdateTransitions()
@@ -221,13 +248,14 @@ public class MobBehaviour
         _sequencer.UpdateTransitionFromAnyState(_tnBackToIdleAnyWhere, ref _backToIdle, true, true);
         
         // 各ステートを更新
-        _stateIdle.UpdateState(this.transform, _playerTransform);
-        _statePatrol.UpdateState(this.transform, _playerTransform);
-        _stateTrack.UpdateState(this.transform, _playerTransform);
-        _stateAttack.UpdateState(this.transform, _playerTransform);
+        _stateIdle.UpdateState(this.transform, _playerTransform, this._agent);
+        _statePatrol.UpdateState(this.transform, _playerTransform, this._agent);
+        _stateTrack.UpdateState(this.transform, _playerTransform, this._agent);
+        _stateAttack.UpdateState(this.transform, _playerTransform, this._agent);
+        
         // Anyからの遷移のステート
-        _stateDeath.UpdateState(this.transform, _playerTransform);
-        _stateFlinch.UpdateState(this.transform, _playerTransform);
+        _stateDeath.UpdateState(this.transform, _playerTransform, this._agent);
+        _stateFlinch.UpdateState(this.transform, _playerTransform, this._agent);
     }
 
     private void FixedUpdate()
@@ -242,12 +270,16 @@ public class MobBehaviour
 
     public void StartDull()
     {
-        throw new NotImplementedException();
+        // レイヤ添え字 ＝ １ ＝＞ 鈍化 アニメーションレイヤ
+        _animator.SetLayerWeight(0, 0f);
+        _animator.SetLayerWeight(1, 1f);
     }
 
     public void EndDull()
     {
-        throw new NotImplementedException();
+        // レイヤ添え字 ＝ １ ＝＞ 鈍化 アニメーションレイヤ
+        _animator.SetLayerWeight(0, 1f);
+        _animator.SetLayerWeight(1, 0f);
     }
 
     private void OnDrawGizmos()

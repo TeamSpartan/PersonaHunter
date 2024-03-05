@@ -1,5 +1,6 @@
 ﻿using SgLibUnite.StateSequencer;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace AIBehaviours.MOBBehaviours.States
 {
@@ -33,7 +34,7 @@ namespace AIBehaviours.MOBBehaviours.States
             }
         }
 
-        public void UpdateState(Transform selfTransform, Transform targetTransform)
+        public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent)
         {
         }
     }
