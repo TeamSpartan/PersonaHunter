@@ -72,6 +72,7 @@ public class MobBehaviour
     private MobStatePatrol _statePatrol;
     private MobStateTrack _stateTrack;
     private MobStateAttack _stateAttack;
+    private MobStateFlinch _stateFlinch;
     private MobStateDeath _stateDeath;
 
     #endregion
@@ -109,10 +110,25 @@ public class MobBehaviour
     /// </summary>
     [SerializeField] private bool _death;
 
+    private string _tnFlinch = "Flinch";
+
+    /// <summary>
+    /// ダウン値がたまり切ったら
+    /// </summary>
+    [SerializeField] private bool _flinch;
+
+    private string _tnBackToIdleAnyWhere = "BackToIdle";
+    
+    /// <summary>
+    /// Anyステートからの強制的なアイドルへの遷移フラグ
+    /// </summary>
+    [SerializeField] private bool _backToIdle;
+
     #endregion
     
     private StateSequencer _sequencer;
     private Animator _animator;
+    private Transform _playerTransform;
 
     public void StartUp()
     {
@@ -139,6 +155,7 @@ public class MobBehaviour
         _statePatrol = new MobStatePatrol();
         _stateTrack = new MobStateTrack();
         _stateAttack = new MobStateAttack();
+        _stateFlinch = new MobStateFlinch();
         _stateDeath = new MobStateDeath();
 
         // ステートを追加
@@ -147,6 +164,7 @@ public class MobBehaviour
                 { _stateIdle, _statePatrol, _stateTrack, _stateAttack };
         _sequencer.ResistStates(states);
         _sequencer.ResistStateFromAny(_stateDeath);
+        _sequencer.ResistStateFromAny(_stateFlinch);
 
         // 遷移の登録
         _sequencer.MakeTransition(_stateIdle, _statePatrol, _tnInit);
@@ -157,8 +175,13 @@ public class MobBehaviour
 
         _sequencer.MakeTransition(_stateTrack, _stateAttack, _tnIsInAttackingRange);
         _sequencer.MakeTransition(_stateAttack, _stateTrack, _tnIsInAttackingRangeBack);
-
+    
+        // Anyからの遷移
         _sequencer.MakeTransitionFromAny(_stateDeath, _tnDeath);
+        _sequencer.MakeTransitionFromAny(_stateFlinch, _tnFlinch);
+        
+        // Anyステートからのアイドルステートへの強制的な遷移
+        _sequencer.MakeTransitionFromAny(_stateIdle, _tnBackToIdleAnyWhere);
 
         // 起動
         _sequencer.PopStateMachine();
@@ -169,15 +192,18 @@ public class MobBehaviour
         // 各コンディションの更新
             // プレイヤ視認フラグ
         _foundPlayer = Physics.CheckSphere(this.transform.position, SightRange, PlayerLayerMask);
-        
             // 攻撃可能判定フラグ
         _playerIsInAttackRange = Physics.CheckSphere(this.transform.position, AttackingRange, PlayerLayerMask);
+        // プレイヤー（目標）のトランスフォーム
+        _playerTransform = GameObject.FindWithTag(PlayerTag).transform;
     }
 
     void UpdateTransitions()
     {
+        // 各コンディション更新
         UpdateConditions();
         
+        // 各遷移を更新
         _sequencer.UpdateTransition(_tnInit, ref _initialized);
         _sequencer.UpdateTransition(_tnInitBack, ref _initialized, false);
 
@@ -187,7 +213,21 @@ public class MobBehaviour
         _sequencer.UpdateTransition(_tnIsInAttackingRange, ref _playerIsInAttackRange);
         _sequencer.UpdateTransition(_tnIsInAttackingRangeBack, ref _playerIsInAttackRange, false);
 
+        // Anyステートからの遷移の更新
         _sequencer.UpdateTransitionFromAnyState(_tnDeath, ref _death, true, true);
+        _sequencer.UpdateTransitionFromAnyState(_tnFlinch, ref _flinch, true, true);
+        
+        // Anyステートからのアイドルステートへの強制的な遷移 の更新
+        _sequencer.UpdateTransitionFromAnyState(_tnBackToIdleAnyWhere, ref _backToIdle, true, true);
+        
+        // 各ステートを更新
+        _stateIdle.UpdateState(this.transform, _playerTransform);
+        _statePatrol.UpdateState(this.transform, _playerTransform);
+        _stateTrack.UpdateState(this.transform, _playerTransform);
+        _stateAttack.UpdateState(this.transform, _playerTransform);
+        // Anyからの遷移のステート
+        _stateDeath.UpdateState(this.transform, _playerTransform);
+        _stateFlinch.UpdateState(this.transform, _playerTransform);
     }
 
     private void FixedUpdate()
@@ -208,5 +248,16 @@ public class MobBehaviour
     public void EndDull()
     {
         throw new NotImplementedException();
+    }
+
+    private void OnDrawGizmos()
+    {
+        // 視野の範囲
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(this.transform.position, SightRange);
+        
+        // 攻撃圏内
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(this.transform.position, AttackingRange);
     }
 }

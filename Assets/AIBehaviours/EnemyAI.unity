@@ -891,6 +891,17 @@ MonoBehaviour:
   Health: 100
   Flinch: 0
   PlayerTag: Player
+  SightRange: 11.22
+  AttackingRange: 2.29
+  PlayerLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  _initialized: 0
+  _foundPlayer: 0
+  _playerIsInAttackRange: 0
+  _death: 0
+  _flinch: 0
+  _backToIdle: 0
 --- !u!195 &1965758064
 NavMeshAgent:
   m_ObjectHideFlags: 0

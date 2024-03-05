@@ -7,7 +7,7 @@ namespace AIBehaviours.MOBBehaviours.States
         : ISequensableState
             , IEnemyState
     {
-        private bool _debugging = false;
+        private bool _debugging = !false;
 
         public void Entry()
         {
