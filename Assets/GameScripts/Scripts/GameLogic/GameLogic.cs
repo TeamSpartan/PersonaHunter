@@ -12,6 +12,28 @@ public class GameLogic
     
     private GameInfo _info;
 
+    /// <summary>
+    /// 集中 を 発火する
+    /// </summary>
+    public void StartDiveInZone()
+    {
+        GameObject.FindObjectsOfType<GameObject>()
+            .Where(_ => _.GetComponent<IDulledTarget>() != null)
+            .Select(_ => _.GetComponent<IDulledTarget>())
+            .ToList().ForEach(_ => _.StartDull());
+    }
+    
+    /// <summary>
+    /// 集中 を 収束する
+    /// </summary>
+    public void GetOutOverZone()
+    {
+        GameObject.FindObjectsOfType<GameObject>()
+            .Where(_ => _.GetComponent<IDulledTarget>() != null)
+            .Select(_ => _.GetComponent<IDulledTarget>())
+            .ToList().ForEach(_ => _.EndDull());
+    }
+
     void InitializeGame()
     {
         _info = GameObject.FindFirstObjectByType<GameInfo>();

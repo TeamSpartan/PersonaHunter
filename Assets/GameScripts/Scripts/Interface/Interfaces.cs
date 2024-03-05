@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 // 各モジュール間のインターフェイスはここに集約
 
@@ -77,5 +78,5 @@ public interface IEnemyBehaviourParameter
 
 public interface IEnemyState
 {
-    public void UpdateState(Transform selfTransform, Transform targetTransform);
+    public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent);
 }
