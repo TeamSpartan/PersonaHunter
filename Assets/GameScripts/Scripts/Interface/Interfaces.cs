@@ -52,6 +52,9 @@ public interface IDulledTarget
     public void EndDull();
 }
 
+/// <summary>
+/// 敵AI 本体のコンポーネントが継承すべきインターフェイス
+/// </summary>
 public interface IEnemyBehaviourParameter
 {
     /// <summary>
@@ -76,7 +79,26 @@ public interface IEnemyBehaviourParameter
     public abstract void SetFlinchValue(float val);
 }
 
+/// <summary>
+/// 敵AIのステートが継承すべきインターフェイス
+/// </summary>
 public interface IEnemyState
 {
     public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent);
+}
+
+/// <summary>
+/// ダメージを加えられるコンポーネントが継承すべき
+/// </summary>
+public interface IDamagedComponent
+{
+    /// <summary>
+    /// ダメージを加える
+    /// </summary>
+    public void AddDamage(float dmg);
+
+    /// <summary>
+    /// 即死させる
+    /// </summary>
+    public void Kill();
 }

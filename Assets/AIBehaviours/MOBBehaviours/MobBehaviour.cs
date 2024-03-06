@@ -164,7 +164,7 @@ public class MobBehaviour
         // ステートをインスタンス化
         _stateIdle = new MobStateIdle();
         _statePatrol = new MobStatePatrol(PathContainer);
-        _stateTrack = new MobStateTrack();
+        _stateTrack = new MobStateTrack(AttackingRange);
         _stateAttack = new MobStateAttack();
         _stateFlinch = new MobStateFlinch();
         _stateDeath = new MobStateDeath();
