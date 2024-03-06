@@ -151,6 +151,7 @@ public class MobBehaviour
     /// <summary>
     /// 内部パラメータ ひるみ値
     /// </summary>
+    [SerializeField] // デバッグ用属性
     private float _flinchValue;
 
     /// <summary>
@@ -244,10 +245,10 @@ public class MobBehaviour
     {
         // 各コンディションの更新
         // プレイヤ視認フラグ
-        _foundPlayer = Physics.CheckSphere(this.transform.position, SightRange, PlayerLayerMask);
+        _foundPlayer = Physics.CheckSphere(this.transform.position, SightRange, PlayerLayerMask) && !_flinch && !_death;
         
         // 攻撃可能判定フラグ
-        _playerIsInAttackRange = Physics.CheckSphere(this.transform.position, AttackingRange, PlayerLayerMask);
+        _playerIsInAttackRange = Physics.CheckSphere(this.transform.position, AttackingRange, PlayerLayerMask) && !_flinch && !_death;
 
         // プレイヤー（目標）のトランスフォーム
         _playerTransform = GameObject.FindWithTag(PlayerTag).transform;
@@ -275,10 +276,10 @@ public class MobBehaviour
         _sequencer.UpdateTransition(_tnPlayerFoundBack, ref _foundPlayer, false);
 
         // Anyステートからの遷移の更新
-        _sequencer.UpdateTransitionFromAnyState(_tnDeath, ref _death, true, true);
-        _sequencer.UpdateTransitionFromAnyState(_tnFlinch, ref _flinch, true, true);
-        _sequencer.UpdateTransitionFromAnyState(_tnIsInAttackingRange, ref _playerIsInAttackRange, true, true);
-        _sequencer.UpdateTransitionFromAnyState(_tnDamaged, ref _damaged, true, true);
+        _sequencer.UpdateTransitionFromAnyState(_tnDeath, ref _death);
+        _sequencer.UpdateTransitionFromAnyState(_tnFlinch, ref _flinch);
+        _sequencer.UpdateTransitionFromAnyState(_tnIsInAttackingRange, ref _playerIsInAttackRange);
+        _sequencer.UpdateTransitionFromAnyState(_tnDamaged, ref _damaged);
 
         // Anyステートからのアイドルステートへの強制的な遷移 の更新
         _sequencer.UpdateTransitionFromAnyState(_tnBackToIdleAnyWhere, ref _backToIdle, true, true);
