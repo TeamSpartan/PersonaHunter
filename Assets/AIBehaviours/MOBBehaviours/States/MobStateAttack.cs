@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using SgLibUnite.StateSequencer;
 using UnityEngine;
 using UnityEngine.AI;
@@ -17,6 +18,7 @@ namespace AIBehaviours.MOBBehaviours.States
         private Transform _playerTransform;
         private NavMeshAgent _agent;
         private LayerMask _playersLayerMask;
+        private Action onEndAttack;
         private float _damage = 0;
         private float _attackRange = 0f;
         private float _elapsedTime = 0f;
@@ -26,11 +28,12 @@ namespace AIBehaviours.MOBBehaviours.States
         
         public MobStateAttack(){}
 
-        public MobStateAttack(float attackRange, float damage, float attackingInterval, LayerMask playersLayerMask)
+        public MobStateAttack(float attackRange, float damage, float attackingInterval, LayerMask playersLayerMask, Action taskOnEndAttack)
         {
             this._attackRange = attackRange;
             this._damage = damage;
             this._attackingInterval = attackingInterval;
+            this.onEndAttack = taskOnEndAttack;
             this._playersLayerMask = playersLayerMask;
         }
 
@@ -60,6 +63,7 @@ namespace AIBehaviours.MOBBehaviours.States
                     .Select(_ => _.GetComponent<IDamagedComponent>()).ToList()
                     .ForEach(_ => _.AddDamage(_damage));
                 _elapsedTime = 0f;
+                onEndAttack();
             }
         }
 

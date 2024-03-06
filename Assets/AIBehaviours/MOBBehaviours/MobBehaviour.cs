@@ -183,7 +183,11 @@ public class MobBehaviour
         _stateIdle = new MobStateIdle();
         _statePatrol = new MobStatePatrol(PathContainer);
         _stateTrack = new MobStateTrack(AttackingRange);
-        _stateAttack = new MobStateAttack(AttackingRange, Damage, IntervalAttacking, PlayerLayerMask);
+        _stateAttack = new MobStateAttack(AttackingRange, Damage, IntervalAttacking, PlayerLayerMask, () =>
+        {
+            _playerIsInAttackRange = false;
+            _backToIdle = true;
+        });
         _stateDamaged = new MobStateDamaged();
         _stateFlinch = new MobStateFlinch(FlinchingTime,() =>
         {
@@ -225,7 +229,7 @@ public class MobBehaviour
         _sequencer.MakeTransitionFromAny(_stateIdle, _tnBackToIdleAnyWhere);
 
         // 内部パラメータの初期化
-        _flinchValue = 0f;
+        _flinchValue = 0;
 
         // 起動
         _sequencer.PopStateMachine();

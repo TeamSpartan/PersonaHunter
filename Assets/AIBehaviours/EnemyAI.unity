@@ -909,7 +909,7 @@ MonoBehaviour:
   PlayerLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  _initialized: 1
+  _initialized: 0
   _foundPlayer: 0
   _playerIsInAttackRange: 0
   _death: 0
