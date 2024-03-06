@@ -900,7 +900,7 @@ MonoBehaviour:
   PathContainer: {fileID: 1725221286}
   Health: 100
   FlinchThreshold: 100
-  FlinchingTime: 0
+  FlinchingTime: 20
   PlayerTag: Player
   SightRange: 11.22
   AttackingRange: 3.68
@@ -916,6 +916,7 @@ MonoBehaviour:
   _flinch: 0
   _damaged: 0
   _backToIdle: 0
+  _flinchValue: 0
 --- !u!195 &1965758064
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Timers;
 using SgLibUnite.StateSequencer;
-using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -19,6 +19,7 @@ namespace AIBehaviours.MOBBehaviours.States
         private NavMeshAgent _agent;
         private float _elapsedTime = 0f;
         private float _flinchingTime = 0f;
+        private float _deltaTime = 0f;
         private Action onEndFlinching;
 
         #endregion
@@ -48,10 +49,10 @@ namespace AIBehaviours.MOBBehaviours.States
         {
             if (_debuggging)
             {
-                Debug.Log($"{nameof(MobStateFlinch)}: Update");
+                Debug.Log($"{nameof(MobStateFlinch)}: Update {_deltaTime}");
             }
 
-            _elapsedTime += Time.deltaTime;
+            _elapsedTime += _deltaTime;
             if (_elapsedTime >= _flinchingTime)
             {
                 onEndFlinching();
@@ -67,11 +68,12 @@ namespace AIBehaviours.MOBBehaviours.States
             }
         }
 
-        public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent)
+        public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent, float detltaTime)
         {
             _selfTransform = selfTransform;
             _playerTransform = targetTransform;
             _agent = agent;
+            _deltaTime = detltaTime;
         }
     }
 }

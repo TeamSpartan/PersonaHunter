@@ -28,7 +28,7 @@ public class MobBehaviour
     [SerializeField, Header("The Flinch Threshold Value MOB Has")]
     private float FlinchThreshold;
 
-    [SerializeField, Header("The Flinching Time")]
+    [SerializeField, Header("The Flinching Time [1/10 sec](誤差+3秒？)")]
     private float FlinchingTime = 0f;
 
     [SerializeField, Header("The Tag Of Player")]
@@ -267,6 +267,17 @@ public class MobBehaviour
     {
         // 各コンディション更新
         UpdateConditions();
+        
+        // 各ステートを更新
+        _stateIdle.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
+        _statePatrol.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
+        _stateTrack.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
+
+        // Anyからの遷移のステート
+        _stateDeath.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
+        _stateFlinch.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
+        _stateAttack.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
+        _stateDamaged.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
 
         // 各遷移を更新
         _sequencer.UpdateTransition(_tnInit, ref _initialized);
@@ -279,22 +290,11 @@ public class MobBehaviour
         _sequencer.UpdateTransitionFromAnyState(_tnDeath, ref _death);
         _sequencer.UpdateTransitionFromAnyState(_tnFlinch, ref _flinch);
         _sequencer.UpdateTransitionFromAnyState(_tnIsInAttackingRange, ref _playerIsInAttackRange);
-        _sequencer.UpdateTransitionFromAnyState(_tnDamaged, ref _damaged);
+        _sequencer.UpdateTransitionFromAnyState(_tnDamaged, ref _damaged, true, true);
 
         // Anyステートからのアイドルステートへの強制的な遷移 の更新
         _sequencer.UpdateTransitionFromAnyState(_tnBackToIdleAnyWhere, ref _backToIdle, true, true);
-
-        // 各ステートを更新
-        _stateIdle.UpdateState(this.transform, _playerTransform, this._agent);
-        _statePatrol.UpdateState(this.transform, _playerTransform, this._agent);
-        _stateTrack.UpdateState(this.transform, _playerTransform, this._agent);
-
-        // Anyからの遷移のステート
-        _stateDeath.UpdateState(this.transform, _playerTransform, this._agent);
-        _stateFlinch.UpdateState(this.transform, _playerTransform, this._agent);
-        _stateAttack.UpdateState(this.transform, _playerTransform, this._agent);
-        _stateDamaged.UpdateState(this.transform, _playerTransform, this._agent);
-    }
+      }
 
     private void FixedUpdate()
     {

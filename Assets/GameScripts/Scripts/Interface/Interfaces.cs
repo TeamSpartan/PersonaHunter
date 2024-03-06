@@ -84,7 +84,7 @@ public interface IEnemyBehaviourParameter
 /// </summary>
 public interface IEnemyState
 {
-    public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent);
+    public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent, float detltaTime);
 }
 
 /// <summary>

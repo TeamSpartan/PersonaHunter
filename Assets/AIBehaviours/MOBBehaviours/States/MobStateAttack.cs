@@ -23,7 +23,8 @@ namespace AIBehaviours.MOBBehaviours.States
         private float _attackRange = 0f;
         private float _elapsedTime = 0f;
         private float _attackingInterval = 0f;
-
+        private float _deltaTime = 0;
+        
         #endregion
         
         public MobStateAttack(){}
@@ -75,11 +76,12 @@ namespace AIBehaviours.MOBBehaviours.States
             }
         }
 
-        public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent)
+        public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent, float deltaTime)
         {
             _selfTransform = selfTransform;
             _playerTransform = targetTransform;
             _agent = agent;
+            _deltaTime = deltaTime;
         }
     }
 }
