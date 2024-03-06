@@ -1,4 +1,5 @@
-﻿using SgLibUnite.StateSequencer;
+﻿using System;
+using SgLibUnite.StateSequencer;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -15,6 +16,7 @@ namespace AIBehaviours.MOBBehaviours.States
         private Transform _selfTransform;
         private Transform _playerTransform;
         private NavMeshAgent _agent;
+        private Action onDeath;
         private float _timeToDispose = 0f;
         private float _elapsedTIme = 0f;
 
@@ -22,7 +24,11 @@ namespace AIBehaviours.MOBBehaviours.States
         
         public MobStateDeath(){}
 
-        public MobStateDeath(float timeToDispose) => _timeToDispose = timeToDispose;
+        public MobStateDeath(float timeToDispose, Action taskOnDeath)
+        {
+            _timeToDispose = timeToDispose;
+            onDeath = taskOnDeath;
+        }
 
         public void Entry()
         {
@@ -47,6 +53,7 @@ namespace AIBehaviours.MOBBehaviours.States
             _elapsedTIme += Time.deltaTime;
             if (_elapsedTIme >= _timeToDispose)
             {
+                onDeath();
                 GameObject.Destroy(_selfTransform.gameObject);
             }
         }

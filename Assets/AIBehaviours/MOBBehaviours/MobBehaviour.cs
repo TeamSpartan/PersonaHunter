@@ -181,7 +181,10 @@ public class MobBehaviour
             _flinchValue = 0f;
             Debug.Log($"{nameof(MobBehaviour)}: Flinch End");
         });
-        _stateDeath = new MobStateDeath(1.5f);
+        _stateDeath = new MobStateDeath(1.5f, () =>
+        {
+            Destroy(this.GetComponent<MobBehaviour>());
+        });
 
         // ステートを追加
         var states =
