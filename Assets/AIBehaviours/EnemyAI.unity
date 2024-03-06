@@ -890,9 +890,12 @@ MonoBehaviour:
   PathContainer: {fileID: 1725221286}
   Health: 100
   FlinchThreshold: 100
+  _flinchingTime: 2
   PlayerTag: Player
   SightRange: 11.22
-  AttackingRange: 5.88
+  AttackingRange: 3.68
+  Damage: 10
+  IntervalAttacking: 0.5
   PlayerLayerMask:
     serializedVersion: 2
     m_Bits: 64

@@ -10,11 +10,30 @@ namespace AIBehaviours.MOBBehaviours.States
     {
         private bool _debugging = !false;
 
+        #region Parameter Inside
+
+        private Transform _selfTransform;
+        private Transform _playerTransform;
+        private NavMeshAgent _agent;
+        private float _timeToDispose = 0f;
+        private float _elapsedTIme = 0f;
+
+        #endregion
+        
+        public MobStateDeath(){}
+
+        public MobStateDeath(float timeToDispose) => _timeToDispose = timeToDispose;
+
         public void Entry()
         {
             if (_debugging)
             {
                 Debug.Log($"{nameof(MobStateDeath)}: Enter");
+            }
+
+            if (_agent.hasPath)
+            {
+                _agent.ResetPath();
             }
         }
 
@@ -23,6 +42,12 @@ namespace AIBehaviours.MOBBehaviours.States
             if (_debugging)
             {
                 Debug.Log($"{nameof(MobStateDeath)}: Update");
+            }
+
+            _elapsedTIme += Time.deltaTime;
+            if (_elapsedTIme >= _timeToDispose)
+            {
+                GameObject.Destroy(_selfTransform.gameObject);
             }
         }
 
@@ -36,6 +61,9 @@ namespace AIBehaviours.MOBBehaviours.States
 
         public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent)
         {
+            _selfTransform = selfTransform;
+            _playerTransform = targetTransform;
+            _agent = agent;
         }
     }
 }

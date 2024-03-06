@@ -15,7 +15,6 @@ namespace AIBehaviours.MOBBehaviours.States
 
         private PatrollerPathContainer _patrolPath;
         private Transform _selfTransform;
-        private Transform _playerTransform;
         private NavMeshAgent _agent;
         private int _currentPathIndex = 0;
 
@@ -105,7 +104,6 @@ namespace AIBehaviours.MOBBehaviours.States
         public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent)
         {
             _selfTransform = selfTransform;
-            _playerTransform = targetTransform;
             _agent = agent;
         }
     }
