@@ -28,7 +28,7 @@ namespace AIBehaviours.MOBBehaviours.States
         {
             _patrolPath = pathContainer;
         }
-
+        
         // どのポイントが一番近いか探索
         Vector3 FindNearestPoint(Vector3[] points, ref int currentIndexFeild)
         {
@@ -51,7 +51,7 @@ namespace AIBehaviours.MOBBehaviours.States
         // 次のポイントへ行くか思考
         void ThinkTogoNextPoint()
         {
-            var d = Vector3.Distance(_selfTransform.position, _patrolPath.GetPatrollingPath[_currentPathIndex]);
+            var d = Vector3.Distance(this._selfTransform.position, _patrolPath.GetPatrollingPath[_currentPathIndex]);
             if (d <= .75f)
             {
                 if (_currentPathIndex + 1 < _patrolPath.GetPatrollingPath.Length)
@@ -100,7 +100,7 @@ namespace AIBehaviours.MOBBehaviours.States
                 _agent.ResetPath();
             }
         }
-
+        
         public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent)
         {
             _selfTransform = selfTransform;

@@ -29,7 +29,7 @@ public class MobBehaviour
     private float FlinchThreshold;
 
     [SerializeField, Header("The Flinching Time")]
-    private float _flinchingTime = 0f;
+    private float FlinchingTime = 0f;
 
     [SerializeField, Header("The Tag Of Player")]
     private string PlayerTag;
@@ -83,7 +83,8 @@ public class MobBehaviour
     private MobStateAttack _stateAttack;
     private MobStateFlinch _stateFlinch;
     private MobStateDeath _stateDeath;
-
+    private MobStateDamaged _stateDamaged;
+    
     #endregion
 
     #region Condition
@@ -125,12 +126,20 @@ public class MobBehaviour
     /// </summary>
     [SerializeField] private bool _flinch;
 
-    private string _tnBackToIdleAnyWhere = "BackToIdle";
 
+    /// <summary>
+    /// プレイヤーからダメージを受けた時のフラグ
+    /// </summary>
+    [SerializeField] private bool _damaged;
+
+    private string _tnDamaged = "DamagedFromPlayer";
+    
     /// <summary>
     /// Anyステートからの強制的なアイドルへの遷移フラグ
     /// </summary>
     [SerializeField] private bool _backToIdle;
+    
+    private string _tnBackToIdleAnyWhere = "BackToIdle";
 
     #endregion
 
@@ -158,7 +167,7 @@ public class MobBehaviour
         _sequencer = new();
 
         // Navigation Mesh
-        _agent = GetComponent<NavMeshAgent>();
+        _agent = this.gameObject.GetComponent<NavMeshAgent>();
 
         // Try Get Animator
         if (this.gameObject.GetComponent<Animator>() != null)
@@ -175,7 +184,8 @@ public class MobBehaviour
         _statePatrol = new MobStatePatrol(PathContainer);
         _stateTrack = new MobStateTrack(AttackingRange);
         _stateAttack = new MobStateAttack(AttackingRange, Damage, IntervalAttacking, PlayerLayerMask);
-        _stateFlinch = new MobStateFlinch(_flinchingTime,() =>
+        _stateDamaged = new MobStateDamaged();
+        _stateFlinch = new MobStateFlinch(FlinchingTime,() =>
         {
             _backToIdle = true;
             _flinchValue = 0f;
@@ -194,6 +204,7 @@ public class MobBehaviour
         _sequencer.ResistStateFromAny(_stateDeath);
         _sequencer.ResistStateFromAny(_stateFlinch);
         _sequencer.ResistStateFromAny(_stateAttack);
+        _sequencer.ResistStateFromAny(_stateDamaged);
 
         // 遷移の登録
         // アイドルからパトロール
@@ -207,6 +218,7 @@ public class MobBehaviour
         // Anyからの遷移
         _sequencer.MakeTransitionFromAny(_stateDeath, _tnDeath);
         _sequencer.MakeTransitionFromAny(_stateFlinch, _tnFlinch);
+        _sequencer.MakeTransitionFromAny(_stateDamaged, _tnDamaged);
         _sequencer.MakeTransitionFromAny(_stateAttack, _tnIsInAttackingRange);
 
         // Anyステートからのアイドルステートへの強制的な遷移
@@ -229,6 +241,7 @@ public class MobBehaviour
         // 各コンディションの更新
         // プレイヤ視認フラグ
         _foundPlayer = Physics.CheckSphere(this.transform.position, SightRange, PlayerLayerMask);
+        
         // 攻撃可能判定フラグ
         _playerIsInAttackRange = Physics.CheckSphere(this.transform.position, AttackingRange, PlayerLayerMask);
 
@@ -261,6 +274,7 @@ public class MobBehaviour
         _sequencer.UpdateTransitionFromAnyState(_tnDeath, ref _death, true, true);
         _sequencer.UpdateTransitionFromAnyState(_tnFlinch, ref _flinch, true, true);
         _sequencer.UpdateTransitionFromAnyState(_tnIsInAttackingRange, ref _playerIsInAttackRange, true, true);
+        _sequencer.UpdateTransitionFromAnyState(_tnDamaged, ref _damaged, true, true);
 
         // Anyステートからのアイドルステートへの強制的な遷移 の更新
         _sequencer.UpdateTransitionFromAnyState(_tnBackToIdleAnyWhere, ref _backToIdle, true, true);
@@ -269,11 +283,12 @@ public class MobBehaviour
         _stateIdle.UpdateState(this.transform, _playerTransform, this._agent);
         _statePatrol.UpdateState(this.transform, _playerTransform, this._agent);
         _stateTrack.UpdateState(this.transform, _playerTransform, this._agent);
-        _stateAttack.UpdateState(this.transform, _playerTransform, this._agent);
 
         // Anyからの遷移のステート
         _stateDeath.UpdateState(this.transform, _playerTransform, this._agent);
         _stateFlinch.UpdateState(this.transform, _playerTransform, this._agent);
+        _stateAttack.UpdateState(this.transform, _playerTransform, this._agent);
+        _stateDamaged.UpdateState(this.transform, _playerTransform, this._agent);
     }
 
     private void FixedUpdate()
@@ -303,6 +318,7 @@ public class MobBehaviour
     public void AddDamage(float dmg)
     {
         this.Health -= dmg;
+        _damaged = true;
     }
 
     public void Kill()
