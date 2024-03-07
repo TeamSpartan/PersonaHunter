@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Timers;
 using SgLibUnite.StateSequencer;
-using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -42,6 +42,13 @@ namespace AIBehaviours.MOBBehaviours.States
             {
                 _agent.ResetPath();
             }
+            
+            _elapsedTime += Time.deltaTime;
+            if (_elapsedTime >= _flinchingTime)
+            {
+                onEndFlinching();
+                _elapsedTime = 0f;
+            }
         }
 
         public void Update()
@@ -49,13 +56,6 @@ namespace AIBehaviours.MOBBehaviours.States
             if (_debuggging)
             {
                 Debug.Log($"{nameof(MobStateFlinch)}: Update");
-            }
-
-            _elapsedTime += Time.deltaTime;
-            if (_elapsedTime >= _flinchingTime)
-            {
-                onEndFlinching();
-                _elapsedTime = 0f;
             }
         }
 

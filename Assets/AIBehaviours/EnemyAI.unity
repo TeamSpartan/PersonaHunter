@@ -248,6 +248,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7675329447509406331, guid: 34a24805fdbcab7498d4e5885a909433,
+        type: 3}
+      propertyPath: _debugging
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -692,6 +697,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mob
       objectReference: {fileID: 0}
+    - target: {fileID: 7011287017779250007, guid: 0542c10f928e8bd43bfa09ba7aa9a445,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8644846631195485811, guid: 0542c10f928e8bd43bfa09ba7aa9a445,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -890,7 +900,7 @@ MonoBehaviour:
   PathContainer: {fileID: 1725221286}
   Health: 100
   FlinchThreshold: 100
-  _flinchingTime: 2
+  FlinchingTime: 20
   PlayerTag: Player
   SightRange: 11.22
   AttackingRange: 3.68
@@ -904,7 +914,9 @@ MonoBehaviour:
   _playerIsInAttackRange: 0
   _death: 0
   _flinch: 0
+  _damaged: 0
   _backToIdle: 0
+  _flinchValue: 0
 --- !u!195 &1965758064
 NavMeshAgent:
   m_ObjectHideFlags: 0

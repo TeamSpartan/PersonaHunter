@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using SgLibUnite.Singleton;
 using UnityEngine;
@@ -71,6 +72,10 @@ public class GameLogic
     }
 
     protected override void ToDoAtAwakeSingleton()
+    {
+    }
+
+    private void Start()
     {
         InitializeGame();
     }
