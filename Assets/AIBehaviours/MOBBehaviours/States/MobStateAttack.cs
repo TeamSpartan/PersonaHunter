@@ -23,7 +23,6 @@ namespace AIBehaviours.MOBBehaviours.States
         private float _attackRange = 0f;
         private float _elapsedTime = 0f;
         private float _attackingInterval = 0f;
-        private float _deltaTime = 0;
         
         #endregion
         
@@ -44,15 +43,7 @@ namespace AIBehaviours.MOBBehaviours.States
             {
                 Debug.Log($"{nameof(MobStateAttack)}: Enter");
             }
-        }
-
-        public void Update()
-        {
-            if (_debugging)
-            {
-                Debug.Log($"{nameof(MobStateAttack)}: Update");
-            }
-
+            
             // 間隔を計測
             _elapsedTime += Time.deltaTime;
 
@@ -68,6 +59,14 @@ namespace AIBehaviours.MOBBehaviours.States
             }
         }
 
+        public void Update()
+        {
+            if (_debugging)
+            {
+                Debug.Log($"{nameof(MobStateAttack)}: Update");
+            }
+        }
+
         public void Exit()
         {
             if (_debugging)
@@ -76,12 +75,11 @@ namespace AIBehaviours.MOBBehaviours.States
             }
         }
 
-        public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent, float deltaTime)
+        public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent)
         {
             _selfTransform = selfTransform;
             _playerTransform = targetTransform;
             _agent = agent;
-            _deltaTime = deltaTime;
         }
     }
 }

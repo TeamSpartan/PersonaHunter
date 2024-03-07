@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using AIBehaviours.MOBBehaviours.States;
 using UnityEngine;
 using UnityEngine.AI;
@@ -28,7 +29,7 @@ public class MobBehaviour
     [SerializeField, Header("The Flinch Threshold Value MOB Has")]
     private float FlinchThreshold;
 
-    [SerializeField, Header("The Flinching Time [1/10 sec](誤差+3秒？)")]
+    [SerializeField, Header("The Flinching Time")]
     private float FlinchingTime = 0f;
 
     [SerializeField, Header("The Tag Of Player")]
@@ -162,6 +163,12 @@ public class MobBehaviour
         _initialized = true;
     }
 
+    IEnumerator BackToIdleRoutine(float interval)
+    {
+        yield return new WaitForSeconds(interval);
+        _backToIdle = true;
+    }
+
     public void InitializeThisComponent()
     {
         // ステートマシン
@@ -184,19 +191,22 @@ public class MobBehaviour
         _stateIdle = new MobStateIdle();
         _statePatrol = new MobStatePatrol(PathContainer);
         _stateTrack = new MobStateTrack(AttackingRange);
-        _stateAttack = new MobStateAttack(AttackingRange, Damage, IntervalAttacking, PlayerLayerMask, () =>
+        _stateAttack = new MobStateAttack(AttackingRange, Damage, IntervalAttacking, PlayerLayerMask
+            , () =>
         {
-            _playerIsInAttackRange = false;
             _backToIdle = true;
+            _playerIsInAttackRange = false;
         });
         _stateDamaged = new MobStateDamaged();
-        _stateFlinch = new MobStateFlinch(FlinchingTime,() =>
+        _stateFlinch = new MobStateFlinch(FlinchingTime
+            ,() =>
         {
             _backToIdle = true;
             _flinchValue = 0f;
-            Debug.Log($"{nameof(MobBehaviour)}: Flinch End");
+            Debug.Log("Flinch End");
         });
-        _stateDeath = new MobStateDeath(1.5f, () =>
+        _stateDeath = new MobStateDeath(1.5f
+            , () =>
         {
             Destroy(this.GetComponent<MobBehaviour>());
         });
@@ -269,15 +279,15 @@ public class MobBehaviour
         UpdateConditions();
         
         // 各ステートを更新
-        _stateIdle.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
-        _statePatrol.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
-        _stateTrack.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
+        _stateIdle.UpdateState(this.transform, _playerTransform, this._agent);
+        _statePatrol.UpdateState(this.transform, _playerTransform, this._agent);
+        _stateTrack.UpdateState(this.transform, _playerTransform, this._agent);
 
         // Anyからの遷移のステート
-        _stateDeath.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
-        _stateFlinch.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
-        _stateAttack.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
-        _stateDamaged.UpdateState(this.transform, _playerTransform, this._agent, Time.deltaTime);
+        _stateDeath.UpdateState(this.transform, _playerTransform, this._agent);
+        _stateFlinch.UpdateState(this.transform, _playerTransform, this._agent);
+        _stateAttack.UpdateState(this.transform, _playerTransform, this._agent);
+        _stateDamaged.UpdateState(this.transform, _playerTransform, this._agent);
 
         // 各遷移を更新
         _sequencer.UpdateTransition(_tnInit, ref _initialized);

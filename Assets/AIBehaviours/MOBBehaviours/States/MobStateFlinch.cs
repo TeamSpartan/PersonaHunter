@@ -19,7 +19,6 @@ namespace AIBehaviours.MOBBehaviours.States
         private NavMeshAgent _agent;
         private float _elapsedTime = 0f;
         private float _flinchingTime = 0f;
-        private float _deltaTime = 0f;
         private Action onEndFlinching;
 
         #endregion
@@ -43,20 +42,20 @@ namespace AIBehaviours.MOBBehaviours.States
             {
                 _agent.ResetPath();
             }
+            
+            _elapsedTime += Time.deltaTime;
+            if (_elapsedTime >= _flinchingTime)
+            {
+                onEndFlinching();
+                _elapsedTime = 0f;
+            }
         }
 
         public void Update()
         {
             if (_debuggging)
             {
-                Debug.Log($"{nameof(MobStateFlinch)}: Update {_deltaTime}");
-            }
-
-            _elapsedTime += _deltaTime;
-            if (_elapsedTime >= _flinchingTime)
-            {
-                onEndFlinching();
-                _elapsedTime = 0f;
+                Debug.Log($"{nameof(MobStateFlinch)}: Update");
             }
         }
 
@@ -68,12 +67,11 @@ namespace AIBehaviours.MOBBehaviours.States
             }
         }
 
-        public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent, float detltaTime)
+        public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent)
         {
             _selfTransform = selfTransform;
             _playerTransform = targetTransform;
             _agent = agent;
-            _deltaTime = detltaTime;
         }
     }
 }

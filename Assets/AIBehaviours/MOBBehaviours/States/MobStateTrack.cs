@@ -58,7 +58,7 @@ namespace AIBehaviours.MOBBehaviours.States
             {_agent.ResetPath();}
         }
 
-        public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent, float detltaTime)
+        public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent)
         {
             _selfTransform = selfTransform;
             _playerTransform = targetTransform;
