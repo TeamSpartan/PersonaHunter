@@ -11,10 +11,10 @@ namespace SgLibUnite.CodingBooster
         /// </summary>
         public List<T> GetDerivedComponents<T>()
         {
-            var obj = GameObject.FindObjectsOfType<GameObject>()
+            var list = GameObject.FindObjectsOfType<GameObject>()
                 .Where(_ => _.GetComponent<T>() != null)
                 .Select(_ => _.GetComponent<T>()).ToList();
-            return obj;
+            return list;
         }
     }
 }

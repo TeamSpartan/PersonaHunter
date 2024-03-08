@@ -50,10 +50,12 @@ namespace PlayerCam.Scripts
 
         void CamBehaviourDefault()
         {
+            Debug.Log($"{nameof(PlayerCamera)} Tick");
         }
 
         void CamBehaviourLockingOn()
         {
+            Debug.Log($"{nameof(PlayerCamera)} Tick-");
         }
 
         void CameraBehaviourEveryFrame()

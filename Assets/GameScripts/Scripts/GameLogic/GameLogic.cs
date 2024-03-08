@@ -18,8 +18,8 @@ public class GameLogic
     /// </summary>
     public void StartDiveInZone()
     {
-        var obj = new CBooster();
-        var targets = obj.GetDerivedComponents<IDulledTarget>();
+        var booster = new CBooster();
+        var targets = booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.StartDull());
     }
 
@@ -28,23 +28,24 @@ public class GameLogic
     /// </summary>
     public void GetOutOverZone()
     {
-        var obj = new CBooster();
-        var targets = obj.GetDerivedComponents<IDulledTarget>();
+        var booster = new CBooster();
+        var targets = booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.EndDull());
     }
 
     void InitializeGame()
     {
+        if (_debugging)
+        {
+            Debug.Log($"{nameof(GameLogic)}:Game Initialized");
+        }
+        
         _info = GameObject.FindFirstObjectByType<GameInfo>();
 
         var obj = new CBooster();
         var targets = obj.GetDerivedComponents<IInitializableComponent>();
         targets.ForEach(_ => _.InitializeThisComponent());
 
-        if (_debugging)
-        {
-            Debug.Log($"{nameof(GameLogic)}:Game Initialized");
-        }
     }
 
     void GameLoop()
@@ -57,14 +58,15 @@ public class GameLogic
 
     void FinalizeGame()
     {
-        var obj = new CBooster();
-        var targets = obj.GetDerivedComponents<IInitializableComponent>();
-        targets.ForEach(_ => _.FinalizeThisComponent());
-
         if (_debugging)
         {
             Debug.Log($"{nameof(GameLogic)}:Game Finalized");
         }
+        
+        var obj = new CBooster();
+        var targets = obj.GetDerivedComponents<IInitializableComponent>();
+        targets.ForEach(_ => _.FinalizeThisComponent());
+
     }
 
     protected override void ToDoAtAwakeSingleton()

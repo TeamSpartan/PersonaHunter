@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class Unnko
     : MonoBehaviour
-    , IInitializableComponent
-, IPlayerCameraTrasable
+        , IInitializableComponent
+        , IPlayerCameraTrasable
 {
     public void InitializeThisComponent()
     {
-        // Debug.Log($"{nameof(Unnko)} : Is Init");
+         Debug.Log($"{nameof(Unnko)} : Is Init");
     }
 
     public void FinalizeThisComponent()
     {
-        // Debug.Log($"{nameof(Unnko)} : Is Finalized");
+         Debug.Log($"{nameof(Unnko)} : Is Finalized");
     }
 
     public Transform GetPlayerCamTrasableTransform()
