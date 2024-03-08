@@ -136,12 +136,7 @@ public interface IPlayerCameraTrasable
 public interface ILockOnEventFirable
 {
     /// <summary>
-    /// ロックオン開始
+    /// ロックオン入力があったとき
     /// </summary>
-    public event Action EStartLockOn;
-
-    /// <summary>
-    /// ロックオン終了
-    /// </summary>
-    public event Action EEndLockOn;
+    public event Action ELockOnTriggered;
 }
