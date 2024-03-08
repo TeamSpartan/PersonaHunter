@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using SgLibUnite.CodingBooster;
 
 namespace PlayerCam.Scripts
 {
@@ -35,11 +36,11 @@ namespace PlayerCam.Scripts
         void LockOnTriggerred()
         {
             _lockingOn = !_lockingOn;
+            var boost = new CBooster();
             if (_lockingOn)
             {
-                _lockOnTargets = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None)
-                    .Where(_ => _.GetComponent<IPlayerCamLockable>() != null)
-                    .Select(_ => _.GetComponent<IPlayerCamLockable>().GetLockableObjectTransform()).ToList();
+                _lockOnTargets = boost.GetDerivedComponents<IPlayerCamLockable>()
+                    .Select(_ => _.GetLockableObjectTransform()).ToList();
             }
             else
             {
@@ -49,14 +50,12 @@ namespace PlayerCam.Scripts
 
         void CamBehaviourDefault()
         {
-            
         }
 
         void CamBehaviourLockingOn()
         {
-            
         }
-        
+
         void CameraBehaviourEveryFrame()
         {
             switch (_lockingOn)
@@ -73,14 +72,12 @@ namespace PlayerCam.Scripts
         public void InitializeThisComponent()
         {
             // 検索にひっかかった最初のオブジェクトをプレイヤとする
-            this._player = GameObject.FindObjectsOfType<GameObject>()
-                .Where(_ => _.GetComponent<IPlayerCameraTrasable>() != null)
-                .First().gameObject.transform;
+            var booster = new CBooster();
+            this._player = booster.GetDerivedComponents<IPlayerCameraTrasable>()
+                .First().GetPlayerCamTrasableTransform();
 
             // ロックオンイベント発火元へのデリゲート登録をする
-            GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None)
-                .Where(_ => _.GetComponent<ILockOnEventFirable>() != null)
-                .Select(_ => _.GetComponent<ILockOnEventFirable>()).ToList()
+            booster.GetDerivedComponents<ILockOnEventFirable>()
                 .ForEach(_ => _.ELockOnTriggered += this.LockOnTriggerred);
         }
 
@@ -92,9 +89,8 @@ namespace PlayerCam.Scripts
         public void FinalizeThisComponent()
         {
             // ロックオンイベント発火元へのデリゲート登録解除をする
-            GameObject.FindObjectsOfType<GameObject>()
-                .Where(_ => _.GetComponent<ILockOnEventFirable>() != null)
-                .Select(_ => _.GetComponent<ILockOnEventFirable>()).ToList()
+            var booster = new CBooster();
+            booster.GetDerivedComponents<ILockOnEventFirable>()
                 .ForEach(_ => _.ELockOnTriggered -= this.LockOnTriggerred);
         }
     }
