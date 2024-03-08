@@ -86,7 +86,7 @@ namespace PlayerCam.Scripts
 
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             CameraBehaviourEveryFrame();
         }
