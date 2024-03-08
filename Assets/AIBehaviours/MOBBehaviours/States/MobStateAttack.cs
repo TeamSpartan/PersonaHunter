@@ -6,6 +6,10 @@ using UnityEngine.AI;
 
 namespace AIBehaviours.MOBBehaviours.States
 {
+    /// <summary>
+    /// 作成：菅沼
+    /// オモテガリ MOBステート 攻撃
+    /// </summary>
     public class MobStateAttack
         : ISequensableState
             , IEnemyState

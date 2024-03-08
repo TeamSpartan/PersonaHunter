@@ -9,7 +9,7 @@ using SgLibUnite.StateSequencer;
 [RequireComponent(typeof(NavMeshAgent))]
 // 作成 ： 菅沼
 /// <summary>
-/// オモテガリ MOB AI
+/// オモテガリ MOB AI 処理本体
 /// </summary>
 public class MobBehaviour
     : MonoBehaviour
