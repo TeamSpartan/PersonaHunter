@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -74,16 +73,15 @@ namespace PlayerCam.Scripts
         public void InitializeThisComponent()
         {
             // 検索にひっかかった最初のオブジェクトをプレイヤとする
-            this._player = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None)
+            this._player = GameObject.FindObjectsOfType<GameObject>()
                 .Where(_ => _.GetComponent<IPlayerCameraTrasable>() != null)
-                .Select(_ => _.GetComponent<GameObject>()).First().gameObject.transform;
+                .First().gameObject.transform;
 
             // ロックオンイベント発火元へのデリゲート登録をする
             GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None)
                 .Where(_ => _.GetComponent<ILockOnEventFirable>() != null)
                 .Select(_ => _.GetComponent<ILockOnEventFirable>()).ToList()
                 .ForEach(_ => _.ELockOnTriggered += this.LockOnTriggerred);
-
         }
 
         private void Update()
@@ -94,7 +92,7 @@ namespace PlayerCam.Scripts
         public void FinalizeThisComponent()
         {
             // ロックオンイベント発火元へのデリゲート登録解除をする
-            GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None)
+            GameObject.FindObjectsOfType<GameObject>()
                 .Where(_ => _.GetComponent<ILockOnEventFirable>() != null)
                 .Select(_ => _.GetComponent<ILockOnEventFirable>()).ToList()
                 .ForEach(_ => _.ELockOnTriggered -= this.LockOnTriggerred);

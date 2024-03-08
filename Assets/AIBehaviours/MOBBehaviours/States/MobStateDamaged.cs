@@ -1,5 +1,4 @@
 ﻿using SgLibUnite.StateSequencer;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,8 +9,8 @@ namespace AIBehaviours.MOBBehaviours.States
     /// オモテガリ MOBステート 攻撃された
     /// </summary>
     public class MobStateDamaged
-    :ISequensableState
-    , IEnemyState
+        : ISequensableState
+            , IEnemyState
     {
         private bool _debugging = !false;
 
@@ -22,10 +21,12 @@ namespace AIBehaviours.MOBBehaviours.States
         private NavMeshAgent _agent;
 
         #endregion
-        
-        public MobStateDamaged(){}
-        
-        
+
+        public MobStateDamaged()
+        {
+        }
+
+
         public void Entry()
         {
             if (_debugging)

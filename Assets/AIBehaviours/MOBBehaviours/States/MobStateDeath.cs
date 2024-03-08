@@ -25,8 +25,10 @@ namespace AIBehaviours.MOBBehaviours.States
         private float _elapsedTIme = 0f;
 
         #endregion
-        
-        public MobStateDeath(){}
+
+        public MobStateDeath()
+        {
+        }
 
         public MobStateDeath(float timeToDispose, Action taskOnDeath)
         {
