@@ -140,3 +140,19 @@ public interface ILockOnEventFirable
     /// </summary>
     public event Action ELockOnTriggered;
 }
+
+/// <summary>
+/// 入力を受け付けるクラスが継承すべきインターフェース
+/// </summary>
+public interface IInputValueReferencable
+{
+    /// <summary>
+    /// キャラ移動 水平 の値を返す
+    /// </summary>
+    public float GetHorizontalMoveValue();
+    
+    /// <summary>
+    /// マウス入力 水平 の値を返す
+    /// </summary>
+    public float GetHorizontalMouseMoveValue();
+}

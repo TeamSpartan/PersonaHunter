@@ -6,9 +6,13 @@ namespace Input
     public class TesterInput
         : MonoBehaviour
             , IInitializableComponent
-    ,ILockOnEventFirable
+            , ILockOnEventFirable
+            , IInputValueReferencable
     {
         private float _elapsedT;
+        private float _moveH;
+        private float _mouseH;
+
         public event Action ELockOnTriggered;
 
         public void InitializeThisComponent()
@@ -18,8 +22,13 @@ namespace Input
 
         private void FixedUpdate()
         {
-            if(UnityEngine.Input.GetMouseButton(2))
-            _elapsedT += Time.deltaTime;
+            if (UnityEngine.Input.GetMouseButton(2))
+            {
+                _elapsedT += Time.deltaTime;
+            }
+
+            _moveH = UnityEngine.Input.GetAxis("Horizontal");
+            _mouseH = UnityEngine.Input.GetAxis("Mouse X");
 
             if (_elapsedT > 1)
             {
@@ -33,5 +42,14 @@ namespace Input
             _elapsedT = 0;
         }
 
+        public float GetHorizontalMoveValue()
+        {
+            return this._moveH;
+        }
+
+        public float GetHorizontalMouseMoveValue()
+        {
+            return this._mouseH;
+        }
     }
 }
