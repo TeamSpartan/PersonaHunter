@@ -4,6 +4,10 @@ using UnityEngine.AI;
 
 namespace AIBehaviours.MOBBehaviours.States
 {
+    /// <summary>
+    ///  作成：菅沼
+    /// オモテガリ MOBステート プレイヤの追跡
+    /// </summary>
     public class MobStateTrack
         : ISequensableState
             , IEnemyState

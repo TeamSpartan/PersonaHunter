@@ -5,6 +5,10 @@ using UnityEngine.AI;
 
 namespace AIBehaviours.MOBBehaviours.States
 {
+    /// <summary>
+    ///  作成：菅沼
+    /// オモテガリ MOBステート 死亡
+    /// </summary>
     public class MobStateDeath
         : ISequensableState
             , IEnemyState
@@ -21,8 +25,10 @@ namespace AIBehaviours.MOBBehaviours.States
         private float _elapsedTIme = 0f;
 
         #endregion
-        
-        public MobStateDeath(){}
+
+        public MobStateDeath()
+        {
+        }
 
         public MobStateDeath(float timeToDispose, Action taskOnDeath)
         {

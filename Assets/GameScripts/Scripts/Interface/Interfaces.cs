@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -62,16 +63,19 @@ public interface IEnemyBehaviourParameter
     /// </summary>
     /// <returns></returns>
     public abstract float GetHealth();
+
     /// <summary>
     /// 体力値を初期化する
     /// </summary>
     /// <param name="val"></param>
     public abstract void SetHealth(float val);
+
     /// <summary>
     /// ひるみ値を返す
     /// </summary>
     /// <returns></returns>
     public abstract float GetFlinchValue();
+
     /// <summary>
     /// ひるみ値を初期化する
     /// </summary>
@@ -101,4 +105,38 @@ public interface IDamagedComponent
     /// 即死させる
     /// </summary>
     public void Kill();
+}
+
+/// <summary>
+/// プレイヤーカメラのロック対象が継承すべきインタフェイス
+/// </summary>
+public interface IPlayerCamLockable
+{
+    /// <summary>
+    /// 自分のトランスフォームを返す
+    /// </summary>
+    public Transform GetLockableObjectTransform();
+}
+
+/// <summary>
+/// プレイヤカメラに追跡されることのできるコンポーネントが継承すべきインタフェイス
+/// </summary>
+public interface IPlayerCameraTrasable
+{
+    /// <summary>
+    /// 自分のトランスフォームを返す
+    /// </summary>
+    /// <returns></returns>
+    public Transform GetPlayerCamTrasableTransform();
+}
+
+/// <summary>
+/// ロックオン入力がされたときにイベント発火処理をするコンポーネントが継承すべきインタフェイス
+/// </summary>
+public interface ILockOnEventFirable
+{
+    /// <summary>
+    /// ロックオン入力があったとき
+    /// </summary>
+    public event Action ELockOnTriggered;
 }
