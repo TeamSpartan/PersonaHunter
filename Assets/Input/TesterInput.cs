@@ -12,6 +12,8 @@ namespace Input
         private float _elapsedT;
         private float _moveH;
         private float _mouseH;
+        private float _moveV;
+        private float _mouseV;
 
         public event Action ELockOnTriggered;
 
@@ -28,7 +30,9 @@ namespace Input
             }
 
             _moveH = UnityEngine.Input.GetAxis("Horizontal");
+            _moveV = UnityEngine.Input.GetAxis("Vertical");
             _mouseH = UnityEngine.Input.GetAxis("Mouse X");
+            _mouseV = UnityEngine.Input.GetAxis("Mouse Y");
 
             if (_elapsedT > 1)
             {
@@ -50,6 +54,16 @@ namespace Input
         public float GetHorizontalMouseMoveValue()
         {
             return this._mouseH;
+        }
+
+        public float GetVerticalMoveValue()
+        {
+            return this._moveV;
+        }
+
+        public float GetVerticalMouseMoveValue()
+        {
+            return this._mouseV;
         }
     }
 }

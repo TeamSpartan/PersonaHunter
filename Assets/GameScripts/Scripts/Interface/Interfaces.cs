@@ -154,7 +154,17 @@ public interface IInputValueReferencable
     public float GetHorizontalMoveValue();
     
     /// <summary>
+    /// キャラ移動 垂直 の値を返す
+    /// </summary>
+    public float GetVerticalMoveValue();
+    
+    /// <summary>
     /// マウス入力 水平 の値を返す
     /// </summary>
     public float GetHorizontalMouseMoveValue();
+    
+    /// <summary>
+    /// マウス入力 垂直 の値を返す
+    /// </summary>
+    public float GetVerticalMouseMoveValue();
 }

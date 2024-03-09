@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using SgLibUnite.CodingBooster;
+using UnityEngine.Serialization;
 
 namespace PlayerCam.Scripts
 {
@@ -15,6 +16,15 @@ namespace PlayerCam.Scripts
         : MonoBehaviour,
             IInitializableComponent
     {
+        #region Parameter Exposing
+
+        [SerializeField, Header("The Radius When Locking On The Targets"), Range(1f, 10f)]
+        private float LockOnRadius;
+
+        #endregion
+
+        #region Parameter Inside
+
         /// <summary>
         /// プレイヤ
         /// </summary>
@@ -29,11 +39,23 @@ namespace PlayerCam.Scripts
         /// ロックオン中かどうかのフラグ
         /// </summary>
         private bool _lockingOn;
-        
+
         /// <summary>
         /// コーディング ブースタ クラス
         /// </summary>
         CBooster boost = new CBooster();
+
+        /// <summary>
+        /// ロックオン時の半径
+        /// </summary>
+        private float _lockOnRadius;
+
+        private float _inputMoveX;
+        private float _inputMoveY;
+        private float _inputMouseX;
+        private float _inputMouseY;
+
+        #endregion
 
         /// <summary>
         /// ロックオン入力が入った時に発火するイベントへの登録関数
@@ -52,6 +74,17 @@ namespace PlayerCam.Scripts
             }
         }
 
+        void GetInputValue()
+        {
+            var iInput = boost.GetDerivedComponents<IInputValueReferencable>();
+
+            _inputMoveX = iInput.First().GetHorizontalMoveValue();
+            _inputMoveY = iInput.First().GetVerticalMoveValue();
+
+            _inputMouseX = iInput.First().GetHorizontalMouseMoveValue();
+            _inputMouseY = iInput.First().GetVerticalMouseMoveValue();
+        }
+
         void CamBehaviourDefault()
         {
             Debug.Log($"{nameof(PlayerCamera)} Tick");
@@ -62,11 +95,28 @@ namespace PlayerCam.Scripts
         void CamBehaviourLockingOn()
         {
             Debug.Log($"{nameof(PlayerCamera)} Tick-");
-
             // 通常カメラとは視点は大きな変化はなし、ロックオンターゲット中心に
             // 円形を描くような左右移動をする。
-
             // 前後（敵に対して）すると半径の値が変動
+
+            var inputMove = new Vector2(_inputMoveX, _inputMoveY);
+            var inputLook = new Vector2(_inputMouseX, _inputMouseY);
+
+            // 前後移動
+            if (_inputMoveY < 0)
+            {
+                if (_lockOnRadius <= LockOnRadius)
+                {
+                    _lockOnRadius += Time.deltaTime;
+                }
+            }
+            else
+            {
+                if (_lockOnRadius >= 1)
+                {
+                    _lockOnRadius -= Time.deltaTime;
+                }
+            }
         }
 
         void CameraBehaviourEveryFrame()
@@ -90,10 +140,14 @@ namespace PlayerCam.Scripts
             // ロックオンイベント発火元へのデリゲート登録をする
             boost.GetDerivedComponents<ILockOnEventFirable>()
                 .ForEach(_ => _.ELockOnTriggered += this.LockOnTriggerred);
+
+            // 内部パラメータ初期化
+            this._lockOnRadius = LockOnRadius; // 半径
         }
 
         private void Update()
         {
+            GetInputValue();
             CameraBehaviourEveryFrame();
         }
 
