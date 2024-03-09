@@ -15,6 +15,15 @@ namespace PlayerCam.Scripts
         : MonoBehaviour,
             IInitializableComponent
     {
+        #region Parameter Exposing
+
+        [SerializeField, Header("The Radius When Locking On The Targets"), Range(1f, 10f)]
+        private float LockOnRadius;
+
+        #endregion
+
+        #region Parameter Inside
+
         /// <summary>
         /// プレイヤ
         /// </summary>
@@ -31,16 +40,36 @@ namespace PlayerCam.Scripts
         private bool _lockingOn;
 
         /// <summary>
+        /// コーディング ブースタ クラス
+        /// </summary>
+        CBooster boost = new CBooster();
+
+        /// <summary>
+        /// ロックオン時の半径
+        /// </summary>
+        private float _lockOnRadius;
+
+        private int _lockingOnTargetIndex = 0;
+
+        private float _moveX;
+        private float _moveY;
+        private float _mouseX;
+        private float _mouseY;
+        private float _theta;
+
+        #endregion
+
+        /// <summary>
         /// ロックオン入力が入った時に発火するイベントへの登録関数
         /// </summary>
         void LockOnTriggerred()
         {
             _lockingOn = !_lockingOn;
-            var boost = new CBooster();
             if (_lockingOn)
             {
                 _lockOnTargets = boost.GetDerivedComponents<IPlayerCamLockable>()
                     .Select(_ => _.GetLockableObjectTransform()).ToList();
+                _theta = 0f;
             }
             else
             {
@@ -48,51 +77,107 @@ namespace PlayerCam.Scripts
             }
         }
 
+        void GetInputValue()
+        {
+            var iInput = boost.GetDerivedComponents<IInputValueReferencable>();
+
+            _moveX = iInput.First().GetHorizontalMoveValue();
+            _moveY = iInput.First().GetVerticalMoveValue();
+
+            _mouseX = iInput.First().GetHorizontalMouseMoveValue();
+            _mouseY = iInput.First().GetVerticalMouseMoveValue();
+        }
+
         void CamBehaviourDefault()
         {
             Debug.Log($"{nameof(PlayerCamera)} Tick");
+
+            // 基本的にオービタルカメラ。 左右のみ、すこし上からプレイヤを見下ろしている視点
         }
 
         void CamBehaviourLockingOn()
         {
             Debug.Log($"{nameof(PlayerCamera)} Tick-");
+            // 通常カメラとは視点は大きな変化はなし、ロックオンターゲット中心に
+            // 円形を描くような左右移動をする。
+            // 前後（敵に対して）すると半径の値が変動
+
+            var inputMove = new Vector2(_moveX, _moveY);
+            var inputLook = new Vector2(_mouseX, _mouseY);
+
+            // 前後移動
+            if (_moveY < 0 && _moveY != 0)
+            {
+                if (_lockOnRadius <= LockOnRadius)
+                {
+                    _lockOnRadius += Time.deltaTime;
+                }
+            }
+            else if(_moveY != 0)
+            {
+                if (_lockOnRadius >= 1)
+                {
+                    _lockOnRadius -= Time.deltaTime;
+                }
+            }
+            
+            // 左右移動
+            if (_moveX < 0 && _moveX != 0)
+            {
+                _theta += Time.deltaTime;
+            }
+            else if(_moveX != 0)
+            {
+                _theta -= Time.deltaTime;
+            }
+
+            var right = Mathf.Cos(_theta) * _lockOnRadius;
+            var forward = Mathf.Sin(_theta) * _lockOnRadius;
+            var v = new Vector2(right, forward);
+
+            var tmp = _lockOnTargets[_lockingOnTargetIndex].transform.position;
+            tmp.x += v.x;   // right
+            tmp.z += v.y;   // forward
+
+            _player.transform.position = tmp;
         }
 
         void CameraBehaviourEveryFrame()
         {
-            switch (_lockingOn)
+            if (_lockingOn)
             {
-                case true:
-                    CamBehaviourLockingOn();
-                    break;
-                case false:
-                    CamBehaviourDefault();
-                    break;
+                CamBehaviourLockingOn();
+            }
+            else
+            {
+                CamBehaviourDefault();
             }
         }
 
         public void InitializeThisComponent()
         {
             // 検索にひっかかった最初のオブジェクトをプレイヤとする
-            var booster = new CBooster();
-            this._player = booster.GetDerivedComponents<IPlayerCameraTrasable>()
+            this._player = boost.GetDerivedComponents<IPlayerCameraTrasable>()
                 .First().GetPlayerCamTrasableTransform();
 
             // ロックオンイベント発火元へのデリゲート登録をする
-            booster.GetDerivedComponents<ILockOnEventFirable>()
+            boost.GetDerivedComponents<ILockOnEventFirable>()
                 .ForEach(_ => _.ELockOnTriggered += this.LockOnTriggerred);
+
+            // 内部パラメータ初期化
+            this._lockOnRadius = LockOnRadius; // 半径
         }
 
         private void Update()
         {
+            GetInputValue();
             CameraBehaviourEveryFrame();
         }
 
         public void FinalizeThisComponent()
         {
             // ロックオンイベント発火元へのデリゲート登録解除をする
-            var booster = new CBooster();
-            booster.GetDerivedComponents<ILockOnEventFirable>()
+            boost.GetDerivedComponents<ILockOnEventFirable>()
                 .ForEach(_ => _.ELockOnTriggered -= this.LockOnTriggerred);
         }
     }
