@@ -2,7 +2,6 @@
 using System.Linq;
 using UnityEngine;
 using SgLibUnite.CodingBooster;
-using UnityEngine.Serialization;
 
 namespace PlayerCam.Scripts
 {
@@ -52,10 +51,10 @@ namespace PlayerCam.Scripts
 
         private int _lockingOnTargetIndex = 0;
 
-        private float _inputMoveX;
-        private float _inputMoveY;
-        private float _inputMouseX;
-        private float _inputMouseY;
+        private float _moveX;
+        private float _moveY;
+        private float _mouseX;
+        private float _mouseY;
         private float _theta;
 
         #endregion
@@ -82,11 +81,11 @@ namespace PlayerCam.Scripts
         {
             var iInput = boost.GetDerivedComponents<IInputValueReferencable>();
 
-            _inputMoveX = iInput.First().GetHorizontalMoveValue();
-            _inputMoveY = iInput.First().GetVerticalMoveValue();
+            _moveX = iInput.First().GetHorizontalMoveValue();
+            _moveY = iInput.First().GetVerticalMoveValue();
 
-            _inputMouseX = iInput.First().GetHorizontalMouseMoveValue();
-            _inputMouseY = iInput.First().GetVerticalMouseMoveValue();
+            _mouseX = iInput.First().GetHorizontalMouseMoveValue();
+            _mouseY = iInput.First().GetVerticalMouseMoveValue();
         }
 
         void CamBehaviourDefault()
@@ -103,18 +102,18 @@ namespace PlayerCam.Scripts
             // 円形を描くような左右移動をする。
             // 前後（敵に対して）すると半径の値が変動
 
-            var inputMove = new Vector2(_inputMoveX, _inputMoveY);
-            var inputLook = new Vector2(_inputMouseX, _inputMouseY);
+            var inputMove = new Vector2(_moveX, _moveY);
+            var inputLook = new Vector2(_mouseX, _mouseY);
 
             // 前後移動
-            if (_inputMoveY < 0)
+            if (_moveY < 0 && _moveY != 0)
             {
                 if (_lockOnRadius <= LockOnRadius)
                 {
                     _lockOnRadius += Time.deltaTime;
                 }
             }
-            else
+            else if(_moveY != 0)
             {
                 if (_lockOnRadius >= 1)
                 {
@@ -123,11 +122,11 @@ namespace PlayerCam.Scripts
             }
             
             // 左右移動
-            if (_inputMoveX < 0)
+            if (_moveX < 0 && _moveX != 0)
             {
                 _theta += Time.deltaTime;
             }
-            else
+            else if(_moveX != 0)
             {
                 _theta -= Time.deltaTime;
             }
