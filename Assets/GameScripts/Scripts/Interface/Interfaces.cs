@@ -73,7 +73,6 @@ public interface IEnemyBehaviourParameter
     /// <summary>
     /// ひるみ値を返す
     /// </summary>
-    /// <returns></returns>
     public abstract float GetFlinchValue();
 
     /// <summary>
@@ -88,6 +87,9 @@ public interface IEnemyBehaviourParameter
 /// </summary>
 public interface IEnemyState
 {
+    /// <summary>
+    /// ステートを更新。これがないと毎フレーム処理が期待した通りに動作しない。
+    /// </summary>
     public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent);
 }
 
