@@ -216,6 +216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LockOnRadius: 10
+  CamDistance: 0
 --- !u!1 &230240563
 GameObject:
   m_ObjectHideFlags: 0

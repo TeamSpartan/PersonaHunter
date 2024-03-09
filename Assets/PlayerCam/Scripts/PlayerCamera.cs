@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using UnityEngine;
 using SgLibUnite.CodingBooster;
 
@@ -19,6 +20,9 @@ namespace PlayerCam.Scripts
 
         [SerializeField, Header("The Radius When Locking On The Targets"), Range(1f, 10f)]
         private float LockOnRadius;
+
+        [SerializeField, Header("The Camera Distance"), Range(1f, 5f)]
+        private float CamDistance;
 
         #endregion
 
@@ -49,13 +53,19 @@ namespace PlayerCam.Scripts
         /// </summary>
         private float _lockOnRadius;
 
+        /// <summary>
+        /// ロックオン対象のインデックス
+        /// </summary>
         private int _lockingOnTargetIndex = 0;
 
+        // 入力値
         private float _moveX;
         private float _moveY;
         private float _mouseX;
         private float _mouseY;
         private float _theta;
+
+        private CinemachineVirtualCamera _virtualCamera;
 
         #endregion
 
@@ -131,15 +141,27 @@ namespace PlayerCam.Scripts
                 _theta -= Time.deltaTime;
             }
 
-            var right = Mathf.Cos(_theta) * _lockOnRadius;
-            var forward = Mathf.Sin(_theta) * _lockOnRadius;
-            var v = new Vector2(right, forward);
+            // Set Up Player 
+            var playerDirRight = Mathf.Cos(_theta) * _lockOnRadius;
+            var playerDirForward = Mathf.Sin(_theta) * _lockOnRadius;
+            var pDir = new Vector2(playerDirRight, playerDirForward);
 
-            var tmp = _lockOnTargets[_lockingOnTargetIndex].transform.position;
-            tmp.x += v.x;   // right
-            tmp.z += v.y;   // forward
+            var target = _lockOnTargets[_lockingOnTargetIndex].transform;
+            var pos = target.position;
+            pos.x += pDir.x;   // right
+            pos.z += pDir.y;   // forward
 
-            _player.transform.position = tmp;
+            _player.transform.position = pos;
+            
+            // Set Up Camera
+            var camDirRight = Mathf.Cos(_theta) * (_lockOnRadius + CamDistance);
+            var camDirForward = Mathf.Sin(_theta) * (_lockOnRadius + CamDistance);
+            var cDir = new Vector2(camDirRight, camDirForward);
+            var cpos = target.position;
+            cpos.x += cDir.x;
+            cpos.z += cDir.y;
+            
+            _virtualCamera.m_LookAt = target;
         }
 
         void CameraBehaviourEveryFrame()
@@ -166,6 +188,7 @@ namespace PlayerCam.Scripts
 
             // 内部パラメータ初期化
             this._lockOnRadius = LockOnRadius; // 半径
+            this._virtualCamera = boost.GetComponentInHierarchie<CinemachineVirtualCamera>(gameObject);
         }
 
         private void Update()
