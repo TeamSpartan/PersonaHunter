@@ -50,10 +50,13 @@ namespace PlayerCam.Scripts
         /// </summary>
         private float _lockOnRadius;
 
+        private int _lockingOnTargetIndex = 0;
+
         private float _inputMoveX;
         private float _inputMoveY;
         private float _inputMouseX;
         private float _inputMouseY;
+        private float _theta;
 
         #endregion
 
@@ -67,6 +70,7 @@ namespace PlayerCam.Scripts
             {
                 _lockOnTargets = boost.GetDerivedComponents<IPlayerCamLockable>()
                     .Select(_ => _.GetLockableObjectTransform()).ToList();
+                _theta = 0f;
             }
             else
             {
@@ -117,6 +121,26 @@ namespace PlayerCam.Scripts
                     _lockOnRadius -= Time.deltaTime;
                 }
             }
+            
+            // 左右移動
+            if (_inputMoveX < 0)
+            {
+                _theta += Time.deltaTime;
+            }
+            else
+            {
+                _theta -= Time.deltaTime;
+            }
+
+            var right = Mathf.Cos(_theta) * _lockOnRadius;
+            var forward = Mathf.Sin(_theta) * _lockOnRadius;
+            var v = new Vector2(right, forward);
+
+            var tmp = _lockOnTargets[_lockingOnTargetIndex].transform.position;
+            tmp.x += v.x;   // right
+            tmp.z += v.y;   // forward
+
+            _player.transform.position = tmp;
         }
 
         void CameraBehaviourEveryFrame()
