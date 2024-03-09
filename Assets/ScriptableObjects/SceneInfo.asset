@@ -18,5 +18,6 @@ MonoBehaviour:
   - TestScene
   - EnemyAI
   - GameLogicDev
+  - PlayerCam
   UniqueScenesName:
   - Fuga
