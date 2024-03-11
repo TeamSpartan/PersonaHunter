@@ -73,7 +73,6 @@ public interface IEnemyBehaviourParameter
     /// <summary>
     /// ひるみ値を返す
     /// </summary>
-    /// <returns></returns>
     public abstract float GetFlinchValue();
 
     /// <summary>
@@ -88,6 +87,9 @@ public interface IEnemyBehaviourParameter
 /// </summary>
 public interface IEnemyState
 {
+    /// <summary>
+    /// ステートを更新。これがないと毎フレーム処理が期待した通りに動作しない。
+    /// </summary>
     public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent);
 }
 
@@ -139,4 +141,30 @@ public interface ILockOnEventFirable
     /// ロックオン入力があったとき
     /// </summary>
     public event Action ELockOnTriggered;
+}
+
+/// <summary>
+/// 入力を受け付けるクラスが継承すべきインターフェース
+/// </summary>
+public interface IInputValueReferencable
+{
+    /// <summary>
+    /// キャラ移動 水平 の値を返す
+    /// </summary>
+    public float GetHorizontalMoveValue();
+    
+    /// <summary>
+    /// キャラ移動 垂直 の値を返す
+    /// </summary>
+    public float GetVerticalMoveValue();
+    
+    /// <summary>
+    /// マウス入力 水平 の値を返す
+    /// </summary>
+    public float GetHorizontalMouseMoveValue();
+    
+    /// <summary>
+    /// マウス入力 垂直 の値を返す
+    /// </summary>
+    public float GetVerticalMouseMoveValue();
 }

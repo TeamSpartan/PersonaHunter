@@ -13,12 +13,14 @@ public class GameLogic
 
     private GameInfo _info;
 
+    // コーディング ブースタ クラス
+    CBooster booster = new CBooster();
+
     /// <summary>
     /// 集中 を 発火する
     /// </summary>
     public void StartDiveInZone()
     {
-        var booster = new CBooster();
         var targets = booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.StartDull());
     }
@@ -28,7 +30,6 @@ public class GameLogic
     /// </summary>
     public void GetOutOverZone()
     {
-        var booster = new CBooster();
         var targets = booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.EndDull());
     }
@@ -39,13 +40,11 @@ public class GameLogic
         {
             Debug.Log($"{nameof(GameLogic)}:Game Initialized");
         }
-        
+
         _info = GameObject.FindFirstObjectByType<GameInfo>();
 
-        var obj = new CBooster();
-        var targets = obj.GetDerivedComponents<IInitializableComponent>();
+        var targets = booster.GetDerivedComponents<IInitializableComponent>();
         targets.ForEach(_ => _.InitializeThisComponent());
-
     }
 
     void GameLoop()
@@ -62,11 +61,9 @@ public class GameLogic
         {
             Debug.Log($"{nameof(GameLogic)}:Game Finalized");
         }
-        
-        var obj = new CBooster();
-        var targets = obj.GetDerivedComponents<IInitializableComponent>();
-        targets.ForEach(_ => _.FinalizeThisComponent());
 
+        var targets = booster.GetDerivedComponents<IInitializableComponent>();
+        targets.ForEach(_ => _.FinalizeThisComponent());
     }
 
     protected override void ToDoAtAwakeSingleton()
