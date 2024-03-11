@@ -105,7 +105,15 @@ namespace PlayerCam.Scripts
                     .Where(_ => Vector3.Distance(_player.position, _.position) <= MaxDistanceToCapture)
                     .ToList();
 
-                _theta = 0f; // *
+                var dx = _lockOnTargets[_lockingOnTargetIndex].position.x
+                         - _player.position.x;
+                var dy = _lockOnTargets[_lockingOnTargetIndex].position.z
+                         - _player.position.z;
+
+                // ま反対の方向へプレイヤの位置が初期化されてしまうのでオイラー角でいう180°を足せばよい。
+                // Atan2は弧度法の値で返してくるのでPI（弧度法）を返す
+                var angle = Mathf.Atan2(dy, dx) + Mathf.PI;
+                _theta = angle;
 
                 // List All Distancies All Target Between Player
                 // 捕捉可能なターゲットとプレイヤの距離をすべて取得しておく
