@@ -8,7 +8,7 @@ using UnityEngine.Timeline;
 /// ムービーの再生を行います
 /// </summary>
 [RequireComponent(typeof(PlayableDirector))]
-public class MovesManager : MonoBehaviour
+public class MoviesManager : MonoBehaviour
 {
     [SerializeField, Header("ムービー用タイムライン")] private MoveData[] _timelines;
 
@@ -20,13 +20,13 @@ public class MovesManager : MonoBehaviour
     }
 
     /// <summary>ムービー再生を行います</summary>
-    public void PlayMove(MoveData.MoveType type)
+    public void PlayMovie(MoveData.MoveType type)
     {
         TimelineAsset timeline = _timelines.FirstOrDefault(move => move.Type == type).Timeline;
         _playableDirector.Play(timeline);
     }
     /// <summary>ムービー再生を行います</summary>
-    public void PlayMove(int id)
+    public void PlayMovie(int id)
     {
         TimelineAsset timeline = _timelines[id].Timeline;
         _playableDirector.Play(timeline);
