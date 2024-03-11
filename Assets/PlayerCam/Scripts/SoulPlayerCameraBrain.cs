@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
 using UnityEngine;
@@ -20,8 +19,11 @@ namespace PlayerCam.Scripts
     {
         #region Parameter Exposing
 
-        [SerializeField, Header("The Radius When Locking On The Targets"), Range(1f, 10f)]
+        [SerializeField, Header("The Radius When Locking On The Targets")]
         private float LockOnRadius;
+
+        [SerializeField, Header("The Max Distance Capurable Lock-On Target")]
+        private float MaxDistanceToCapture = 100f;
 
         [SerializeField, Header("The Camera Default")]
         private CinemachineVirtualCamera PlayerFollowingCam;
@@ -47,7 +49,7 @@ namespace PlayerCam.Scripts
         /// ロックオン中かどうかのフラグ
         /// </summary>
         private bool _lockingOn;
-        
+
         public bool LockingOn
         {
             get { return this._lockingOn; }
@@ -67,8 +69,8 @@ namespace PlayerCam.Scripts
         /// ロックオン対象のインデックス
         /// </summary>
         private int _lockingOnTargetIndex = 0;
-        
-        // 入力値
+
+        // 入力値 ー キャラ移動と視点移動入力
         private float _moveX;
         private float _moveY;
         private float _mouseX;
@@ -92,10 +94,35 @@ namespace PlayerCam.Scripts
 
             if (_lockingOn)
             {
+                // Get All LockOn Target
+                // マップ上のロックオン可能なターゲットを取得
                 _lockOnTargets = boost.GetDerivedComponents<IPlayerCamLockable>()
                     .Select(_ => _.GetLockableObjectTransform()).ToList();
-                _theta = 0f; // *
-                _lockOnRadius = _lockOnTargets.Max(_ => Vector3.Distance(_player.position, _.position)); // *
+
+                // Filter Captureable Target
+                // 捕捉可能な距離圏内にいるターゲットを取得
+                _lockOnTargets = _lockOnTargets
+                    .Where(_ => Vector3.Distance(_player.position, _.position) <= MaxDistanceToCapture)
+                    .ToList();
+
+                var dx = _lockOnTargets[_lockingOnTargetIndex].position.x
+                         - _player.position.x;
+                var dy = _lockOnTargets[_lockingOnTargetIndex].position.z
+                         - _player.position.z;
+
+                // ま反対の方向へプレイヤの位置が初期化されてしまうのでオイラー角でいう180°を足せばよい。
+                // Atan2は弧度法の値で返してくるのでPI（弧度法）を返す
+                var angle = Mathf.Atan2(dy, dx) + Mathf.PI;
+                _theta = angle;
+
+                // List All Distancies All Target Between Player
+                // 捕捉可能なターゲットとプレイヤの距離をすべて取得しておく
+                var disList =
+                    _lockOnTargets.Select(_ => Vector3.Distance(_player.position, _.position)).ToList();
+
+                // とりあえずインスペクタへ公開しているフィールドも初期化しておく
+                LockOnRadius = disList.Max();
+                _lockOnRadius = disList.Max();
 
                 _lockOnCam.Priority = 1;
             }
@@ -163,7 +190,8 @@ namespace PlayerCam.Scripts
                 _theta += Time.deltaTime;
             }
 
-            // Set Up Player 
+            // Set Up Player
+            // プレイヤ のトランスフォーム情報を初期化ー設定
             var playerDirRight = Mathf.Cos(_theta) * _lockOnRadius;
             var playerDirForward = Mathf.Sin(_theta) * _lockOnRadius;
             var pDir = new Vector2(playerDirRight, playerDirForward);
@@ -180,6 +208,7 @@ namespace PlayerCam.Scripts
             _player.transform.forward = dir;
 
             // Set Up Camera
+            // カメラ をセットアップ
             _lockOnCam.LookAt = target;
             _lockOnCam.Follow = _player;
         }
@@ -212,6 +241,7 @@ namespace PlayerCam.Scripts
             this._lockOnCam = LockOnCamera;
             this._cinemachineBrain = GetComponent<CinemachineBrain>();
 
+            // 更新方法 ー 頻度（毎秒）を設定
             this._cinemachineBrain.m_UpdateMethod = CinemachineBrain.UpdateMethod.FixedUpdate;
         }
 
