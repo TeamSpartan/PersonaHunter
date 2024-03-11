@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Input;
+using PlayerCam.Scripts;
 using UnityEngine;
 
 public class Unnko
@@ -7,14 +10,31 @@ public class Unnko
         , IInitializableComponent
         , IPlayerCameraTrasable
 {
+    private TesterInput _inputT;
+
     public void InitializeThisComponent()
     {
-         Debug.Log($"{nameof(Unnko)} : Is Init");
+        Debug.Log($"{nameof(Unnko)} : Is Init");
+
+        this._inputT = GameObject.FindFirstObjectByType<TesterInput>();
+    }
+
+    private void FixedUpdate()
+    {
+        var brain = GameObject.FindFirstObjectByType<SoulPlayerCameraBrain>();
+        var f = Camera.main.transform.forward;
+        var r = Camera.main.transform.right;
+        var dir = _inputT.GetHorizontalMoveValue() * f
+                  + _inputT.GetVerticalMoveValue() * r;
+        if (!brain.LockingOn)
+        {
+            transform.Translate(dir);
+        }
     }
 
     public void FinalizeThisComponent()
     {
-         Debug.Log($"{nameof(Unnko)} : Is Finalized");
+        Debug.Log($"{nameof(Unnko)} : Is Finalized");
     }
 
     public Transform GetPlayerCamTrasableTransform()
