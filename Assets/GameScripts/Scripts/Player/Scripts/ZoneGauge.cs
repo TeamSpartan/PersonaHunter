@@ -55,10 +55,8 @@ public class ZoneGauge : MonoBehaviour, IDulledTarget
 		DOTween.To(() => _currentZoneGaugeValue,
 			(x) => _currentZoneGaugeValue = x,
 			_currentZoneGaugeValue + value,
-			1f);
+			animationTime);
 		//zoneSlider.DOValue(_currentZoneGaugeValue + value, animationTime);
-		
-		
 	}
 
 	void InitializedGauge()
