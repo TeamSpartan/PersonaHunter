@@ -13,7 +13,7 @@ namespace PlayerCam.Scripts
     /// 主に
     /// プレイヤ追跡とロックオンターゲットのロックオンを提供。
     /// </summary>
-    public class SoulPlayerCameraBrain
+    public class PlayerCameraBrain
         : MonoBehaviour,
             IInitializableComponent
     {
@@ -89,22 +89,33 @@ namespace PlayerCam.Scripts
         void LockOnTriggerred()
         {
             _lockingOn = !_lockingOn;
-            _lockOnCam.Priority = 0;
             _playerFollowCam.Priority = 0;
+            _lockOnCam.Priority = 0;
 
             if (_lockingOn)
             {
                 // Get All LockOn Target
                 // マップ上のロックオン可能なターゲットを取得
-                _lockOnTargets = boost.GetDerivedComponents<IPlayerCamLockable>()
-                    .Select(_ => _.GetLockableObjectTransform()).ToList();
-
                 // Filter Captureable Target
                 // 捕捉可能な距離圏内にいるターゲットを取得
-                _lockOnTargets = _lockOnTargets
-                    .Where(_ => Vector3.Distance(_player.position, _.position) <= MaxDistanceToCapture)
+                _lockOnTargets = boost.GetDerivedComponents<IPlayerCamLockable>()
+                    .Select(_ => _.GetLockableObjectTransform())
+                    .Where(_ =>
+                        Vector3.Distance(_player.position, _.position) <= MaxDistanceToCapture
+                        && Camera.main.WorldToScreenPoint(_.position).x <= Camera.main.pixelWidth - 1
+                        && Camera.main.WorldToScreenPoint(_.position).y <= Camera.main.pixelHeight - 1
+                        && Camera.main.WorldToScreenPoint(_.position).z > 0)
                     .ToList();
 
+                // If LockOn Targte Was Not Found Cancel Locking On
+                if (_lockOnTargets.Count() < 1)
+                {
+                    _lockingOn = false;
+                    return;
+                }
+
+                // The Subtraction for calculate Vector Player position-supposed 
+                // ロックオン発動時のプレイヤの位置を設定するためのベクトル
                 var dx = _lockOnTargets[_lockingOnTargetIndex].position.x
                          - _player.position.x;
                 var dy = _lockOnTargets[_lockingOnTargetIndex].position.z
@@ -112,8 +123,8 @@ namespace PlayerCam.Scripts
 
                 // ま反対の方向へプレイヤの位置が初期化されてしまうのでオイラー角でいう180°を足せばよい。
                 // Atan2は弧度法の値で返してくるのでPI（弧度法）を返す
-                var angle = Mathf.Atan2(dy, dx) + Mathf.PI;
-                _theta = angle;
+                var angleForPos = Mathf.Atan2(dy, dx) + Mathf.PI;
+                _theta = angleForPos;
 
                 // List All Distancies All Target Between Player
                 // 捕捉可能なターゲットとプレイヤの距離をすべて取得しておく
@@ -147,7 +158,7 @@ namespace PlayerCam.Scripts
 
         void CamBehaviourDefault()
         {
-            Debug.Log($"{nameof(SoulPlayerCameraBrain)} Tick");
+            Debug.Log($"{nameof(PlayerCameraBrain)} Tick");
 
             // 基本的にオービタルカメラ。 左右のみ、すこし上からプレイヤを見下ろしている視点
             _playerFollowCam.Follow = _player;
@@ -156,7 +167,7 @@ namespace PlayerCam.Scripts
 
         void CamBehaviourLockingOn()
         {
-            Debug.Log($"{nameof(SoulPlayerCameraBrain)} Tick-");
+            Debug.Log($"{nameof(PlayerCameraBrain)} Tick-");
             // 通常カメラとは視点は大きな変化はなし、ロックオンターゲット中心に
             // 円形を描くような左右移動をする。
             // 前後（敵に対して）すると半径の値が変動
