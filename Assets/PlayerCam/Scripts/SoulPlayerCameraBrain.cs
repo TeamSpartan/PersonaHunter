@@ -105,15 +105,25 @@ namespace PlayerCam.Scripts
                     .Where(_ => Vector3.Distance(_player.position, _.position) <= MaxDistanceToCapture)
                     .ToList();
 
+                // The Subtraction for calculate Vector Player position-supposed 
+                // ロックオン発動時のプレイヤの位置を設定するためのベクトル
                 var dx = _lockOnTargets[_lockingOnTargetIndex].position.x
                          - _player.position.x;
                 var dy = _lockOnTargets[_lockingOnTargetIndex].position.z
                          - _player.position.z;
+                
+                // The Calculation To Get result target is front of player or not
+                var vr = _player.transform.right;//
+                var vt = (_lockOnTargets[_lockingOnTargetIndex].position - _player.position).normalized;//
 
                 // ま反対の方向へプレイヤの位置が初期化されてしまうのでオイラー角でいう180°を足せばよい。
                 // Atan2は弧度法の値で返してくるのでPI（弧度法）を返す
-                var angle = Mathf.Atan2(dy, dx) + Mathf.PI;
-                _theta = angle;
+                var angleForPos = Mathf.Atan2(dy, dx) + Mathf.PI;
+                // The angle to calculate the target is front of player or not
+                // var angleToKnowFronOf = Mathf.Atan2(vt, vr);
+
+                Debug.Log($"angle = {angleForPos * Mathf.Rad2Deg}");
+                _theta = angleForPos;
 
                 // List All Distancies All Target Between Player
                 // 捕捉可能なターゲットとプレイヤの距離をすべて取得しておく
