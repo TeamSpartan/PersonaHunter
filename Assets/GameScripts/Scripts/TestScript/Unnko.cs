@@ -21,7 +21,7 @@ public class Unnko
 
     private void FixedUpdate()
     {
-        var brain = GameObject.FindFirstObjectByType<SoulPlayerCameraBrain>();
+        var brain = GameObject.FindFirstObjectByType<PlayerCameraBrain>();
         var f = Camera.main.transform.forward;
         var r = Camera.main.transform.right;
         var dir = _inputT.GetHorizontalMoveValue() * f
