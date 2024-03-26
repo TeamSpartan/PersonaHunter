@@ -100,8 +100,11 @@ namespace PlayerCam.Scripts
                 // 捕捉可能な距離圏内にいるターゲットを取得
                 _lockOnTargets = boost.GetDerivedComponents<IPlayerCamLockable>()
                     .Select(_ => _.GetLockableObjectTransform())
-                    .Where(_ => Vector3.Distance(_player.position, _.position) <= MaxDistanceToCapture
-                                && Camera.main.WorldToScreenPoint(_.position).z > 0)
+                    .Where(_ =>
+                        Vector3.Distance(_player.position, _.position) <= MaxDistanceToCapture
+                        && Camera.main.WorldToScreenPoint(_.position).x <= Camera.main.pixelWidth - 1
+                        && Camera.main.WorldToScreenPoint(_.position).y <= Camera.main.pixelHeight - 1
+                        && Camera.main.WorldToScreenPoint(_.position).z > 0)
                     .ToList();
 
                 // If LockOn Targte Was Not Found Cancel Locking On
