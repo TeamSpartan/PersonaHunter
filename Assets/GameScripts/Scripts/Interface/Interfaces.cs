@@ -61,13 +61,11 @@ public interface IEnemyBehaviourParameter
     /// <summary>
     /// 体力値を返す
     /// </summary>
-    /// <returns></returns>
     public abstract float GetHealth();
 
     /// <summary>
     /// 体力値を初期化する
     /// </summary>
-    /// <param name="val"></param>
     public abstract void SetHealth(float val);
 
     /// <summary>
@@ -78,7 +76,6 @@ public interface IEnemyBehaviourParameter
     /// <summary>
     /// ひるみ値を初期化する
     /// </summary>
-    /// <param name="val"></param>
     public abstract void SetFlinchValue(float val);
 }
 
@@ -128,7 +125,6 @@ public interface IPlayerCameraTrasable
     /// <summary>
     /// 自分のトランスフォームを返す
     /// </summary>
-    /// <returns></returns>
     public Transform GetPlayerCamTrasableTransform();
 }
 
