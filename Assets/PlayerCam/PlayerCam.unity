@@ -1305,6 +1305,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 234911605035656761, guid: a5159f21f860c184ca3f6d8e4fa9cd79,
+        type: 3}
+      propertyPath: m_BlendUpdateMethod
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5125772875571602486, guid: a5159f21f860c184ca3f6d8e4fa9cd79,
         type: 3}
       propertyPath: LockOnCamera
