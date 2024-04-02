@@ -1,51 +1,99 @@
 // 作成者 菅沼
+
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace SgLibUnite.BehaviourTree
 {
-    /// <summary> ステートとして登録をするクラスが継承するべきインターフェース </summary>
-    public interface ISequensableState
+    /// <summary> BTのビヘイビアのベースクラス </summary>
+    public class BTBehaviour
     {
-        public void Entry();
-        public void Update();
-        public void Exit();
-    }
+        private List<Action> _behaviours;
+        private int _behaviourIndex;
 
-    /// <summary> ダミーのステートのクラス </summary>
-    class DummySequensableStateClass : ISequensableState
-    {
-        public void Entry()
+        private Action OnBegin;
+        private Action OnTick;
+        private Action OnEnd;
+
+        public event Action EBegin
         {
+            add { OnBegin += value; }
+            remove { OnBegin -= value; }
         }
 
-        public void Exit()
+        public event Action ETick
         {
+            add { OnTick += value; }
+            remove { OnTick -= value; }
         }
 
-        public void Update()
+        public event Action EEnd
         {
+            add { OnEnd += value; }
+            remove { OnEnd -= value; }
+        }
+
+        public void AddBehaviour(Action behaviour)
+        {
+            _behaviours.Add(behaviour);
+        }
+
+        public BTBehaviour()
+        {
+            _behaviours = new();
+            _behaviourIndex = 0;
+        }
+
+        public BTBehaviour(params Action[] behaviour)
+        {
+            _behaviours = new();
+            _behaviourIndex = 0;
+            var b = behaviour.ToList();
+            _behaviours = b;
+        }
+
+        public void Begin()
+        {
+            if (OnBegin != null) OnBegin.Invoke();
+            if (_behaviours.Count == 0)
+            {
+                throw new Exception("No State Added On This Behaviour");
+            }
+        }
+
+        public void Tick()
+        {
+            if (OnTick != null) OnTick.Invoke();
+            if (_behaviourIndex + 1 <= _behaviours.Count)
+            {
+                _behaviourIndex++;
+            }
+            else
+            {
+                _behaviourIndex = 0;
+            }
+
+            _behaviours[_behaviourIndex].Invoke();
+        }
+
+        public void End()
+        {
+            if (OnEnd != null) OnEnd.Invoke();
         }
     }
 
-    /// <summary> ステート遷移のタイプ </summary>
-    enum StateMachineTransitionType
-    {
-        StandardState, // 通常 
-        AnyState, // 一フレームのみ遷移 
-    }
-
-    /// <summary> ステートの遷移機能を提供する </summary>
+    /// <summary> 遷移の情報を格納している </summary>
     public class BTTransition
     {
-        private ISequensableState _from;
-        public ISequensableState StateFrom => _from;
-        private ISequensableState _to;
-        public ISequensableState StateTo => _to;
+        private BTBehaviour _from;
+        public BTBehaviour From => _from;
+        private BTBehaviour _to;
+        public BTBehaviour To => _to;
         private string _name;
         public string Name => _name;
 
-        public BTTransition(ISequensableState from, ISequensableState to, string name)
+        public BTTransition(BTBehaviour from, BTBehaviour to, string name)
         {
             _from = from;
             _to = to;
@@ -53,167 +101,56 @@ namespace SgLibUnite.BehaviourTree
         }
     }
 
-    /// <summary> ビヘイビアツリーの機能を提供する </summary>
+    /// <summary> ビヘイビアツリーの機能を提供 </summary>
     public class BehaviourTree
     {
-        // Normal State
-        private HashSet<ISequensableState> _states = new();
-
-        // State From Any
-        private HashSet<ISequensableState> _stateFromAny = new();
-
-        // Transition
+        private HashSet<BTBehaviour> _btBehaviours = new();
         private HashSet<BTTransition> _btTransitions = new();
+        private BTBehaviour _currentBehaviour;
+        private string _currentTransitionName;
+        private bool _isPausing;
 
-        // Transition From Any
-        private HashSet<BTTransition> _btTransitionsFromAny = new();
-
-        // Current State
-        private ISequensableState _cPlayingState;
-
-        // Current Transition Name
-        private string _cTranstionName;
-
-        // The Status Pausing Or Not
-        private bool _isPausing = true;
-
-        // Delegate Exposing
-        public event Action<string> OnEntered;
-        public event Action<string> OnUpdate;
-        public event Action<string> OnExitted;
-
-        #region ResitingProcess
-
-        /// <summary> ステートの登録 </summary>
-        public void ResistState(ISequensableState state)
+        public void ResistBehaviours(params BTBehaviour[] btBehaviours)
         {
-            _states.Add(state);
-            if (_cPlayingState == null)
-            {
-                _cPlayingState = state;
-            }
+            _btBehaviours = btBehaviours.ToHashSet();
+            if (_currentBehaviour == null) _currentBehaviour = btBehaviours[0];
         }
 
-        /// <summary> どのステートからの登録 </summary>
-        public void ResistStateFromAny(ISequensableState state)
-        {
-            _stateFromAny.Add(state);
-        }
-
-        /// <summary> 複数のステートを引数に渡す。まとめてステート登録をする </summary>
-        public void ResistStates(List<ISequensableState> states)
-        {
-            foreach (var state in states)
-            {
-                _states.Add(state);
-                if (_cPlayingState == null)
-                {
-                    _cPlayingState = state;
-                }
-            }
-        }
-
-        /// <summary> 複数のどのステートから遷移可能なステートを引数に渡す。まとめてステート登録をする </summary>
-        public void ResistStatesFromAny(List<ISequensableState> states)
-        {
-            foreach (var state in states)
-            {
-                _states.Add(state);
-            }
-        }
-
-        /// <summary> 遷移の作成 </summary>
-        public void MakeTransition(ISequensableState from, ISequensableState to, string name)
+        public void MakeTransition(BTBehaviour from, BTBehaviour to, string name)
         {
             var tmp = new BTTransition(from, to, name);
             _btTransitions.Add(tmp);
         }
 
-        /// <summary> どのステートからも遷移可能なステートの遷移の作成 </summary>
-        public void MakeTransitionFromAny(ISequensableState from, ISequensableState to, string name)
-        {
-            var tmp = new BTTransition(new DummySequensableStateClass(), to, name);
-            _btTransitionsFromAny.Add(tmp);
-        }
-
-        #endregion
-
-        #region UpdateProcess
-
-        /// <summary> 遷移の更新 </summary>
         public void UpdateTransition(string name, ref bool condition, bool equalsTo = true, bool isTrigger = false)
         {
-            if(_isPausing) return; // 一時停止中は処理しない
+            if(_isPausing) return;
+
             foreach (var transition in _btTransitions)
             {
                 if (condition == equalsTo && transition.Name == name)
                 {
-                    if (transition.StateFrom == _cPlayingState)
-                    {
-                        if (OnExitted != null) OnExitted(_cTranstionName);
-                        if (isTrigger) condition = !equalsTo;
-                        _cPlayingState = transition.StateTo;
-                        _cPlayingState.Entry();
-
-                        if (OnEntered != null) OnEntered(_cTranstionName);
-                        _cTranstionName = name;
-                    }
-                }
-                else if (transition.Name == name)
-                {
-                    _cPlayingState.Update();
-                    if (OnUpdate != null) OnUpdate(_cTranstionName);
-                }
-            }
-        }
-
-        /// <summary> どのステートからもできる遷移の作成 </summary>
-        public void UpdateTransitionFromAny(string name, ref bool condition, bool equalsTo = true,
-            bool isTrigger = false)
-        {
-            if(_isPausing) return;
-            foreach (var transition in _btTransitionsFromAny)
-            {
-                if (condition == equalsTo && transition.Name == name)
-                {
-                    _cPlayingState.Exit();
-                    if (OnExitted != null) OnExitted(_cTranstionName);
+                    _currentBehaviour.End();
                     if (isTrigger) condition = !equalsTo;
-                    _cPlayingState = transition.StateTo;
-                    _cPlayingState.Entry();
-
-                    if (OnEntered != null) OnEntered(_cTranstionName);
-                    _cTranstionName = name;
-                }
-                else if (transition.Name == name)
+                    _currentBehaviour = transition.To;
+                    _currentBehaviour.Begin();
+                    _currentTransitionName = transition.Name;
+                }else if (transition.Name == name)
                 {
-                    _cPlayingState.Update();
-                    if (OnUpdate != null) OnUpdate(_cTranstionName);
+                    _currentBehaviour.Tick();
                 }
             }
         }
 
-        #endregion
-
-        #region InitializeProcess
-
-        /// <summary> ビヘイビアを開始 </summary>
-        public void StartBehaviour()
-        {
-            _isPausing = false;
-            _cPlayingState.Entry();
-        }
-
-        #endregion
-
-        #region PauseProcess
-
-        /// <summary> ビヘイビアを一時停止 </summary>
-        public void PauseBehaviour()
+        public void PauseBT()
         {
             _isPausing = true;
         }
 
-        #endregion
+        public void StartBT()
+        {
+            _isPausing = false;
+            _currentBehaviour.Begin();
+        }
     }
 }
