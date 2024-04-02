@@ -65,7 +65,7 @@ namespace SgLibUnite.BehaviourTree
         public void Tick()
         {
             if (OnTick != null) OnTick.Invoke();
-            if (_behaviourIndex + 1 <= _behaviours.Count)
+            if (_behaviourIndex + 1 < _behaviours.Count)
             {
                 _behaviourIndex++;
             }
