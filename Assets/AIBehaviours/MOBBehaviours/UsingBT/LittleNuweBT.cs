@@ -37,12 +37,12 @@ public class LittleNuweBT
     [SerializeField, Header("LayerMask Of Player")]
     private LayerMask _playerLayerMask;
 
-    [SerializeField, Header("PatrollingTime To Take A Break")]
+    [SerializeField, Header("PatrollingTime To Take A Break[sec]")]
     private float _timeToBreak;
 
-    [SerializeField, Header("Breaking Time To Back Patrolling")]
+    [SerializeField, Header("Breaking Time To Back Patrolling[sec]")]
     private float _timeToPatrol;
-    
+
     #endregion
 
     #region Behaviours
@@ -65,17 +65,13 @@ public class LittleNuweBT
     private string _btTPatToIdle = "btt2";
     private string _btTChaseToAtk = "btt3";
 
-    [SerializeField]
-    private bool _foundPlayer;
-    [SerializeField]
-    private bool _takeABreak;
-    [SerializeField]
-    private bool _playerInsideAttackRange;
+    [SerializeField] private bool _foundPlayer;
+    [SerializeField] private bool _takeABreak;
+    [SerializeField] private bool _playerInsideAttackRange;
 
-    [SerializeField]
     private float _elapsedTimePatroling = 0f;
-    [SerializeField]
     private float _elapsedTimeBreaking = 0f;
+    private float _elapsedTimeAttacking;
 
     #region BehavioursStateFunctions
 
@@ -103,7 +99,7 @@ public class LittleNuweBT
         {
             _takeABreak = false;
         }
-        
+
         Debug.Log($"Patrolling");
     }
 
@@ -117,7 +113,7 @@ public class LittleNuweBT
             _elapsedTimeBreaking = 0f;
             _behaviourTree.JumpTo(_patrolBehaviour);
         }
-        
+
         Debug.Log("StayAtHere");
     }
 
@@ -127,16 +123,22 @@ public class LittleNuweBT
         if (condition)
         {
             var player = _player.gameObject;
-            if (player.GetComponent<IDamagedComponent>() != null)
+            _elapsedTimeAttacking += Time.deltaTime;
+            if (_elapsedTimeAttacking > _attackInterval)
             {
-                player.GetComponent<IDamagedComponent>().AddDamage(_baseDamage);
+                if (player.GetComponent<IDamagedComponent>() != null)
+                {
+                    player.GetComponent<IDamagedComponent>().AddDamage(_baseDamage);
+                }
+
+                _elapsedTimeAttacking = 0f;
             }
         }
         else
         {
             _behaviourTree.JumpTo(_chaseBehaviour);
         }
-        
+
         Debug.Log("AttackToPlayer");
     }
 
@@ -150,7 +152,7 @@ public class LittleNuweBT
         {
             _behaviourTree.JumpTo(_patrolBehaviour);
         }
-        
+
         Debug.Log("Chasing Player");
     }
 
@@ -158,7 +160,7 @@ public class LittleNuweBT
     {
         _behaviourTree.PauseBT();
         GameObject.Destroy(gameObject);
-        
+
         Debug.Log($"Death");
     }
 
@@ -191,7 +193,8 @@ public class LittleNuweBT
 
     private void UpdateConditions()
     {
-        
+        _foundPlayer = Physics.CheckSphere(transform.position, _sightRange, _playerLayerMask);
+        _playerInsideAttackRange = Physics.CheckSphere(transform.position, _attackingRange, _playerLayerMask);
     }
 
     public float GetHealth()
@@ -225,9 +228,9 @@ public class LittleNuweBT
         {
             _patrolBehaviour, _idleBehaviour, _chaseBehaviour, _attackBehaviour, _deathBehaviour
         });
-        
+
         SetupTransitions();
-        
+
         _behaviourTree.StartBT();
     }
 
@@ -256,15 +259,19 @@ public class LittleNuweBT
 
     private void FixedUpdate()
     {
+        _player = GameObject.FindWithTag("Player").transform;
+        
         if (_health <= 0)
         {
             _behaviourTree.JumpTo(_deathBehaviour);
         }
+
+        UpdateConditions();
         
         _behaviourTree.UpdateTransition(_btTPatToChase, ref _foundPlayer);
         _behaviourTree.UpdateTransition(_btTChaseToAtk, ref _playerInsideAttackRange);
         _behaviourTree.UpdateTransition(_btTPatToIdle, ref _takeABreak);
-        
+
     }
 
     private void OnDrawGizmos()
