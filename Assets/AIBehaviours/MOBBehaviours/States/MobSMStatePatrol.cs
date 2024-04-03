@@ -9,7 +9,7 @@ namespace AIBehaviours.MOBBehaviours.States
     ///  作成：菅沼
     /// オモテガリ MOBステート パトロール
     /// </summary>
-    public class MobStatePatrol
+    public class MobSMStatePatrol
         : ISequensableState
             , IEnemyState
     {
@@ -24,11 +24,11 @@ namespace AIBehaviours.MOBBehaviours.States
 
         #endregion
 
-        public MobStatePatrol()
+        public MobSMStatePatrol()
         {
         }
 
-        public MobStatePatrol(PatrollerPathContainer pathContainer)
+        public MobSMStatePatrol(PatrollerPathContainer pathContainer)
         {
             _patrolPath = pathContainer;
         }
@@ -75,7 +75,7 @@ namespace AIBehaviours.MOBBehaviours.States
         {
             if (_debugging)
             {
-                Debug.Log($"{nameof(MobStatePatrol)}: Enter");
+                Debug.Log($"{nameof(MobSMStatePatrol)}: Enter");
             }
 
             var dest = FindNearestPoint(_patrolPath.GetPatrollingPath, ref _currentPathIndex);
@@ -86,7 +86,7 @@ namespace AIBehaviours.MOBBehaviours.States
         {
             if (_debugging)
             {
-                Debug.Log($"{nameof(MobStatePatrol)}: Update");
+                Debug.Log($"{nameof(MobSMStatePatrol)}: Update");
             }
 
             ThinkTogoNextPoint();
@@ -96,7 +96,7 @@ namespace AIBehaviours.MOBBehaviours.States
         {
             if (_debugging)
             {
-                Debug.Log($"{nameof(MobStatePatrol)}: Exit");
+                Debug.Log($"{nameof(MobSMStatePatrol)}: Exit");
             }
 
             if (_agent.hasPath)

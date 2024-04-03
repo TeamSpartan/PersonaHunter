@@ -8,7 +8,7 @@ namespace AIBehaviours.MOBBehaviours.States
     ///  作成：菅沼
     /// オモテガリ MOBステート 攻撃された
     /// </summary>
-    public class MobStateDamaged
+    public class MobSMStateDamaged
         : ISequensableState
             , IEnemyState
     {
@@ -22,7 +22,7 @@ namespace AIBehaviours.MOBBehaviours.States
 
         #endregion
 
-        public MobStateDamaged()
+        public MobSMStateDamaged()
         {
         }
 
@@ -31,7 +31,7 @@ namespace AIBehaviours.MOBBehaviours.States
         {
             if (_debugging)
             {
-                Debug.Log($"{nameof(MobStateDamaged)}: Enter");
+                Debug.Log($"{nameof(MobSMStateDamaged)}: Enter");
             }
         }
 
@@ -39,7 +39,7 @@ namespace AIBehaviours.MOBBehaviours.States
         {
             if (_debugging)
             {
-                Debug.Log($"{nameof(MobStateDamaged)}: Update");
+                Debug.Log($"{nameof(MobSMStateDamaged)}: Update");
             }
         }
 
@@ -47,7 +47,7 @@ namespace AIBehaviours.MOBBehaviours.States
         {
             if (_debugging)
             {
-                Debug.Log($"{nameof(MobStateDamaged)}: Exit");
+                Debug.Log($"{nameof(MobSMStateDamaged)}: Exit");
             }
         }
 

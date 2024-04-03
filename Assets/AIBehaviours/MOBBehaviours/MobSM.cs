@@ -9,9 +9,9 @@ using SgLibUnite.StateSequencer;
 [RequireComponent(typeof(NavMeshAgent))]
 // 作成 ： 菅沼
 /// <summary>
-/// オモテガリ MOB AI 処理本体
+/// オモテガリ MOB AI 処理本体 (没かも)
 /// </summary>
-public class MobBehaviour
+public class MobSM
     : MonoBehaviour
         , IEnemyBehaviourParameter
         , IInitializableComponent
@@ -78,13 +78,13 @@ public class MobBehaviour
 
     #region States
 
-    private MobStateIdle _stateIdle;
-    private MobStatePatrol _statePatrol;
-    private MobStateTrack _stateTrack;
-    private MobStateAttack _stateAttack;
-    private MobStateFlinch _stateFlinch;
-    private MobStateDeath _stateDeath;
-    private MobStateDamaged _stateDamaged;
+    private MobSMStateIdle _smStateIdle;
+    private MobSMStatePatrol _smStatePatrol;
+    private MobSMStateTrack _smStateTrack;
+    private MobSMStateAttack _smStateAttack;
+    private MobSMStateFlinch _smStateFlinch;
+    private MobSMStateDeath _smStateDeath;
+    private MobSMStateDamaged _smStateDamaged;
     
     #endregion
 
@@ -188,56 +188,56 @@ public class MobBehaviour
         } // if animator is attached on child object
 
         // ステートをインスタンス化
-        _stateIdle = new MobStateIdle();
-        _statePatrol = new MobStatePatrol(PathContainer);
-        _stateTrack = new MobStateTrack(AttackingRange);
-        _stateAttack = new MobStateAttack(AttackingRange, Damage, IntervalAttacking, PlayerLayerMask
+        _smStateIdle = new MobSMStateIdle();
+        _smStatePatrol = new MobSMStatePatrol(PathContainer);
+        _smStateTrack = new MobSMStateTrack(AttackingRange);
+        _smStateAttack = new MobSMStateAttack(AttackingRange, Damage, IntervalAttacking, PlayerLayerMask
             , () =>
         {
             _backToIdle = true;
             _playerIsInAttackRange = false;
         });
-        _stateDamaged = new MobStateDamaged();
-        _stateFlinch = new MobStateFlinch(FlinchingTime
+        _smStateDamaged = new MobSMStateDamaged();
+        _smStateFlinch = new MobSMStateFlinch(FlinchingTime
             ,() =>
         {
             _backToIdle = true;
             _flinchValue = 0f;
             Debug.Log("Flinch End");
         });
-        _stateDeath = new MobStateDeath(1.5f
+        _smStateDeath = new MobSMStateDeath(1.5f
             , () =>
         {
-            Destroy(this.GetComponent<MobBehaviour>());
+            Destroy(this.GetComponent<MobSM>());
         });
 
         // ステートを追加
         var states =
             new List<ISequensableState>()
-                { _stateIdle, _statePatrol, _stateTrack };
+                { _smStateIdle, _smStatePatrol, _smStateTrack };
         _sequencer.ResistStates(states);
-        _sequencer.ResistStateFromAny(_stateDeath);
-        _sequencer.ResistStateFromAny(_stateFlinch);
-        _sequencer.ResistStateFromAny(_stateAttack);
-        _sequencer.ResistStateFromAny(_stateDamaged);
+        _sequencer.ResistStateFromAny(_smStateDeath);
+        _sequencer.ResistStateFromAny(_smStateFlinch);
+        _sequencer.ResistStateFromAny(_smStateAttack);
+        _sequencer.ResistStateFromAny(_smStateDamaged);
 
         // 遷移の登録
         // アイドルからパトロール
-        _sequencer.MakeTransition(_stateIdle, _statePatrol, _tnInit);
-        _sequencer.MakeTransition(_statePatrol, _stateIdle, _tnInitBack);
+        _sequencer.MakeTransition(_smStateIdle, _smStatePatrol, _tnInit);
+        _sequencer.MakeTransition(_smStatePatrol, _smStateIdle, _tnInitBack);
 
         // パトロールから追跡
-        _sequencer.MakeTransition(_statePatrol, _stateTrack, _tnPlayerFound);
-        _sequencer.MakeTransition(_stateTrack, _statePatrol, _tnPlayerFoundBack);
+        _sequencer.MakeTransition(_smStatePatrol, _smStateTrack, _tnPlayerFound);
+        _sequencer.MakeTransition(_smStateTrack, _smStatePatrol, _tnPlayerFoundBack);
 
         // Anyからの遷移
-        _sequencer.MakeTransitionFromAny(_stateDeath, _tnDeath);
-        _sequencer.MakeTransitionFromAny(_stateFlinch, _tnFlinch);
-        _sequencer.MakeTransitionFromAny(_stateDamaged, _tnDamaged);
-        _sequencer.MakeTransitionFromAny(_stateAttack, _tnIsInAttackingRange);
+        _sequencer.MakeTransitionFromAny(_smStateDeath, _tnDeath);
+        _sequencer.MakeTransitionFromAny(_smStateFlinch, _tnFlinch);
+        _sequencer.MakeTransitionFromAny(_smStateDamaged, _tnDamaged);
+        _sequencer.MakeTransitionFromAny(_smStateAttack, _tnIsInAttackingRange);
 
         // Anyステートからのアイドルステートへの強制的な遷移
-        _sequencer.MakeTransitionFromAny(_stateIdle, _tnBackToIdleAnyWhere);
+        _sequencer.MakeTransitionFromAny(_smStateIdle, _tnBackToIdleAnyWhere);
 
         // 内部パラメータの初期化
         _flinchValue = 0;
@@ -279,15 +279,15 @@ public class MobBehaviour
         UpdateConditions();
         
         // 各ステートを更新
-        _stateIdle.UpdateState(this.transform, _playerTransform, this._agent);
-        _statePatrol.UpdateState(this.transform, _playerTransform, this._agent);
-        _stateTrack.UpdateState(this.transform, _playerTransform, this._agent);
+        _smStateIdle.UpdateState(this.transform, _playerTransform, this._agent);
+        _smStatePatrol.UpdateState(this.transform, _playerTransform, this._agent);
+        _smStateTrack.UpdateState(this.transform, _playerTransform, this._agent);
 
         // Anyからの遷移のステート
-        _stateDeath.UpdateState(this.transform, _playerTransform, this._agent);
-        _stateFlinch.UpdateState(this.transform, _playerTransform, this._agent);
-        _stateAttack.UpdateState(this.transform, _playerTransform, this._agent);
-        _stateDamaged.UpdateState(this.transform, _playerTransform, this._agent);
+        _smStateDeath.UpdateState(this.transform, _playerTransform, this._agent);
+        _smStateFlinch.UpdateState(this.transform, _playerTransform, this._agent);
+        _smStateAttack.UpdateState(this.transform, _playerTransform, this._agent);
+        _smStateDamaged.UpdateState(this.transform, _playerTransform, this._agent);
 
         // 各遷移を更新
         _sequencer.UpdateTransition(_tnInit, ref _initialized);
