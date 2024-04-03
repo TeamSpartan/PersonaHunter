@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using AIBehaviours.MOBBehaviours.UsingBT.BTBehaviour;
 using SgLibUnite.AI;
 using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 /// <summary> オモテガリ 敵モブ BT </summary>
 public class LittleNuweBT
     : MonoBehaviour
@@ -38,10 +40,68 @@ public class LittleNuweBT
 
     #endregion
 
+    #region Behaviours
+
+    private BTBehaviour _patrolBehaviour;
+    private BTBehaviour _idleBehaviour;
+    private BTBehaviour _chaseBehaviour;
+    private BTBehaviour _attackBehaviour;
+    private BTBehaviour _deathBehaviour;
+
+    #endregion
+
     private BehaviourTree _behaviourTree;
     private Animator _animator;
     private Transform _player;
     private NavMeshAgent _agent;
+    private int _pathIndex;
+
+    #region BehavioursStateFunctions
+
+    private void Patrol()
+    {
+        var Path = _path.GetPatrollingPath;
+        var destination = Path[_pathIndex];
+        if (Vector3.Distance(transform.position, destination) < 2f)
+        {
+            if (_pathIndex + 1 < Path.Length) _pathIndex++;
+            else _pathIndex = 0;
+            destination = Path[_pathIndex];
+        }
+
+        _agent.SetDestination(destination);
+    }
+    
+    private void StayAtCurrentPoint()
+    {
+        _agent.SetDestination(transform.position);
+    } 
+    
+    private void AttackToPlayer()
+    {
+        var condition = Physics.CheckSphere(transform.position, _attackingRange, _playerLayerMask);
+        if (condition)
+        {
+            var player = _player.gameObject;
+            if (player.GetComponent<IDamagedComponent>() != null)
+            {
+                player.GetComponent<IDamagedComponent>().AddDamage(_baseDamage);
+            }
+        }
+    }
+    
+    private void ChasePlayer()
+    {
+        _agent.SetDestination(_player.position);
+    }
+    
+    private void Death()
+    {
+        _behaviourTree.PauseBT();
+        GameObject.Destroy(gameObject);
+    }
+
+    #endregion
 
     public float GetHealth()
     {
@@ -55,7 +115,18 @@ public class LittleNuweBT
 
     public void InitializeThisComponent()
     {
-        throw new System.NotImplementedException();
+        _behaviourTree = new BehaviourTree();
+
+        _agent = GetComponent<NavMeshAgent>();
+
+        if (gameObject.GetComponent<Animator>() != null)
+        {
+            _animator = GetComponent<Animator>();
+        }
+        else if (gameObject.GetComponentInChildren<Animator>() != null)
+        {
+            _animator = GetComponentInChildren<Animator>();
+        }
     }
 
     public void FinalizeThisComponent()

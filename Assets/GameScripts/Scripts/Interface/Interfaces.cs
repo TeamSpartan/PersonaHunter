@@ -61,12 +61,12 @@ public interface IMobBehaviourParameter
     /// <summary>
     /// 体力値を返す
     /// </summary>
-    public abstract float GetHealth();
+    public float GetHealth();
 
     /// <summary>
     /// 体力値を初期化する
     /// </summary>
-    public abstract void SetHealth(float val);
+    public void SetHealth(float val);
 }
 
 /// <summary>
