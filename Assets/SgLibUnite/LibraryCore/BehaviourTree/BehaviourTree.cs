@@ -124,7 +124,7 @@ namespace SgLibUnite.BehaviourTree
 
         public void UpdateTransition(string name, ref bool condition, bool equalsTo = true, bool isTrigger = false)
         {
-            if(_isPausing) return;
+            if (_isPausing) return;
 
             foreach (var transition in _btTransitions)
             {
@@ -135,10 +135,19 @@ namespace SgLibUnite.BehaviourTree
                     _currentBehaviour = transition.To;
                     _currentBehaviour.Begin();
                     _currentTransitionName = transition.Name;
-                }else if (transition.Name == name)
+                }
+                else if (transition.Name == name)
                 {
                     _currentBehaviour.Tick();
                 }
+            }
+        }
+
+        public void JumpTo(BTBehaviour behaviour)
+        {
+            if (_btBehaviours.Contains(behaviour))
+            {
+                _currentBehaviour = behaviour;
             }
         }
 
