@@ -37,6 +37,12 @@ public class LittleNuweBT
     [SerializeField, Header("LayerMask Of Player")]
     private LayerMask _playerLayerMask;
 
+    [SerializeField, Header("PatrollingTime To Take A Break")]
+    private float _timeToBreak;
+
+    [SerializeField, Header("Breaking Time To Back Patrolling")]
+    private float _timeToPatrol;
+    
     #endregion
 
     #region Behaviours
@@ -66,6 +72,11 @@ public class LittleNuweBT
     [SerializeField]
     private bool _playerInsideAttackRange;
 
+    [SerializeField]
+    private float _elapsedTimePatroling = 0f;
+    [SerializeField]
+    private float _elapsedTimeBreaking = 0f;
+
     #region BehavioursStateFunctions
 
     private void Patrol()
@@ -80,6 +91,18 @@ public class LittleNuweBT
         }
 
         _agent.SetDestination(destination);
+
+        _elapsedTimePatroling += Time.deltaTime;
+
+        if (_elapsedTimePatroling > _timeToBreak)
+        {
+            _elapsedTimePatroling = 0f;
+            _takeABreak = true;
+        }
+        else
+        {
+            _takeABreak = false;
+        }
         
         Debug.Log($"Patrolling");
     }
@@ -87,6 +110,13 @@ public class LittleNuweBT
     private void StayAtCurrentPoint()
     {
         _agent.SetDestination(transform.position);
+        _elapsedTimeBreaking += Time.deltaTime;
+
+        if (_elapsedTimeBreaking > _timeToPatrol)
+        {
+            _elapsedTimeBreaking = 0f;
+            _behaviourTree.JumpTo(_patrolBehaviour);
+        }
         
         Debug.Log("StayAtHere");
     }

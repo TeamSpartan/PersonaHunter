@@ -122,7 +122,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 70014a3589b763e4d91dd7a1be029f7e, type: 2}
 --- !u!1001 &138098288
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -889,6 +889,11 @@ MonoBehaviour:
   _playerLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  _timeToBreak: 2
+  _timeToPatrol: 5
+  _foundPlayer: 0
+  _takeABreak: 0
+  _playerInsideAttackRange: 0
 --- !u!195 &850375118
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -928,7 +933,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!64 &854496473
 MeshCollider:
