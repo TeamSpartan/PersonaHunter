@@ -16,7 +16,7 @@ MonoBehaviour:
   - Hoge
   IngameScenesName:
   - TestScene
-  - EnemyAI
+  - EnemyAIBT
   - GameLogicDev
   - PlayerCam
   UniqueScenesName:

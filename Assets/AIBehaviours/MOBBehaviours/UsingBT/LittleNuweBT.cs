@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using AIBehaviours.MOBBehaviours.UsingBT.BTBehaviour;
 using SgLibUnite.AI;
 using SgLibUnite.BehaviourTree;
 using UnityEngine;
@@ -56,6 +55,17 @@ public class LittleNuweBT
     private NavMeshAgent _agent;
     private int _pathIndex;
 
+    private string _btTPatToChase = "btt1";
+    private string _btTPatToIdle = "btt2";
+    private string _btTChaseToAtk = "btt3";
+
+    [SerializeField]
+    private bool _foundPlayer;
+    [SerializeField]
+    private bool _takeABreak;
+    [SerializeField]
+    private bool _playerInsideAttackRange;
+
     #region BehavioursStateFunctions
 
     private void Patrol()
@@ -70,13 +80,17 @@ public class LittleNuweBT
         }
 
         _agent.SetDestination(destination);
+        
+        Debug.Log($"Patrolling");
     }
-    
+
     private void StayAtCurrentPoint()
     {
         _agent.SetDestination(transform.position);
-    } 
-    
+        
+        Debug.Log("StayAtHere");
+    }
+
     private void AttackToPlayer()
     {
         var condition = Physics.CheckSphere(transform.position, _attackingRange, _playerLayerMask);
@@ -88,20 +102,67 @@ public class LittleNuweBT
                 player.GetComponent<IDamagedComponent>().AddDamage(_baseDamage);
             }
         }
+        else
+        {
+            _behaviourTree.JumpTo(_chaseBehaviour);
+        }
+        
+        Debug.Log("AttackToPlayer");
     }
-    
+
     private void ChasePlayer()
     {
-        _agent.SetDestination(_player.position);
+        if (Vector3.Distance(transform.position, _player.position) < _sightRange)
+        {
+            _agent.SetDestination(_player.position);
+        }
+        else
+        {
+            _behaviourTree.JumpTo(_patrolBehaviour);
+        }
+        
+        Debug.Log("Chasing Player");
     }
-    
+
     private void Death()
     {
         _behaviourTree.PauseBT();
         GameObject.Destroy(gameObject);
+        
+        Debug.Log($"Death");
     }
 
     #endregion
+
+    private void SetupBehaviours()
+    {
+        _patrolBehaviour = new();
+        _patrolBehaviour.AddBehaviour(Patrol);
+
+        _idleBehaviour = new();
+        _idleBehaviour.AddBehaviour(StayAtCurrentPoint);
+
+        _chaseBehaviour = new();
+        _chaseBehaviour.AddBehaviour(ChasePlayer);
+
+        _attackBehaviour = new();
+        _attackBehaviour.AddBehaviour(AttackToPlayer);
+
+        _deathBehaviour = new();
+        _deathBehaviour.AddBehaviour(Death);
+    }
+
+    private void SetupTransitions()
+    {
+        _behaviourTree.MakeTransition(_patrolBehaviour, _chaseBehaviour, _btTPatToChase);
+        _behaviourTree.MakeTransition(_patrolBehaviour, _idleBehaviour, _btTPatToIdle);
+        _behaviourTree.MakeTransition(_chaseBehaviour, _attackBehaviour, _btTChaseToAtk);
+    }
+
+    private void UpdateConditions()
+    {
+        
+    }
 
     public float GetHealth()
     {
@@ -127,21 +188,29 @@ public class LittleNuweBT
         {
             _animator = GetComponentInChildren<Animator>();
         }
+
+        SetupBehaviours();
+
+        _behaviourTree.ResistBehaviours(new[]
+        {
+            _patrolBehaviour, _idleBehaviour, _chaseBehaviour, _attackBehaviour, _deathBehaviour
+        });
+        
+        SetupTransitions();
+        
+        _behaviourTree.StartBT();
     }
 
     public void FinalizeThisComponent()
     {
-        throw new System.NotImplementedException();
     }
 
     public void StartDull()
     {
-        throw new System.NotImplementedException();
     }
 
     public void EndDull()
     {
-        throw new System.NotImplementedException();
     }
 
     public void AddDamage(float dmg)
@@ -152,16 +221,20 @@ public class LittleNuweBT
     public void Kill()
     {
         _health = 0;
-    }
-
-    private void Awake()
-    {
-        throw new NotImplementedException();
+        _behaviourTree.JumpTo(_deathBehaviour);
     }
 
     private void FixedUpdate()
     {
-        throw new NotImplementedException();
+        if (_health <= 0)
+        {
+            _behaviourTree.JumpTo(_deathBehaviour);
+        }
+        
+        _behaviourTree.UpdateTransition(_btTPatToChase, ref _foundPlayer);
+        _behaviourTree.UpdateTransition(_btTChaseToAtk, ref _playerInsideAttackRange);
+        _behaviourTree.UpdateTransition(_btTPatToIdle, ref _takeABreak);
+        
     }
 
     private void OnDrawGizmos()
