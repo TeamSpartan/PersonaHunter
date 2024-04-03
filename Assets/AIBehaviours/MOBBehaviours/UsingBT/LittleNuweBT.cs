@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using SgLibUnite.AI;
 using SgLibUnite.BehaviourTree;
 using UnityEngine;
@@ -51,7 +48,6 @@ public class LittleNuweBT
     private BTBehaviour _idleBehaviour;
     private BTBehaviour _chaseBehaviour;
     private BTBehaviour _attackBehaviour;
-    private BTBehaviour _deathBehaviour;
 
     #endregion
 
@@ -156,6 +152,8 @@ public class LittleNuweBT
         Debug.Log("Chasing Player");
     }
 
+    #endregion
+
     private void Death()
     {
         _behaviourTree.PauseBT();
@@ -163,9 +161,7 @@ public class LittleNuweBT
 
         Debug.Log($"Death");
     }
-
-    #endregion
-
+    
     private void SetupBehaviours()
     {
         _patrolBehaviour = new();
@@ -179,9 +175,6 @@ public class LittleNuweBT
 
         _attackBehaviour = new();
         _attackBehaviour.AddBehaviour(AttackToPlayer);
-
-        _deathBehaviour = new();
-        _deathBehaviour.AddBehaviour(Death);
     }
 
     private void SetupTransitions()
@@ -226,7 +219,7 @@ public class LittleNuweBT
 
         _behaviourTree.ResistBehaviours(new[]
         {
-            _patrolBehaviour, _idleBehaviour, _chaseBehaviour, _attackBehaviour, _deathBehaviour
+            _patrolBehaviour, _idleBehaviour, _chaseBehaviour, _attackBehaviour
         });
 
         SetupTransitions();
@@ -254,7 +247,7 @@ public class LittleNuweBT
     public void Kill()
     {
         _health = 0;
-        _behaviourTree.JumpTo(_deathBehaviour);
+        Death();
     }
 
     private void FixedUpdate()
@@ -263,7 +256,8 @@ public class LittleNuweBT
         
         if (_health <= 0)
         {
-            _behaviourTree.JumpTo(_deathBehaviour);
+            Death();
+            Debug.Log($"In Fact, Im Death");
         }
 
         UpdateConditions();
