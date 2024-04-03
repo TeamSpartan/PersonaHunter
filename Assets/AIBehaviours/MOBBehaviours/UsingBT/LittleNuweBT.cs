@@ -2,7 +2,7 @@ using SgLibUnite.AI;
 using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
-
+// 作成 菅沼
 [RequireComponent(typeof(NavMeshAgent))]
 /// <summary> オモテガリ 敵モブ BT </summary>
 public class LittleNuweBT
@@ -61,13 +61,13 @@ public class LittleNuweBT
     private string _btTPatToIdle = "btt2";
     private string _btTChaseToAtk = "btt3";
 
-    [SerializeField] private bool _foundPlayer;
-    [SerializeField] private bool _takeABreak;
-    [SerializeField] private bool _playerInsideAttackRange;
+    private bool _foundPlayer;
+    private bool _takeABreak;
+    private bool _playerInsideAttackRange;
 
     private float _elapsedTimePatroling = 0f;
     private float _elapsedTimeBreaking = 0f;
-    private float _elapsedTimeAttacking;
+    private float _elapsedTimeAttacking = 0f;
 
     #region BehavioursStateFunctions
 
@@ -96,7 +96,7 @@ public class LittleNuweBT
             _takeABreak = false;
         }
 
-        Debug.Log($"Patrolling");
+        // Debug.Log($"Patrolling");
     }
 
     private void StayAtCurrentPoint()
@@ -110,7 +110,7 @@ public class LittleNuweBT
             _behaviourTree.JumpTo(_patrolBehaviour);
         }
 
-        Debug.Log("StayAtHere");
+        // Debug.Log("StayAtHere");
     }
 
     private void AttackToPlayer()
@@ -135,7 +135,7 @@ public class LittleNuweBT
             _behaviourTree.JumpTo(_chaseBehaviour);
         }
 
-        Debug.Log("AttackToPlayer");
+        // Debug.Log("AttackToPlayer");
     }
 
     private void ChasePlayer()
@@ -149,7 +149,7 @@ public class LittleNuweBT
             _behaviourTree.JumpTo(_patrolBehaviour);
         }
 
-        Debug.Log("Chasing Player");
+        // Debug.Log("Chasing Player");
     }
 
     #endregion
@@ -159,7 +159,7 @@ public class LittleNuweBT
         _behaviourTree.PauseBT();
         GameObject.Destroy(gameObject);
 
-        Debug.Log($"Death");
+        // Debug.Log($"Death");
     }
     
     private void SetupBehaviours()
@@ -257,7 +257,7 @@ public class LittleNuweBT
         if (_health <= 0)
         {
             Death();
-            Debug.Log($"In Fact, Im Death");
+            // Debug.Log($"In Fact, Im Death");
         }
 
         UpdateConditions();
@@ -265,7 +265,6 @@ public class LittleNuweBT
         _behaviourTree.UpdateTransition(_btTPatToChase, ref _foundPlayer);
         _behaviourTree.UpdateTransition(_btTChaseToAtk, ref _playerInsideAttackRange);
         _behaviourTree.UpdateTransition(_btTPatToIdle, ref _takeABreak);
-
     }
 
     private void OnDrawGizmos()
