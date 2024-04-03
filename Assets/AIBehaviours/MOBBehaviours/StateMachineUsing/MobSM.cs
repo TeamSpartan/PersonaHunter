@@ -13,7 +13,7 @@ using SgLibUnite.StateSequencer;
 /// </summary>
 public class MobSM
     : MonoBehaviour
-        , IEnemyBehaviourParameter
+        , IMobBehaviourParameter
         , IInitializableComponent
         , IDulledTarget
         , IDamagedComponent
