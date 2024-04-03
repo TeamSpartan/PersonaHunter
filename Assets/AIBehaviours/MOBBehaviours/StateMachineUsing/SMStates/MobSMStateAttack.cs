@@ -10,7 +10,7 @@ namespace AIBehaviours.MOBBehaviours.States
     /// 作成：菅沼
     /// オモテガリ MOBステート 攻撃
     /// </summary>
-    public class MobStateAttack
+    public class MobSMStateAttack
         : ISequensableState
             , IEnemyState
     {
@@ -30,9 +30,9 @@ namespace AIBehaviours.MOBBehaviours.States
         
         #endregion
         
-        public MobStateAttack(){}
+        public MobSMStateAttack(){}
 
-        public MobStateAttack(float attackRange, float damage, float attackingInterval, LayerMask playersLayerMask, Action taskOnEndAttack)
+        public MobSMStateAttack(float attackRange, float damage, float attackingInterval, LayerMask playersLayerMask, Action taskOnEndAttack)
         {
             this._attackRange = attackRange;
             this._damage = damage;
@@ -45,7 +45,7 @@ namespace AIBehaviours.MOBBehaviours.States
         {
             if (_debugging)
             {
-                Debug.Log($"{nameof(MobStateAttack)}: Enter");
+                Debug.Log($"{nameof(MobSMStateAttack)}: Enter");
             }
             
             // 間隔を計測
@@ -67,7 +67,7 @@ namespace AIBehaviours.MOBBehaviours.States
         {
             if (_debugging)
             {
-                Debug.Log($"{nameof(MobStateAttack)}: Update");
+                Debug.Log($"{nameof(MobSMStateAttack)}: Update");
             }
         }
 
@@ -75,7 +75,7 @@ namespace AIBehaviours.MOBBehaviours.States
         {
             if (_debugging)
             {
-                Debug.Log($"{nameof(MobStateAttack)}: Exit");
+                Debug.Log($"{nameof(MobSMStateAttack)}: Exit");
             }
         }
 

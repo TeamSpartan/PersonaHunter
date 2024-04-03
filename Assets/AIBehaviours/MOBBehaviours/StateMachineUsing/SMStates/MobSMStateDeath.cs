@@ -1,4 +1,5 @@
-﻿using SgLibUnite.StateSequencer;
+﻿using System;
+using SgLibUnite.StateSequencer;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,9 +7,9 @@ namespace AIBehaviours.MOBBehaviours.States
 {
     /// <summary>
     ///  作成：菅沼
-    /// オモテガリ MOBステート その場にとどまる
+    /// オモテガリ MOBステート 死亡
     /// </summary>
-    public class MobStateIdle
+    public class MobSMStateDeath
         : ISequensableState
             , IEnemyState
     {
@@ -19,26 +20,47 @@ namespace AIBehaviours.MOBBehaviours.States
         private Transform _selfTransform;
         private Transform _playerTransform;
         private NavMeshAgent _agent;
+        private Action onDeath;
+        private float _timeToDispose = 0f;
+        private float _elapsedTIme = 0f;
 
         #endregion
+
+        public MobSMStateDeath()
+        {
+        }
+
+        public MobSMStateDeath(float timeToDispose, Action taskOnDeath)
+        {
+            _timeToDispose = timeToDispose;
+            onDeath = taskOnDeath;
+        }
 
         public void Entry()
         {
             if (_debugging)
             {
-                Debug.Log($"{nameof(MobStateIdle)}: Enter");
+                Debug.Log($"{nameof(MobSMStateDeath)}: Enter");
             }
-            
-            // その場所にとどまる。
-            if(_agent.hasPath)
-            {_agent.ResetPath();}
+
+            if (_agent.hasPath)
+            {
+                _agent.ResetPath();
+            }
         }
 
         public void Update()
         {
             if (_debugging)
             {
-                Debug.Log($"{nameof(MobStateIdle)}: Update");
+                Debug.Log($"{nameof(MobSMStateDeath)}: Update");
+            }
+
+            _elapsedTIme += Time.deltaTime;
+            if (_elapsedTIme >= _timeToDispose)
+            {
+                onDeath();
+                GameObject.Destroy(_selfTransform.gameObject);
             }
         }
 
@@ -46,7 +68,7 @@ namespace AIBehaviours.MOBBehaviours.States
         {
             if (_debugging)
             {
-                Debug.Log($"{nameof(MobStateIdle)}: Exit");
+                Debug.Log($"{nameof(MobSMStateDeath)}: Exit");
             }
         }
 

@@ -56,27 +56,17 @@ public interface IDulledTarget
 /// <summary>
 /// 敵AI 本体のコンポーネントが継承すべきインターフェイス
 /// </summary>
-public interface IEnemyBehaviourParameter
+public interface IMobBehaviourParameter
 {
     /// <summary>
     /// 体力値を返す
     /// </summary>
-    public abstract float GetHealth();
+    public float GetHealth();
 
     /// <summary>
     /// 体力値を初期化する
     /// </summary>
-    public abstract void SetHealth(float val);
-
-    /// <summary>
-    /// ひるみ値を返す
-    /// </summary>
-    public abstract float GetFlinchValue();
-
-    /// <summary>
-    /// ひるみ値を初期化する
-    /// </summary>
-    public abstract void SetFlinchValue(float val);
+    public void SetHealth(float val);
 }
 
 /// <summary>
