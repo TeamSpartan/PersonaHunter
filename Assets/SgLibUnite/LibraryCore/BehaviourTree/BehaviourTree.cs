@@ -11,6 +11,7 @@ namespace SgLibUnite.BehaviourTree
     {
         private List<Action> _behaviours;
         private int _behaviourIndex;
+        private bool _yieldBehaviourManually = false;
 
         private Action OnBegin;
         private Action OnTick;
@@ -34,9 +35,29 @@ namespace SgLibUnite.BehaviourTree
             remove { OnEnd -= value; }
         }
 
+        public int BehaviourIndex
+        {
+            get { return _behaviourIndex; }
+        }
+
+        public int BehaviourLength
+        {
+            get { return _behaviours.Count; }
+        }
+        
+        public bool YieldManually
+        {
+            get { return _yieldBehaviourManually; }
+        }
+
         public void AddBehaviour(Action behaviour)
         {
             _behaviours.Add(behaviour);
+        }
+
+        public void SetYieldMode(bool yieldManually)
+        {
+            _yieldBehaviourManually = yieldManually;
         }
 
         public BTBehaviour()
@@ -109,6 +130,7 @@ namespace SgLibUnite.BehaviourTree
         private BTBehaviour _currentBehaviour;
         private string _currentTransitionName;
         private bool _isPausing;
+        private bool _isYieldToEvent;
 
         public void ResistBehaviours(params BTBehaviour[] btBehaviours)
         {
@@ -125,6 +147,17 @@ namespace SgLibUnite.BehaviourTree
         public void UpdateTransition(string name, ref bool condition, bool equalsTo = true, bool isTrigger = false)
         {
             if (_isPausing) return;
+
+            if (_isYieldToEvent)
+            {
+                _currentBehaviour.Tick();
+                if (_currentBehaviour.BehaviourIndex == _currentBehaviour.BehaviourLength - 1
+                    && !_currentBehaviour.YieldManually)
+                {
+                    _isYieldToEvent = false;
+                }
+                return;
+            }
 
             foreach (var transition in _btTransitions)
             {
@@ -147,6 +180,15 @@ namespace SgLibUnite.BehaviourTree
         {
             if (_btBehaviours.Contains(behaviour))
             {
+                _currentBehaviour = behaviour;
+            }
+        }
+
+        public void YeildAllBehaviourTo(BTBehaviour behaviour)
+        {
+            if (_btBehaviours.Contains(behaviour))
+            {
+                _isYieldToEvent = true;
                 _currentBehaviour = behaviour;
             }
         }

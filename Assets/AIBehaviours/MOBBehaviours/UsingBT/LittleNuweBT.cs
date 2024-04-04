@@ -2,6 +2,7 @@ using SgLibUnite.AI;
 using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
+
 // 作成 菅沼
 [RequireComponent(typeof(NavMeshAgent))]
 /// <summary> オモテガリ 敵モブ BT </summary>
@@ -48,6 +49,7 @@ public class LittleNuweBT
     private BTBehaviour _idleBehaviour;
     private BTBehaviour _chaseBehaviour;
     private BTBehaviour _attackBehaviour;
+    private BTBehaviour _deathBehaviour;
 
     #endregion
 
@@ -156,12 +158,11 @@ public class LittleNuweBT
 
     private void Death()
     {
-        _behaviourTree.PauseBT();
         GameObject.Destroy(gameObject);
 
         // Debug.Log($"Death");
     }
-    
+
     private void SetupBehaviours()
     {
         _patrolBehaviour = new();
@@ -175,6 +176,9 @@ public class LittleNuweBT
 
         _attackBehaviour = new();
         _attackBehaviour.AddBehaviour(AttackToPlayer);
+
+        _deathBehaviour = new();
+        _deathBehaviour.AddBehaviour(Death);
     }
 
     private void SetupTransitions()
@@ -219,7 +223,7 @@ public class LittleNuweBT
 
         _behaviourTree.ResistBehaviours(new[]
         {
-            _patrolBehaviour, _idleBehaviour, _chaseBehaviour, _attackBehaviour
+            _patrolBehaviour, _idleBehaviour, _chaseBehaviour, _attackBehaviour, _deathBehaviour
         });
 
         SetupTransitions();
@@ -247,21 +251,19 @@ public class LittleNuweBT
     public void Kill()
     {
         _health = 0;
-        Death();
     }
 
     private void FixedUpdate()
     {
-        _player = GameObject.FindWithTag("Player").transform;
-        
         if (_health <= 0)
         {
-            Death();
-            // Debug.Log($"In Fact, Im Death");
+            _behaviourTree.YeildAllBehaviourTo(_deathBehaviour);
         }
 
+        _player = GameObject.FindWithTag("Player").transform;
+
         UpdateConditions();
-        
+
         _behaviourTree.UpdateTransition(_btTPatToChase, ref _foundPlayer);
         _behaviourTree.UpdateTransition(_btTChaseToAtk, ref _playerInsideAttackRange);
         _behaviourTree.UpdateTransition(_btTPatToIdle, ref _takeABreak);
