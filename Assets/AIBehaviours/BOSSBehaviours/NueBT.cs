@@ -1,9 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.SearchService;
+using SgLibUnite.BehaviourTree;
 using UnityEngine;
+using UnityEngine.AI;
 
 // 作成 菅沼
+[RequireComponent(typeof(NavMeshAgent))]
 /// <summary> オモテガリ 鵺 </summary>
 public class NueBT
     : MonoBehaviour
@@ -32,6 +32,22 @@ public class NueBT
     private float _attackingRange;
 
     #endregion
+
+    #region Behaviours
+
+    private BTBehaviour _btbIdle;
+    private BTBehaviour _btbGetClose;
+    private BTBehaviour _btbSelectAttackType;
+    private BTBehaviour _btbClaw;
+    private BTBehaviour _btbTale;
+    private BTBehaviour _btbRush;
+
+    #endregion
+
+    private BehaviourTree _behaviourTree;
+    private Transform _player;
+    private NavMeshAgent _agent;
+    private Animator _animator;
 
     #region States
 
