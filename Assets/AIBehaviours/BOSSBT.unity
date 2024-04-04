@@ -247,7 +247,13 @@ MonoBehaviour:
   _awaitOnParry: 2
   _awaitOnFlinching: 2
   _sightRange: 51.2
-  _attackingRange: 33.8
+  _clawAttackRange: 12
+  _taleAttackRange: 22
+  _rushAttackRange: 40
+  _playerLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  _playerTag: Player
 --- !u!195 &442333001
 NavMeshAgent:
   m_ObjectHideFlags: 0
