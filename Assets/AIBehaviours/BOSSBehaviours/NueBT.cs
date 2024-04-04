@@ -19,10 +19,10 @@ public class NueBT
     [SerializeField, Header("Flinch Threshold")]
     private float _flinchThreshold;
 
-    [SerializeField, Header("Awaiting Time When Get Parry")]
+    [SerializeField, Header("Awaiting Time When Get Parry[sec]")]
     private float _awaitOnParry;
 
-    [SerializeField, Header("Awaiting Time When Get Flinch")]
+    [SerializeField, Header("Awaiting Time When Get Flinch[sec]")]
     private float _awaitOnFlinching;
 
     [SerializeField, Range(1f, 100f), Header("Sight Range")]
@@ -41,6 +41,9 @@ public class NueBT
     private BTBehaviour _btbClaw;
     private BTBehaviour _btbTale;
     private BTBehaviour _btbRush;
+    private BTBehaviour _btbDeath;
+    private BTBehaviour _btbFlinch;
+    private BTBehaviour _btbStumble;
 
     #endregion
 
@@ -50,6 +53,11 @@ public class NueBT
     private Animator _animator;
 
     #region States
+
+    private void SelectAttackBehaviour()
+    {
+        
+    }
 
     private void Claw()
     {
@@ -71,7 +79,7 @@ public class NueBT
     {
     }
 
-    private void GetParry()
+    private void Stumble()
     {
     }
 
@@ -111,5 +119,18 @@ public class NueBT
     public void Kill()
     {
         _health = 0;
+    }
+
+    private void FixedUpdate()
+    {
+        
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, _sightRange);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, _attackingRange);
     }
 }

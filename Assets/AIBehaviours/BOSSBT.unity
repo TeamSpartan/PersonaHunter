@@ -242,12 +242,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a0dc1a272ddf2e41974214d940b1d1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _health: 0
-  _flinchThreshold: 0
-  _awaitOnParry: 0
-  _awaitOnFlinching: 0
-  _sightRange: 0
-  _attackingRange: 0
+  _health: 2000
+  _flinchThreshold: 100
+  _awaitOnParry: 2
+  _awaitOnFlinching: 2
+  _sightRange: 51.2
+  _attackingRange: 33.8
 --- !u!195 &442333001
 NavMeshAgent:
   m_ObjectHideFlags: 0
