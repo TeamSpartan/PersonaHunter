@@ -267,6 +267,8 @@ public class LittleNuweBT
         _behaviourTree.UpdateTransition(_btTPatToChase, ref _foundPlayer);
         _behaviourTree.UpdateTransition(_btTChaseToAtk, ref _playerInsideAttackRange);
         _behaviourTree.UpdateTransition(_btTPatToIdle, ref _takeABreak);
+
+        _behaviourTree.UpdateEventsYield();
     }
 
     private void OnDrawGizmos()

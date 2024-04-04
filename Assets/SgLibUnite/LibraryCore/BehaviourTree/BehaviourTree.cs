@@ -44,7 +44,7 @@ namespace SgLibUnite.BehaviourTree
         {
             get { return _behaviours.Count; }
         }
-        
+
         public bool YieldManually
         {
             get { return _yieldBehaviourManually; }
@@ -148,16 +148,7 @@ namespace SgLibUnite.BehaviourTree
         {
             if (_isPausing) return;
 
-            if (_isYieldToEvent)
-            {
-                _currentBehaviour.Tick();
-                if (_currentBehaviour.BehaviourIndex == _currentBehaviour.BehaviourLength - 1
-                    && !_currentBehaviour.YieldManually)
-                {
-                    _isYieldToEvent = false;
-                }
-                return;
-            }
+            if (_isYieldToEvent) return;
 
             foreach (var transition in _btTransitions)
             {
@@ -172,6 +163,19 @@ namespace SgLibUnite.BehaviourTree
                 else if (transition.Name == name)
                 {
                     _currentBehaviour.Tick();
+                }
+            }
+        }
+
+        public void UpdateEventsYield()
+        {
+            if (_isYieldToEvent)
+            {
+                _currentBehaviour.Tick();
+                if (_currentBehaviour.BehaviourIndex == _currentBehaviour.BehaviourLength - 1
+                    && !_currentBehaviour.YieldManually)
+                {
+                    _isYieldToEvent = false;
                 }
             }
         }
