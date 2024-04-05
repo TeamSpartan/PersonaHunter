@@ -307,6 +307,11 @@ public class NueBTProto
 
     private void FixedUpdate()
     {
+        if (_health <= 0)
+        {
+            _bt.YeildAllBehaviourTo(_btbDeath);
+        }
+        
         _player = GameObject.FindWithTag("Player").transform;
         _bt.UpdateEventsYield();
         UpdateTransitions();

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using UnityEngine;
 
 namespace SgLibUnite.BehaviourTree
 {
@@ -127,7 +128,7 @@ namespace SgLibUnite.BehaviourTree
     {
         private HashSet<BTBehaviour> _btBehaviours = new();
         private HashSet<BTTransition> _btTransitions = new();
-        private BTBehaviour _currentBehaviour;
+        private BTBehaviour _currentBehaviour, _yieldBehaviourNow;
         private string _currentTransitionName;
         private bool _isPausing;
         private bool _isYieldToEvent;
@@ -171,9 +172,8 @@ namespace SgLibUnite.BehaviourTree
         {
             if (_isYieldToEvent)
             {
-                _currentBehaviour.Tick();
-                if (_currentBehaviour.BehaviourIndex == _currentBehaviour.BehaviourLength - 1
-                    && !_currentBehaviour.YieldManually)
+                _yieldBehaviourNow.Tick();
+                if (!_yieldBehaviourNow.YieldManually)
                 {
                     _isYieldToEvent = false;
                 }
@@ -193,7 +193,7 @@ namespace SgLibUnite.BehaviourTree
             if (_btBehaviours.Contains(behaviour))
             {
                 _isYieldToEvent = true;
-                _currentBehaviour = behaviour;
+                _yieldBehaviourNow = behaviour;
             }
         }
 
