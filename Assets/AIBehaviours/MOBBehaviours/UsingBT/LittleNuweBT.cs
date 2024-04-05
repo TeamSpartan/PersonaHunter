@@ -3,6 +3,7 @@ using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
 
+// 作成 菅沼
 [RequireComponent(typeof(NavMeshAgent))]
 /// <summary> オモテガリ 敵モブ BT </summary>
 public class LittleNuweBT
@@ -48,6 +49,7 @@ public class LittleNuweBT
     private BTBehaviour _idleBehaviour;
     private BTBehaviour _chaseBehaviour;
     private BTBehaviour _attackBehaviour;
+    private BTBehaviour _deathBehaviour;
 
     #endregion
 
@@ -61,13 +63,13 @@ public class LittleNuweBT
     private string _btTPatToIdle = "btt2";
     private string _btTChaseToAtk = "btt3";
 
-    [SerializeField] private bool _foundPlayer;
-    [SerializeField] private bool _takeABreak;
-    [SerializeField] private bool _playerInsideAttackRange;
+    private bool _foundPlayer;
+    private bool _takeABreak;
+    private bool _playerInsideAttackRange;
 
     private float _elapsedTimePatroling = 0f;
     private float _elapsedTimeBreaking = 0f;
-    private float _elapsedTimeAttacking;
+    private float _elapsedTimeAttacking = 0f;
 
     #region BehavioursStateFunctions
 
@@ -96,7 +98,7 @@ public class LittleNuweBT
             _takeABreak = false;
         }
 
-        Debug.Log($"Patrolling");
+        // Debug.Log($"Patrolling");
     }
 
     private void StayAtCurrentPoint()
@@ -110,7 +112,7 @@ public class LittleNuweBT
             _behaviourTree.JumpTo(_patrolBehaviour);
         }
 
-        Debug.Log("StayAtHere");
+        // Debug.Log("StayAtHere");
     }
 
     private void AttackToPlayer()
@@ -135,7 +137,7 @@ public class LittleNuweBT
             _behaviourTree.JumpTo(_chaseBehaviour);
         }
 
-        Debug.Log("AttackToPlayer");
+        // Debug.Log("AttackToPlayer");
     }
 
     private void ChasePlayer()
@@ -149,19 +151,18 @@ public class LittleNuweBT
             _behaviourTree.JumpTo(_patrolBehaviour);
         }
 
-        Debug.Log("Chasing Player");
+        // Debug.Log("Chasing Player");
     }
 
     #endregion
 
     private void Death()
     {
-        _behaviourTree.PauseBT();
         GameObject.Destroy(gameObject);
 
-        Debug.Log($"Death");
+        // Debug.Log($"Death");
     }
-    
+
     private void SetupBehaviours()
     {
         _patrolBehaviour = new();
@@ -175,6 +176,9 @@ public class LittleNuweBT
 
         _attackBehaviour = new();
         _attackBehaviour.AddBehaviour(AttackToPlayer);
+
+        _deathBehaviour = new();
+        _deathBehaviour.AddBehaviour(Death);
     }
 
     private void SetupTransitions()
@@ -219,7 +223,7 @@ public class LittleNuweBT
 
         _behaviourTree.ResistBehaviours(new[]
         {
-            _patrolBehaviour, _idleBehaviour, _chaseBehaviour, _attackBehaviour
+            _patrolBehaviour, _idleBehaviour, _chaseBehaviour, _attackBehaviour, _deathBehaviour
         });
 
         SetupTransitions();
@@ -247,25 +251,24 @@ public class LittleNuweBT
     public void Kill()
     {
         _health = 0;
-        Death();
     }
 
     private void FixedUpdate()
     {
-        _player = GameObject.FindWithTag("Player").transform;
-        
         if (_health <= 0)
         {
-            Death();
-            Debug.Log($"In Fact, Im Death");
+            _behaviourTree.YeildAllBehaviourTo(_deathBehaviour);
         }
 
+        _player = GameObject.FindWithTag("Player").transform;
+
         UpdateConditions();
-        
+
         _behaviourTree.UpdateTransition(_btTPatToChase, ref _foundPlayer);
         _behaviourTree.UpdateTransition(_btTChaseToAtk, ref _playerInsideAttackRange);
         _behaviourTree.UpdateTransition(_btTPatToIdle, ref _takeABreak);
 
+        _behaviourTree.UpdateEventsYield();
     }
 
     private void OnDrawGizmos()

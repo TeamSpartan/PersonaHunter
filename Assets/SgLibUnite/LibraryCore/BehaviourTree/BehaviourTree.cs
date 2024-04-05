@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using UnityEngine;
 
 namespace SgLibUnite.BehaviourTree
 {
@@ -11,6 +12,7 @@ namespace SgLibUnite.BehaviourTree
     {
         private List<Action> _behaviours;
         private int _behaviourIndex;
+        private bool _yieldBehaviourManually = false;
 
         private Action OnBegin;
         private Action OnTick;
@@ -34,9 +36,29 @@ namespace SgLibUnite.BehaviourTree
             remove { OnEnd -= value; }
         }
 
+        public int BehaviourIndex
+        {
+            get { return _behaviourIndex; }
+        }
+
+        public int BehaviourLength
+        {
+            get { return _behaviours.Count; }
+        }
+
+        public bool YieldManually
+        {
+            get { return _yieldBehaviourManually; }
+        }
+
         public void AddBehaviour(Action behaviour)
         {
             _behaviours.Add(behaviour);
+        }
+
+        public void SetYieldMode(bool yieldManually)
+        {
+            _yieldBehaviourManually = yieldManually;
         }
 
         public BTBehaviour()
@@ -106,9 +128,24 @@ namespace SgLibUnite.BehaviourTree
     {
         private HashSet<BTBehaviour> _btBehaviours = new();
         private HashSet<BTTransition> _btTransitions = new();
-        private BTBehaviour _currentBehaviour;
+        private BTBehaviour _currentBehaviour, _yieldedBehaviourNow;
         private string _currentTransitionName;
         private bool _isPausing;
+        private bool _isYieldToEvent;
+        public bool IsPaused
+        {
+            get { return _isPausing; }
+        }
+
+        public BTBehaviour CurrentBehaviour
+        {
+            get { return _currentBehaviour; }
+        }
+        
+        public BTBehaviour CurrentYieldedEvent
+        {
+            get { return _yieldedBehaviourNow; }
+        }
 
         public void ResistBehaviours(params BTBehaviour[] btBehaviours)
         {
@@ -125,6 +162,8 @@ namespace SgLibUnite.BehaviourTree
         public void UpdateTransition(string name, ref bool condition, bool equalsTo = true, bool isTrigger = false)
         {
             if (_isPausing) return;
+
+            if (_isYieldToEvent) return;
 
             foreach (var transition in _btTransitions)
             {
@@ -143,11 +182,40 @@ namespace SgLibUnite.BehaviourTree
             }
         }
 
+        public void UpdateEventsYield()
+        {
+            if (_isYieldToEvent)
+            {
+                _yieldedBehaviourNow.Tick();
+                if (!_yieldedBehaviourNow.YieldManually)
+                {
+                    _isYieldToEvent = false;
+                }
+            }
+        }
+
         public void JumpTo(BTBehaviour behaviour)
         {
             if (_btBehaviours.Contains(behaviour))
             {
                 _currentBehaviour = behaviour;
+            }
+        }
+
+        public void YeildAllBehaviourTo(BTBehaviour behaviour)
+        {
+            if (_btBehaviours.Contains(behaviour))
+            {
+                _isYieldToEvent = true;
+                _yieldedBehaviourNow = behaviour;
+            }
+        }
+
+        public void EndYieldBehaviourFrom(BTBehaviour behaviour)
+        {
+            if (_btBehaviours.Contains(behaviour))
+            {
+                _isYieldToEvent = false;
             }
         }
 
