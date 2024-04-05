@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 // 作成 菅沼
 [RequireComponent(typeof(NavMeshAgent))]
 /// <summary> オモテガリ 鵺 </summary>
-public class NueBT
+public class NueBTProto
     : MonoBehaviour
         , IMobBehaviourParameter
         , IInitializableComponent
@@ -46,7 +46,6 @@ public class NueBT
 
     private BTBehaviour _btbIdle;
     private BTBehaviour _btbGetClose;
-    private BTBehaviour _btbCheckAttackType;
     private BTBehaviour _btbClaw;
     private BTBehaviour _btbTale;
     private BTBehaviour _btbRush;
@@ -58,19 +57,19 @@ public class NueBT
 
     #region Conditions
 
-    private bool _clawAttackable;
-    private bool _taleAttackable;
-    private bool _rushable;
+    [SerializeField] private bool _clawAttackable;
+    [SerializeField] private bool _taleAttackable;
+    [SerializeField] private bool _rushable;
+    [SerializeField] private bool _floundPlayer;
 
     #endregion
 
     #region Transition Name
 
     private string _bttIdleToClose = "01";
-    private string _bttCloseToCheckAtkType = "02";
-    private string _bttStartClaw = "03";
-    private string _bttStartTale = "04";
-    private string _bttStartRush = "05";
+    private string _bttStartClaw = "02";
+    private string _bttStartTale = "03";
+    private string _bttStartRush = "04";
 
     #endregion
 
@@ -91,6 +90,7 @@ public class NueBT
 
     private void Stay()
     {
+        Debug.Log($"Stay Here");
         if (_agent.destination != transform.position)
         {
             _agent.ResetPath();
@@ -100,6 +100,7 @@ public class NueBT
 
     private void GetCloseToPlayer()
     {
+        Debug.Log($"Getting Close");
         if (_agent.destination != _player.position)
         {
             _agent.SetDestination(_player.position);
@@ -108,6 +109,8 @@ public class NueBT
 
     private void CheckAttackingType()
     {
+        Debug.Log($"Finding Attacking Method");
+
         // 範囲内かまず判定
         _clawAttackable = Physics.CheckSphere(transform.position, _clawAttackRange, _playerLayers);
         _taleAttackable = Physics.CheckSphere(transform.position, _taleAttackRange, _playerLayers);
@@ -118,42 +121,74 @@ public class NueBT
         var frontCond = Vector3.Dot(vt, transform.forward) >= 0;
 
         _clawAttackable = _clawAttackable && frontCond;
-        _taleAttackable = _taleAttackable && !frontCond;
+        _taleAttackable = _taleAttackable && (!frontCond);
+        _rushable = _rushable && !_clawAttackable;
     }
 
     private void Claw()
     {
+        Debug.Log($"Claw");
         _agent.ResetPath();
+        if (!_clawAttackable)
+        {
+            _bt.JumpTo(_btbGetClose);
+        }
     }
 
     private void Tale()
     {
+        Debug.Log($"Tale");
         _agent.ResetPath();
+        if (!_taleAttackable)
+        {
+            _bt.JumpTo(_btbGetClose);
+        }
     }
 
     private void Rush()
     {
-        _agent.ResetPath();
+        Debug.Log($"Rush");
+        if (_agent.destination != _player.position)
+        {
+            _agent.SetDestination(_player.position);
+        }
+        else
+        {
+            _agent.ResetPath();
+            if (!_rushable)
+            {
+                _bt.JumpTo(_btbGetClose);
+            }
+        }
     }
 
     private void Death()
     {
-        _agent.ResetPath();
+        Debug.Log($"Death");
+        Stay();
     }
 
     private void Flinch()
     {
+        Debug.Log($"Flinch");
+        Stay();
+
         _flinchingETime += Time.deltaTime;
         if (_flinchingETime > _awaitOnFlinching)
         {
+            _flinchValue = _flinchingETime = 0;
         }
     }
 
     private void Stumble()
     {
+        Debug.Log($"Stumble");
+        Stay();
+
         _stumblingETime += Time.deltaTime;
         if (_stumblingETime > _awaitOnStumble)
         {
+            _flinchingETime = 0;
         }
     }
 
@@ -163,7 +198,6 @@ public class NueBT
     {
         _btbIdle = new();
         _btbGetClose = new();
-        _btbCheckAttackType = new();
         _btbClaw = new();
         _btbTale = new();
         _btbRush = new();
@@ -173,22 +207,24 @@ public class NueBT
 
         _btbIdle.AddBehaviour(Stay);
         _btbGetClose.AddBehaviour(GetCloseToPlayer);
-        _btbCheckAttackType.AddBehaviour(CheckAttackingType);
         _btbClaw.AddBehaviour(Claw);
         _btbTale.AddBehaviour(Tale);
         _btbRush.AddBehaviour(Rush);
         _btbDeath.AddBehaviour(Death);
         _btbFlinch.AddBehaviour(Flinch);
         _btbStumble.AddBehaviour(Stumble);
+
+        _btbDeath.SetYieldMode(true);
+        _btbFlinch.SetYieldMode(true);
+        _btbStumble.SetYieldMode(true);
     }
 
     private void SetupTransition()
     {
         _bt.MakeTransition(_btbIdle, _btbGetClose, _bttIdleToClose);
-        _bt.MakeTransition(_btbGetClose, _btbCheckAttackType, _bttCloseToCheckAtkType);
-        _bt.MakeTransition(_btbCheckAttackType, _btbClaw, _bttStartClaw);
-        _bt.MakeTransition(_btbCheckAttackType, _btbTale, _bttStartTale);
-        _bt.MakeTransition(_btbCheckAttackType, _btbRush, _bttStartRush);
+        _bt.MakeTransition(_btbGetClose, _btbClaw, _bttStartClaw);
+        _bt.MakeTransition(_btbGetClose, _btbTale, _bttStartTale);
+        _bt.MakeTransition(_btbGetClose, _btbRush, _bttStartRush);
     }
 
     private void SetupBT()
@@ -197,9 +233,25 @@ public class NueBT
         SetupTransition();
         _bt.ResistBehaviours(new[]
         {
-            _btbIdle, _btbGetClose, _btbCheckAttackType, _btbClaw, _btbTale, _btbRush, _btbDeath, _btbFlinch,
+            _btbIdle, _btbGetClose, _btbClaw, _btbTale, _btbRush, _btbDeath, _btbFlinch,
             _btbStumble
         });
+    }
+
+    private void UpdateTransitions()
+    {
+        _floundPlayer = Physics.CheckSphere(transform.position, _sightRange, _playerLayers);
+        CheckAttackingType();
+        
+        if (!_floundPlayer)
+        {
+            _bt.JumpTo(_btbIdle);
+        }
+
+        _bt.UpdateTransition(_bttIdleToClose, ref _floundPlayer);
+        _bt.UpdateTransition(_bttStartClaw, ref _clawAttackable);
+        _bt.UpdateTransition(_bttStartTale, ref _taleAttackable);
+        _bt.UpdateTransition(_bttStartRush, ref _rushable);
     }
 
     public float GetHealth()
@@ -226,7 +278,7 @@ public class NueBT
         {
             _animator = GetComponentInChildren<Animator>();
         }
-        
+
         SetupBT();
         _bt.StartBT();
     }
@@ -255,7 +307,9 @@ public class NueBT
 
     private void FixedUpdate()
     {
-        
+        _player = GameObject.FindWithTag("Player").transform;
+        _bt.UpdateEventsYield();
+        UpdateTransitions();
     }
 
     private void OnDrawGizmos()
