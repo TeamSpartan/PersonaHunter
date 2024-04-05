@@ -6,7 +6,7 @@ using UnityEngine.AI;
 // 作成 菅沼
 [RequireComponent(typeof(NavMeshAgent))]
 /// <summary> オモテガリ 鵺 改良１型 </summary>
-public class NueBTE1
+public class NueBTV1E1
     : MonoBehaviour
         , IMobBehaviourParameter
         , IInitializableComponent
@@ -44,17 +44,17 @@ public class NueBTE1
 
     #region Behaviours
 
-    private BTBehaviour _btbIdle;
-    private BTBehaviour _btbGetClose;
-    private BTBehaviour _btbAwait;
-    private BTBehaviour _btbThinkForNextBehaviour;
-    private BTBehaviour _btbAwayFromPlayer;
-    private BTBehaviour _btbFlinch;
-    private BTBehaviour _btbDeath;
-    private BTBehaviour _btbStumble;
-    private BTBehaviour _btbClaw;
-    private BTBehaviour _btbTale;
-    private BTBehaviour _btbRush;
+    private BTBehaviour _btbIdle = new BTBehaviour();
+    private BTBehaviour _btbGetClose = new BTBehaviour();
+    private BTBehaviour _btbAwait = new BTBehaviour();
+    private BTBehaviour _btbThinkForNextBehaviour = new BTBehaviour();
+    private BTBehaviour _btbAwayFromPlayer = new BTBehaviour();
+    private BTBehaviour _btbFlinch = new BTBehaviour();
+    private BTBehaviour _btbDeath = new BTBehaviour();
+    private BTBehaviour _btbStumble = new BTBehaviour();
+    private BTBehaviour _btbClaw = new BTBehaviour();
+    private BTBehaviour _btbTale = new BTBehaviour();
+    private BTBehaviour _btbRush = new BTBehaviour();
 
     #endregion
 
@@ -67,8 +67,8 @@ public class NueBTE1
 
     #region Transition Name
 
-    private string _bttStartThink = "unnko";
-    private string _bttStartGetClose = "chinnko";
+    private string _bttStartThink = "01";
+    private string _bttStartGetClose = "02";
 
     #endregion
 
@@ -90,176 +90,121 @@ public class NueBTE1
 
     #endregion
 
-    #region Each Behaviour Structs Fuctions
+    #region States
 
-    private void Idle() // idle stay on point
-    {
-        Debug.Log($"Idle");
-    }
-
-    private void FindPlayer() // find player , and get transform
+    private void FindPlayer()
     {
         _player = GameObject.FindWithTag("Player").transform;
     }
 
-    private void ThinkNextBehaviour() // think next behaviour
+    private void Idle()
     {
-        Debug.Log($"Think");
+        FindPlayer();
+        Debug.Log($"Idle");
     }
 
-    private void GetClose() // get close to player
+    private void GetClose()
     {
         Debug.Log($"Get Close");
     }
 
-    private void Await() // await and do nothing 
+    private void Await()
     {
         Debug.Log($"Await");
     }
 
-    private void Away() // get distance from player
+    private void Think()
+    {
+        Debug.Log($"Think");
+    }
+
+
+    private void Away()
     {
         Debug.Log($"Away");
     }
 
-    private void Flinch() // when get flinch. On Got Many Attacks
+    private void Flinch()
     {
         Debug.Log($"Flinch");
     }
 
-    private void Death() // when health has been 0 or less
+    private void Death()
     {
         Debug.Log($"Death");
     }
 
-    private void Stumble() // when get parry
+    private void Stumble()
     {
         Debug.Log($"Stumble");
     }
 
-    private void Claw() // claw atk
+    private void Claw()
     {
         Debug.Log($"Claw");
     }
 
-    private void Tale() // tale atk
+    private void Tale()
     {
         Debug.Log($"Tale");
     }
 
-    private void Rush() // rushing atk
+    private void Rush()
     {
         Debug.Log($"Rush");
     }
 
     #endregion
 
-    #region Setups
-
-    private void SetUpBehaviours()
-    {
-        // instantiate behviours
-        _btbAwait = new();
-        _btbClaw = new();
-        _btbDeath = new();
-        _btbFlinch = new();
-        _btbIdle = new();
-        _btbRush = new();
-        _btbStumble = new();
-        _btbTale = new();
-        _btbGetClose = new();
-        _btbAwayFromPlayer = new();
-        _btbThinkForNextBehaviour = new();
-
-        // setup each
-        _btbIdle.AddBehaviour(Idle);
-        _btbGetClose.AddBehaviour(GetClose);
-        _btbThinkForNextBehaviour.AddBehaviour(ThinkNextBehaviour);
-
-        _btbAwait.AddBehaviour(Await);
-        _btbAwait.SetYieldMode(true);
-
-        _btbClaw.AddBehaviour(Claw);
-        _btbClaw.SetYieldMode(true);
-
-        _btbDeath.AddBehaviour(Death);
-        _btbDeath.SetYieldMode(true);
-
-        _btbFlinch.AddBehaviour(Flinch);
-        _btbFlinch.SetYieldMode(true);
-
-        _btbRush.AddBehaviour(Rush);
-        _btbRush.SetYieldMode(true);
-
-        _btbStumble.AddBehaviour(Stumble);
-        _btbStumble.SetYieldMode(true);
-
-        _btbTale.AddBehaviour(Tale);
-        _btbTale.SetYieldMode(true);
-
-        _btbAwayFromPlayer.AddBehaviour(Away);
-        _btbAwayFromPlayer.SetYieldMode(true);
-
-        _bt.ResistBehaviours(new[]
-        {
-            _btbAwait, _btbClaw, _btbDeath, _btbFlinch, _btbIdle, _btbRush, _btbStumble, _btbThinkForNextBehaviour,
-            _btbStumble,
-            _btbTale, _btbGetClose, _btbAwayFromPlayer
-        });
-    }
-
-    private void SetupTransition()
-    {
-        _bt.MakeTransition(_btbIdle, _btbGetClose, _bttStartGetClose);
-        _bt.MakeTransition(_btbGetClose, _btbThinkForNextBehaviour, _bttStartThink);
-    }
-
-    #endregion
-
-    #region Updates
-
-    private void UpdateTransitions()
-    {
-        _bt.UpdateTransition(_bttStartGetClose, ref _btcPlayerFound);
-        _bt.UpdateTransition(_bttStartThink, ref _btcPlayerIsInARange);
-    }
-
-    private void UpdateConditions()
-    {
-        _btcPlayerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayers);
-        _btcPlayerIsInARange = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
-    }
-
-    #endregion
-
     public float GetHealth()
     {
-        return _health;
+        throw new System.NotImplementedException();
     }
 
     public void SetHealth(float val)
     {
-        _health = val;
+        throw new System.NotImplementedException();
     }
 
-    public void InitAI()
+    public void InitializeThisComponent()
     {
-        FindPlayer();
-        if (_bt.IsPaused)
+        #region Add Function To Behaviour 1.
+
+        _btbAwait.AddBehaviour(Await);
+        _btbClaw.AddBehaviour(Claw);
+        _btbDeath.AddBehaviour(Death);
+        _btbFlinch.AddBehaviour(Flinch);
+        _btbStumble.AddBehaviour(Stumble);
+        _btbIdle.AddBehaviour(Idle);
+        _btbGetClose.AddBehaviour(GetClose);
+        _btbRush.AddBehaviour(Rush);
+        _btbTale.AddBehaviour(Tale);
+        _btbAwayFromPlayer.AddBehaviour(Away);
+        _btbThinkForNextBehaviour.AddBehaviour(Think);
+
+        #endregion
+
+        // Resist Behaviours 2.
+        _bt.ResistBehaviours(new[]
         {
-            _bt.StartBT();
-        }
+            _btbAwait, _btbClaw, _btbDeath, _btbFlinch, _btbIdle, _btbGetClose, _btbStumble, _btbTale, _btbRush,
+            _btbAwayFromPlayer, _btbThinkForNextBehaviour
+        });
+
+        #region Make Transition 3.
+
+        _bt.MakeTransition(_btbIdle, _btbGetClose, _bttStartGetClose);
+        _bt.MakeTransition(_btbGetClose, _btbThinkForNextBehaviour, _bttStartThink);
+        
+        #endregion
+
+        // Start BT 4.
+        _bt.StartBT();
 
         if (_bt.CurrentBehaviour != _btbIdle)
         {
             _bt.JumpTo(_btbIdle);
         }
-    }
-
-    public void InitializeThisComponent()
-    {
-        SetUpBehaviours();
-        SetupTransition();
 
         _agent = GetComponent<NavMeshAgent>();
         if (GetComponent<Animator>() != null)
@@ -270,39 +215,41 @@ public class NueBTE1
         {
             _animator = GetComponentInChildren<Animator>();
         }
-
-        InitAI();
     }
 
-    public void FixedUpdate()
+    private void FixedUpdate()
     {
-        Debug.Log($"BT Stat - {_bt.IsPaused}");
-        
-        UpdateConditions();
-        UpdateTransitions();
         _bt.UpdateEventsYield();
+
+        _btcPlayerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayers);
+        _btcPlayerIsInARange = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
+        _bt.UpdateTransition(_bttStartGetClose, ref _btcPlayerFound);
+        _bt.UpdateTransition(_bttStartThink, ref _btcPlayerIsInARange);
     }
 
     public void FinalizeThisComponent()
     {
+        throw new System.NotImplementedException();
     }
 
     public void StartDull()
     {
+        throw new System.NotImplementedException();
     }
 
     public void EndDull()
     {
+        throw new System.NotImplementedException();
     }
 
     public void AddDamage(float dmg)
     {
-        _health -= dmg;
+        throw new System.NotImplementedException();
     }
 
     public void Kill()
     {
-        _health = 0;
+        throw new System.NotImplementedException();
     }
 
     private void OnDrawGizmos()
