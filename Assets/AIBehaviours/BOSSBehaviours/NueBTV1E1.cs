@@ -96,7 +96,7 @@ public class NueBTV1E1
     {
         _player = GameObject.FindWithTag("Player").transform;
     }
-    
+
     private void Idle()
     {
         FindPlayer();
@@ -195,9 +195,9 @@ public class NueBTV1E1
 
         _bt.MakeTransition(_btbIdle, _btbGetClose, _bttStartGetClose);
         _bt.MakeTransition(_btbGetClose, _btbThinkForNextBehaviour, _bttStartThink);
-
-        #endregion
         
+        #endregion
+
         // Start BT 4.
         _bt.StartBT();
 
@@ -220,7 +220,7 @@ public class NueBTV1E1
     private void FixedUpdate()
     {
         _bt.UpdateEventsYield();
-        
+
         _btcPlayerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayers);
         _btcPlayerIsInARange = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
         _bt.UpdateTransition(_bttStartGetClose, ref _btcPlayerFound);
@@ -251,7 +251,7 @@ public class NueBTV1E1
     {
         throw new System.NotImplementedException();
     }
-    
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.cyan;

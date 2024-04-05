@@ -167,20 +167,21 @@ namespace SgLibUnite.BehaviourTree
 
             foreach (var transition in _btTransitions)
             {
-                if (transition.From == _currentBehaviour)
+                if ((condition == equalsTo) && transition.Name == name)
                 {
-                    if (condition == equalsTo && transition.Name == name)
+                    if (transition.From == _currentBehaviour)
                     {
+                        // このビヘイビアの先のビヘイビアへ遷移していないことが担保されてから遷移処理をするべき
                         _currentBehaviour.End();
                         if (isTrigger) condition = !equalsTo;
                         _currentBehaviour = transition.To;
                         _currentBehaviour.Begin();
                         _currentTransitionName = transition.Name;
                     }
-                    else if (transition.Name == name)
-                    {
-                        _currentBehaviour.Tick();
-                    }
+                }
+                else if (transition.Name == name)
+                {
+                    _currentBehaviour.Tick();
                 }
             }
         }
