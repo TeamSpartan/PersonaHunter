@@ -4,24 +4,44 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    //コンボアクション用
-    public bool IsAttack; //攻撃用アクションフラグ
-    private int _comboCount; //コンボ判定用フラグ
-    private string _currentName; //モーション名
-    [SerializeField, Tooltip("")]
+    //右側からの攻撃なら１、左側からの攻撃なら２
+    private int _currentName; //モーション名
+    /// <summary>入力フラグ </summary>
+    private bool IsInput;
+    /// <summary>入力フラグ </summary>
+    private bool IsStart;
+    [SerializeField] Animator _animator;
 
     /// <summary>
     /// 攻撃時に呼ばれる処理
     /// </summary>
     public void Attack()
     {
-        if(_comboCount < 2)
+        //モーション中の入力が２回目なら処理を行わない
+        if (IsInput)
+            return;
+
+        if(_currentName != 1)
         {
-            if(_currentName == null )
+            //右からの攻撃
+            _animator.SetTrigger("RightAttack");
+            _currentName = 1;
+            
+            if(!IsStart)
             {
-                
+                IsStart = true;
+            }//最初の攻撃の場合
+            else
+            {
+                IsInput = true;
             }
-            else if()
+        }
+        else 
+        {
+            //左からの攻撃
+            _animator.SetTrigger("LeftAttack");
+            _currentName = 2;
+            IsInput = true;
         }
     }
 
@@ -30,14 +50,16 @@ public class PlayerAttack : MonoBehaviour
     /// </summary>
     public void AttackClear()
     {
-        IsAttack = false;
+        _currentName = 0;
+        IsStart = false;
     }
 
     /// <summary>
-    /// コンボフラグをリセットメソッド
+    /// モーションが終わった後に呼び出す処理
     /// </summary>
-    public void ClearCombo()
+    public void InputReset()
     {
-        _comboCount = 0;
+        
+        IsStart = false;
     }
 }
