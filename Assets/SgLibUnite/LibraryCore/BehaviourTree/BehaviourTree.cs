@@ -132,6 +132,7 @@ namespace SgLibUnite.BehaviourTree
         private string _currentTransitionName;
         private bool _isPausing;
         private bool _isYieldToEvent;
+
         public bool IsPaused
         {
             get { return _isPausing; }
@@ -141,7 +142,7 @@ namespace SgLibUnite.BehaviourTree
         {
             get { return _currentBehaviour; }
         }
-        
+
         public BTBehaviour CurrentYieldedEvent
         {
             get { return _yieldedBehaviourNow; }
@@ -155,8 +156,7 @@ namespace SgLibUnite.BehaviourTree
 
         public void MakeTransition(BTBehaviour from, BTBehaviour to, string name)
         {
-            var tmp = new BTTransition(from, to, name);
-            _btTransitions.Add(tmp);
+            _btTransitions.Add(new BTTransition(from, to, name));
         }
 
         public void UpdateTransition(string name, ref bool condition, bool equalsTo = true, bool isTrigger = false)
@@ -167,17 +167,20 @@ namespace SgLibUnite.BehaviourTree
 
             foreach (var transition in _btTransitions)
             {
-                if (condition == equalsTo && transition.Name == name)
+                if (transition.From == _currentBehaviour)
                 {
-                    _currentBehaviour.End();
-                    if (isTrigger) condition = !equalsTo;
-                    _currentBehaviour = transition.To;
-                    _currentBehaviour.Begin();
-                    _currentTransitionName = transition.Name;
-                }
-                else if (transition.Name == name)
-                {
-                    _currentBehaviour.Tick();
+                    if (condition == equalsTo && transition.Name == name)
+                    {
+                        _currentBehaviour.End();
+                        if (isTrigger) condition = !equalsTo;
+                        _currentBehaviour = transition.To;
+                        _currentBehaviour.Begin();
+                        _currentTransitionName = transition.Name;
+                    }
+                    else if (transition.Name == name)
+                    {
+                        _currentBehaviour.Tick();
+                    }
                 }
             }
         }

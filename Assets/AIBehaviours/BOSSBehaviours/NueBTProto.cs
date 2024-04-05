@@ -81,8 +81,8 @@ public class NueBTProto
     #endregion
 
     private BehaviourTree _bt;
-    private Transform _player;
     private NavMeshAgent _agent;
+    private Transform _player;
     private Animator _animator;
     private float _flinchValue;
 
