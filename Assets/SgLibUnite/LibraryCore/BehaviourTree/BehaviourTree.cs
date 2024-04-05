@@ -128,10 +128,24 @@ namespace SgLibUnite.BehaviourTree
     {
         private HashSet<BTBehaviour> _btBehaviours = new();
         private HashSet<BTTransition> _btTransitions = new();
-        private BTBehaviour _currentBehaviour, _yieldBehaviourNow;
+        private BTBehaviour _currentBehaviour, _yieldedBehaviourNow;
         private string _currentTransitionName;
         private bool _isPausing;
         private bool _isYieldToEvent;
+        public bool IsPaused
+        {
+            get { return _isPausing; }
+        }
+
+        public BTBehaviour CurrentBehaviour
+        {
+            get { return _currentBehaviour; }
+        }
+        
+        public BTBehaviour CurrentYieldedEvent
+        {
+            get { return _yieldedBehaviourNow; }
+        }
 
         public void ResistBehaviours(params BTBehaviour[] btBehaviours)
         {
@@ -172,8 +186,8 @@ namespace SgLibUnite.BehaviourTree
         {
             if (_isYieldToEvent)
             {
-                _yieldBehaviourNow.Tick();
-                if (!_yieldBehaviourNow.YieldManually)
+                _yieldedBehaviourNow.Tick();
+                if (!_yieldedBehaviourNow.YieldManually)
                 {
                     _isYieldToEvent = false;
                 }
@@ -193,7 +207,7 @@ namespace SgLibUnite.BehaviourTree
             if (_btBehaviours.Contains(behaviour))
             {
                 _isYieldToEvent = true;
-                _yieldBehaviourNow = behaviour;
+                _yieldedBehaviourNow = behaviour;
             }
         }
 

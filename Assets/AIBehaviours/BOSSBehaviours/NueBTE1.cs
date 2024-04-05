@@ -44,6 +44,7 @@ public class NueBTE1
 
     #region Behaviours
 
+    private BTBehaviour _btbIdle;
     private BTBehaviour _btbGetClose;
     private BTBehaviour _btbAwait;
     private BTBehaviour _btbThinkForNextBehaviour;
@@ -59,14 +60,15 @@ public class NueBTE1
 
     #region Conditions
 
-    private bool _btcPlayerFound;
-    private bool _btcPlayerIsInARange;
+    [SerializeField] private bool _btcPlayerFound;
+    [SerializeField] private bool _btcPlayerIsInARange;
 
     #endregion
 
     #region Transition Name
 
     private string _bttStartThink = "unnko";
+    private string _bttStartGetClose = "chinnko";
 
     #endregion
 
@@ -81,51 +83,73 @@ public class NueBTE1
     #region Parameter Inside(Hidden)
 
     private BehaviourTree _bt = new BehaviourTree();
+    private Transform _player;
+    private NavMeshAgent _agent;
+    private Animator _animator;
     private float _flinchVal;
 
     #endregion
 
     #region Each Behaviour Structs Fuctions
 
+    private void Idle() // idle stay on point
+    {
+        Debug.Log($"Idle");
+    }
+
+    private void FindPlayer() // find player , and get transform
+    {
+        _player = GameObject.FindWithTag("Player").transform;
+    }
+
     private void ThinkNextBehaviour() // think next behaviour
     {
+        Debug.Log($"Think");
     }
 
     private void GetClose() // get close to player
     {
+        Debug.Log($"Get Close");
     }
-
 
     private void Await() // await and do nothing 
     {
+        Debug.Log($"Await");
     }
 
     private void Away() // get distance from player
     {
+        Debug.Log($"Away");
     }
 
     private void Flinch() // when get flinch. On Got Many Attacks
     {
+        Debug.Log($"Flinch");
     }
 
     private void Death() // when health has been 0 or less
     {
+        Debug.Log($"Death");
     }
 
     private void Stumble() // when get parry
     {
+        Debug.Log($"Stumble");
     }
 
     private void Claw() // claw atk
     {
+        Debug.Log($"Claw");
     }
 
     private void Tale() // tale atk
     {
+        Debug.Log($"Tale");
     }
 
-    private void Rush() // rusing atk
+    private void Rush() // rushing atk
     {
+        Debug.Log($"Rush");
     }
 
     #endregion
@@ -139,6 +163,7 @@ public class NueBTE1
         _btbClaw = new();
         _btbDeath = new();
         _btbFlinch = new();
+        _btbIdle = new();
         _btbRush = new();
         _btbStumble = new();
         _btbTale = new();
@@ -146,16 +171,63 @@ public class NueBTE1
         _btbAwayFromPlayer = new();
         _btbThinkForNextBehaviour = new();
 
-        _btbAwait.AddBehaviour(Await);
-        _btbClaw.AddBehaviour(Claw);
-        _btbDeath.AddBehaviour(Death);
-        _btbFlinch.AddBehaviour(Flinch);
-        _btbRush.AddBehaviour(Rush);
-        _btbStumble.AddBehaviour(Stumble);
-        _btbTale.AddBehaviour(Tale);
+        // setup each
+        _btbIdle.AddBehaviour(Idle);
         _btbGetClose.AddBehaviour(GetClose);
-        _btbAwayFromPlayer.AddBehaviour(Away);
         _btbThinkForNextBehaviour.AddBehaviour(ThinkNextBehaviour);
+
+        _btbAwait.AddBehaviour(Await);
+        _btbAwait.SetYieldMode(true);
+
+        _btbClaw.AddBehaviour(Claw);
+        _btbClaw.SetYieldMode(true);
+
+        _btbDeath.AddBehaviour(Death);
+        _btbDeath.SetYieldMode(true);
+
+        _btbFlinch.AddBehaviour(Flinch);
+        _btbFlinch.SetYieldMode(true);
+
+        _btbRush.AddBehaviour(Rush);
+        _btbRush.SetYieldMode(true);
+
+        _btbStumble.AddBehaviour(Stumble);
+        _btbStumble.SetYieldMode(true);
+
+        _btbTale.AddBehaviour(Tale);
+        _btbTale.SetYieldMode(true);
+
+        _btbAwayFromPlayer.AddBehaviour(Away);
+        _btbAwayFromPlayer.SetYieldMode(true);
+
+        _bt.ResistBehaviours(new[]
+        {
+            _btbAwait, _btbClaw, _btbDeath, _btbFlinch, _btbIdle, _btbRush, _btbStumble, _btbThinkForNextBehaviour,
+            _btbStumble,
+            _btbTale, _btbGetClose, _btbAwayFromPlayer
+        });
+    }
+
+    private void SetupTransition()
+    {
+        _bt.MakeTransition(_btbIdle, _btbGetClose, _bttStartGetClose);
+        _bt.MakeTransition(_btbGetClose, _btbThinkForNextBehaviour, _bttStartThink);
+    }
+
+    #endregion
+
+    #region Updates
+
+    private void UpdateTransitions()
+    {
+        _bt.UpdateTransition(_bttStartGetClose, ref _btcPlayerFound);
+        _bt.UpdateTransition(_bttStartThink, ref _btcPlayerIsInARange);
+    }
+
+    private void UpdateConditions()
+    {
+        _btcPlayerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayers);
+        _btcPlayerIsInARange = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
     }
 
     #endregion
@@ -170,12 +242,45 @@ public class NueBTE1
         _health = val;
     }
 
+    public void InitAI()
+    {
+        FindPlayer();
+        if (_bt.IsPaused)
+        {
+            _bt.StartBT();
+        }
+
+        if (_bt.CurrentBehaviour != _btbIdle)
+        {
+            _bt.JumpTo(_btbIdle);
+        }
+    }
+
     public void InitializeThisComponent()
     {
+        SetUpBehaviours();
+        SetupTransition();
+
+        _agent = GetComponent<NavMeshAgent>();
+        if (GetComponent<Animator>() != null)
+        {
+            _animator = GetComponent<Animator>();
+        }
+        else if (GetComponentInChildren<Animator>() != null)
+        {
+            _animator = GetComponentInChildren<Animator>();
+        }
+
+        InitAI();
     }
 
     public void FixedUpdate()
     {
+        Debug.Log($"BT Stat - {_bt.IsPaused}");
+        
+        UpdateConditions();
+        UpdateTransitions();
+        _bt.UpdateEventsYield();
     }
 
     public void FinalizeThisComponent()
