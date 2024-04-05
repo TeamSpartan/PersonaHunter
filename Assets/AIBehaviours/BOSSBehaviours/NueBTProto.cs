@@ -166,6 +166,8 @@ public class NueBTProto
     {
         Debug.Log($"Death");
         Stay();
+        
+        _bt.EndYieldBehaviourFrom(_btbDeath);
     }
 
     private void Flinch()

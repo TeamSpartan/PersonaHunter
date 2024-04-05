@@ -197,6 +197,14 @@ namespace SgLibUnite.BehaviourTree
             }
         }
 
+        public void EndYieldBehaviourFrom(BTBehaviour behaviour)
+        {
+            if (_btBehaviours.Contains(behaviour))
+            {
+                _isYieldToEvent = false;
+            }
+        }
+
         public void PauseBT()
         {
             _isPausing = true;
