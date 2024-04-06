@@ -1,4 +1,3 @@
-using System;
 using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
@@ -20,11 +19,14 @@ public class NueBTV1E1
     [SerializeField, Header("Flinch Threshold")]
     private float _flinchThreshold;
 
+    [SerializeField, Header("Awaiting Time[sec]")]
+    private float _awaitingTime;
+
     [SerializeField, Header("Awaiting Time When Get Parry[sec]")]
-    private float _awaitOnStumble;
+    private float _awaitTimeOnStumble;
 
     [SerializeField, Header("Awaiting Time When Get Flinch[sec]")]
-    private float _awaitOnFlinching;
+    private float _awaitTimeOnFlinching;
 
     [SerializeField, Range(1f, 100f), Header("Sight Range")]
     private float _sightRange;
@@ -101,23 +103,41 @@ public class NueBTV1E1
     {
         FindPlayer();
         Debug.Log($"Idle");
+        if (_agent.destination != transform.position)
+        {
+            _agent.SetDestination(transform.position);
+        }
     }
 
     private void GetClose()
     {
         Debug.Log($"Get Close");
+        FindPlayer();
+        if (!_agent.hasPath)
+        {
+            _agent.SetDestination(_player.position);
+        }
     }
 
     private void Await()
     {
         Debug.Log($"Await");
+        _tAwaitET += Time.deltaTime;
+        if (_tAwaitET > _awaitingTime)
+        {
+            _tAwaitET = 0;
+            _bt.JumpTo(_btbThinkForNextBehaviour);
+        }
     }
 
     private void Think()
     {
         Debug.Log($"Think");
+        if (_agent.hasPath)
+        {
+            _agent.ResetPath();
+        }
     }
-
 
     private void Away()
     {
@@ -127,6 +147,12 @@ public class NueBTV1E1
     private void Flinch()
     {
         Debug.Log($"Flinch");
+        _tFlinchET += Time.deltaTime;
+        if (_tFlinchET > _awaitTimeOnFlinching)
+        {
+            _tFlinchET = 0;
+            _bt.JumpTo(_btbThinkForNextBehaviour);
+        }
     }
 
     private void Death()
@@ -137,6 +163,12 @@ public class NueBTV1E1
     private void Stumble()
     {
         Debug.Log($"Stumble");
+        _tStumbleET += Time.deltaTime;
+        if (_tStumbleET > _awaitTimeOnStumble)
+        {
+            _tStumbleET = 0;
+            _bt.JumpTo(_btbThinkForNextBehaviour);
+        }
     }
 
     private void Claw()
@@ -158,29 +190,45 @@ public class NueBTV1E1
 
     public float GetHealth()
     {
-        throw new System.NotImplementedException();
+        return _health;
     }
 
     public void SetHealth(float val)
     {
-        throw new System.NotImplementedException();
+        _health = val;
     }
 
     public void InitializeThisComponent()
     {
         #region Add Function To Behaviour 1.
 
-        _btbAwait.AddBehaviour(Await);
-        _btbClaw.AddBehaviour(Claw);
-        _btbDeath.AddBehaviour(Death);
-        _btbFlinch.AddBehaviour(Flinch);
-        _btbStumble.AddBehaviour(Stumble);
         _btbIdle.AddBehaviour(Idle);
         _btbGetClose.AddBehaviour(GetClose);
-        _btbRush.AddBehaviour(Rush);
-        _btbTale.AddBehaviour(Tale);
-        _btbAwayFromPlayer.AddBehaviour(Away);
         _btbThinkForNextBehaviour.AddBehaviour(Think);
+        
+        _btbAwait.AddBehaviour(Await);
+        _btbAwait.SetYieldMode(true);
+        
+        _btbClaw.AddBehaviour(Claw);
+        _btbClaw.SetYieldMode(true);
+        
+        _btbDeath.AddBehaviour(Death);
+        _btbDeath.SetYieldMode(true);
+        
+        _btbFlinch.AddBehaviour(Flinch);
+        _btbFlinch.SetYieldMode(true);
+        
+        _btbStumble.AddBehaviour(Stumble);
+        _btbStumble.SetYieldMode(true);
+        
+        _btbRush.AddBehaviour(Rush);
+        _btbRush.SetYieldMode(true);
+        
+        _btbTale.AddBehaviour(Tale);
+        _btbTale.SetYieldMode(true);
+        
+        _btbAwayFromPlayer.AddBehaviour(Away);
+        _btbAwayFromPlayer.SetYieldMode(true);
 
         #endregion
 
@@ -207,6 +255,7 @@ public class NueBTV1E1
         }
 
         _agent = GetComponent<NavMeshAgent>();
+        
         if (GetComponent<Animator>() != null)
         {
             _animator = GetComponent<Animator>();
@@ -223,35 +272,41 @@ public class NueBTV1E1
 
         _btcPlayerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayers);
         _btcPlayerIsInARange = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
+
+        if (!_btcPlayerFound)
+        {
+            _bt.JumpTo(_btbIdle);
+        }
+
+        if (!_btcPlayerIsInARange && _btcPlayerFound)
+        {
+            _bt.JumpTo(_btbGetClose);
+        }
+
         _bt.UpdateTransition(_bttStartGetClose, ref _btcPlayerFound);
         _bt.UpdateTransition(_bttStartThink, ref _btcPlayerIsInARange);
-        
-        Debug.Log($"Behaviour ID : {_bt.CurrentBehaviourID}");
     }
 
     public void FinalizeThisComponent()
     {
-        throw new System.NotImplementedException();
     }
 
     public void StartDull()
     {
-        throw new System.NotImplementedException();
     }
 
     public void EndDull()
     {
-        throw new System.NotImplementedException();
     }
 
     public void AddDamage(float dmg)
     {
-        throw new System.NotImplementedException();
+        _health -= dmg;
     }
 
     public void Kill()
     {
-        throw new System.NotImplementedException();
+        _health = 0;
     }
 
     private void OnDrawGizmos()
