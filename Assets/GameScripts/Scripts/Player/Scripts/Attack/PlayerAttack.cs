@@ -59,7 +59,6 @@ public class PlayerAttack : MonoBehaviour
     /// </summary>
     public void InputReset()
     {
-        
         IsStart = false;
     }
 }
