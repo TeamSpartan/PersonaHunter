@@ -133,6 +133,11 @@ namespace SgLibUnite.BehaviourTree
         private bool _isPausing;
         private bool _isYieldToEvent;
 
+        public int CurrentBehaviourID
+        {
+            get { return _btBehaviours.ToList().IndexOf(_currentBehaviour); }
+        }
+
         public bool IsPaused
         {
             get { return _isPausing; }
@@ -179,7 +184,7 @@ namespace SgLibUnite.BehaviourTree
                         _currentTransitionName = transition.Name;
                     }
                 }
-                else if (transition.Name == name)
+                else /* if (transition.Name == name) */
                 {
                     _currentBehaviour.Tick();
                 }

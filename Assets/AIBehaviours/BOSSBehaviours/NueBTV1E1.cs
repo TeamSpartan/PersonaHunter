@@ -195,7 +195,7 @@ public class NueBTV1E1
 
         _bt.MakeTransition(_btbIdle, _btbGetClose, _bttStartGetClose);
         _bt.MakeTransition(_btbGetClose, _btbThinkForNextBehaviour, _bttStartThink);
-        
+
         #endregion
 
         // Start BT 4.
@@ -225,6 +225,8 @@ public class NueBTV1E1
         _btcPlayerIsInARange = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
         _bt.UpdateTransition(_bttStartGetClose, ref _btcPlayerFound);
         _bt.UpdateTransition(_bttStartThink, ref _btcPlayerIsInARange);
+        
+        Debug.Log($"Behaviour ID : {_bt.CurrentBehaviourID}");
     }
 
     public void FinalizeThisComponent()
