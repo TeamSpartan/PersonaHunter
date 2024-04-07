@@ -1,6 +1,7 @@
 using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 // 作成 菅沼
 [RequireComponent(typeof(NavMeshAgent))]
@@ -14,7 +15,7 @@ public class NueBTV1E1
 {
     #region Parameter Exposing
 
-    [SerializeField, Header("Health")] private float _health;
+    [SerializeField, Header("Health")] private float _healthMaxValue;
 
     [SerializeField, Header("Flinch Threshold")]
     private float _flinchThreshold;
@@ -41,6 +42,9 @@ public class NueBTV1E1
     private LayerMask _playerLayers;
 
     [SerializeField, Header("Player Tag")] private string _playerTag;
+
+    [SerializeField, Range(1f, 50f)] private float _baseMoveSpeed;
+    [SerializeField, Range(1f, 50f)] private float _moveSpeedOnMad;
 
     #endregion
 
@@ -79,6 +83,7 @@ public class NueBTV1E1
     private float _tFlinchET;
     private float _tStumbleET;
     private float _tAwaitET;
+    private float _thinkET; // 思考時 の 待機時間。 怒り状態で待機時間が減るのでこれが必要
 
     #endregion
 
@@ -89,6 +94,9 @@ public class NueBTV1E1
     private NavMeshAgent _agent;
     private Animator _animator;
     private float _flinchVal;
+    [SerializeField]
+    private float _health;
+    private bool _isGettingMad;
 
     #endregion
 
@@ -113,6 +121,7 @@ public class NueBTV1E1
     {
         Debug.Log($"Get Close");
         FindPlayer();
+        _agent.speed = _isGettingMad ? _moveSpeedOnMad : _baseMoveSpeed;
         if (!_agent.hasPath)
         {
             _agent.SetDestination(_player.position);
@@ -130,12 +139,35 @@ public class NueBTV1E1
         }
     }
 
+    private void SelectNextBehaviour()
+    {
+    }
+
     private void Think()
     {
         Debug.Log($"Think");
         if (_agent.hasPath)
         {
             _agent.ResetPath();
+        }
+
+        _thinkET += Time.deltaTime;
+        
+        if (!_isGettingMad) // 通常
+        {
+            if (_thinkET > _awaitingTime)
+            {
+                _thinkET = 0;
+                SelectNextBehaviour();
+            }
+        }
+        else // 怒り状態
+        {
+            if (_thinkET > _awaitingTime * .5f)
+            {
+                _thinkET = 0;
+                SelectNextBehaviour();
+            }
         }
     }
 
@@ -184,6 +216,7 @@ public class NueBTV1E1
     private void Rush()
     {
         Debug.Log($"Rush");
+        
     }
 
     #endregion
@@ -264,6 +297,8 @@ public class NueBTV1E1
         {
             _animator = GetComponentInChildren<Animator>();
         }
+
+        _health = _healthMaxValue;
     }
 
     private void FixedUpdate()
@@ -272,6 +307,7 @@ public class NueBTV1E1
 
         _btcPlayerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayers);
         _btcPlayerIsInARange = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
+        _isGettingMad = (_healthMaxValue * .5f) >= _health;
 
         if (!_btcPlayerFound)
         {

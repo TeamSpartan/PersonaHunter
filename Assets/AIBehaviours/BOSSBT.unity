@@ -156,10 +156,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 146965efa87a37c4e975eb4519b7010c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _health: 2
+  _healthMaxValue: 2000
   _flinchThreshold: 100
-  _awaitOnStumble: 2
-  _awaitOnFlinching: 2
+  _awaitingTime: 2
+  _awaitTimeOnStumble: 2
+  _awaitTimeOnFlinching: 2
   _sightRange: 40
   _clawAttackRange: 10
   _taleAttackRange: 20
