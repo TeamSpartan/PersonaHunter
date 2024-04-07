@@ -1,7 +1,6 @@
 using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Serialization;
 
 // 作成 菅沼
 [RequireComponent(typeof(NavMeshAgent))]
@@ -94,9 +93,13 @@ public class NueBTV1E1
     private NavMeshAgent _agent;
     private Animator _animator;
     private float _flinchVal;
-    [SerializeField]
-    private float _health;
+    [SerializeField] private float _health;
     private bool _isGettingMad;
+
+    // メソッドへの一度のみのエントリーを制限したいときのフラグ
+    private bool _clawEntryLocked;
+    private bool _taleEntryLocked;
+    private bool _rushEntryLocked;
 
     #endregion
 
@@ -152,9 +155,10 @@ public class NueBTV1E1
         }
 
         _thinkET += Time.deltaTime;
-        
+
         if (!_isGettingMad) // 通常
         {
+            Debug.Log("Think...Not Mad");
             if (_thinkET > _awaitingTime)
             {
                 _thinkET = 0;
@@ -163,6 +167,7 @@ public class NueBTV1E1
         }
         else // 怒り状態
         {
+            Debug.Log("Think...Im Mad");
             if (_thinkET > _awaitingTime * .5f)
             {
                 _thinkET = 0;
@@ -179,6 +184,11 @@ public class NueBTV1E1
     private void Flinch()
     {
         Debug.Log($"Flinch");
+        if (_agent.hasPath)
+        {
+            _agent.ResetPath();
+        }
+
         _tFlinchET += Time.deltaTime;
         if (_tFlinchET > _awaitTimeOnFlinching)
         {
@@ -195,6 +205,11 @@ public class NueBTV1E1
     private void Stumble()
     {
         Debug.Log($"Stumble");
+        if (_agent.hasPath)
+        {
+            _agent.ResetPath();
+        }
+
         _tStumbleET += Time.deltaTime;
         if (_tStumbleET > _awaitTimeOnStumble)
         {
@@ -205,18 +220,72 @@ public class NueBTV1E1
 
     private void Claw()
     {
+        if (_clawEntryLocked) return;
+
+        if (_bt.CurrentYieldedBehaviourID == 1)
+        {
+            if (!_clawEntryLocked)
+            {
+                _clawEntryLocked = true;
+            }
+        }
+
         Debug.Log($"Claw");
+        if (_agent.hasPath)
+        {
+            _agent.ResetPath();
+        }
     }
 
     private void Tale()
     {
+        if (_taleEntryLocked) return;
+
+        if (_bt.CurrentYieldedBehaviourID == 7)
+        {
+            if (!_taleEntryLocked)
+            {
+                _taleEntryLocked = true;
+            }
+        }
+
         Debug.Log($"Tale");
+        if (_agent.hasPath)
+        {
+            _agent.ResetPath();
+        }
     }
 
     private void Rush()
     {
+        if (_rushEntryLocked) return;
+
+        if (_bt.CurrentYieldedBehaviourID == 8)
+        {
+            if (!_rushEntryLocked)
+            {
+                _rushEntryLocked = true;
+            }
+        }
+
         Debug.Log($"Rush");
-        
+        if (!_agent.hasPath)
+        {
+            _agent.SetDestination(_player.position);
+        }
+        else
+        {
+            var dist = Vector3.Distance(_agent.destination, transform.position);
+            if (dist < 1)
+            {
+                _bt.JumpTo(_btbThinkForNextBehaviour);
+            }
+        }
+    }
+
+    public void NotifyEndAttackingMotion()  // アニメーションイベントで呼び出す
+    {
+        _bt.JumpTo(_btbThinkForNextBehaviour);
     }
 
     #endregion
@@ -238,28 +307,28 @@ public class NueBTV1E1
         _btbIdle.AddBehaviour(Idle);
         _btbGetClose.AddBehaviour(GetClose);
         _btbThinkForNextBehaviour.AddBehaviour(Think);
-        
+
         _btbAwait.AddBehaviour(Await);
         _btbAwait.SetYieldMode(true);
-        
+
         _btbClaw.AddBehaviour(Claw);
         _btbClaw.SetYieldMode(true);
-        
+
         _btbDeath.AddBehaviour(Death);
         _btbDeath.SetYieldMode(true);
-        
+
         _btbFlinch.AddBehaviour(Flinch);
         _btbFlinch.SetYieldMode(true);
-        
+
         _btbStumble.AddBehaviour(Stumble);
         _btbStumble.SetYieldMode(true);
-        
+
         _btbRush.AddBehaviour(Rush);
         _btbRush.SetYieldMode(true);
-        
+
         _btbTale.AddBehaviour(Tale);
         _btbTale.SetYieldMode(true);
-        
+
         _btbAwayFromPlayer.AddBehaviour(Away);
         _btbAwayFromPlayer.SetYieldMode(true);
 
@@ -288,7 +357,7 @@ public class NueBTV1E1
         }
 
         _agent = GetComponent<NavMeshAgent>();
-        
+
         if (GetComponent<Animator>() != null)
         {
             _animator = GetComponent<Animator>();

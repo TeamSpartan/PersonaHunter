@@ -169,8 +169,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _playerTag: Player
+  _baseMoveSpeed: 3
+  _moveSpeedOnMad: 8.1
   _btcPlayerFound: 0
   _btcPlayerIsInARange: 0
+  _health: 2
 --- !u!195 &400585379
 NavMeshAgent:
   m_ObjectHideFlags: 0

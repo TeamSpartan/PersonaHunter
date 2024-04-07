@@ -138,6 +138,11 @@ namespace SgLibUnite.BehaviourTree
             get { return _btBehaviours.ToList().IndexOf(_currentBehaviour); }
         }
 
+        public int CurrentYieldedBehaviourID
+        {
+            get { return _btBehaviours.ToList().IndexOf(_yieldedBehaviourNow); }
+        }
+
         public bool IsPaused
         {
             get { return _isPausing; }
