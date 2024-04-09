@@ -144,6 +144,10 @@ public class NueBTV1E1
 
     private void SelectNextBehaviour()
     {
+        var dest = (_player.position - transform.position).normalized;
+        var dot = Vector3.Dot(dest, transform.forward);
+        var playerIsForward = (dot >= 0);
+        var playerIsSide = (Mathf.Abs(dot) <= .25f);
     }
 
     private void Think()
