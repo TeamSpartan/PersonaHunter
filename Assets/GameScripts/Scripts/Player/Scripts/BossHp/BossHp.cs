@@ -8,7 +8,7 @@ public class BossHp : MonoBehaviour, IDamagedComponent
 	public float InitiateHp => initiateHp;
 	public float CurrentHp => _currentHp;
 
-	protected System.Action OnDeath,
+	public event System.Action OnDeath,
 		OnReceiveDamage,
 		OnResetDamage;
 
@@ -16,11 +16,9 @@ public class BossHp : MonoBehaviour, IDamagedComponent
 	private void OnEnable()
 	{
 		#region initiateAction
-
 		OnResetDamage += () => Debug.Log("ResetDamage");
 		OnReceiveDamage += () => Debug.Log("ReceiveDamage");
 		OnDeath += () => Debug.Log("Death");
-
 		#endregion
 	}
 
