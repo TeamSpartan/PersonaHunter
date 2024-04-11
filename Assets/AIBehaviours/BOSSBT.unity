@@ -293,6 +293,9 @@ MonoBehaviour:
   _btcPlayerIsInARange: 0
   _health: 0
   _attackCount: 0
+  _clawEntryLocked: 0
+  _taleEntryLocked: 0
+  _rushEntryLocked: 0
 --- !u!1 &442332995
 GameObject:
   m_ObjectHideFlags: 0
@@ -1091,7 +1094,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthMaxValue: 2000
   _flinchThreshold: 100
-  _awaitingTime: 4.59
+  _awaitingTime: 1
   _awaitTimeOnStumble: 2
   _awaitTimeOnFlinching: 2
   _sightRange: 40
@@ -1108,6 +1111,9 @@ MonoBehaviour:
   _btcPlayerIsInARange: 0
   _health: 0
   _attackCount: 0
+  _clawEntryLocked: 0
+  _taleEntryLocked: 0
+  _rushEntryLocked: 0
 --- !u!195 &1180038890
 NavMeshAgent:
   m_ObjectHideFlags: 0

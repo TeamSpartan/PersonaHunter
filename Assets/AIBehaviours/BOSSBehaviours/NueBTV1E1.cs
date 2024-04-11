@@ -98,9 +98,9 @@ public class NueBTV1E1
     [SerializeField] private int _attackCount;
 
     // メソッドへの一度のみのエントリーを制限したいときのフラグ
-    private bool _clawEntryLocked;
-    private bool _taleEntryLocked;
-    private bool _rushEntryLocked;
+    [SerializeField] private bool _clawEntryLocked;
+    [SerializeField] private bool _taleEntryLocked;
+    [SerializeField] private bool _rushEntryLocked;
 
     #endregion
 
@@ -182,10 +182,6 @@ public class NueBTV1E1
     private void Think()
     {
         Debug.Log($"Think");
-        if (_agent.hasPath)
-        {
-            _agent.ResetPath();
-        }
 
         _thinkET += Time.deltaTime;
 
@@ -253,16 +249,6 @@ public class NueBTV1E1
 
     private void Claw()
     {
-        // if (_clawEntryLocked) return;
-        //
-        // if (_bt.CurrentYieldedBehaviourID == 1)
-        // {
-        //     if (!_clawEntryLocked)
-        //     {
-        //         _clawEntryLocked = true;
-        //     }
-        // }
-
         if (!_clawEntryLocked)
         {
             _agent.ResetPath();
@@ -273,16 +259,6 @@ public class NueBTV1E1
 
     private void Tale()
     {
-        // if (_taleEntryLocked) return;
-        //
-        // if (_bt.CurrentYieldedBehaviourID == 7)
-        // {
-        //     if (!_taleEntryLocked)
-        //     {
-        //         _taleEntryLocked = true;
-        //     }
-        // }
-
         if (!_taleEntryLocked)
         {
             _agent.ResetPath();
@@ -293,30 +269,16 @@ public class NueBTV1E1
 
     private void Rush()
     {
-        // if (_rushEntryLocked) return;
-        //
-        // if (_bt.CurrentYieldedBehaviourID == 8)
-        // {
-        //     if (!_rushEntryLocked)
-        //     {
-        //         _rushEntryLocked = true;
-        //     }
-        // }
-
         if (!_rushEntryLocked)
         {
+            FindPlayer();
+            Debug.Log($"Rush");
             _agent.SetDestination(_player.position);
             _rushEntryLocked = true;
-            Debug.Log($"Rush");
+            _agent.speed = _baseMoveSpeed * 2f;
         }
         else
         {
-            var dist = Vector3.Distance(_agent.destination, transform.position);
-            if (dist < 1)
-            {
-                _rushEntryLocked = false;
-                _bt.JumpTo(_btbThinkForNextBehaviour);
-            }
         }
     }
 
@@ -344,6 +306,8 @@ public class NueBTV1E1
         _btbIdle.AddBehaviour(Idle);
         _btbGetClose.AddBehaviour(GetClose);
         _btbThinkForNextBehaviour.AddBehaviour(Think);
+
+        _btbGetClose.EEnd += () => { _agent.ResetPath(); };
 
         _btbAwait.AddBehaviour(Await);
         _btbAwait.SetYieldMode(true);
