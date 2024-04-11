@@ -146,8 +146,12 @@ public class NueBTV1E1
     {
         var dest = (_player.position - transform.position).normalized;
         var dot = Vector3.Dot(dest, transform.forward);
-        var playerIsForward = (dot >= 0);
-        var playerIsSide = (Mathf.Abs(dot) <= .25f);
+        var forwardRad = Mathf.Cos(67.5f * Mathf.Deg2Rad); // 90 * (3/4) 
+        var playerIsForward = (dot > 0) && (dot > forwardRad);
+        var playerIsSide = (Mathf.Abs(dot) < forwardRad);
+        var playerIsBackward = !playerIsForward && !playerIsSide;
+        
+        
     }
 
     private void Think()
@@ -287,7 +291,7 @@ public class NueBTV1E1
         }
     }
 
-    public void NotifyEndAttackingMotion()  // アニメーションイベントで呼び出す
+    public void NotifyEndAttackingMotion() // アニメーションイベントで呼び出す
     {
         _bt.JumpTo(_btbThinkForNextBehaviour);
     }
