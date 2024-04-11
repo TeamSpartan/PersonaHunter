@@ -150,7 +150,10 @@ public class NueBTV1E1
         var playerIsForward = (dot > 0) && (dot > forwardRad);
         var playerIsSide = (Mathf.Abs(dot) < forwardRad);
         var playerIsBackward = !playerIsForward && !playerIsSide;
-        
+        var playerIsFar = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
+        var playerIsFarABit = Physics.CheckSphere(transform.position, _taleAttackRange, _playerLayers);
+        var playerIsNear = Physics.CheckSphere(transform.position, _clawAttackRange, _playerLayers);
+
         
     }
 
