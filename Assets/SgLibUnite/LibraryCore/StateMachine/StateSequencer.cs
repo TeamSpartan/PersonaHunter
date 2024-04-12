@@ -1,8 +1,8 @@
 ﻿// 管理者 菅沼
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+
 namespace SgLibUnite
 {
     namespace StateSequencer
@@ -12,30 +12,41 @@ namespace SgLibUnite
         {
             // 通常ステート
             HashSet<ISequensableState> _states = new HashSet<ISequensableState>();
+
             // Anyステートからのステート
             HashSet<ISequensableState> _statesFromAnyState = new HashSet<ISequensableState>();
+
             // トランジション
             HashSet<StateMachineTransition> _transitions = new HashSet<StateMachineTransition>();
+
             // Anyからのトランジション
             HashSet<StateMachineTransition> _transitionsFromAny = new HashSet<StateMachineTransition>();
+
             // 現在突入しているステート
             ISequensableState _currentPlayingSequensableState;
+
             // 現在突入しているトランジション名
             string _currentTransitionName;
+
             // ステートマシンが一時停止中かのフラグ
             bool _bIsPausing = true;
+
             // デリゲート公開部
             public event Action<string> OnEntered;
             public event Action<string> OnUpdated;
             public event Action<string> OnExited;
 
             #region 登録処理
+
             /// <summary> ステートの登録 </summary>
             /// <param name="sequensableState"></param>
             public void ResistState(ISequensableState sequensableState)
             {
                 _states.Add(sequensableState);
-                if (_currentPlayingSequensableState == null) { _currentPlayingSequensableState = sequensableState; }
+                if (_currentPlayingSequensableState == null)
+                {
+                    _currentPlayingSequensableState = sequensableState;
+                }
             }
 
             /// <summary> Anyからのステートの登録 </summary>
@@ -52,7 +63,10 @@ namespace SgLibUnite
                 foreach (ISequensableState state in states)
                 {
                     _states.Add(state);
-                    if (_currentPlayingSequensableState == null) { _currentPlayingSequensableState = state; }
+                    if (_currentPlayingSequensableState == null)
+                    {
+                        _currentPlayingSequensableState = state;
+                    }
                 }
             }
 
@@ -89,12 +103,14 @@ namespace SgLibUnite
             #endregion
 
             #region 更新処理
+
             /// <summary> 任意のステート間遷移の遷移の状況を更新する。 </summary>
             /// <param name="name"></param>
             /// <param name="condition2transist"></param>
             /// <param name="tType"></param>
             /// <param name="equalsTo"></param>
-            public void UpdateTransition(string name, ref bool condition2transist, bool equalsTo = true, bool isTrigger = false)
+            public void UpdateTransition(string name, ref bool condition2transist, bool equalsTo = true,
+                bool isTrigger = false)
             {
                 if (_bIsPausing) return; // もし一時停止中なら更新処理はしない。
                 foreach (var t in _transitions)
@@ -117,7 +133,7 @@ namespace SgLibUnite
                         }
                     }
                     // 遷移の条件を満たしてはいないが、遷移ネームが一致（更新されていないなら）現在のステートの更新処理を呼ぶ
-                    else if (t.Name == name)
+                    else /*if (t.Name == name)*/
                     {
                         _currentPlayingSequensableState.Update();
                         if (OnUpdated != null)
@@ -130,7 +146,8 @@ namespace SgLibUnite
             /// <param name="name"></param>
             /// <param name="condition2transist"></param>
             /// <param name="equalsTo"></param>
-            public void UpdateTransitionFromAnyState(string name, ref bool condition2transist, bool equalsTo = true, bool isTrigger = false)
+            public void UpdateTransitionFromAnyState(string name, ref bool condition2transist, bool equalsTo = true,
+                bool isTrigger = false)
             {
                 if (_bIsPausing) return; // もし一時停止中なら更新処理はしない。
                 foreach (var t in _transitionsFromAny)
@@ -157,25 +174,31 @@ namespace SgLibUnite
                     }
                 } // 全遷移を検索。
             }
+
             #endregion
 
             #region 起動処理
+
             /// <summary> ステートマシンを起動する </summary>
             public void PopStateMachine()
             {
                 _bIsPausing = false;
                 _currentPlayingSequensableState.Entry();
             }
+
             #endregion
 
             #region 一時停止処理
+
             /// <summary> ステートマシンの処理を一時停止 </summary>
             public void PushStateMachine()
             {
                 _bIsPausing = true;
             }
+
             #endregion
         }
+
         // 各トランジションは名前を割り当てている
         /// <summary> ステート間遷移の情報を格納している </summary>
         public class StateMachineTransition
@@ -186,6 +209,7 @@ namespace SgLibUnite
             public ISequensableState STo => _to;
             string _name;
             public string Name => _name;
+
             public StateMachineTransition(ISequensableState from, ISequensableState to, string name)
             {
                 _from = from;
@@ -221,11 +245,12 @@ namespace SgLibUnite
         /// <summary> ステート遷移のタイプ </summary>
         enum StateMachineTransitionType
         {
-            StandardState,      // 通常 
-            AnyState,           // 一フレームのみ遷移 
+            StandardState, // 通常 
+            AnyState, // 一フレームのみ遷移 
         }
 
         #region ステートマシン、利用部構想
+
         // イニシャライズ処理
         // ステートマシンインスタンス化ステートの登録
         // トランジションの登録
@@ -233,6 +258,7 @@ namespace SgLibUnite
 
         // 毎フレーム処理
         // トランジションの状態の更新
+
         #endregion
     }
 }
