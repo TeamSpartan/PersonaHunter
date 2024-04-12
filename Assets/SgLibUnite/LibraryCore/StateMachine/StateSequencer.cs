@@ -133,7 +133,7 @@ namespace SgLibUnite
                         }
                     }
                     // 遷移の条件を満たしてはいないが、遷移ネームが一致（更新されていないなら）現在のステートの更新処理を呼ぶ
-                    else if (t.Name == name)
+                    else /*if (t.Name == name)*/
                     {
                         _currentPlayingSequensableState.Update();
                         if (OnUpdated != null)
