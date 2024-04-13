@@ -103,12 +103,30 @@ public class Nue_v1_e2 : MonoBehaviour
 
     #region Functions
 
+    void FindPlayer()
+    {
+        _player = GameObject.FindWithTag("Player").transform;
+    }
+
     void Idle()
     {
+        if (!_agent.hasPath)
+        {
+            _agent.SetDestination(transform.position);
+        }
+        else
+        {
+            _agent.ResetPath();
+        }
     }
 
     void GetClose()
     {
+        FindPlayer();
+        if (_agent.destination != _player.position && !_agent.hasPath)
+        {
+            _agent.SetDestination(_player.position);
+        }
     }
 
     void Think()
@@ -148,6 +166,18 @@ public class Nue_v1_e2 : MonoBehaviour
     }
 
     #endregion
+    
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, _sightRange);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, _clawAttackRange);
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, _taleAttackRange);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, _rushAttackRange);
+    }
 
     public float GetHealth()
     {
@@ -167,6 +197,7 @@ public class Nue_v1_e2 : MonoBehaviour
         _btbGetClose.AddBehaviour(GetClose);
         _btbThink.AddBehaviour(Think);
 
+        _btbIdle.EEnd += () => { _agent.ResetPath(); };
         _btbGetClose.EEnd += () => { _agent.ResetPath(); };
 
         _btbAwait.AddBehaviour(Await);
