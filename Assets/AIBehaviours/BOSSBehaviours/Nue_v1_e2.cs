@@ -57,6 +57,7 @@ public class Nue_v1_e2 : MonoBehaviour
     private BTBehaviour _btbClaw = new BTBehaviour();
     private BTBehaviour _btbTale = new BTBehaviour();
     private BTBehaviour _btbRush = new BTBehaviour();
+    private BTBehaviour _btbCurrentYieldedBehaviour = new BTBehaviour();
 
     #endregion
 
@@ -79,7 +80,6 @@ public class Nue_v1_e2 : MonoBehaviour
     private float _tFlinchET;
     private float _tStumbleET;
     private float _tAwaitET;
-    private float _thinkET; // 思考時 の 待機時間。 怒り状態で待機時間が減るのでこれが必要
 
     #endregion
 
@@ -108,14 +108,21 @@ public class Nue_v1_e2 : MonoBehaviour
         _player = GameObject.FindWithTag("Player").transform;
     }
 
+    public void BackToBehaviourThink()
+    {
+        _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
+    }
+
     void Idle()
     {
         if (!_agent.hasPath)
         {
+            Debug.Log($"Idle:Set Destination");
             _agent.SetDestination(transform.position);
         }
         else
         {
+            Debug.Log($"Idle:Reset Path");
             _agent.ResetPath();
         }
     }
@@ -125,44 +132,82 @@ public class Nue_v1_e2 : MonoBehaviour
         FindPlayer();
         if (_agent.destination != _player.position && !_agent.hasPath)
         {
+            Debug.Log($"Getting Close To Player");
             _agent.SetDestination(_player.position);
         }
     }
 
     void Think()
     {
+        Debug.Log($"Thinking");
+        _bt.YeildAllBehaviourTo(_btbAwait);
     }
 
     void Await()
     {
+        Debug.Log($"Awaiting");
+        _tAwaitET += Time.deltaTime;
+
+        if (_tAwaitET > _awaitingTime)
+        {
+            _tAwaitET = 0;
+            _bt.YeildAllBehaviourTo(_btbRush);
+        }
     }
 
     void Away()
     {
+        Debug.Log($"Away From Player");
     }
 
     void Claw()
     {
+        Debug.Log($"Claw Attack To Player");
     }
 
     void Tale()
     {
+        Debug.Log($"Tale Attack To Player");
     }
 
     void Rush()
     {
+        Debug.Log($"Rushing To Player");
+        _btbCurrentYieldedBehaviour = _btbRush;
+
+        if (_agent.destination != _player.position && !_agent.hasPath)
+        {
+            _agent.SetDestination(_player.position);
+            _agent.speed = _baseMoveSpeed * 3f;
+        }
+        else if(_agent.hasPath)
+        {
+            Debug.Log($"ypaaaaaa");
+            var d = Vector3.Distance(_agent.destination, transform.position);
+            if (d < _clawAttackRange)
+            {
+                Debug.Log($"Gotcha");
+                _agent.ResetPath();
+                _agent.speed = _baseMoveSpeed;
+                _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
+                _bt.JumpTo(_btbThink);
+            }
+        }
     }
 
     void Death()
     {
+        Debug.Log($"Death Now");
     }
 
     void Flinch()
     {
+        Debug.Log($"Flinching Now");
     }
 
     void Stumble()
     {
+        Debug.Log($"Stumbling Now");
     }
 
     #endregion
@@ -194,13 +239,15 @@ public class Nue_v1_e2 : MonoBehaviour
         #region Add Function To Behaviour 1.
 
         _btbIdle.AddBehaviour(Idle);
+        _btbIdle.EEnd += () => { _agent.ResetPath(); };
+        
         _btbGetClose.AddBehaviour(GetClose);
+        _btbGetClose.EEnd += () => { _agent.ResetPath(); };
+        
         _btbThink.AddBehaviour(Think);
 
-        _btbIdle.EEnd += () => { _agent.ResetPath(); };
-        _btbGetClose.EEnd += () => { _agent.ResetPath(); };
-
         _btbAwait.AddBehaviour(Await);
+        _btbAwait.EEnd += () => { _agent.ResetPath(); };
         _btbAwait.SetYieldMode(true);
 
         _btbClaw.AddBehaviour(Claw);

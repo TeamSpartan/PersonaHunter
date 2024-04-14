@@ -158,7 +158,7 @@ public class NueBTV1E1
         // 以下思考 アルゴリズム
         if (playerIsFar && !playerIsFarABit) // 突進距離以内かつしっぽ攻撃距離外
         {
-            Rush();
+            Rush();// _bt.yield... で呼び出す必要があったんご
         }
 
         if (playerIsNear && playerIsForward) // ひっかき距離内かつ正面にいるとき

@@ -536,9 +536,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 306705433}
-        m_TargetAssemblyTypeName: NueBTV1E1, Assembly-CSharp
-        m_MethodName: NotifyEndAttackingMotion
+      - m_Target: {fileID: 1420692829}
+        m_TargetAssemblyTypeName: Nue_v1_e2, Assembly-CSharp
+        m_MethodName: BackToBehaviourThink
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
