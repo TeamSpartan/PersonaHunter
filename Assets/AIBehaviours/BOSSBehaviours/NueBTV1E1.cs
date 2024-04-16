@@ -95,11 +95,12 @@ public class NueBTV1E1
     private float _flinchVal;
     [SerializeField] private float _health;
     private bool _isGettingMad;
+    [SerializeField] private int _attackCount;
 
     // メソッドへの一度のみのエントリーを制限したいときのフラグ
-    private bool _clawEntryLocked;
-    private bool _taleEntryLocked;
-    private bool _rushEntryLocked;
+    [SerializeField] private bool _clawEntryLocked;
+    [SerializeField] private bool _taleEntryLocked;
+    [SerializeField] private bool _rushEntryLocked;
 
     #endregion
 
@@ -154,16 +155,33 @@ public class NueBTV1E1
         var playerIsFarABit = Physics.CheckSphere(transform.position, _taleAttackRange, _playerLayers);
         var playerIsNear = Physics.CheckSphere(transform.position, _clawAttackRange, _playerLayers);
 
-        
+        // 以下思考 アルゴリズム
+        if (playerIsFar && !playerIsFarABit) // 突進距離以内かつしっぽ攻撃距離外
+        {
+            Rush();// _bt.yield... で呼び出す必要があったんご
+        }
+
+        if (playerIsNear && playerIsForward) // ひっかき距離内かつ正面にいるとき
+        {
+            Claw();
+        }
+
+        if (playerIsFarABit && playerIsBackward) // しっぽ攻撃距離内かつ背面にいるとき
+        {
+            Tale();
+        }
+
+        // 攻撃回数カウント数判定
+        if (_attackCount > 2)
+        {
+            Await();
+            _attackCount = 0;
+        }
     }
 
     private void Think()
     {
         Debug.Log($"Think");
-        if (_agent.hasPath)
-        {
-            _agent.ResetPath();
-        }
 
         _thinkET += Time.deltaTime;
 
@@ -231,66 +249,36 @@ public class NueBTV1E1
 
     private void Claw()
     {
-        if (_clawEntryLocked) return;
-
-        if (_bt.CurrentYieldedBehaviourID == 1)
-        {
-            if (!_clawEntryLocked)
-            {
-                _clawEntryLocked = true;
-            }
-        }
-
-        Debug.Log($"Claw");
-        if (_agent.hasPath)
+        if (!_clawEntryLocked)
         {
             _agent.ResetPath();
+            _clawEntryLocked = true;
+            Debug.Log($"Claw");
         }
     }
 
     private void Tale()
     {
-        if (_taleEntryLocked) return;
-
-        if (_bt.CurrentYieldedBehaviourID == 7)
-        {
-            if (!_taleEntryLocked)
-            {
-                _taleEntryLocked = true;
-            }
-        }
-
-        Debug.Log($"Tale");
-        if (_agent.hasPath)
+        if (!_taleEntryLocked)
         {
             _agent.ResetPath();
+            _taleEntryLocked = true;
+            Debug.Log($"Tale");
         }
     }
 
     private void Rush()
     {
-        if (_rushEntryLocked) return;
-
-        if (_bt.CurrentYieldedBehaviourID == 8)
+        if (!_rushEntryLocked)
         {
-            if (!_rushEntryLocked)
-            {
-                _rushEntryLocked = true;
-            }
-        }
-
-        Debug.Log($"Rush");
-        if (!_agent.hasPath)
-        {
+            FindPlayer();
+            Debug.Log($"Rush");
             _agent.SetDestination(_player.position);
+            _rushEntryLocked = true;
+            _agent.speed = _baseMoveSpeed * 2f;
         }
         else
         {
-            var dist = Vector3.Distance(_agent.destination, transform.position);
-            if (dist < 1)
-            {
-                _bt.JumpTo(_btbThinkForNextBehaviour);
-            }
         }
     }
 
@@ -318,6 +306,8 @@ public class NueBTV1E1
         _btbIdle.AddBehaviour(Idle);
         _btbGetClose.AddBehaviour(GetClose);
         _btbThinkForNextBehaviour.AddBehaviour(Think);
+
+        _btbGetClose.EEnd += () => { _agent.ResetPath(); };
 
         _btbAwait.AddBehaviour(Await);
         _btbAwait.SetYieldMode(true);
