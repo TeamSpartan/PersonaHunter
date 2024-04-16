@@ -4478,7 +4478,7 @@ MonoBehaviour:
   _awaitTimeOnFlinching: 2
   _sightRange: 40
   _clawAttackRange: 10
-  _taleAttackRange: 20
+  _taleAttackRange: 12
   _rushAttackRange: 30
   _playerLayers:
     serializedVersion: 2

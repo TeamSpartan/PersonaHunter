@@ -1,6 +1,8 @@
-﻿using SgLibUnite.BehaviourTree;
+﻿using System.Diagnostics;
+using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
+using Debug = UnityEngine.Debug;
 
 public class Nue_v1_e2 : MonoBehaviour
     , IMobBehaviourParameter
@@ -152,27 +154,46 @@ public class Nue_v1_e2 : MonoBehaviour
         if (_tAwaitET > _awaitingTime)
         {
             _tAwaitET = 0;
-            var rand = Random.Range(0, 3);
-            Random.InitState(Random.Range(0,255));
 
-            _bt.YeildAllBehaviourTo(
-                rand switch
+            FindPlayer();
+            var dirPlayer = (_player.position - transform.position).normalized;
+            transform.forward = dirPlayer;
+
+            var rand = Random.Range(1, 100);
+            Random.InitState(Random.Range(0, 255));
+
+            var dest = (_player.position - transform.position).normalized;
+            var dot = Vector3.Dot(dest, transform.forward);
+            var forwardRad = Mathf.Cos(67.5f * Mathf.Deg2Rad); // 90 * (3/4) = 67.5
+
+            var playerIsForward = (dot > 0) && (dot > forwardRad);
+            var playerIsSide = (Mathf.Abs(dot) < forwardRad);
+            var rushable = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
+            var tailable = Physics.CheckSphere(transform.position, _taleAttackRange, _playerLayers);
+            var clawable = Physics.CheckSphere(transform.position, _clawAttackRange, _playerLayers);
+
+            // 以下思考 アルゴリズム
+            if (rushable && !tailable) // 突進距離以内かつしっぽ攻撃距離外
+            {
+                _bt.YeildAllBehaviourTo(_btbRush);
+                _animator.SetTrigger("Rush");
+            }
+
+            if (playerIsForward && tailable) // ひっかき距離内かつ正面にいるとき
+            {
+                if (rand > 50)
                 {
-                    0 => _btbClaw,
-                    1 => _btbTail,
-                    2 => _btbRush,
-                    3 => _btbAway
+                    _bt.YeildAllBehaviourTo(_btbClaw);
+                    _animator.SetTrigger("Claw");
                 }
-            );
-            _animator.SetTrigger(
-                rand switch
+                else
                 {
-                    0 => "Claw",
-                    1 => "Tail",
-                    2 => "Rush",
-                    3 => "Rush"
+                    _bt.YeildAllBehaviourTo(_btbTail);
+                    _animator.SetTrigger("Tail");
                 }
-            );
+            }
+
+            Random.InitState(Random.Range(0, 255));
         }
     }
 
@@ -201,7 +222,7 @@ public class Nue_v1_e2 : MonoBehaviour
     {
         Debug.Log($"Tail Attack To Player");
         _btbCurrentYieldedBehaviour = _btbTail;
-        
+
         if (_agent.destination != transform.position && !_agent.hasPath)
         {
             _agent.SetDestination(transform.position);
