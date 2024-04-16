@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using SgLibUnite.BehaviourTree;
+﻿using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
 using Debug = UnityEngine.Debug;
@@ -32,7 +31,7 @@ public class Nue_v1_e2 : MonoBehaviour
     [Header("Attacking Range")] [SerializeField, Range(1f, 100f)]
     private float _clawAttackRange;
 
-    [SerializeField, Range(5f, 100f)] private float _taleAttackRange;
+    [SerializeField, Range(5f, 100f)] private float _tailAttackRange;
     [SerializeField, Range(10f, 100f)] private float _rushAttackRange;
 
     [SerializeField, Header("Player LayerMask")]
@@ -93,7 +92,7 @@ public class Nue_v1_e2 : MonoBehaviour
     private float _flinchVal;
     [SerializeField] private float _health;
     private bool _isGettingMad;
-    [SerializeField] private int _attackCount;
+    private float _distanceBetPlayer;
 
     // メソッドへの一度のみのエントリーを制限したいときのフラグ
     [SerializeField] private bool _clawEntryLocked;
@@ -151,26 +150,31 @@ public class Nue_v1_e2 : MonoBehaviour
         Debug.Log($"Awaiting");
         _tAwaitET += Time.deltaTime;
 
+        var dest = (_player.position - transform.position).normalized;
+        var dot = Vector3.Dot(dest, transform.forward);
+        var forwardRad = Mathf.Cos(67.5f * Mathf.Deg2Rad); // 90 * (3/4) = 67.5
+
+        FindPlayer();
+        _distanceBetPlayer = Vector3.Distance(transform.position, _player.position);
+
+        var playerIsForward = (dot > 0) && (dot > forwardRad);
+        var playerIsSide = (Mathf.Abs(dot) < forwardRad);
+        var rushable = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
+        var tailable = Physics.CheckSphere(transform.position, _tailAttackRange, _playerLayers);
+        var clawable = Physics.CheckSphere(transform.position, _clawAttackRange, _playerLayers);
+
+        if (playerIsSide)
+        {
+            transform.forward = Vector3.Lerp(transform.forward, dest, 10);
+        }
+
         if (_tAwaitET > _awaitingTime)
         {
             _tAwaitET = 0;
 
-            FindPlayer();
-            var dirPlayer = (_player.position - transform.position).normalized;
-            transform.forward = dirPlayer;
-
             var rand = Random.Range(1, 100);
             Random.InitState(Random.Range(0, 255));
 
-            var dest = (_player.position - transform.position).normalized;
-            var dot = Vector3.Dot(dest, transform.forward);
-            var forwardRad = Mathf.Cos(67.5f * Mathf.Deg2Rad); // 90 * (3/4) = 67.5
-
-            var playerIsForward = (dot > 0) && (dot > forwardRad);
-            var playerIsSide = (Mathf.Abs(dot) < forwardRad);
-            var rushable = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
-            var tailable = Physics.CheckSphere(transform.position, _taleAttackRange, _playerLayers);
-            var clawable = Physics.CheckSphere(transform.position, _clawAttackRange, _playerLayers);
 
             // 以下思考 アルゴリズム
             if (rushable && !tailable) // 突進距離以内かつしっぽ攻撃距離外
@@ -236,8 +240,8 @@ public class Nue_v1_e2 : MonoBehaviour
 
         if (_agent.destination != _player.position && !_agent.hasPath)
         {
-            _agent.SetDestination(_player.position);
             _agent.speed = _baseMoveSpeed * 3f;
+            _agent.SetDestination(_player.position);
         }
         else if (_agent.hasPath)
         {
@@ -248,7 +252,6 @@ public class Nue_v1_e2 : MonoBehaviour
             {
                 Debug.Log($"Gotcha!");
                 _agent.ResetPath();
-                _agent.speed = _baseMoveSpeed;
                 _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
                 _bt.JumpTo(_btbThink);
             }
@@ -279,7 +282,7 @@ public class Nue_v1_e2 : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, _clawAttackRange);
         Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, _taleAttackRange);
+        Gizmos.DrawWireSphere(transform.position, _tailAttackRange);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, _rushAttackRange);
     }
@@ -308,7 +311,10 @@ public class Nue_v1_e2 : MonoBehaviour
         _btbThink.EEnd += () => { _agent.ResetPath(); };
 
         _btbAwait.AddBehaviour(Await);
-        _btbAwait.EEnd += () => { _agent.ResetPath(); };
+        _btbAwait.EEnd += () =>
+        {
+            _agent.ResetPath();
+        };
         _btbAwait.SetYieldMode(true);
 
         _btbClaw.AddBehaviour(Claw);

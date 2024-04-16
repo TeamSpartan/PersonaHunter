@@ -222,6 +222,7 @@ namespace SgLibUnite.BehaviourTree
             {
                 _isYieldToEvent = true;
                 _yieldedBehaviourNow = behaviour;
+                _yieldedBehaviourNow.Begin();
             }
         }
 
@@ -230,6 +231,7 @@ namespace SgLibUnite.BehaviourTree
             if (_btBehaviours.Contains(behaviour))
             {
                 _isYieldToEvent = false;
+                _yieldedBehaviourNow.End();
             }
         }
 
