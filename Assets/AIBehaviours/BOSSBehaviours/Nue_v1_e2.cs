@@ -1,5 +1,4 @@
-﻿using System;
-using SgLibUnite.BehaviourTree;
+﻿using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -55,7 +54,7 @@ public class Nue_v1_e2 : MonoBehaviour
     private BTBehaviour _btbDeath = new BTBehaviour();
     private BTBehaviour _btbStumble = new BTBehaviour();
     private BTBehaviour _btbClaw = new BTBehaviour();
-    private BTBehaviour _btbTale = new BTBehaviour();
+    private BTBehaviour _btbTail = new BTBehaviour();
     private BTBehaviour _btbRush = new BTBehaviour();
     private BTBehaviour _btbCurrentYieldedBehaviour = new BTBehaviour();
 
@@ -96,7 +95,7 @@ public class Nue_v1_e2 : MonoBehaviour
 
     // メソッドへの一度のみのエントリーを制限したいときのフラグ
     [SerializeField] private bool _clawEntryLocked;
-    [SerializeField] private bool _taleEntryLocked;
+    [SerializeField] private bool _tailEntryLocked;
     [SerializeField] private bool _rushEntryLocked;
 
     #endregion
@@ -110,7 +109,9 @@ public class Nue_v1_e2 : MonoBehaviour
 
     public void BackToBehaviourThink()
     {
+        Debug.Log($"Back To Think");
         _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
+        _agent.ResetPath();
     }
 
     void Idle()
@@ -151,23 +152,60 @@ public class Nue_v1_e2 : MonoBehaviour
         if (_tAwaitET > _awaitingTime)
         {
             _tAwaitET = 0;
-            _bt.YeildAllBehaviourTo(_btbRush);
+            var rand = Random.Range(0, 3);
+            Random.InitState(Random.Range(0,255));
+
+            _bt.YeildAllBehaviourTo(
+                rand switch
+                {
+                    0 => _btbClaw,
+                    1 => _btbTail,
+                    2 => _btbRush,
+                    3 => _btbAway
+                }
+            );
+            _animator.SetTrigger(
+                rand switch
+                {
+                    0 => "Claw",
+                    1 => "Tail",
+                    2 => "Rush",
+                    3 => "Rush"
+                }
+            );
         }
     }
 
     void Away()
     {
         Debug.Log($"Away From Player");
+        _btbCurrentYieldedBehaviour = _btbAway;
+
+        FindPlayer();
+        var oppositeVec = (transform.position - _player.position) * .75f;
+        _agent.SetDestination(oppositeVec);
     }
 
     void Claw()
     {
         Debug.Log($"Claw Attack To Player");
+        _btbCurrentYieldedBehaviour = _btbClaw;
+
+        if (_agent.destination != transform.position && !_agent.hasPath)
+        {
+            _agent.SetDestination(transform.position);
+        }
     }
 
-    void Tale()
+    void Tail()
     {
-        Debug.Log($"Tale Attack To Player");
+        Debug.Log($"Tail Attack To Player");
+        _btbCurrentYieldedBehaviour = _btbTail;
+        
+        if (_agent.destination != transform.position && !_agent.hasPath)
+        {
+            _agent.SetDestination(transform.position);
+        }
     }
 
     void Rush()
@@ -180,11 +218,11 @@ public class Nue_v1_e2 : MonoBehaviour
             _agent.SetDestination(_player.position);
             _agent.speed = _baseMoveSpeed * 3f;
         }
-        else if(_agent.hasPath)
+        else if (_agent.hasPath)
         {
             Debug.Log($"ypaaaaaa");
             var d = Vector3.Distance(_agent.destination, transform.position);
-            
+
             if (d < _clawAttackRange)
             {
                 Debug.Log($"Gotcha!");
@@ -212,7 +250,7 @@ public class Nue_v1_e2 : MonoBehaviour
     }
 
     #endregion
-    
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.cyan;
@@ -241,11 +279,12 @@ public class Nue_v1_e2 : MonoBehaviour
 
         _btbIdle.AddBehaviour(Idle);
         _btbIdle.EEnd += () => { _agent.ResetPath(); };
-        
+
         _btbGetClose.AddBehaviour(GetClose);
         _btbGetClose.EEnd += () => { _agent.ResetPath(); };
-        
+
         _btbThink.AddBehaviour(Think);
+        _btbThink.EEnd += () => { _agent.ResetPath(); };
 
         _btbAwait.AddBehaviour(Await);
         _btbAwait.EEnd += () => { _agent.ResetPath(); };
@@ -266,8 +305,8 @@ public class Nue_v1_e2 : MonoBehaviour
         _btbRush.AddBehaviour(Rush);
         _btbRush.SetYieldMode(true);
 
-        _btbTale.AddBehaviour(Tale);
-        _btbTale.SetYieldMode(true);
+        _btbTail.AddBehaviour(Tail);
+        _btbTail.SetYieldMode(true);
 
         _btbAway.AddBehaviour(Away);
         _btbAway.SetYieldMode(true);
@@ -277,7 +316,7 @@ public class Nue_v1_e2 : MonoBehaviour
         // Resist Behaviours 2.
         _bt.ResistBehaviours(new[]
         {
-            _btbAwait, _btbClaw, _btbDeath, _btbFlinch, _btbIdle, _btbGetClose, _btbStumble, _btbTale, _btbRush,
+            _btbAwait, _btbClaw, _btbDeath, _btbFlinch, _btbIdle, _btbGetClose, _btbStumble, _btbTail, _btbRush,
             _btbAway, _btbThink
         });
 
