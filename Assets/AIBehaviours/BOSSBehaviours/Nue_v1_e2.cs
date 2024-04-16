@@ -175,6 +175,7 @@ public class Nue_v1_e2 : MonoBehaviour
             var rand = Random.Range(1, 100);
             Random.InitState(Random.Range(0, 255));
 
+            _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
 
             // 以下思考 アルゴリズム
             if (rushable && !tailable) // 突進距離以内かつしっぽ攻撃距離外
@@ -311,10 +312,6 @@ public class Nue_v1_e2 : MonoBehaviour
         _btbThink.EEnd += () => { _agent.ResetPath(); };
 
         _btbAwait.AddBehaviour(Await);
-        _btbAwait.EEnd += () =>
-        {
-            _agent.ResetPath();
-        };
         _btbAwait.SetYieldMode(true);
 
         _btbClaw.AddBehaviour(Claw);
@@ -330,6 +327,8 @@ public class Nue_v1_e2 : MonoBehaviour
         _btbStumble.SetYieldMode(true);
 
         _btbRush.AddBehaviour(Rush);
+        _btbRush.EBegin += () => { _agent.stoppingDistance = _rushAttackRange * (2f / 3f); };
+        _btbRush.EEnd += () => { _agent.stoppingDistance = 3.5f;};
         _btbRush.SetYieldMode(true);
 
         _btbTail.AddBehaviour(Tail);
