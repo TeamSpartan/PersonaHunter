@@ -184,9 +184,10 @@ public class Nue_v1_e2 : MonoBehaviour
         {
             Debug.Log($"ypaaaaaa");
             var d = Vector3.Distance(_agent.destination, transform.position);
+            
             if (d < _clawAttackRange)
             {
-                Debug.Log($"Gotcha");
+                Debug.Log($"Gotcha!");
                 _agent.ResetPath();
                 _agent.speed = _baseMoveSpeed;
                 _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
