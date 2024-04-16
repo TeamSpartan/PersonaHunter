@@ -1,7 +1,7 @@
-﻿using System;
-using SgLibUnite.BehaviourTree;
+﻿using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
+using Debug = UnityEngine.Debug;
 
 public class Nue_v1_e2 : MonoBehaviour
     , IMobBehaviourParameter
@@ -31,7 +31,7 @@ public class Nue_v1_e2 : MonoBehaviour
     [Header("Attacking Range")] [SerializeField, Range(1f, 100f)]
     private float _clawAttackRange;
 
-    [SerializeField, Range(5f, 100f)] private float _taleAttackRange;
+    [SerializeField, Range(5f, 100f)] private float _tailAttackRange;
     [SerializeField, Range(10f, 100f)] private float _rushAttackRange;
 
     [SerializeField, Header("Player LayerMask")]
@@ -55,7 +55,7 @@ public class Nue_v1_e2 : MonoBehaviour
     private BTBehaviour _btbDeath = new BTBehaviour();
     private BTBehaviour _btbStumble = new BTBehaviour();
     private BTBehaviour _btbClaw = new BTBehaviour();
-    private BTBehaviour _btbTale = new BTBehaviour();
+    private BTBehaviour _btbTail = new BTBehaviour();
     private BTBehaviour _btbRush = new BTBehaviour();
     private BTBehaviour _btbCurrentYieldedBehaviour = new BTBehaviour();
 
@@ -92,11 +92,11 @@ public class Nue_v1_e2 : MonoBehaviour
     private float _flinchVal;
     [SerializeField] private float _health;
     private bool _isGettingMad;
-    [SerializeField] private int _attackCount;
+    private float _distanceBetPlayer;
 
     // メソッドへの一度のみのエントリーを制限したいときのフラグ
     [SerializeField] private bool _clawEntryLocked;
-    [SerializeField] private bool _taleEntryLocked;
+    [SerializeField] private bool _tailEntryLocked;
     [SerializeField] private bool _rushEntryLocked;
 
     #endregion
@@ -110,7 +110,9 @@ public class Nue_v1_e2 : MonoBehaviour
 
     public void BackToBehaviourThink()
     {
+        Debug.Log($"Back To Think");
         _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
+        _agent.ResetPath();
     }
 
     void Idle()
@@ -148,26 +150,88 @@ public class Nue_v1_e2 : MonoBehaviour
         Debug.Log($"Awaiting");
         _tAwaitET += Time.deltaTime;
 
+        var dest = (_player.position - transform.position).normalized;
+        var dot = Vector3.Dot(dest, transform.forward);
+        var forwardRad = Mathf.Cos(67.5f * Mathf.Deg2Rad); // 90 * (3/4) = 67.5
+
+        FindPlayer();
+        _distanceBetPlayer = Vector3.Distance(transform.position, _player.position);
+
+        var playerIsForward = (dot > 0) && (dot > forwardRad);
+        var playerIsSide = (Mathf.Abs(dot) < forwardRad);
+        var rushable = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
+        var tailable = Physics.CheckSphere(transform.position, _tailAttackRange, _playerLayers);
+        var clawable = Physics.CheckSphere(transform.position, _clawAttackRange, _playerLayers);
+
+        if (playerIsSide)
+        {
+            transform.forward = Vector3.Lerp(transform.forward, dest, 10);
+        }
+
         if (_tAwaitET > _awaitingTime)
         {
             _tAwaitET = 0;
-            _bt.YeildAllBehaviourTo(_btbRush);
+
+            var rand = Random.Range(1, 100);
+            Random.InitState(Random.Range(0, 255));
+
+            _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
+
+            // 以下思考 アルゴリズム
+            if (rushable && !tailable) // 突進距離以内かつしっぽ攻撃距離外
+            {
+                _bt.YeildAllBehaviourTo(_btbRush);
+                _animator.SetTrigger("Rush");
+            }
+
+            if (playerIsForward && tailable) // ひっかき距離内かつ正面にいるとき
+            {
+                if (rand > 50)
+                {
+                    _bt.YeildAllBehaviourTo(_btbClaw);
+                    _animator.SetTrigger("Claw");
+                }
+                else
+                {
+                    _bt.YeildAllBehaviourTo(_btbTail);
+                    _animator.SetTrigger("Tail");
+                }
+            }
+
+            Random.InitState(Random.Range(0, 255));
         }
     }
 
     void Away()
     {
         Debug.Log($"Away From Player");
+        _btbCurrentYieldedBehaviour = _btbAway;
+
+        FindPlayer();
+        var oppositeVec = (transform.position - _player.position) * .75f;
+        _agent.SetDestination(oppositeVec);
     }
 
     void Claw()
     {
         Debug.Log($"Claw Attack To Player");
+        _btbCurrentYieldedBehaviour = _btbClaw;
+
+        if (_agent.destination != transform.position && !_agent.hasPath)
+        {
+            _agent.SetDestination(transform.position);
+        }
     }
 
-    void Tale()
+    void Tail()
     {
-        Debug.Log($"Tale Attack To Player");
+        Debug.Log($"Tail Attack To Player");
+        _btbCurrentYieldedBehaviour = _btbTail;
+
+        if (_agent.destination != transform.position && !_agent.hasPath)
+        {
+            _agent.SetDestination(transform.position);
+        }
     }
 
     void Rush()
@@ -177,19 +241,18 @@ public class Nue_v1_e2 : MonoBehaviour
 
         if (_agent.destination != _player.position && !_agent.hasPath)
         {
-            _agent.SetDestination(_player.position);
             _agent.speed = _baseMoveSpeed * 3f;
+            _agent.SetDestination(_player.position);
         }
-        else if(_agent.hasPath)
+        else if (_agent.hasPath)
         {
             Debug.Log($"ypaaaaaa");
             var d = Vector3.Distance(_agent.destination, transform.position);
-            
+
             if (d < _clawAttackRange)
             {
                 Debug.Log($"Gotcha!");
                 _agent.ResetPath();
-                _agent.speed = _baseMoveSpeed;
                 _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
                 _bt.JumpTo(_btbThink);
             }
@@ -212,7 +275,7 @@ public class Nue_v1_e2 : MonoBehaviour
     }
 
     #endregion
-    
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.cyan;
@@ -220,7 +283,7 @@ public class Nue_v1_e2 : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, _clawAttackRange);
         Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, _taleAttackRange);
+        Gizmos.DrawWireSphere(transform.position, _tailAttackRange);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, _rushAttackRange);
     }
@@ -241,14 +304,14 @@ public class Nue_v1_e2 : MonoBehaviour
 
         _btbIdle.AddBehaviour(Idle);
         _btbIdle.EEnd += () => { _agent.ResetPath(); };
-        
+
         _btbGetClose.AddBehaviour(GetClose);
         _btbGetClose.EEnd += () => { _agent.ResetPath(); };
-        
+
         _btbThink.AddBehaviour(Think);
+        _btbThink.EEnd += () => { _agent.ResetPath(); };
 
         _btbAwait.AddBehaviour(Await);
-        _btbAwait.EEnd += () => { _agent.ResetPath(); };
         _btbAwait.SetYieldMode(true);
 
         _btbClaw.AddBehaviour(Claw);
@@ -264,10 +327,12 @@ public class Nue_v1_e2 : MonoBehaviour
         _btbStumble.SetYieldMode(true);
 
         _btbRush.AddBehaviour(Rush);
+        _btbRush.EBegin += () => { _agent.stoppingDistance = _rushAttackRange * (2f / 3f); };
+        _btbRush.EEnd += () => { _agent.stoppingDistance = 3.5f;};
         _btbRush.SetYieldMode(true);
 
-        _btbTale.AddBehaviour(Tale);
-        _btbTale.SetYieldMode(true);
+        _btbTail.AddBehaviour(Tail);
+        _btbTail.SetYieldMode(true);
 
         _btbAway.AddBehaviour(Away);
         _btbAway.SetYieldMode(true);
@@ -277,7 +342,7 @@ public class Nue_v1_e2 : MonoBehaviour
         // Resist Behaviours 2.
         _bt.ResistBehaviours(new[]
         {
-            _btbAwait, _btbClaw, _btbDeath, _btbFlinch, _btbIdle, _btbGetClose, _btbStumble, _btbTale, _btbRush,
+            _btbAwait, _btbClaw, _btbDeath, _btbFlinch, _btbIdle, _btbGetClose, _btbStumble, _btbTail, _btbRush,
             _btbAway, _btbThink
         });
 
