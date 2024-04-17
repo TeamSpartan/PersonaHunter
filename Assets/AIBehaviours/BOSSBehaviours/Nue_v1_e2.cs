@@ -269,9 +269,29 @@ public class Nue_v1_e2 : MonoBehaviour
         Debug.Log($"Flinching Now");
     }
 
-    void Stumble()
+    public void GetStumble()
+    {
+        _bt.YeildAllBehaviourTo(_btbStumble);
+        _animator.SetTrigger("GetParry");
+    }
+
+    void Stumble()  // パリィくらった時
     {
         Debug.Log($"Stumbling Now");
+        _btbCurrentYieldedBehaviour = _btbStumble;
+
+        _tStumbleET += Time.deltaTime;
+
+        if (_tStumbleET > _awaitTimeOnStumble)
+        {
+            _tStumbleET = 0;
+            _animator.SetTrigger("EndParry");
+        }
+    }
+
+    public void EndStumbling()  // animator event でこれを呼び出し
+    {
+        _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
     }
 
     #endregion
