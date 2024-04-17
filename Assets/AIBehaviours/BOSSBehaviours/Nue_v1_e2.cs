@@ -57,6 +57,7 @@ public class Nue_v1_e2 : MonoBehaviour
     private BTBehaviour _btbClaw = new BTBehaviour();
     private BTBehaviour _btbTail = new BTBehaviour();
     private BTBehaviour _btbRush = new BTBehaviour();
+    private BTBehaviour _btbFacePlayer = new BTBehaviour();
     private BTBehaviour _btbCurrentYieldedBehaviour = new BTBehaviour();
 
     #endregion
@@ -93,6 +94,7 @@ public class Nue_v1_e2 : MonoBehaviour
     [SerializeField] private float _health;
     private bool _isGettingMad;
     private float _distanceBetPlayer;
+    private Vector3 _pDirection;
 
     // メソッドへの一度のみのエントリーを制限したいときのフラグ
     [SerializeField] private bool _clawEntryLocked;
@@ -163,17 +165,11 @@ public class Nue_v1_e2 : MonoBehaviour
         var tailable = Physics.CheckSphere(transform.position, _tailAttackRange, _playerLayers);
         var clawable = Physics.CheckSphere(transform.position, _clawAttackRange, _playerLayers);
 
-        if (playerIsSide)
-        {
-            transform.forward = Vector3.Lerp(transform.forward, dest, 10);
-        }
-
         if (_tAwaitET > _awaitingTime)
         {
             _tAwaitET = 0;
 
             var rand = Random.Range(1, 100);
-            Random.InitState(Random.Range(0, 255));
 
             _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
 
@@ -200,24 +196,13 @@ public class Nue_v1_e2 : MonoBehaviour
 
             if (playerIsForward && tailable)
             {
-                FindPlayer();
-                var d = (_player.position - transform.position) / 3f;
-                d += transform.position;
-                _agent.SetDestination(d);
-
                 _bt.YeildAllBehaviourTo(_btbTail);
                 _animator.SetTrigger("Tail");
             }
 
-            if (playerIsSide && tailable)
+            if (playerIsSide)
             {
-                FindPlayer();
-                var d = (_player.position - transform.position) / 5f;
-                d += transform.position;
-                _agent.SetDestination(d);
-
-                _bt.YeildAllBehaviourTo(_btbTail);
-                _animator.SetTrigger("Tail");
+                _bt.YeildAllBehaviourTo(_btbFacePlayer);
             }
 
             Random.InitState(Random.Range(0, 255));
@@ -232,6 +217,25 @@ public class Nue_v1_e2 : MonoBehaviour
         FindPlayer();
         var oppositeVec = (transform.position - _player.position) * .75f;
         _agent.SetDestination(oppositeVec);
+    }
+
+    void FaceToPlayer() // プレイヤを向く
+    {
+        Debug.Log($"Face To Player");
+        _btbCurrentYieldedBehaviour = _btbFacePlayer;
+
+        var dRot = Vector3.Lerp(transform.forward, _pDirection, Time.deltaTime);
+        transform.forward += dRot;
+
+        var dest = (_player.position - transform.position).normalized;
+        var dot = Vector3.Dot(dest, transform.forward);
+        var forwardRad = Mathf.Cos(22.5f * Mathf.Deg2Rad); // 90 * (3/4) = 67.5
+        var playerIsForward = (dot > 0) && (dot > forwardRad);
+
+        if (playerIsForward)
+        {
+            _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
+        }
     }
 
     void Claw()
@@ -373,6 +377,15 @@ public class Nue_v1_e2 : MonoBehaviour
         _btbRush.EEnd += () => { _agent.stoppingDistance = 3.5f; };
         _btbRush.SetYieldMode(true);
 
+        _btbFacePlayer.AddBehaviour(FaceToPlayer);
+        _btbFacePlayer.EBegin += () =>
+        {
+            FindPlayer();
+            Debug.Log($"Look Player!");
+            _pDirection = (_player.position - transform.position);
+        };
+        _btbFacePlayer.SetYieldMode(true);
+
         _btbTail.AddBehaviour(Tail);
         _btbTail.SetYieldMode(true);
 
@@ -385,7 +398,7 @@ public class Nue_v1_e2 : MonoBehaviour
         _bt.ResistBehaviours(new[]
         {
             _btbAwait, _btbClaw, _btbDeath, _btbFlinch, _btbIdle, _btbGetClose, _btbStumble, _btbTail, _btbRush,
-            _btbAway, _btbThink
+            _btbAway, _btbThink, _btbFacePlayer
         });
 
         #region Make Transition 3.
