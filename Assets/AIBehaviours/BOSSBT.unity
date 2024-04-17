@@ -4716,8 +4716,8 @@ MonoBehaviour:
   _awaitTimeOnStumble: 10
   _awaitTimeOnFlinching: 2
   _sightRange: 40
-  _clawAttackRange: 10
-  _tailAttackRange: 15
+  _clawAttackRange: 8
+  _tailAttackRange: 10
   _rushAttackRange: 30
   _playerLayers:
     serializedVersion: 2

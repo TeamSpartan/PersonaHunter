@@ -184,7 +184,7 @@ public class Nue_v1_e2 : MonoBehaviour
                 _animator.SetTrigger("Rush");
             }
 
-            if (playerIsForward && tailable) // ひっかき距離内かつ正面にいるとき
+            if (playerIsForward && clawable) // ひっかき距離内かつ正面にいるとき
             {
                 if (rand > 50)
                 {
@@ -196,6 +196,28 @@ public class Nue_v1_e2 : MonoBehaviour
                     _bt.YeildAllBehaviourTo(_btbTail);
                     _animator.SetTrigger("Tail");
                 }
+            }
+
+            if (playerIsForward && tailable)
+            {
+                FindPlayer();
+                var d = (_player.position - transform.position) / 3f;
+                d += transform.position;
+                _agent.SetDestination(d);
+
+                _bt.YeildAllBehaviourTo(_btbTail);
+                _animator.SetTrigger("Tail");
+            }
+
+            if (playerIsSide && tailable)
+            {
+                FindPlayer();
+                var d = (_player.position - transform.position) / 5f;
+                d += transform.position;
+                _agent.SetDestination(d);
+
+                _bt.YeildAllBehaviourTo(_btbTail);
+                _animator.SetTrigger("Tail");
             }
 
             Random.InitState(Random.Range(0, 255));
@@ -269,13 +291,13 @@ public class Nue_v1_e2 : MonoBehaviour
         Debug.Log($"Flinching Now");
     }
 
-    public void GetStumble()
+    public void GetStumble() // どっかのタイミングで一度だけ呼び出される
     {
         _bt.YeildAllBehaviourTo(_btbStumble);
         _animator.SetTrigger("GetParry");
     }
 
-    void Stumble()  // パリィくらった時
+    void Stumble() // パリィくらった時
     {
         Debug.Log($"Stumbling Now");
         _btbCurrentYieldedBehaviour = _btbStumble;
@@ -289,7 +311,7 @@ public class Nue_v1_e2 : MonoBehaviour
         }
     }
 
-    public void EndStumbling()  // animator event でこれを呼び出し
+    public void EndStumbling() // animator event でこれを呼び出し
     {
         _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
     }
@@ -347,8 +369,8 @@ public class Nue_v1_e2 : MonoBehaviour
         _btbStumble.SetYieldMode(true);
 
         _btbRush.AddBehaviour(Rush);
-        _btbRush.EBegin += () => { _agent.stoppingDistance = _rushAttackRange * (2f / 3f); };
-        _btbRush.EEnd += () => { _agent.stoppingDistance = 3.5f;};
+        _btbRush.EBegin += () => { _agent.stoppingDistance = _tailAttackRange * 1.5f; };
+        _btbRush.EEnd += () => { _agent.stoppingDistance = 3.5f; };
         _btbRush.SetYieldMode(true);
 
         _btbTail.AddBehaviour(Tail);
