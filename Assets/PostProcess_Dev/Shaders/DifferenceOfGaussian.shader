@@ -1,4 +1,4 @@
-Shader "Hidden/Shader/GaussianBlur"
+Shader "Hidden/Shader/DifferenceOfGaussian"
 {
     Properties
     {
@@ -40,8 +40,8 @@ Shader "Hidden/Shader/GaussianBlur"
     }
 
     // List of properties to control your post process effect
-    float _Intensity, _Strength, _Gain;
-    int _Inverse;// 0 = false , NOT 0 = true
+    float _Intensity, _Strength, _Gain, _Coefficient;
+    int _Inverse; // 0 = false , NOT 0 = true
     TEXTURE2D_X(_InputTexture);
     SamplerState sampler_InputTexture;
     #define KERNEL_SIZE 9
@@ -75,15 +75,15 @@ Shader "Hidden/Shader/GaussianBlur"
 
         half diff = (b2 - b1) * _Gain;
         half3 d = diff * _Intensity;
-        if(_Inverse)
+        if (_Inverse)
         {
-            if(diff >= 0)
+            if (diff >= 0)
             {
-                d = 0 * _Intensity;
+                d = 0 * _Coefficient * _Intensity;
             }
             else
             {
-                d = 1 * _Intensity;
+                d = 1 * _Coefficient * _Intensity;
             }
         }
 
@@ -99,7 +99,7 @@ Shader "Hidden/Shader/GaussianBlur"
         }
         Pass
         {
-            Name "GaussianBlur"
+            Name "DifferenceOfGaussian"
 
             ZWrite Off
             ZTest Always

@@ -3,11 +3,14 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 
-[Serializable, VolumeComponentMenu("Post-Processing/Custom/GaussianBlur")]
-public class GaussianBlur : CustomPostProcessVolumeComponent, IPostProcessComponent
+[Serializable, VolumeComponentMenu("Post-Processing/Custom/DifferenceOfGaussian")]
+public class DifferenceOfGaussian : CustomPostProcessVolumeComponent, IPostProcessComponent
 {
-    [Tooltip("Controls The Intensity oh the Effect")]
+    [Tooltip("Controls The Intensity of the Effect")]
     public ClampedFloatParameter itensity = new ClampedFloatParameter(0f, 0f, 1f);
+    
+    [Tooltip("Controls The Intensity of the Color")]
+    public ClampedFloatParameter coefficient = new ClampedFloatParameter(0f, 0f, 1f);
 
     [Tooltip("Controls The Strength of Blur")]
     public ClampedFloatParameter strength = new ClampedFloatParameter(0f, 0f, 10f);
@@ -22,9 +25,9 @@ public class GaussianBlur : CustomPostProcessVolumeComponent, IPostProcessCompon
 
     public override void Setup()
     {
-        if (Shader.Find("Hidden/Shader/GaussianBlur") != null)
+        if (Shader.Find("Hidden/Shader/DifferenceOfGaussian") != null)
         {
-            _material = new Material(Shader.Find("Hidden/Shader/GaussianBlur"));
+            _material = new Material(Shader.Find("Hidden/Shader/DifferenceOfGaussian"));
         }
     }
 
@@ -35,6 +38,7 @@ public class GaussianBlur : CustomPostProcessVolumeComponent, IPostProcessCompon
         _material.SetFloat("_Intensity", itensity.value);
         _material.SetFloat("_Strength", strength.value);
         _material.SetFloat("_Gain", gain.value);
+        _material.SetFloat("_Coefficient", coefficient.value);
         _material.SetInt("_Inverse", invers.value ? 1 : 0);
         _material.SetTexture("_InputTexture", source);
         HDUtils.DrawFullScreen(cmd, _material, destination);

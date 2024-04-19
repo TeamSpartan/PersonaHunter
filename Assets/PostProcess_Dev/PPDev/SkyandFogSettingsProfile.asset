@@ -265,7 +265,7 @@ MonoBehaviour:
   - {fileID: -4151792930034644520}
   - {fileID: 7642060734654139733}
   - {fileID: -2937572274392278870}
-  - {fileID: 5361258482483209458}
+  - {fileID: 4311356409989912369}
 --- !u!114 &1142777632297148762
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -297,7 +297,7 @@ MonoBehaviour:
   fogType:
     m_OverrideState: 1
     m_Value: 0
---- !u!114 &5361258482483209458
+--- !u!114 &4311356409989912369
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -313,12 +313,18 @@ MonoBehaviour:
   itensity:
     m_OverrideState: 1
     m_Value: 1
+  coefficient:
+    m_OverrideState: 1
+    m_Value: 0.32
   strength:
     m_OverrideState: 1
-    m_Value: 2.2
+    m_Value: 3.3
   gain:
     m_OverrideState: 1
-    m_Value: 15
+    m_Value: 12.7
+  invers:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &7642060734654139733
 MonoBehaviour:
   m_ObjectHideFlags: 3
