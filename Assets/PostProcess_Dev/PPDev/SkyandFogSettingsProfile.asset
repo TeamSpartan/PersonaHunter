@@ -265,7 +265,7 @@ MonoBehaviour:
   - {fileID: -4151792930034644520}
   - {fileID: 7642060734654139733}
   - {fileID: -2937572274392278870}
-  - {fileID: 1250464575107820208}
+  - {fileID: 5361258482483209458}
 --- !u!114 &1142777632297148762
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -297,7 +297,7 @@ MonoBehaviour:
   fogType:
     m_OverrideState: 1
     m_Value: 0
---- !u!114 &1250464575107820208
+--- !u!114 &5361258482483209458
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -307,12 +307,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5379c744f40e44ed9f63172c0f034e62, type: 3}
-  m_Name: DoG
+  m_Name: GaussianBlur
   m_EditorClassIdentifier: 
   active: 1
   itensity:
     m_OverrideState: 1
     m_Value: 1
+  strength:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &7642060734654139733
 MonoBehaviour:
   m_ObjectHideFlags: 3

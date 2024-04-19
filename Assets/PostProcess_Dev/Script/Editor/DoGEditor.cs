@@ -3,21 +3,24 @@ using UnityEditor;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEditor.Rendering;
 
-[CustomEditor(typeof(DoG))]
+[CustomEditor(typeof(GaussianBlur))]
 public class DoGEditor : VolumeComponentEditor
 {
     private SerializedDataParameter _Intensity;
+    private SerializedDataParameter _Strength;
 
-    public bool hasAdvancedMode => false;
+    public bool hasAdvancedMode => true;
 
     public override void OnEnable()
     {
-        var o = new PropertyFetcher<DoG>(serializedObject);
+        var o = new PropertyFetcher<GaussianBlur>(serializedObject);
         _Intensity = Unpack(o.Find(_ => _.itensity));
+        _Strength = Unpack(o.Find(_ => _.strength));
     }
 
     public override void OnInspectorGUI()
     {
         PropertyField(_Intensity);
+        PropertyField(_Strength);
     }
 }

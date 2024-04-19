@@ -1,4 +1,4 @@
-Shader "Hidden/Shader/DoG"
+Shader "Hidden/Shader/GaussianBlur"
 {
     Properties
     {
@@ -40,12 +40,12 @@ Shader "Hidden/Shader/DoG"
     }
 
     // List of properties to control your post process effect
-    float _Intensity;
+    float _Intensity, _Strength;
     TEXTURE2D_X(_InputTexture);
     SamplerState sampler_InputTexture;
     #define KERNEL_SIZE 9
 
-    half GaussianFunction(half x,half y , half sigma)
+    half GaussianFunction(half x, half y, half sigma)
     {
         return exp(-((x * x) + y * y) / (2 * sigma * sigma)) / sqrt(2 * 3.14159 * sigma);
     }
@@ -53,12 +53,13 @@ Shader "Hidden/Shader/DoG"
     half GaussianBlur(float2 coord, float2 texelSize, float sigma)
     {
         half result = 0.;
-        for(int i = -KERNEL_SIZE / 2; i <= KERNEL_SIZE / 2; ++i)
+        for (int i = -KERNEL_SIZE / 2; i <= KERNEL_SIZE / 2; ++i)
         {
-            for(int j = -KERNEL_SIZE / 2; j <= KERNEL_SIZE / 2; ++j)
+            for (int j = -KERNEL_SIZE / 2; j <= KERNEL_SIZE / 2; ++j)
             {
-                float2 offset = float2(i,j) * texelSize;
-                result += _InputTexture.Sample(sampler_InputTexture, float3(coord + offset, 0)).r * GaussianFunction(offset.x * offset.x, offset.y * offset.y, sigma);
+                float2 offset = float2(i, j) * texelSize;
+                result += _InputTexture.Sample(sampler_InputTexture, float3(coord + offset, 0)).r * GaussianFunction(
+                    offset.x * offset.x, offset.y * offset.y, sigma);
             }
         }
         return result;
@@ -67,19 +68,15 @@ Shader "Hidden/Shader/DoG"
     half4 CustomPostProcess(Varyings input) : SV_Target0
     {
         UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-        // uint2 positionSS = input.texcoord * _ScreenSize.xy;
-        // float3 rawcolor = LOAD_TEXTURE2D_X(_InputTexture, positionSS).xyz;
-        // float3 color = rawcolor;
-        // return float4(color, _Intensity);
-
         float2 texel_size = 1. / _ScreenParams.xy;
-        half b = GaussianBlur(input.texcoord, texel_size, 2.);
-        half b1 = GaussianBlur(input.texcoord, texel_size, 3.2);
-        half b2 = GaussianBlur(input.texcoord, texel_size, 5.);
+        half b = GaussianBlur(input.texcoord, texel_size * _Strength, 3.);
+        half b1 = GaussianBlur(input.texcoord, texel_size * _Strength, 5.);
+        half b2 = GaussianBlur(input.texcoord, texel_size * _Strength, 7.);
 
-        half diff = b - b1 + b2;
+        half diff = (b - b1 + b2);
+        half3 d = diff * _Intensity;
 
-        return half4(diff,diff,diff,1.);
+        return half4(d, 1.);
     }
     ENDHLSL
 
@@ -91,7 +88,7 @@ Shader "Hidden/Shader/DoG"
         }
         Pass
         {
-            Name "DoG"
+            Name "GaussianBlur"
 
             ZWrite Off
             ZTest Always
