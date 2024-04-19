@@ -40,7 +40,8 @@ Shader "Hidden/Shader/GaussianBlur"
     }
 
     // List of properties to control your post process effect
-    float _Intensity, _Strength;
+    float _Intensity, _Strength, _Gain;
+    int _Inverse;// 0 = false , NOT 0 = true
     TEXTURE2D_X(_InputTexture);
     SamplerState sampler_InputTexture;
     #define KERNEL_SIZE 9
@@ -69,12 +70,22 @@ Shader "Hidden/Shader/GaussianBlur"
     {
         UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
         float2 texel_size = 1. / _ScreenParams.xy;
-        half b = GaussianBlur(input.texcoord, texel_size * _Strength, 3.);
-        half b1 = GaussianBlur(input.texcoord, texel_size * _Strength, 5.);
+        half b1 = GaussianBlur(input.texcoord, texel_size * _Strength / 2., 5.);
         half b2 = GaussianBlur(input.texcoord, texel_size * _Strength, 7.);
 
-        half diff = (b - b1 + b2);
+        half diff = (b2 - b1) * _Gain;
         half3 d = diff * _Intensity;
+        if(_Inverse)
+        {
+            if(diff >= 0)
+            {
+                d = 0 * _Intensity;
+            }
+            else
+            {
+                d = 1 * _Intensity;
+            }
+        }
 
         return half4(d, 1.);
     }

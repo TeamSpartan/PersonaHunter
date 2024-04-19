@@ -315,7 +315,10 @@ MonoBehaviour:
     m_Value: 1
   strength:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 2.2
+  gain:
+    m_OverrideState: 1
+    m_Value: 15
 --- !u!114 &7642060734654139733
 MonoBehaviour:
   m_ObjectHideFlags: 3
