@@ -50,6 +50,7 @@ float4 CustomPostProcess(Varyings input):SV_Target
 
     return float4(lerp(outColor, Luminance(outColor).xxx, _Intensity), 1);
 }
+
 ENDHLSL
 
 SubShader
