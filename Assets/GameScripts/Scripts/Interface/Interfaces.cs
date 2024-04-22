@@ -1,4 +1,5 @@
 using System;
+using CriWare;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -153,4 +154,11 @@ public interface IInputValueReferencable
     /// マウス入力 垂直 の値を返す
     /// </summary>
     public float GetVerticalMouseMoveValue();
+}
+
+/// <summary></summary>
+public interface IAudioPlayOption
+{
+    ///<summary>音の設定</summary>
+    CriAtomSource ApplySetting(CriAtomSource target);
 }
