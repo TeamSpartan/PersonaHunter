@@ -164,9 +164,9 @@ public interface IAudioPlayOption
 }
 
 /// <summary>
-/// 敵クラスが継承すべきインターフェイス
+/// GameLogicクラスが継承すべきインターフェイス。敵が攻撃中か否かをGameLogicへ送る
 /// </summary>
-public interface IEnemy
+public interface IEnemyAttackEventHandler
 {
     public void NotifyEnemyAttackCondition(GameObject instance, bool condition);
 }
