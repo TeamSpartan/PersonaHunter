@@ -1,4 +1,5 @@
 using System;
+using CriWare;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -155,20 +156,9 @@ public interface IInputValueReferencable
     public float GetVerticalMouseMoveValue();
 }
 
-/// <summary>
-/// 敵クラスが継承すべきインターフェイス
-/// </summary>
-public interface IEnemy
+/// <summary></summary>
+public interface IAudioPlayOption
 {
-    public void NotifyEnemyAttackCondition(GameObject instance, bool condition);
+    ///<summary>音の設定</summary>
+    CriAtomSource ApplySetting(CriAtomSource target);
 }
-
-/// <summary>
-/// プレイヤがガードをしている間に呼びだすメソッドが格納されている。GameLogicが継承すべきインターフェイス
-/// </summary>
-public interface IGuardEventHandler
-{
-    public void NotifyPlayerIsGuarding(GameObject enemy);
-    public Action EParrySucceed { get; set; }
-}
-

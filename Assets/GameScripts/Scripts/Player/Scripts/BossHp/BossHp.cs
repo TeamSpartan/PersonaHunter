@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class BossHp : MonoBehaviour, IDamagedComponent
 {
-	[SerializeField] private float initiateHp = 1000f;
+	[SerializeField] private float _initiateHp = 1000f;
 	private float _currentHp;
 
-	public float InitiateHp => initiateHp;
+	public float InitiateHp => _initiateHp;
 	public float CurrentHp => _currentHp;
 
 	public event System.Action OnDeath,
@@ -13,7 +13,7 @@ public class BossHp : MonoBehaviour, IDamagedComponent
 		OnResetDamage;
 
 
-	private void OnEnable()
+	protected void OnEnable()
 	{
 		#region initiateAction
 		OnResetDamage += () => Debug.Log("ResetDamage");
@@ -24,18 +24,18 @@ public class BossHp : MonoBehaviour, IDamagedComponent
 
 	public void ResetDamage()
 	{
-		_currentHp = initiateHp;
-		OnResetDamage.Invoke();
+		_currentHp = _initiateHp;
+		OnResetDamage?.Invoke();
 	}
 
 	public void AddDamage(float dmg)
 	{
 		_currentHp -= dmg;
-		OnReceiveDamage.Invoke();
+		OnReceiveDamage?.Invoke();
 
 		if (_currentHp <= 0)
 		{
-			OnDeath.Invoke();
+			OnDeath?.Invoke();
 		}
 	}
 
