@@ -293,7 +293,7 @@ MonoBehaviour:
     m_Value: 1
   strength:
     m_OverrideState: 1
-    m_Value: 10
+    m_Value: 0.9
   gain:
     m_OverrideState: 1
     m_Value: 15
@@ -302,7 +302,7 @@ MonoBehaviour:
     m_Value: 1
   addition:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0
 --- !u!114 &7222466526037921685
 MonoBehaviour:
   m_ObjectHideFlags: 3
