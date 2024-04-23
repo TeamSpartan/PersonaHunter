@@ -160,7 +160,7 @@ public interface IInputValueReferencable
 /// </summary>
 public interface IEnemy
 {
-    public void NotifyEnemyHasStartedAttack(GameObject instance, bool condition);
+    public void NotifyEnemyAttackCondition(GameObject instance, bool condition);
 }
 
 /// <summary>
