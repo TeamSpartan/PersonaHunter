@@ -154,3 +154,21 @@ public interface IInputValueReferencable
     /// </summary>
     public float GetVerticalMouseMoveValue();
 }
+
+/// <summary>
+/// 敵クラスが継承すべきインターフェイス
+/// </summary>
+public interface IEnemy
+{
+    public void NotifyEnemyAttackCondition(GameObject instance, bool condition);
+}
+
+/// <summary>
+/// プレイヤがガードをしている間に呼びだすメソッドが格納されている。GameLogicが継承すべきインターフェイス
+/// </summary>
+public interface IGuardEventHandler
+{
+    public void NotifyPlayerIsGuarding(GameObject enemy);
+    public Action EParrySucceed { get; set; }
+}
+
