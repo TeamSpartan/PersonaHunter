@@ -18,6 +18,8 @@ public class DifferenceOfGaussian : CustomPostProcessVolumeComponent, IPostProce
     [Tooltip("Controls The Gain")] public ClampedFloatParameter gain = new ClampedFloatParameter(0f, 0f, 15f);
 
     [Tooltip("Menu Of Invers")] public BoolParameter invers = new BoolParameter(false, false);
+    
+    [Tooltip("Menu Of Invers")] public BoolParameter addition = new BoolParameter(false, false);
 
     private Material _material;
 
@@ -40,6 +42,7 @@ public class DifferenceOfGaussian : CustomPostProcessVolumeComponent, IPostProce
         _material.SetFloat("_Gain", gain.value);
         _material.SetFloat("_Coefficient", coefficient.value);
         _material.SetInt("_Inverse", invers.value ? 1 : 0);
+        _material.SetInt("_Addition", addition.value ? 1 : 0);
         _material.SetTexture("_InputTexture", source);
         HDUtils.DrawFullScreen(cmd, _material, destination);
     }

@@ -41,7 +41,7 @@ Shader "Hidden/Shader/DifferenceOfGaussian"
 
     // List of properties to control your post process effect
     float _Intensity, _Strength, _Gain, _Coefficient;
-    int _Inverse; // 0 = false , NOT 0 = true
+    int _Inverse, _Addition; // 0 = false , NOT 0 = true
     TEXTURE2D_X(_InputTexture);
     SamplerState sampler_InputTexture;
     #define KERNEL_SIZE 9
@@ -69,7 +69,9 @@ Shader "Hidden/Shader/DifferenceOfGaussian"
     half4 CustomPostProcess(Varyings input) : SV_Target0
     {
         UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+        uint2 posSS = input.texcoord * _ScreenSize.xy;
         float2 texel_size = 1. / _ScreenParams.xy;
+        half3 rawColor = LOAD_TEXTURE2D_X(_InputTexture, posSS).xyz;
         half b1 = GaussianBlur(input.texcoord, texel_size * _Strength / 2., 5.);
         half b2 = GaussianBlur(input.texcoord, texel_size * _Strength, 7.);
 
@@ -87,7 +89,7 @@ Shader "Hidden/Shader/DifferenceOfGaussian"
             }
         }
 
-        return half4(d, 1.);
+        return half4(_Addition == 0 ? d : (d * rawColor), 1.);
     }
     ENDHLSL
 
