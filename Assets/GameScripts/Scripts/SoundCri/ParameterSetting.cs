@@ -6,7 +6,7 @@ namespace Sound.PlayOption
 	///<summary>サウンドのパラメーター</summary>
 	public class ParameterSetting : MonoBehaviour
 	{
-		public class VolumeParam : IPlayOption
+		public class VolumeParam : IAudioPlayOption
 		{
 			private float _volume;
 
@@ -23,7 +23,7 @@ namespace Sound.PlayOption
 		}
 
 		/// <summary>ピッチの調整</summary>
-		public class PitchParam : IPlayOption
+		public class PitchParam : IAudioPlayOption
 		{
 			private float _pitch;
 
@@ -38,10 +38,25 @@ namespace Sound.PlayOption
 				return target;
 			}
 		}
+		
+		public class LoopSet : IAudioPlayOption
+		{
+			private bool _isLoop = false;
+
+			public LoopSet(bool value)
+			{
+				_isLoop = value;
+			}
+			public CriAtomSource ApplySetting(CriAtomSource target)
+			{
+				target.loop = _isLoop;
+				return target;
+			}
+		}
 
 		/// <summary>エンジン音のように徐々に音が大きくなっていく感じ？？</summary>
 		//https://game.criware.jp/manual/unity_plugin/latest/contents/atom4u_keys_aisac.html
-		public class AisacParam : IPlayOption
+		public class AisacParam : IAudioPlayOption
 		{
 			private uint _aisacTargetId;
 			private string _aisacTargetName;
@@ -73,4 +88,3 @@ namespace Sound.PlayOption
 		}
 	}
 }
-
