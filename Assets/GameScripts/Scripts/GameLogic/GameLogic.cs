@@ -9,15 +9,15 @@ using UnityEngine;
 /// </summary>
 public class GameLogic
     : SingletonBaseClass<GameLogic>
-, IGuardEventHandler
-, IEnemyAttackEventHandler
+        , IGuardEventHandler
+        , IEnemyAttackEventHandler
 {
     [SerializeField] private bool _debugging;
 
     private GameInfo _info;
 
     public Action EParrySucceed { get; set; }
-    
+
     // コーディング ブースタ クラス
     CBooster booster = new CBooster();
 
@@ -38,13 +38,12 @@ public class GameLogic
         var targets = booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.EndDull());
     }
-    
+
     /// <summary>
     /// プレイヤーが呼び出す
     /// </summary>
     public void NotifyPlayerIsGuarding(GameObject enemy)
     {
-        
     }
 
     /// <summary>
@@ -52,7 +51,6 @@ public class GameLogic
     /// </summary>
     public void NotifyEnemyAttackCondition(GameObject instance, bool condition)
     {
-        throw new NotImplementedException();
     }
 
     void InitializeGame()
@@ -105,5 +103,4 @@ public class GameLogic
     {
         FinalizeGame();
     }
-
 }
