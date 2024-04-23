@@ -46,7 +46,7 @@ namespace Sound
 			_SEAtomSource.player.ResetParameters();
 		}
 
-		public void PlayBGM(BGMSoundData.BGM bgm, params IPlayOption[] options)
+		public void PlayBGM(BGMSoundData.BGM bgm, params IAudioPlayOption[] options)
 		{
 			const string BGMSHEETNAME = "BGM";
 			//キューシートの設定
@@ -78,7 +78,7 @@ namespace Sound
 			_BGMAtomSource.Play();
 		}
 
-		public void PlaySE(SESoundData.SE se, params IPlayOption[] options)
+		public void PlaySE(SESoundData.SE se, params IAudioPlayOption[] options)
 		{
 			const string SESHEETNAME = "SE";
 			//キューシートの設定
@@ -110,7 +110,7 @@ namespace Sound
 			_SEAtomSource.Play();
 		}
 
-		public void PlayME(MESoundData.ME me, params IPlayOption[] options)
+		public void PlayME(MESoundData.ME me, params IAudioPlayOption[] options)
 		{
 			const string MESHEETNAME = "ME";
 			//キューシートの設定
@@ -142,7 +142,7 @@ namespace Sound
 			_MEAtomSource.Play();
 		}
 		
-		public void PlayVoice(VoiceSoundData.Voice voice, params IPlayOption[] options)
+		public void PlayVoice(VoiceSoundData.Voice voice, params IAudioPlayOption[] options)
 		{
 			const string VoiceSHEETNAME = "Voice";
 			//キューシートの設定

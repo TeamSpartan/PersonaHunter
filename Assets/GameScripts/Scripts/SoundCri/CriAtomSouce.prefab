@@ -129,7 +129,7 @@ MonoBehaviour:
     - 0
     - 0
   _cueName: 
-  _cueSheet: 
+  _cueSheet: BGM
 --- !u!1 &3950383744632772145
 GameObject:
   m_ObjectHideFlags: 0
@@ -205,7 +205,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6577915769330863899}
   - component: {fileID: 1874679164579970881}
-  - component: {fileID: 1790349056253451308}
   m_Layer: 0
   m_Name: CriAtomSouce
   m_TagString: Untagged
@@ -268,18 +267,6 @@ MonoBehaviour:
     AudioClipName: 
     Volume: 0
     Pitch: 0
---- !u!114 &1790349056253451308
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5595095055307330832}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a55a02bda7a9cb43bce8013fb009203, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7613094236015963050
 GameObject:
   m_ObjectHideFlags: 0
