@@ -17,7 +17,7 @@ namespace Player.Input
 	}
 	#endregion
 
-	public class PlayerInputsAction : MonoBehaviour
+	public class PlayerInputsAction : MonoBehaviour, IInputValueReferencable
 	{
 		static PlayerInputsAction _instance;
 
@@ -29,8 +29,12 @@ namespace Player.Input
 
 		Vector2 _inputVector = default;
 		Vector2 _inputCamera;
+		private Vector2 _mouseMove;
+		
 		private PlayerInputTypes _currentInput;
 
+		private bool _isLockOn = false;
+		
 		bool _isExternalInputBlocked;
 		bool _playerControllerInputBlocked;
 
@@ -45,6 +49,17 @@ namespace Player.Input
 				return _inputVector;
 			}
 		}
+		public float GetHorizontalMoveValue()
+		{
+			return GetMoveInput.x;
+		}
+
+		public float GetVerticalMoveValue()
+		{
+			return GetMoveInput.y;
+		}
+
+		
 
 		///<summary>カメラの移動入力</summary>
 		public Vector2 GetCameraInput
@@ -56,9 +71,21 @@ namespace Player.Input
 				return _inputCamera;
 			}
 		}
+		public float GetHorizontalMouseMoveValue()
+		{
+			return GetCameraInput.x;
+		}
+
+		public float GetVerticalMouseMoveValue()
+		{
+			return GetCameraInput.y;
+		}
 
 		///<summary>現在の入力のタイプ</summary>
 		public PlayerInputTypes GetCurrentInputType => _currentInput;
+
+		///<summary>ロックオン</summary>
+		public bool IsLockOn => _isLockOn;
 
 		void Awake()
 		{
@@ -77,7 +104,11 @@ namespace Player.Input
 		private void OnDisable()
 		{
 			_gameInputs.Disable();
+			InGameDis();
+		}
 
+		void InGameDis()
+		{
 			//Move
 			_gameInputs.Player.Move.started -= OnMove;
 			_gameInputs.Player.Move.performed -= OnMove;
@@ -94,6 +125,14 @@ namespace Player.Input
 			
 			//Zone
 			_gameInputs.Player.Zone.started -= OnZone;
+			
+			//Camera
+			_gameInputs.Player.Camera.started -= OnCamera;
+			_gameInputs.Player.Camera.performed -= OnCamera;
+			_gameInputs.Player.Camera.canceled -= OnCamera;
+			
+			//LockOn
+			_gameInputs.Player.LockOn.started -= OnLockOn;
 		}
 		
 
@@ -142,6 +181,10 @@ namespace Player.Input
 
 		public PlayerInputTypes CheckInputQueue()
 		{
+			if (_inputQueue.Count <= 0)
+			{
+				return PlayerInputTypes.Idle;
+			}
 			return _inputQueue.Peek();
 		}
 
@@ -179,6 +222,11 @@ namespace Player.Input
 			_inputCamera = context.ReadValue<Vector2>();
 		}
 
+		void OnLockOn(InputAction.CallbackContext context)
+		{
+			_isLockOn = !_isLockOn;
+		}
+
 		void InGameInputInitialization()
 		{
 
@@ -198,6 +246,16 @@ namespace Player.Input
 
 			//Zone
 			_gameInputs.Player.Zone.started += OnZone;
+			
+			//Camera
+			_gameInputs.Player.Camera.started += OnCamera;
+			_gameInputs.Player.Camera.performed += OnCamera;
+			_gameInputs.Player.Camera.canceled += OnCamera;
+			
+			//LockOn
+			_gameInputs.Player.LockOn.started += OnLockOn;
 		}
+
+		
 	}
 }
