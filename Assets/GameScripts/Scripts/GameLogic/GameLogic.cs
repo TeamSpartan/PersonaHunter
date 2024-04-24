@@ -3,6 +3,7 @@ using SgLibUnite.Singleton;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
 using UnityEngine.Rendering;
+using DG.Tweening;
 
 // 作成：菅沼
 /// <summary>
@@ -25,6 +26,15 @@ public class GameLogic
     // コーディング ブースタ クラス
     CBooster booster = new CBooster();
 
+    public void TaskOnDivedOnZone()
+    {
+        // var player = GameObject.FindWithTag("Player").transform;
+        // var ppos = Camera.main.WorldToViewportPoint(player.position);
+        // _dog.center.Override(new Vector2(ppos.x, ppos.y));
+        DOTween.To((_) => { _dog.elapsedTime.Override(_); },
+            0f, 1f, .75f);
+    }
+
     /// <summary>
     /// 集中 を 発火する
     /// </summary>
@@ -32,10 +42,7 @@ public class GameLogic
     {
         var targets = booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.StartDull());
-
-        // var player = GameObject.FindWithTag("Player").transform;
-        // var ppos = Camera.main.WorldToViewportPoint(player.position);
-        // _dog.center.Override(new Vector2(ppos.x, ppos.y));
+        TaskOnDivedOnZone();
     }
 
     /// <summary>
