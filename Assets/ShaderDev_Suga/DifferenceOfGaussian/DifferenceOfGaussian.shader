@@ -41,7 +41,7 @@ Shader "Hidden/Shader/DifferenceOfGaussian"
 
     // List of properties to control your post process effect
     float _Intensity, _Strength, _Gain, _Coefficient;
-    int _Inverse, _Addition; // 0 = false , NOT 0 = true
+    int _Inverse, _Multiply; // 0 = false , NOT 0 = true
     float2 _CenterCoordinate;
     TEXTURE2D_X(_InputTexture);
     SamplerState sampler_InputTexture;
@@ -90,8 +90,31 @@ Shader "Hidden/Shader/DifferenceOfGaussian"
             }
         }
 
-        return half4(_Addition == 0 ? d : (d * rawColor), 1.);
+        float3 oc = rawColor;
+        
+        if (length(input.texcoord.xy - _CenterCoordinate.xy) <= _SinTime.y)
+        {
+            if (_Multiply)
+            {
+                oc = half4(d * rawColor, 1.);
+            }
+            else
+            {
+                oc = half4(d, 1.);
+            }
+        }
+
+        return float4(oc, 1.);
     }
+
+    // if (_Multiply)
+    // {
+    //     return half4(d * rawColor, 1.);
+    // }
+    // else
+    // {
+    //     return half4(d, 1.);
+    // }
     ENDHLSL
 
     SubShader
