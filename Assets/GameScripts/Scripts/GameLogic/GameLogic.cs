@@ -2,6 +2,7 @@ using System;
 using SgLibUnite.Singleton;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 // 作成：菅沼
 /// <summary>
@@ -18,6 +19,9 @@ public class GameLogic
 
     public Action EParrySucceed { get; set; }
 
+    private Volume _volume;
+    private DifferenceOfGaussian _dog;
+
     // コーディング ブースタ クラス
     CBooster booster = new CBooster();
 
@@ -28,6 +32,10 @@ public class GameLogic
     {
         var targets = booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.StartDull());
+
+        // var player = GameObject.FindWithTag("Player").transform;
+        // var ppos = Camera.main.WorldToViewportPoint(player.position);
+        // _dog.center.Override(new Vector2(ppos.x, ppos.y));
     }
 
     /// <summary>
@@ -59,6 +67,9 @@ public class GameLogic
         {
             Debug.Log($"{nameof(GameLogic)}:Game Initialized");
         }
+
+        _volume = GameObject.FindFirstObjectByType<Volume>();
+        _volume.profile.TryGet(out _dog);
 
         _info = GameObject.FindFirstObjectByType<GameInfo>();
 
