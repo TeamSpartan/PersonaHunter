@@ -42,6 +42,7 @@ Shader "Hidden/Shader/DifferenceOfGaussian"
     // List of properties to control your post process effect
     float _Intensity, _Strength, _Gain, _Coefficient;
     int _Inverse, _Addition; // 0 = false , NOT 0 = true
+    float2 _CenterCoordinate;
     TEXTURE2D_X(_InputTexture);
     SamplerState sampler_InputTexture;
     #define KERNEL_SIZE 9

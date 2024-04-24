@@ -239,8 +239,8 @@ MonoBehaviour:
   - {fileID: -7724654706381055090}
   - {fileID: -4151792930034644520}
   - {fileID: 7642060734654139733}
-  - {fileID: 4311356409989912369}
   - {fileID: 7222466526037921685}
+  - {fileID: 5770763349645718834}
 --- !u!114 &1142777632297148762
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -272,7 +272,7 @@ MonoBehaviour:
   fogType:
     m_OverrideState: 1
     m_Value: 0
---- !u!114 &4311356409989912369
+--- !u!114 &5770763349645718834
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -282,10 +282,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5379c744f40e44ed9f63172c0f034e62, type: 3}
-  m_Name: GaussianBlur
+  m_Name: DifferenceOfGaussian
   m_EditorClassIdentifier: 
   active: 1
-  itensity:
+  intensity:
     m_OverrideState: 1
     m_Value: 1
   coefficient:
@@ -293,16 +293,19 @@ MonoBehaviour:
     m_Value: 1
   strength:
     m_OverrideState: 1
-    m_Value: 0.9
+    m_Value: 0.85
+  center:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0}
   gain:
     m_OverrideState: 1
     m_Value: 15
   invers:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0
   addition:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
 --- !u!114 &7222466526037921685
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -315,7 +318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b8bcdf71d7fafa419fca1ed162f5fc9, type: 3}
   m_Name: ColorAdjustments
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   postExposure:
     m_OverrideState: 1
     m_Value: 0
