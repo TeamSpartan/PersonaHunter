@@ -43,6 +43,7 @@ Shader "Hidden/Shader/DifferenceOfGaussian"
     float _Intensity, _Strength, _Gain, _Coefficient;
     int _Inverse, _Multiply; // 0 = false , NOT 0 = true
     float2 _CenterCoordinate;
+    float _ElapsedTime;
     TEXTURE2D_X(_InputTexture);
     SamplerState sampler_InputTexture;
     #define KERNEL_SIZE 9
@@ -92,7 +93,7 @@ Shader "Hidden/Shader/DifferenceOfGaussian"
 
         float3 oc = rawColor;
         
-        if (length(input.texcoord.xy - _CenterCoordinate.xy) <= _SinTime.y)
+        if (length(input.texcoord.xy - _CenterCoordinate.xy) <= _ElapsedTime)
         {
             if (_Multiply)
             {
@@ -106,15 +107,6 @@ Shader "Hidden/Shader/DifferenceOfGaussian"
 
         return float4(oc, 1.);
     }
-
-    // if (_Multiply)
-    // {
-    //     return half4(d * rawColor, 1.);
-    // }
-    // else
-    // {
-    //     return half4(d, 1.);
-    // }
     ENDHLSL
 
     SubShader

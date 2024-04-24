@@ -12,6 +12,7 @@ public class DoGEditor : VolumeComponentEditor
     private SerializedDataParameter _Inverse;
     private SerializedDataParameter _Coefficient;
     private SerializedDataParameter _Multiply;
+    private SerializedDataParameter _ElapsedTime;
     private SerializedDataParameter _CenterCoordinate;
 
     public bool hasAdvancedMode => true;
@@ -25,6 +26,7 @@ public class DoGEditor : VolumeComponentEditor
         _Inverse = Unpack(o.Find(_ => _.invers));
         _Coefficient = Unpack(o.Find(_ => _.coefficient));
         _Multiply = Unpack(o.Find(_ => _.multiply));
+        _ElapsedTime = Unpack(o.Find(_ => _.elapsedTime));
         _CenterCoordinate = Unpack(o.Find(_ => _.center));
     }
 
@@ -36,6 +38,7 @@ public class DoGEditor : VolumeComponentEditor
         PropertyField(_Inverse);
         PropertyField(_Coefficient);
         PropertyField(_Multiply);
+        PropertyField(_ElapsedTime);
         PropertyField(_CenterCoordinate);
     }
 }

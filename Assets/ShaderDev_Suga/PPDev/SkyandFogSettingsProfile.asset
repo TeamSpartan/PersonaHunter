@@ -294,9 +294,12 @@ MonoBehaviour:
   strength:
     m_OverrideState: 1
     m_Value: 0.85
+  elapsedTime:
+    m_OverrideState: 1
+    m_Value: 0
   center:
     m_OverrideState: 1
-    m_Value: {x: 0, y: 0}
+    m_Value: {x: 0.5, y: 0.5}
   gain:
     m_OverrideState: 1
     m_Value: 15
