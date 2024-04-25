@@ -1,5 +1,8 @@
-﻿using Player.Input;
+﻿using System;
+using Player.Input;
 using Player.Param;
+using Player.Zone;
+using SgLibUnite.CodingBooster;
 using UnityEngine;
 
 namespace Player.Action
@@ -17,11 +20,20 @@ namespace Player.Action
 		private int _parryID = Animator.StringToHash("IsParry");
 		private PlayerParam _playerParam;
 		private Animator _animator;
+		private CBooster _cBooster = new();
+		private ZoneObj _zoneObj;
+		private void OnEnable()
+		{
+			
+
+			
+		}
 
 		private void Start()
 		{
 			_playerParam = GetComponentInParent<PlayerParam>();
 			_animator = GetComponentInParent<Animator>();
+			_zoneObj = GetComponent<ZoneObj>();
 		}
 
 		private void Update()
@@ -45,6 +57,10 @@ namespace Player.Action
 			_animator.SetTrigger(_parryID);
 		}
 
+		void ParrySuccess()
+		{
+			_zoneObj.IncreaseGaugeValue(1);
+		}
 
 		///<summary>アニメーションイベントで呼び出す用</summary>------------------------------------------------------------------
 		public void Parry()
@@ -54,7 +70,12 @@ namespace Player.Action
 				OnDuringParry?.Invoke();
 				return;
 			}
-
+			foreach (var IGuard in _cBooster.GetDerivedComponents<IGuardEventHandler>())
+			{
+				IGuard.EParrySucceed += ParrySuccess;
+				IGuard.NotifyPlayerIsGuarding(this.gameObject);
+			}
+			
 			_playerParam.SetIsParry(true);
 			OnParryStart?.Invoke();
 		}
@@ -65,7 +86,11 @@ namespace Player.Action
 			{
 				return;
 			}
-
+			foreach (var IGuard in _cBooster.GetDerivedComponents<IGuardEventHandler>())
+			{
+				IGuard.EParrySucceed -= ParrySuccess;
+			}
+			
 			OnEndParry?.Invoke();
 			_playerParam.SetIsParry(false);
 		}

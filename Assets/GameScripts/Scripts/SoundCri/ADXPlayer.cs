@@ -46,6 +46,7 @@ namespace Sound
 			_SEAtomSource.player.ResetParameters();
 		}
 
+		///<summary>BGMを流す用の関数</summary>
 		public void PlayBGM(BGMSoundData.BGM bgm, params IAudioPlayOption[] options)
 		{
 			const string BGMSHEETNAME = "BGM";
@@ -78,6 +79,7 @@ namespace Sound
 			_BGMAtomSource.Play();
 		}
 
+		///<summary>SEを流す用の関数</summary>
 		public void PlaySE(SESoundData.SE se, params IAudioPlayOption[] options)
 		{
 			const string SESHEETNAME = "SE";
@@ -110,6 +112,8 @@ namespace Sound
 			_SEAtomSource.Play();
 		}
 
+		
+		///<summary>MEを流す用の関数</summary>
 		public void PlayME(MESoundData.ME me, params IAudioPlayOption[] options)
 		{
 			const string MESHEETNAME = "ME";
@@ -141,7 +145,8 @@ namespace Sound
 			//プレイ
 			_MEAtomSource.Play();
 		}
-		
+
+		///<summary>Voiceを流す用の関数</summary>
 		public void PlayVoice(VoiceSoundData.Voice voice, params IAudioPlayOption[] options)
 		{
 			const string VoiceSHEETNAME = "Voice";
