@@ -290,9 +290,24 @@ public class Nue_v1_e2 : MonoBehaviour
         Debug.Log($"Death Now");
     }
 
+    public void GetFlinch()
+    {
+        _bt.YeildAllBehaviourTo(_btbFlinch);
+        _animator.SetTrigger("GetFlinch");
+    }
+
     void Flinch()
     {
         Debug.Log($"Flinching Now");
+        _btbCurrentYieldedBehaviour = _btbFlinch;
+
+        _tFlinchET += Time.deltaTime;
+
+        if (_tFlinchET > _awaitTimeOnFlinching)
+        {
+            _tFlinchET = 0;
+            _animator.SetTrigger("EndFlinch");
+        }
     }
 
     public void GetStumble() // どっかのタイミングで一度だけ呼び出される
@@ -316,6 +331,11 @@ public class Nue_v1_e2 : MonoBehaviour
     }
 
     public void EndStumbling() // animator event でこれを呼び出し
+    {
+        _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
+    }
+
+    public void EndFlinching() //  animator event でこれを呼び出し
     {
         _bt.EndYieldBehaviourFrom(_btbCurrentYieldedBehaviour);
     }
@@ -367,9 +387,11 @@ public class Nue_v1_e2 : MonoBehaviour
         _btbDeath.SetYieldMode(true);
 
         _btbFlinch.AddBehaviour(Flinch);
+        _btbFlinch.EBegin += () => { _agent.ResetPath(); };
         _btbFlinch.SetYieldMode(true);
 
         _btbStumble.AddBehaviour(Stumble);
+        _btbStumble.EBegin += () => { _agent.ResetPath(); };
         _btbStumble.SetYieldMode(true);
 
         _btbRush.AddBehaviour(Rush);
