@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Player.Param;
 using Player.Input;
 using SgLibUnite.CodingBooster;
@@ -12,7 +11,7 @@ public class PlayerAttack : MonoBehaviour
 	Animator _animator;
 	private CBooster _booster = new();
 	private PlayerParam _playerParam;
-	[SerializeField, Range(1f, 50f)] private float _attackingRange;
+	[SerializeField, Range(0f, 10f)] private float _attackingRange;
 	
 	private LayerMask _enemyLayerMask;
 
@@ -48,24 +47,31 @@ public class PlayerAttack : MonoBehaviour
 
 	private void AttackToEnemy()
 	{
-		var condition = Physics.OverlapSphere(transform.position + Vector3.up, _attackingRange, _enemyLayerMask);
+		var condition = Physics.OverlapSphere(transform.position , _attackingRange, _enemyLayerMask);
 		if (condition != null)
 		{
 			IDamagedComponent iDamaged = null;
 			foreach (var collider in condition)
 			{
-				if (collider.gameObject.GetComponent<IDamagedComponent>() != null)
+				if (collider.GetComponent<IDamagedComponent>() != null)
 				{
-					Debug.DrawRay(transform.position + Vector3.up, transform.forward * 100, Color.green);
-					Debug.Log("Damage");
+					Debug.DrawRay(transform.position + Vector3.up, Vector3.forward, Color.green);
 					collider.GetComponent<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk);
+					OnAttackSuccess?.Invoke();
+					_isGiveDamage = true;
+				}
+				else if (collider.GetComponentInChildren<IDamagedComponent>() != null)
+				{
+					Debug.DrawRay(transform.position + Vector3.up, Vector3.forward, Color.green);
+					collider.GetComponentInChildren<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk);
+					OnAttackSuccess?.Invoke();
 					_isGiveDamage = true;
 				}
 			}
 		}
 		else
 		{
-			Debug.DrawRay(transform.position + Vector3.up, transform.forward * 100, Color.red);
+			Debug.DrawRay(transform.position + Vector3.up, Vector3.forward, Color.red);
 		}
 	}
 
@@ -123,6 +129,7 @@ public class PlayerAttack : MonoBehaviour
 		_isGiveDamage = false;
 	}
 
+	///<summary>アニメーションの終わり</summary>
 	public void EndAttackActions()
 	{
 		//連続攻撃
@@ -138,5 +145,10 @@ public class PlayerAttack : MonoBehaviour
 			AttackClear();
 			PlayerInputsAction.Instance.EndAction();
 		}
+	}
+
+	private void OnDrawGizmos()
+	{
+		Gizmos.DrawWireSphere(transform.position, _attackingRange);
 	}
 }
