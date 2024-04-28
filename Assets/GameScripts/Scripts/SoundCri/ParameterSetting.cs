@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Sound.PlayOption
 {
 	///<summary>サウンドのパラメーター</summary>
-	public class ParameterSetting : MonoBehaviour
+	public class ParameterSetting
 	{
 		public class VolumeParam : IAudioPlayOption
 		{
@@ -39,6 +39,7 @@ namespace Sound.PlayOption
 			}
 		}
 		
+		/// <summary>ループの設定</summary>
 		public class LoopSet : IAudioPlayOption
 		{
 			private bool _isLoop = false;
@@ -53,9 +54,25 @@ namespace Sound.PlayOption
 				return target;
 			}
 		}
+		
+		/// <summary>距離減衰の使用</summary>
+		public class Pos3DSet : IAudioPlayOption
+		{
+			private bool _is3DPos = false;
 
-		/// <summary>エンジン音のように徐々に音が大きくなっていく感じ？？</summary>
-		//https://game.criware.jp/manual/unity_plugin/latest/contents/atom4u_keys_aisac.html
+			public Pos3DSet(bool value)
+			{
+				_is3DPos = value;
+			}
+			
+			public CriAtomSource ApplySetting(CriAtomSource target)
+			{
+				target.use3dPositioning = _is3DPos;
+				return target;
+			}
+		}
+
+		/// <summary>距離減衰の設定を変更</summary>
 		public class AisacParam : IAudioPlayOption
 		{
 			private uint _aisacTargetId;
