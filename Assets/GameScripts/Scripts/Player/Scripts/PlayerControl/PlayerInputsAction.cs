@@ -12,8 +12,7 @@ namespace Player.Input
 		Idle,
 		Attack,
 		Parry,
-		Avoid,
-		Zone
+		Avoid
 	}
 	#endregion
 
@@ -34,6 +33,7 @@ namespace Player.Input
 		private PlayerInputTypes _currentInput;
 
 		private bool _isLockOn = false;
+		private bool _isZone = false;
 		
 		bool _isExternalInputBlocked;
 		bool _playerControllerInputBlocked;
@@ -87,6 +87,9 @@ namespace Player.Input
 		///<summary>ロックオン</summary>
 		public bool IsLockOn => _isLockOn;
 
+		///<summary>ゾーン中か否か</summary>
+		public bool IsZone => _isZone;
+
 		void Awake()
 		{
 			if (_instance == null)
@@ -107,41 +110,12 @@ namespace Player.Input
 			InGameDis();
 		}
 
-		void InGameDis()
-		{
-			//Move
-			_gameInputs.Player.Move.started -= OnMove;
-			_gameInputs.Player.Move.performed -= OnMove;
-			_gameInputs.Player.Move.canceled -= OnMove;
-			
-			//Attack
-			_gameInputs.Player.Attack.started -= OnAttack;
-			
-			//Parry
-			_gameInputs.Player.Parry.started -= OnParry;
-			
-			//Avoid
-			_gameInputs.Player.Avoid.started -= OnAvoid;
-			
-			//Zone
-			_gameInputs.Player.Zone.started -= OnZone;
-			
-			//Camera
-			_gameInputs.Player.Camera.started -= OnCamera;
-			_gameInputs.Player.Camera.performed -= OnCamera;
-			_gameInputs.Player.Camera.canceled -= OnCamera;
-			
-			//LockOn
-			_gameInputs.Player.LockOn.started -= OnLockOn;
-		}
-		
-
 		void Update()
 		{
 			InputTypeUpdate();
 		}
 
-
+		///<summary>入力をキューに保存する</summary>
 		void AddInputQueue(PlayerInputTypes playerInputType)
 		{
 			if (_inputQueue.Count >= maxInputCount)
@@ -155,6 +129,7 @@ namespace Player.Input
 		///<summary>アニメーションが終わったら実行</summary>
 		public void EndAction() => _currentInput = PlayerInputTypes.Idle;
 
+		//入力タイプの更新
 		void InputTypeUpdate()
 		{
 			if (_currentInput == PlayerInputTypes.Idle && _inputQueue.Count >= 1)
@@ -164,6 +139,7 @@ namespace Player.Input
 			}
 		}
 
+		///<summary>同一の行動をキューから排除する</summary>
 		public void DeleteInputQueue(PlayerInputTypes type)
 		{
 			while (_inputQueue.Count > 0)
@@ -179,6 +155,7 @@ namespace Player.Input
 			}
 		}
 
+		///<summary>キューの最初の要素を確認する</summary>
 		public PlayerInputTypes CheckInputQueue()
 		{
 			if (_inputQueue.Count <= 0)
@@ -208,8 +185,13 @@ namespace Player.Input
 
 		void OnZone(InputAction.CallbackContext context)
 		{
-			AddInputQueue(PlayerInputTypes.Zone);
-			Debug.Log("WaitZone");
+			_isZone = false;
+			Debug.Log("Zone");
+		}
+
+		void OutZone(InputAction.CallbackContext context)
+		{
+			_isZone = false;
 		}
 
 		private void OnMove(InputAction.CallbackContext context)
@@ -256,6 +238,33 @@ namespace Player.Input
 			_gameInputs.Player.LockOn.started += OnLockOn;
 		}
 
-		
+		void InGameDis()
+		{
+			//Move
+			_gameInputs.Player.Move.started -= OnMove;
+			_gameInputs.Player.Move.performed -= OnMove;
+			_gameInputs.Player.Move.canceled -= OnMove;
+			
+			//Attack
+			_gameInputs.Player.Attack.started -= OnAttack;
+			
+			//Parry
+			_gameInputs.Player.Parry.started -= OnParry;
+			
+			//Avoid
+			_gameInputs.Player.Avoid.started -= OnAvoid;
+			
+			//Zone
+			_gameInputs.Player.Zone.started -= OnZone;
+			_gameInputs.Player.Zone.canceled -= OutZone;
+			
+			//Camera
+			_gameInputs.Player.Camera.started -= OnCamera;
+			_gameInputs.Player.Camera.performed -= OnCamera;
+			_gameInputs.Player.Camera.canceled -= OnCamera;
+			
+			//LockOn
+			_gameInputs.Player.LockOn.started -= OnLockOn;
+		}
 	}
 }
