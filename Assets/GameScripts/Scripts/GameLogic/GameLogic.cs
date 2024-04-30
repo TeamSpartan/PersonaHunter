@@ -1,6 +1,9 @@
+using System;
 using SgLibUnite.Singleton;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
+using UnityEngine.Rendering;
+using DG.Tweening;
 
 // 作成：菅沼
 /// <summary>
@@ -8,13 +11,29 @@ using UnityEngine;
 /// </summary>
 public class GameLogic
     : SingletonBaseClass<GameLogic>
+        , IGuardEventHandler
+        , IEnemyAttackEventHandler
 {
     [SerializeField] private bool _debugging;
 
     private GameInfo _info;
 
+    public Action EParrySucceed { get; set; }
+
+    private Volume _volume;
+    private DifferenceOfGaussian _dog;
+
     // コーディング ブースタ クラス
     CBooster booster = new CBooster();
+
+    public void TaskOnDivedOnZone()
+    {
+        // var player = GameObject.FindWithTag("Player").transform;
+        // var ppos = Camera.main.WorldToViewportPoint(player.position);
+        // _dog.center.Override(new Vector2(ppos.x, ppos.y));
+        DOTween.To((_) => { _dog.elapsedTime.Override(_); },
+            0f, 1f, .75f);
+    }
 
     /// <summary>
     /// 集中 を 発火する
@@ -23,6 +42,7 @@ public class GameLogic
     {
         var targets = booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.StartDull());
+        TaskOnDivedOnZone();
     }
 
     /// <summary>
@@ -34,12 +54,29 @@ public class GameLogic
         targets.ForEach(_ => _.EndDull());
     }
 
+    /// <summary>
+    /// プレイヤーが呼び出す
+    /// </summary>
+    public void NotifyPlayerIsGuarding(GameObject enemy)
+    {
+    }
+
+    /// <summary>
+    /// 敵が呼び出す
+    /// </summary>
+    public void NotifyEnemyAttackCondition(GameObject instance, bool condition)
+    {
+    }
+
     void InitializeGame()
     {
         if (_debugging)
         {
             Debug.Log($"{nameof(GameLogic)}:Game Initialized");
         }
+
+        _volume = GameObject.FindFirstObjectByType<Volume>();
+        _volume.profile.TryGet(out _dog);
 
         _info = GameObject.FindFirstObjectByType<GameInfo>();
 
