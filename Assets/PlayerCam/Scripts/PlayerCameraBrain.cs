@@ -88,15 +88,27 @@ namespace PlayerCam.Scripts
         /// </summary>
         void LockOnToLeftTarget()
         {
+            // TODO 正面べースで判定しないといけない
             
+            var dir = _lockOnTargets.Where(_ => _.position.x < _lockOnTargets[_lockingOnTargetIndex].position.x)
+                .OrderByDescending(_ => _.position.x).ToList();
+            _lockingOnTargetIndex = _lockOnTargets.FindIndex(_ => _ == dir[0]);
+            var dis = Vector3.Distance(_lockOnTargets[_lockingOnTargetIndex].position, _player.position);
+            _lockOnRadius = dis;
         }
 
         /// <summary>
         /// 右のロックオン対象へロックオン
         /// </summary>
         void LockOnToRightTarget()
-        {
+        {   
+            // TODO 正面べースで判定しないといけない
             
+            var dir = _lockOnTargets.Where(_ => _.position.x > _lockOnTargets[_lockingOnTargetIndex].position.x)
+                .OrderBy(_ => _.position.x).ToList();
+            _lockingOnTargetIndex = _lockOnTargets.FindIndex(_ => _ == dir[0]);
+            var dis = Vector3.Distance(_lockOnTargets[_lockingOnTargetIndex].position, _player.position);
+            _lockOnRadius = dis;
         }
         
         /// <summary>
