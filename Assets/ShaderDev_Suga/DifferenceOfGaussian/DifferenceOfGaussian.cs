@@ -15,10 +15,13 @@ public class DifferenceOfGaussian : CustomPostProcessVolumeComponent, IPostProce
     public ClampedFloatParameter coefficient = new ClampedFloatParameter(0f, 0f, 1f);
 
     [Tooltip("Controls The Strength of Blur")]
-    public ClampedFloatParameter strength = new ClampedFloatParameter(0f, 0f, 10f);
+    public ClampedFloatParameter strength = new ClampedFloatParameter(0f, 0f, 10f); 
+    
+    [Tooltip("Controls The Circle Size")]
+    public ClampedFloatParameter elapsedTime = new ClampedFloatParameter(0f, 0f, 1f);
 
     [Tooltip("Controls Center Coordinate")]
-    public Vector2Parameter center = new Vector2Parameter(Vector2.zero);
+    public Vector2Parameter center = new Vector2Parameter(Vector2.one * .5f);
 
     [Tooltip("Controls The Gain")] public ClampedFloatParameter gain = new ClampedFloatParameter(0f, 0f, 15f);
 
@@ -46,6 +49,7 @@ public class DifferenceOfGaussian : CustomPostProcessVolumeComponent, IPostProce
         _material.SetFloat("_Strength", strength.value);
         _material.SetFloat("_Gain", gain.value);
         _material.SetFloat("_Coefficient", coefficient.value);
+        _material.SetFloat("_ElapsedTime", elapsedTime.value);
         _material.SetVector("_CenterCoordinate", center.value);
         _material.SetInt("_Inverse", invers.value ? 1 : 0);
         _material.SetInt("_Multiply", multiply.value ? 1 : 0);

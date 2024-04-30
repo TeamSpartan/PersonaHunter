@@ -32,7 +32,17 @@ namespace Input
             _moveH = UnityEngine.Input.GetAxis("Horizontal");
             _moveV = UnityEngine.Input.GetAxis("Vertical");
             _mouseH = UnityEngine.Input.GetAxis("Mouse X");
-            _mouseV = UnityEngine.Input.GetAxis("Mouse Y");
+            _mouseV = UnityEngine.Input.GetAxis("Mouse Y"); 
+            // 左 ターゲット ロックオン
+            if (UnityEngine.Input.GetKeyDown(KeyCode.E))
+            {
+                EvtCamLeftTarget();
+            }
+            // 右 ターゲット ロックオン
+            if (UnityEngine.Input.GetKeyDown(KeyCode.D))
+            {
+                EvtCamRightTarget();
+            }
 
             if (_elapsedT > 1)
             {
@@ -65,5 +75,8 @@ namespace Input
         {
             return this._mouseV;
         }
+
+        public Action EvtCamLeftTarget { get; set; }
+        public Action EvtCamRightTarget { get; set; }
     }
 }
