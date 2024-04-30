@@ -84,6 +84,22 @@ namespace PlayerCam.Scripts
         #endregion
 
         /// <summary>
+        /// 左のロックオン対象へロックオン
+        /// </summary>
+        void LockOnToLeftTarget()
+        {
+            
+        }
+
+        /// <summary>
+        /// 右のロックオン対象へロックオン
+        /// </summary>
+        void LockOnToRightTarget()
+        {
+            
+        }
+        
+        /// <summary>
         /// ロックオン入力が入った時に発火するイベントへの登録関数
         /// </summary>
         void LockOnTriggerred()
@@ -245,6 +261,11 @@ namespace PlayerCam.Scripts
             // ロックオンイベント発火元へのデリゲート登録をする
             boost.GetDerivedComponents<ILockOnEventFirable>()
                 .ForEach(_ => _.ELockOnTriggered += this.LockOnTriggerred);
+            
+            // ロックオン対象選択イベント発火もとへデリゲート登録
+            var  lockOnEventHandler = boost.GetDerivedComponents<IInputValueReferencable>()[0];
+            lockOnEventHandler.EvtCamLeftTarget += LockOnToLeftTarget;
+            lockOnEventHandler.EvtCamRightTarget += LockOnToRightTarget;
 
             // 内部パラメータ初期化
             this._lockOnRadius = LockOnRadius; // 半径

@@ -154,6 +154,16 @@ public interface IInputValueReferencable
     /// マウス入力 垂直 の値を返す
     /// </summary>
     public float GetVerticalMouseMoveValue();
+
+    /// <summary>
+    /// 左のロックオン対象を選択する時のイベント
+    /// </summary>
+    public Action EvtCamLeftTarget { get; set; }
+    
+    /// <summary>
+    /// 右のロックオン対象を選択する時のイベント
+    /// </summary>
+    public Action EvtCamRightTarget { get; set; }
 }
 
 /// <summary></summary>

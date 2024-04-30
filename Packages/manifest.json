@@ -6,6 +6,7 @@
     "com.unity.feature.development": "1.0.1",
     "com.unity.inputsystem": "1.7.0",
     "com.unity.render-pipelines.high-definition": "14.0.8",
+    "com.unity.splines": "2.4.0",
     "com.unity.textmeshpro": "3.0.8",
     "com.unity.timeline": "1.7.5",
     "com.unity.ugui": "1.0.0",
@@ -41,5 +42,14 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  }
+  },
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.cysharp"
+      ]
+    }
+  ]
 }
