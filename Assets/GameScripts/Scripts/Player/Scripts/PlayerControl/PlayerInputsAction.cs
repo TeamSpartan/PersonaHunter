@@ -26,7 +26,7 @@ namespace Player.Input
 
 	public class PlayerInputsAction : MonoBehaviour, IInputValueReferencable
 	{
-		static PlayerInputsAction _instance;
+		private static PlayerInputsAction _instance;
 
 		public static PlayerInputsAction Instance => _instance;
 
@@ -34,8 +34,8 @@ namespace Player.Input
 		private GameInputs _gameInputs;
 		private Queue<PlayerInputTypes> _inputQueue = new();
 
-		Vector2 _inputVector = default;
-		Vector2 _inputCamera;
+		private Vector2 _inputVector = default;
+		private Vector2 _inputCamera;
 		private Vector2 _mouseMove;
 		private Vector2 _cursorInput;
 
@@ -48,8 +48,8 @@ namespace Player.Input
 		private bool _isDecision = false;
 		private bool _isConfirm = false;
 
-		bool _isExternalInputBlocked;
-		bool _playerControllerInputBlocked;
+		private bool _isExternalInputBlocked;
+		private bool _playerControllerInputBlocked;
 
 		///<summary>InGame用とUI用の切り替え</summary>
 		public void ChangeInputType(InputType inputType)
@@ -90,7 +90,7 @@ namespace Player.Input
 		}
 
 
-		///<summary>カメラの移動入力</summary>
+		///<summary>カメラの移動入力、ロックオン時敵の切り替え	</summary>
 		public Vector2 GetCameraInput
 		{
 			get
@@ -112,6 +112,9 @@ namespace Player.Input
 		{
 			return GetCameraInput.y;
 		}
+
+		public System.Action EvtCamLeftTarget { get; set; }
+		public System.Action EvtCamRightTarget { get; set; }
 
 		///<summary></summary>
 		public Vector2 GetCursorInputInput => _cursorInput;
