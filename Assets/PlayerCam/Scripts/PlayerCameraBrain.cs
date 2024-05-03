@@ -50,10 +50,7 @@ namespace PlayerCam.Scripts
         /// </summary>
         private bool _lockingOn;
 
-        public bool LockingOn
-        {
-            get { return this._lockingOn; }
-        }
+        public bool LockingOn => _lockingOn;
 
         /// <summary>
         /// コーディング ブースタ クラス
@@ -68,7 +65,7 @@ namespace PlayerCam.Scripts
         /// <summary>
         /// ロックオン対象のインデックス
         /// </summary>
-        private int _lockingOnTargetIndex = 0;
+        private int _lockingOnTargetIndex;
 
         // 入力値 ー キャラ移動と視点移動入力
         private float _moveX;
@@ -77,6 +74,7 @@ namespace PlayerCam.Scripts
         private float _mouseY;
         private float _theta;
 
+        // カメラ各種
         private CinemachineBrain _cinemachineBrain;
         private CinemachineVirtualCamera _playerFollowCam;
         private CinemachineVirtualCamera _lockOnCam;
@@ -88,9 +86,13 @@ namespace PlayerCam.Scripts
         /// </summary>
         void LockOnToLeftTarget()
         {
+            LockOnNextTarget(-1);
+
             // TODO 正面べースで判定しないといけない
-            
-            var dir = _lockOnTargets.Where(_ => _.position.x < _lockOnTargets[_lockingOnTargetIndex].position.x)
+
+            var dir = _lockOnTargets.Where(_ =>
+                    (_.position - _player.forward).x <
+                    (_lockOnTargets[_lockingOnTargetIndex].position - _player.forward).x)
                 .OrderByDescending(_ => _.position.x).ToList();
             _lockingOnTargetIndex = _lockOnTargets.FindIndex(_ => _ == dir[0]);
             var dis = Vector3.Distance(_lockOnTargets[_lockingOnTargetIndex].position, _player.position);
@@ -101,16 +103,43 @@ namespace PlayerCam.Scripts
         /// 右のロックオン対象へロックオン
         /// </summary>
         void LockOnToRightTarget()
-        {   
+        {
+            LockOnNextTarget(1);
+
             // TODO 正面べースで判定しないといけない
-            
-            var dir = _lockOnTargets.Where(_ => _.position.x > _lockOnTargets[_lockingOnTargetIndex].position.x)
+
+            var dir = _lockOnTargets.Where(_ =>
+                    (_.position - _player.forward).x >
+                    (_lockOnTargets[_lockingOnTargetIndex].position - _player.forward).x)
                 .OrderBy(_ => _.position.x).ToList();
             _lockingOnTargetIndex = _lockOnTargets.FindIndex(_ => _ == dir[0]);
             var dis = Vector3.Distance(_lockOnTargets[_lockingOnTargetIndex].position, _player.position);
             _lockOnRadius = dis;
         }
-        
+
+        /// <summary>
+        /// 左右どちらかの入力に応じてロックオンする
+        /// </summary>
+        void LockOnNextTarget(int dirHorizontal)
+        {
+            switch (dirHorizontal)
+            {
+                case -1:
+                {
+                    break;
+                }
+                case 1:
+                {
+                    break;
+                }
+                default:
+                {
+                    Debug.LogError("Invalid Parameter Detected!");
+                    break;
+                }
+            }
+        }
+
         /// <summary>
         /// ロックオン入力が入った時に発火するイベントへの登録関数
         /// </summary>
@@ -177,11 +206,11 @@ namespace PlayerCam.Scripts
         {
             var iInput = boost.GetDerivedComponents<IInputValueReferencable>();
 
-            _moveX = iInput.First().GetHorizontalMoveValue();
-            _moveY = iInput.First().GetVerticalMoveValue();
+            _moveX = iInput[0].GetHorizontalMoveValue();
+            _moveY = iInput[0].GetVerticalMoveValue();
 
-            _mouseX = iInput.First().GetHorizontalMouseMoveValue();
-            _mouseY = iInput.First().GetVerticalMouseMoveValue();
+            _mouseX = iInput[0].GetHorizontalMouseMoveValue();
+            _mouseY = iInput[0].GetVerticalMouseMoveValue();
         }
 
         void CamBehaviourDefault()
@@ -273,9 +302,9 @@ namespace PlayerCam.Scripts
             // ロックオンイベント発火元へのデリゲート登録をする
             boost.GetDerivedComponents<ILockOnEventFirable>()
                 .ForEach(_ => _.ELockOnTriggered += this.LockOnTriggerred);
-            
+
             // ロックオン対象選択イベント発火もとへデリゲート登録
-            var  lockOnEventHandler = boost.GetDerivedComponents<IInputValueReferencable>()[0];
+            var lockOnEventHandler = boost.GetDerivedComponents<IInputValueReferencable>()[0];
             lockOnEventHandler.EvtCamLeftTarget += LockOnToLeftTarget;
             lockOnEventHandler.EvtCamRightTarget += LockOnToRightTarget;
 
