@@ -32,6 +32,11 @@ namespace PlayerCam.Scripts
         [SerializeField, Header("The Camera LockingOn Target")]
         private CinemachineVirtualCamera LockOnCamera;
 
+        /// <summary>
+        /// 現在 ロックオン している ターゲットのトランスフォーム情報
+        /// </summary>
+        public Transform CurrentLockingOnTarget => _lockOnTargets[_lockingOnTargetIndex];
+
         #endregion
 
         #region Parameter Inside
