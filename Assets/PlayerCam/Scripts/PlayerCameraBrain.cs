@@ -42,9 +42,14 @@ namespace PlayerCam.Scripts
         #region Parameter Inside
 
         /// <summary>
-        /// プレイヤ
+        /// 現在のプレイヤのトランスフォーム
         /// </summary>
-        private Transform _player;
+        private Transform _playerCurrent;
+
+        /// <summary>
+        /// 前フレームのプレイヤのトランスフォーム
+        /// </summary>
+        private Transform _playerPastTransform;
 
         /// <summary>
         /// ロックオン対象の配列
@@ -93,7 +98,7 @@ namespace PlayerCam.Scripts
         public void InitializeThisComponent()
         {
             // 検索にひっかかった最初のオブジェクトをプレイヤとする
-            this._player = boost.GetDerivedComponents<IPlayerCameraTrasable>()
+            this._playerCurrent = boost.GetDerivedComponents<IPlayerCameraTrasable>()
                 .First().GetPlayerCamTrasableTransform();
 
             // ロックオンイベント発火元へのデリゲート登録をする
@@ -148,7 +153,7 @@ namespace PlayerCam.Scripts
             //Debug.Log($"{nameof(PlayerCameraBrain)} Tick-");
 
             // ターゲットを常に正面左側からソートした状態の状態を格納
-            _lockOnTargets = GetSortedLockOnTargets(_player.rotation.y);
+            _lockOnTargets = GetSortedLockOnTargets(_playerCurrent.rotation.y);
 
             // 通常カメラとは視点は大きな変化はなし、ロックオンターゲット中心に
             // 円形を描くような左右移動をする。
@@ -191,16 +196,17 @@ namespace PlayerCam.Scripts
 
             var target = _lockOnTargets[_lockingOnTargetIndex].transform;
             var pos = target.position;
+            
             pos.x += pDir.x; // right
             pos.z += pDir.y; // forward
 
-            var dir = new Vector3(target.position.x - _player.position.x
+            var dir = new Vector3(target.position.x - _playerCurrent.position.x
                 , 0f
-                , target.position.z - _player.position.z).normalized;
-            _player.transform.position = pos;
-            _player.transform.forward = dir;
+                , target.position.z - _playerCurrent.position.z).normalized;
+            _playerCurrent.transform.position = pos;
+            _playerCurrent.transform.forward = dir;
 
-            var player = _player.position;
+            var player = _playerCurrent.position;
 
             var directions = _lockOnTargets.Select(item => item.position - player).ToList();
             Vector3 dirBehind = Vector3.one;
@@ -248,7 +254,7 @@ namespace PlayerCam.Scripts
             // 第2証言 ０ 未満 -１．５ 以上
             // 第1証言 -１．５ 未満 -３以上
             // 単位は ラジアン
-            var d = (_lockOnTargets[_lockingOnTargetIndex].position - _player.position).normalized;
+            var d = (_lockOnTargets[_lockingOnTargetIndex].position - _playerCurrent.position).normalized;
             var dz = d.z;
             var dx = d.x;
             var angle = Mathf.Atan2(dz, dx);
@@ -261,16 +267,14 @@ namespace PlayerCam.Scripts
             // Set Up Camera
             // カメラ をセットアップ
             _lockOnCam.LookAt = target;
-            _lockOnCam.Follow = _player;
+            _lockOnCam.Follow = _playerCurrent;
         }
         
         void CamBehaviourDefault()
         {
-            //Debug.Log($"{nameof(PlayerCameraBrain)} Tick");
-
             // 基本的にオービタルカメラ。 左右のみ、すこし上からプレイヤを見下ろしている視点
-            _playerFollowCam.Follow = _player;
-            _playerFollowCam.LookAt = _player;
+            _playerFollowCam.Follow = _playerCurrent;
+            _playerFollowCam.LookAt = _playerCurrent;
         }
         
         void GetInputValue()
@@ -311,50 +315,7 @@ namespace PlayerCam.Scripts
 
             if (_lockingOn)
             {
-                // Get All LockOn Target
-                // マップ上のロックオン可能なターゲットを取得
-                // Filter Captureable Target
-                // 捕捉可能な距離圏内にいるターゲットを取得
-                _lockOnTargets = GetLockableTargets();
-
-                // ロックオンターゲットのソート：左→右 ＿ 0 → Count - 1
-                _lockOnTargets = GetSortedLockOnTargets(_player.rotation.y);
-
-                // If LockOn Targte Was Not Found Cancel Locking On
-                if (_lockOnTargets.Count() < 1)
-                {
-                    _lockingOn = false;
-                    return;
-                }
-
-                // The Subtraction for calculate Vector Player position-supposed 
-                // ロックオン発動時のプレイヤの位置を設定するためのベクトル
-                var dx = _lockOnTargets[_lockingOnTargetIndex].position.x
-                         - _player.position.x;
-                var dy = _lockOnTargets[_lockingOnTargetIndex].position.z
-                         - _player.position.z;
-
-                // ま反対の方向へプレイヤの位置が初期化されてしまうのでオイラー角でいう180°を足せばよい。
-                // Atan2は弧度法の値で返してくるのでPI（弧度法）を返す
-                var angleForPos = Mathf.Atan2(dy, dx) + Mathf.PI;
-                _theta = angleForPos;
-
-                // List All Distancies All Target Between Player
-                // 捕捉可能なターゲットとプレイヤの距離をすべて取得しておく
-                var disList =
-                    _lockOnTargets.Select(_ => Vector3.Distance(_player.position, _.position)).ToList();
-
-                // とりあえずインスペクタへ公開しているフィールドも初期化しておく
-                LockOnRadius = disList.Max();
-                _lockOnRadius = disList.Max();
-
-                // とりあえず正面のターゲットへロックオン
-                var tIndex =
-                    _lockOnTargets.FindIndex(t => Math.Abs((t.position - _player.position).x) < 4f);
-                _lockingOnTargetIndex = tIndex > -1 ? tIndex : (_lockOnTargets.Count - 1) / 2;
-
-                // ロックオンカメラに切り替え
-                _lockOnCam.Priority = 1;
+                LockOnCoreProcess();
             }
             else
             {
@@ -364,9 +325,60 @@ namespace PlayerCam.Scripts
             }
         }
 
+        private void LockOnCoreProcess()
+        {   
+            // Get All LockOn Target
+            // マップ上のロックオン可能なターゲットを取得
+            // Filter Captureable Target
+            // 捕捉可能な距離圏内にいるターゲットを取得
+            _lockOnTargets = GetLockableTargets();
+
+            // ロックオンターゲットのソート：左→右 ＿ 0 → Count - 1
+            _lockOnTargets = GetSortedLockOnTargets(_playerCurrent.rotation.y);
+
+            // If LockOn Targte Was Not Found Cancel Locking On
+            if (_lockOnTargets.Count() < 1)
+            {
+                _lockingOn = false;
+                return;
+            }
+            
+            // List All Distancies All Target Between Player
+            // 捕捉可能なターゲットとプレイヤの距離をすべて取得しておく
+            var disList =
+                _lockOnTargets.Select(_ => Vector3.Distance(_playerCurrent.position, _.position)).ToList();
+
+            // とりあえずインスペクタへ公開しているフィールドも初期化しておく
+            LockOnRadius = disList.Max();
+            _lockOnRadius = disList.Max();
+
+            // とりあえず正面のターゲットへロックオン
+            var tIndex =
+                _lockOnTargets.FindIndex(t => Math.Abs((t.position - _playerCurrent.position).x) < 4f);
+            _lockingOnTargetIndex = tIndex > -1 ? tIndex : (_lockOnTargets.Count - 1) / 2;
+            
+            // The Subtraction for calculate Vector Player position-supposed 
+            // ロックオン発動時のプレイヤの位置を設定するためのベクトル
+            var dx = _lockOnTargets[_lockingOnTargetIndex].position.x
+                     - _playerCurrent.position.x;
+            var dy = _lockOnTargets[_lockingOnTargetIndex].position.z
+                     - _playerCurrent.position.z;
+
+            // ま反対の方向へプレイヤの位置が初期化されてしまうのでオイラー角でいう180°を足せばよい。
+            // Atan2は弧度法の値で返してくるのでPI（弧度法）を返す
+            var angleForPos = Mathf.Atan2(dy, dx) + Mathf.PI;
+            _theta = angleForPos;
+
+            // ロックオンカメラに切り替え
+            _lockOnCam.Priority = 1;
+            
+            // 前フレームのプレイヤのトランスフォームを更新
+            _playerPastTransform = _playerCurrent;
+        }
+
         private List<Transform> GetSortedLockOnTargets(float playerRotationY)
         {
-            return _lockOnTargets.OrderBy(v => (v.position - _player.position).x).ToList();
+            return _lockOnTargets.OrderBy(v => (v.position - _playerCurrent.position).x).ToList();
         }
 
         private List<Transform> GetLockableTargets()
@@ -374,7 +386,7 @@ namespace PlayerCam.Scripts
             return boost.GetDerivedComponents<IPlayerCamLockable>()
                 .Select(_ => _.GetLockableObjectTransform())
                 .Where(_ =>
-                    Vector3.Distance(_player.position, _.position) <= MaxDistanceToCapture
+                    Vector3.Distance(_playerCurrent.position, _.position) <= MaxDistanceToCapture
                     || Camera.main.WorldToScreenPoint(_.position).x <= Camera.main.pixelWidth - 1
                     && Camera.main.WorldToScreenPoint(_.position).y <= Camera.main.pixelHeight - 1
                     && Camera.main.WorldToScreenPoint(_.position).z > 0)
