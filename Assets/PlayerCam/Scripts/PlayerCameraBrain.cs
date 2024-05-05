@@ -253,22 +253,6 @@ namespace PlayerCam.Scripts
                 _targetRightIndex = _lockOnTargets.FindIndex(i => i.position == dirNext + player);
             }
 
-            // ワールド座標 ｘ軸とｚ軸が作る平面のグラフにおいて、
-            // 第4象限 １．５以上 ３ 未満
-            // 第3証言 ０ 以上 １．５ 未満
-            // 第2証言 ０ 未満 -１．５ 以上
-            // 第1証言 -１．５ 未満 -３以上
-            // 単位は ラジアン
-            var d = (_lockOnTargets[_lockingOnTargetIndex].position - _playerCurrent.position).normalized;
-            var dz = d.z;
-            var dx = d.x;
-            var angle = Mathf.Atan2(dz, dx);
-
-            if (-3f <= angle && angle <= -1.5f) // ここで左右スワップ
-            {
-                (_targetLeftIndex, _targetRightIndex) = (_targetRightIndex, _targetLeftIndex);
-            }
-
             // Set Up Camera
             // カメラ をセットアップ
             _lockOnCam.LookAt = target;
@@ -374,6 +358,13 @@ namespace PlayerCam.Scripts
         /// </summary>
         private float GetRadianValueToLookAtTarget()
         {
+            // ワールド座標 ｘ軸とｚ軸が作る平面のグラフにおいて、
+            // 第4象限 １．５以上 ３ 未満
+            // 第3証言 ０ 以上 １．５ 未満
+            // 第2証言 ０ 未満 -１．５ 以上
+            // 第1証言 -１．５ 未満 -３以上
+            // 単位は ラジアン
+            
             LockOnRadius = _lockOnRadius = GetDistanceByIndex(_lockingOnTargetIndex);
 
             // The Subtraction for calculate Vector Player position-supposed 
