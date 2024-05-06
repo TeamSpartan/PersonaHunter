@@ -24,7 +24,7 @@ namespace Input
 
         private void Update()
         {
-            if (UnityEngine.Input.GetMouseButton(2))
+            if (UnityEngine.Input.GetMouseButton(2)  || UnityEngine.Input.GetKey(KeyCode.L))
             {
                 _elapsedT += Time.deltaTime;
             }
