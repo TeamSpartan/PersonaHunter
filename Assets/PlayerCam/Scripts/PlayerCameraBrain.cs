@@ -62,7 +62,7 @@ namespace PlayerCam.Scripts
         /// ビューポート座標 (0,0)[画面左下] ~ (1,1)[画面右上]
         /// </para>
         /// </summary>
-        private Dictionary<Transform, Vector3> _vPortTfDic = new Dictionary<Transform, Vector3>();
+        private Dictionary<Transform, Vector3> _vportTransformDic = new Dictionary<Transform, Vector3>();
 
         /// <summary>
         /// ロックオン中かどうかのフラグ
@@ -85,6 +85,8 @@ namespace PlayerCam.Scripts
         /// ロックオン対象のインデックス
         /// </summary>
         private int _lockingOnTargetIndex;
+
+        private Transform _currentLockOnTarget;
 
         private int _targetLeftIndex;
         private int _targetRightIndex;
@@ -203,7 +205,7 @@ namespace PlayerCam.Scripts
             var playerForward = Mathf.Sin(_theta) * _lockOnRadius;
             var pDir = new Vector2(playerRight, playerForward);
 
-            var target = _lockOnTargetsTf[_lockingOnTargetIndex];
+            var target = _currentLockOnTarget;
             var centerPosition = target.position;
 
             centerPosition.x += pDir.x; // right
@@ -218,35 +220,21 @@ namespace PlayerCam.Scripts
             #endregion
 
             // 前フレームの連想配列は破棄。配置が換わっている可能性があるため
-            _vPortTfDic.Clear();
+            _vportTransformDic.Clear();
 
             // ビューポート座標:ワールド座標の連想配列を作成
             foreach (var lockOnTarget in _lockOnTargetsTf)
             {
                 var vportpos = Camera.main.WorldToViewportPoint(lockOnTarget.position);
-                if (!_vPortTfDic.ContainsKey(lockOnTarget))
+                if (!_vportTransformDic.ContainsKey(lockOnTarget))
                 {
                     Debug.Log($"Dic Added");
-                    _vPortTfDic.Add(lockOnTarget, vportpos);
+                    _vportTransformDic.Add(lockOnTarget, vportpos);
                 }
             }
 
             // ビューポート座標ｘ成分で昇順ソート
-            _vPortTfDic = _vPortTfDic.OrderBy(i => i.Value.x).ToDictionary(k => k.Key, v => v.Value);
-
-            // 画面上のロックオンしている対象の左右の対象の添え字を取得
-            var nxt = _lockingOnTargetIndex + 1 < _lockOnTargetsTf.Count
-                ? _lockingOnTargetIndex + 1
-                : _lockingOnTargetIndex;
-            var bhd = _lockingOnTargetIndex - 1 > -1 ? _lockingOnTargetIndex - 1 : _lockingOnTargetIndex;
-            // 上でソートしたので次と前さえわかればよい
-            _targetRightIndex = nxt;
-            _targetLeftIndex = bhd;
-            
-            foreach (var key in _vPortTfDic.Keys)
-            {
-                Debug.Log($"N-B {nxt}-{bhd}:{key.gameObject.name}");
-            }
+            _vportTransformDic = _vportTransformDic.OrderBy(i => i.Value.x).ToDictionary(k => k.Key, v => v.Value);
 
             // Set Up Camera
             // カメラ をセットアップ
@@ -277,7 +265,15 @@ namespace PlayerCam.Scripts
         /// </summary>
         void LockOnToLeftTarget()
         {
-            _lockingOnTargetIndex = _targetLeftIndex;
+            // 現在ロックオンしているターゲットのインデックスを取得
+            var vportpos = Camera.main.WorldToViewportPoint(_currentLockOnTarget.position);
+            var index = _vportTransformDic.Values.ToList().FindIndex(x => x == vportpos);
+            if (index != -1 && index - 1 > -1)
+            {
+                index--;
+            }
+            
+            _currentLockOnTarget = _vportTransformDic.Keys.ToList()[index];
 
             _theta = GetRadianValueToLookAtTarget();
         }
@@ -287,7 +283,15 @@ namespace PlayerCam.Scripts
         /// </summary>
         void LockOnToRightTarget()
         {
-            _lockingOnTargetIndex = _targetRightIndex;
+            // 現在ロックオンしているターゲットのインデックスを取得
+            var vportpos = Camera.main.WorldToViewportPoint(_currentLockOnTarget.position);
+            var index = _vportTransformDic.Values.ToList().FindIndex(x => x == vportpos);
+            if (index != -1 && index + 1 < _vportTransformDic.Count)
+            {
+                index++;
+            }
+            
+            _currentLockOnTarget = _vportTransformDic.Keys.ToList()[index];
 
             _theta = GetRadianValueToLookAtTarget();
         }
@@ -332,10 +336,13 @@ namespace PlayerCam.Scripts
             }
 
             // とりあえず正面のターゲットへロックオン
-            var tIndex =
-                _lockOnTargetsTf.FindIndex(t => Math.Abs((t.position - _playerCurrent.position).x) < 4f);
-            _lockingOnTargetIndex = tIndex > -1 ? tIndex : (_lockOnTargetsTf.Count - 1) / 2;
+            // var tIndex =
+            //     _lockOnTargetsTf.FindIndex(t => Math.Abs((Camera.main.WorldToViewportPoint(t.position) - Vector3.one).magnitude) < .5f);
+            // _lockingOnTargetIndex = tIndex > -1 ? tIndex : (_lockOnTargetsTf.Count - 1) / 2;
 
+            var len = _lockOnTargetsTf.Count;
+            _currentLockOnTarget = _lockOnTargetsTf[(len - 1) / 2];
+            
             _theta = GetRadianValueToLookAtTarget();
 
             // ロックオンカメラに切り替え
@@ -360,13 +367,14 @@ namespace PlayerCam.Scripts
             // 第1証言 -１．５ 未満 -３以上
             // 単位は ラジアン
 
-            LockOnRadius = _lockOnRadius = GetDistanceByIndex(_lockingOnTargetIndex);
+            // LockOnRadius = _lockOnRadius = GetDistanceByIndex(_lockingOnTargetIndex);
+            LockOnRadius = _lockOnRadius = Vector3.Distance(_currentLockOnTarget.position,_playerCurrent.position);
 
             // The Subtraction for calculate Vector Player position-supposed 
             // ロックオン発動時のプレイヤの位置を設定するためのベクトル
-            var dx = _lockOnTargetsTf[_lockingOnTargetIndex].position.x
+            var dx = _currentLockOnTarget.position.x
                      - _playerCurrent.position.x;
-            var dy = _lockOnTargetsTf[_lockingOnTargetIndex].position.z
+            var dy = _currentLockOnTarget.position.z
                      - _playerCurrent.position.z;
 
             // ま反対の方向へプレイヤの位置が初期化されてしまうのでオイラー角でいう180°を足せばよい。
