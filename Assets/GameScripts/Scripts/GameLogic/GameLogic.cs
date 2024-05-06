@@ -75,13 +75,13 @@ public class GameLogic
             Debug.Log($"{nameof(GameLogic)}:Game Initialized");
         }
 
-        _volume = GameObject.FindFirstObjectByType<Volume>();
-        _volume.profile.TryGet(out _dog);
-
         _info = GameObject.FindFirstObjectByType<GameInfo>();
 
         var targets = booster.GetDerivedComponents<IInitializableComponent>();
         targets.ForEach(_ => _.InitializeThisComponent());
+        
+        // _volume = GameObject.FindFirstObjectByType<Volume>();
+        // _volume.profile.TryGet(out _dog);
     }
 
     void GameLoop()

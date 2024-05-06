@@ -22,9 +22,9 @@ namespace Input
             _elapsedT = 0f;
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
-            if (UnityEngine.Input.GetMouseButton(2))
+            if (UnityEngine.Input.GetMouseButton(2)  || UnityEngine.Input.GetKey(KeyCode.L))
             {
                 _elapsedT += Time.deltaTime;
             }
@@ -32,7 +32,20 @@ namespace Input
             _moveH = UnityEngine.Input.GetAxis("Horizontal");
             _moveV = UnityEngine.Input.GetAxis("Vertical");
             _mouseH = UnityEngine.Input.GetAxis("Mouse X");
-            _mouseV = UnityEngine.Input.GetAxis("Mouse Y");
+            _mouseV = UnityEngine.Input.GetAxis("Mouse Y"); 
+            
+            // 左 ターゲット ロックオン
+            if (UnityEngine.Input.GetKeyDown(KeyCode.E))
+            {
+                Debug.Log("Look L");
+                EvtCamLeftTarget();
+            }
+            // 右 ターゲット ロックオン
+            if (UnityEngine.Input.GetKeyDown(KeyCode.R))
+            {
+                Debug.Log($"Look R");
+                EvtCamRightTarget();
+            }
 
             if (_elapsedT > 1)
             {
@@ -65,5 +78,8 @@ namespace Input
         {
             return this._mouseV;
         }
+
+        public Action EvtCamLeftTarget { get; set; }
+        public Action EvtCamRightTarget { get; set; }
     }
 }

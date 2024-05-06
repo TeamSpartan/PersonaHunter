@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
 using Player.Param;
 using Player.Input;
+using SgLibUnite.CodingBooster;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
@@ -9,11 +9,10 @@ public class PlayerAttack : MonoBehaviour
 	//右側からの攻撃なら１、左側からの攻撃なら２
 	private int _currentName; //モーション名
 	Animator _animator;
-
+	private CBooster _booster = new();
 	private PlayerParam _playerParam;
-	[SerializeField, Range(1f, 50f)] private float _attackingRange;
-
-	[SerializeField, Header("LayerMask Of Enemy")]
+	[SerializeField, Range(0f, 10f)] private float _attackingRange;
+	
 	private LayerMask _enemyLayerMask;
 
 	private bool _isGiveDamage = false;
@@ -25,6 +24,7 @@ public class PlayerAttack : MonoBehaviour
 
 	private void Start()
 	{
+		_enemyLayerMask = 1 << LayerMask.NameToLayer("Enemy");
 		_animator = GetComponent<Animator>();
 		_playerParam = GetComponent<PlayerParam>();
 	}
@@ -47,23 +47,31 @@ public class PlayerAttack : MonoBehaviour
 
 	private void AttackToEnemy()
 	{
-		var condition = Physics.OverlapSphere(transform.position, _attackingRange, _enemyLayerMask);
+		var condition = Physics.OverlapSphere(transform.position , _attackingRange, _enemyLayerMask);
 		if (condition != null)
 		{
 			IDamagedComponent iDamaged = null;
 			foreach (var collider in condition)
 			{
-				if (collider.gameObject.TryGetComponent(out iDamaged))
+				if (collider.GetComponent<IDamagedComponent>() != null)
 				{
-					Debug.Log("Damage");
+					Debug.DrawRay(transform.position + Vector3.up, Vector3.forward, Color.green);
 					collider.GetComponent<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk);
+					OnAttackSuccess?.Invoke();
+					_isGiveDamage = true;
+				}
+				else if (collider.GetComponentInChildren<IDamagedComponent>() != null)
+				{
+					Debug.DrawRay(transform.position + Vector3.up, Vector3.forward, Color.green);
+					collider.GetComponentInChildren<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk);
+					OnAttackSuccess?.Invoke();
 					_isGiveDamage = true;
 				}
 			}
 		}
 		else
 		{
-			Debug.DrawRay(transform.position + Vector3.up, transform.forward * 100, Color.red);
+			Debug.DrawRay(transform.position + Vector3.up, Vector3.forward, Color.red);
 		}
 	}
 
@@ -96,12 +104,6 @@ public class PlayerAttack : MonoBehaviour
 		_currentName = 0;
 	}
 
-	// private void OnDrawGizmos()
-	// {
-	// 	Gizmos.color = Color.blue;
-	// 	Gizmos.DrawWireSphere(transform.position, _attackingRange);
-	// }
-
 	///<summary>アニメーションイベントで呼び出す用</summary>------------------------------------------------------------------
 	public void AttackStart()
 	{
@@ -127,6 +129,7 @@ public class PlayerAttack : MonoBehaviour
 		_isGiveDamage = false;
 	}
 
+	///<summary>アニメーションの終わり</summary>
 	public void EndAttackActions()
 	{
 		//連続攻撃
@@ -142,5 +145,10 @@ public class PlayerAttack : MonoBehaviour
 			AttackClear();
 			PlayerInputsAction.Instance.EndAction();
 		}
+	}
+
+	private void OnDrawGizmos()
+	{
+		Gizmos.DrawWireSphere(transform.position, _attackingRange);
 	}
 }
