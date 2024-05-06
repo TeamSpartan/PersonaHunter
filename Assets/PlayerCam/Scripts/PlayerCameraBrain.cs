@@ -35,7 +35,7 @@ namespace PlayerCam.Scripts
         /// <summary>
         /// 現在 ロックオン している ターゲットのトランスフォーム情報
         /// </summary>
-        public Transform CurrentLockingOnTarget => _lockOnTargetsTf[_lockingOnTargetIndex];
+        public Transform CurrentLockingOnTarget => _currentLockOnTarget;
 
         #endregion
 
@@ -45,11 +45,6 @@ namespace PlayerCam.Scripts
         /// 現在のプレイヤのトランスフォーム
         /// </summary>
         private Transform _playerCurrent;
-
-        /// <summary>
-        /// 前フレームのプレイヤのトランスフォーム
-        /// </summary>
-        private Transform _playerPastTransform;
 
         /// <summary>
         /// ロックオン対象の配列
@@ -82,14 +77,9 @@ namespace PlayerCam.Scripts
         private float _lockOnRadius;
 
         /// <summary>
-        /// ロックオン対象のインデックス
+        /// ロックオン対象
         /// </summary>
-        private int _lockingOnTargetIndex;
-
         private Transform _currentLockOnTarget;
-
-        private int _targetLeftIndex;
-        private int _targetRightIndex;
 
         // 入力値 ー キャラ移動と視点移動入力
         private float _moveX;
@@ -228,7 +218,7 @@ namespace PlayerCam.Scripts
                 var vportpos = Camera.main.WorldToViewportPoint(lockOnTarget.position);
                 if (!_vportTransformDic.ContainsKey(lockOnTarget))
                 {
-                    Debug.Log($"Dic Added");
+                    // Debug.Log($"Dic Added");
                     _vportTransformDic.Add(lockOnTarget, vportpos);
                 }
             }
@@ -336,10 +326,6 @@ namespace PlayerCam.Scripts
             }
 
             // とりあえず正面のターゲットへロックオン
-            // var tIndex =
-            //     _lockOnTargetsTf.FindIndex(t => Math.Abs((Camera.main.WorldToViewportPoint(t.position) - Vector3.one).magnitude) < .5f);
-            // _lockingOnTargetIndex = tIndex > -1 ? tIndex : (_lockOnTargetsTf.Count - 1) / 2;
-
             var len = _lockOnTargetsTf.Count;
             _currentLockOnTarget = _lockOnTargetsTf[(len - 1) / 2];
             
@@ -347,9 +333,6 @@ namespace PlayerCam.Scripts
 
             // ロックオンカメラに切り替え
             _lockOnCam.Priority = 1;
-
-            // 前フレームのプレイヤのトランスフォームを更新
-            _playerPastTransform = _playerCurrent;
         }
 
         /// <summary>
@@ -366,8 +349,6 @@ namespace PlayerCam.Scripts
             // 第2証言 ０ 未満 -１．５ 以上
             // 第1証言 -１．５ 未満 -３以上
             // 単位は ラジアン
-
-            // LockOnRadius = _lockOnRadius = GetDistanceByIndex(_lockingOnTargetIndex);
             LockOnRadius = _lockOnRadius = Vector3.Distance(_currentLockOnTarget.position,_playerCurrent.position);
 
             // The Subtraction for calculate Vector Player position-supposed 
