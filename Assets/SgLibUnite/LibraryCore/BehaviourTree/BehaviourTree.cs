@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using UnityEngine;
 
 namespace SgLibUnite.BehaviourTree
 {
@@ -216,7 +215,7 @@ namespace SgLibUnite.BehaviourTree
             }
         }
 
-        public void YeildAllBehaviourTo(BTBehaviour behaviour)
+        public void YieldAllBehaviourTo(BTBehaviour behaviour)
         {
             if (_btBehaviours.Contains(behaviour))
             {

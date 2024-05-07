@@ -91,7 +91,7 @@ public class Nue_v1_e2 : MonoBehaviour
     private NavMeshAgent _agent;
     private Animator _animator;
     private float _flinchVal;
-    [SerializeField] private float _health;
+    private float _health;
     private bool _isGettingMad;
     private float _distanceBetPlayer;
     private Vector3 _pDirection;
@@ -144,7 +144,7 @@ public class Nue_v1_e2 : MonoBehaviour
     void Think()
     {
         Debug.Log($"Thinking");
-        _bt.YeildAllBehaviourTo(_btbAwait);
+        _bt.YieldAllBehaviourTo(_btbAwait);
     }
 
     void Await()
@@ -176,7 +176,7 @@ public class Nue_v1_e2 : MonoBehaviour
             // 以下思考 アルゴリズム
             if (rushable && !tailable) // 突進距離以内かつしっぽ攻撃距離外
             {
-                _bt.YeildAllBehaviourTo(_btbRush);
+                _bt.YieldAllBehaviourTo(_btbRush);
                 _animator.SetTrigger("Rush");
             }
 
@@ -184,25 +184,25 @@ public class Nue_v1_e2 : MonoBehaviour
             {
                 if (rand > 50)
                 {
-                    _bt.YeildAllBehaviourTo(_btbClaw);
+                    _bt.YieldAllBehaviourTo(_btbClaw);
                     _animator.SetTrigger("Claw");
                 }
                 else
                 {
-                    _bt.YeildAllBehaviourTo(_btbTail);
+                    _bt.YieldAllBehaviourTo(_btbTail);
                     _animator.SetTrigger("Tail");
                 }
             }
 
             if (playerIsForward && tailable)
             {
-                _bt.YeildAllBehaviourTo(_btbTail);
+                _bt.YieldAllBehaviourTo(_btbTail);
                 _animator.SetTrigger("Tail");
             }
 
             if (playerIsSide)
             {
-                _bt.YeildAllBehaviourTo(_btbFacePlayer);
+                _bt.YieldAllBehaviourTo(_btbFacePlayer);
             }
 
             Random.InitState(Random.Range(0, 255));
@@ -292,7 +292,7 @@ public class Nue_v1_e2 : MonoBehaviour
 
     public void GetFlinch()
     {
-        _bt.YeildAllBehaviourTo(_btbFlinch);
+        _bt.YieldAllBehaviourTo(_btbFlinch);
         _animator.SetTrigger("GetFlinch");
     }
 
@@ -312,7 +312,7 @@ public class Nue_v1_e2 : MonoBehaviour
 
     public void GetStumble() // どっかのタイミングで一度だけ呼び出される
     {
-        _bt.YeildAllBehaviourTo(_btbStumble);
+        _bt.YieldAllBehaviourTo(_btbStumble);
         _animator.SetTrigger("GetParry");
     }
 

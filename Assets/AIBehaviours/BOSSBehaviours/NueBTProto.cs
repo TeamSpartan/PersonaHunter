@@ -311,7 +311,7 @@ public class NueBTProto
     {
         if (_health <= 0)
         {
-            _bt.YeildAllBehaviourTo(_btbDeath);
+            _bt.YieldAllBehaviourTo(_btbDeath);
         }
         
         _player = GameObject.FindWithTag("Player").transform;
