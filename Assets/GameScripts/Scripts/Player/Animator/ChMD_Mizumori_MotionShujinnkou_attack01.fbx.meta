@@ -1,0 +1,484 @@
+fileFormatVersion: 2
+guid: c2622a4e972984a4cb271e78835b1e2f
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable: []
+  externalObjects: {}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
+      might lower retargeting quality:\nNote: Activate translation DOF on avatar
+      to improve retargeting quality.\n\t'ChMD_Omotegari_Shujinnkou_02_002:mn_c_Main'
+      has translation animation that will be discarded.\n\t'ChMD_Omotegari_Shujinnkou_02_002:mn_c_Main'
+      is inbetween humanoid transforms and has rotation animation that will be discarded.\n"
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human:
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:Root
+      humanName: Hips
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Hip
+      humanName: LeftUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Hip
+      humanName: RightUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Knee
+      humanName: LeftLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Knee
+      humanName: RightLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Uncle
+      humanName: LeftFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Uncle
+      humanName: RightFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Spine01
+      humanName: Spine
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Spine02
+      humanName: Chest
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Neck
+      humanName: Neck
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Head
+      humanName: Head
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Shoulder01
+      humanName: LeftShoulder
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Shoulder01
+      humanName: RightShoulder
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Shoulder02
+      humanName: LeftUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Shoulder02
+      humanName: RightUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Elbow
+      humanName: LeftLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Elbow
+      humanName: RightLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Rist
+      humanName: LeftHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Rist
+      humanName: RightHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Toe
+      humanName: LeftToes
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Toe
+      humanName: RightToes
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair01
+      humanName: RightEye
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    skeleton:
+    - name: ChMD_Mizumori_MotionShujinnkou_attack01(Clone)
+      parentName: 
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:Ch_Mesh
+      parentName: ChMD_Mizumori_MotionShujinnkou_attack01(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:Root
+      parentName: ChMD_Mizumori_MotionShujinnkou_attack01(Clone)
+      position: {x: 0, y: 0.034989975, z: 0}
+      rotation: {x: -0, y: 0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Main
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:Root
+      position: {x: -0.0030741172, y: 0.87834954, z: 0.021738796}
+      rotation: {x: 0.0000000029103826, y: 0.000000005820766, z: 1.8189893e-10, w: 1}
+      scale: {x: 1, y: 1, z: 0.99999994}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Spine01
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Main
+      position: {x: -0, y: 0.0923492, z: 0.010172227}
+      rotation: {x: -0.019301742, y: -0.019301742, z: -0.7068433, w: 0.7068434}
+      scale: {x: 1.0000005, y: 1.0000004, z: 1}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Spine02
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Spine01
+      position: {x: -0.08306134, y: 0, z: -1.6653345e-18}
+      rotation: {x: 0.0000000037252899, y: -0.03702853, z: 0.0000000061118035, w: 0.9993142}
+      scale: {x: 0.99999994, y: 1.0000001, z: 0.9999999}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Neck
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Spine02
+      position: {x: -0.1512504, y: 0, z: 1.3322676e-17}
+      rotation: {x: 0.000000009693231, y: 0.16394265, z: -0.00000009379251, w: 0.9864699}
+      scale: {x: 1.0000001, y: 1.0000002, z: 1}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Head
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Neck
+      position: {x: -0.06906878, y: 0, z: 3.330669e-17}
+      rotation: {x: -0.0000000079187155, y: -0.10018054, z: 0.00000005741679, w: 0.99496925}
+      scale: {x: 1.0000004, y: 1.0000004, z: 1}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:en_c_Head
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Head
+      position: {x: -0.20231758, y: 0, z: -3.930809e-17}
+      rotation: {x: -8.881783e-16, y: -0, z: -1.6098232e-15, w: 1}
+      scale: {x: 1.0000002, y: 1.0000002, z: 0.99999994}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair01
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Head
+      position: {x: -0.19252913, y: 0, z: -0.024566842}
+      rotation: {x: -0.000000016346055, y: -0.36644593, z: 0.000000027464818, w: 0.93043935}
+      scale: {x: 1.0000004, y: 1.0000001, z: 1}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair02
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair01
+      position: {x: -0.054467354, y: 0, z: -4.440892e-18}
+      rotation: {x: 0.5716658, y: -0.000000026069054, z: 0.8204866, w: 0.000000025425225}
+      scale: {x: 0.99999994, y: 1, z: 1.0000004}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair03
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair02
+      position: {x: -0.056212876, y: -2.3846238e-18, z: 1.110223e-16}
+      rotation: {x: 0.000000011068215, y: 0.23291305, z: 0.000000011447338, w: 0.9724976}
+      scale: {x: 0.9999998, y: 1.0000001, z: 1.0000005}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair04
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair03
+      position: {x: -0.15513678, y: -2.5688028e-33, z: 3.524958e-17}
+      rotation: {x: -0.000000019043055, y: -0.14842193, z: -0.000000046810992, w: 0.98892415}
+      scale: {x: 1.0000004, y: 1.0000002, z: 0.9999998}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair05
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair04
+      position: {x: -0.12756291, y: 2.7351807e-33, z: -1.2434498e-16}
+      rotation: {x: 0.00000002283975, y: 0.07009178, z: 0.00000007016792, w: 0.9975406}
+      scale: {x: 0.99999994, y: 1.0000004, z: 1.0000002}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair06
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair05
+      position: {x: -0.13423516, y: -1.3231971e-32, z: -6.217249e-17}
+      rotation: {x: 0.000000002449825, y: 0.11940198, z: -0.00000003753571, w: 0.992846}
+      scale: {x: 1.0000002, y: 1.0000002, z: 1.0000001}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair07
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair06
+      position: {x: -0.11040024, y: -5.880183e-33, z: 1.9984014e-17}
+      rotation: {x: -0.000000008501962, y: 0.13784556, z: -0.00000003211941, w: 0.9904538}
+      scale: {x: 0.99999994, y: 1.0000001, z: 1.0000004}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:en_c_Hair
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:yr_c_Hair07
+      position: {x: -0.1275202, y: 1.4006995e-32, z: 1.7763568e-17}
+      rotation: {x: -0, y: -0, z: 2.9976011e-15, w: 1}
+      scale: {x: 1.0000001, y: 1.0000002, z: 0.9999998}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Shoulder01
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Spine02
+      position: {x: -0.12456193, y: -0.0458769, z: -0.0024275316}
+      rotation: {x: 0.032841813, y: 0.057669755, z: 0.7167224, w: 0.69419354}
+      scale: {x: 0.9999997, y: 0.9999998, z: 1.0000001}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Shoulder02
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Shoulder01
+      position: {x: -0.08795194, y: 7.501463e-17, z: 3.8857806e-18}
+      rotation: {x: 0.0002739355, y: -0.018543905, z: -0.014768673, w: 0.999719}
+      scale: {x: 1.0000001, y: 0.99999994, z: 1}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Elbow
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Shoulder02
+      position: {x: -0.24555936, y: -2.842171e-16, z: 4.440892e-18}
+      rotation: {x: -0.000000026891932, y: 0.000000016763803, z: -0.030931242, w: 0.99952155}
+      scale: {x: 0.9999998, y: 0.99999994, z: 1.0000001}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Rist
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Elbow
+      position: {x: -0.23630857, y: 5.506706e-16, z: -8.881784e-18}
+      rotation: {x: 0.0000000066629466, y: 0.0000000138518725, z: -0.022181787, w: 0.999754}
+      scale: {x: 1.0000001, y: 1.0000002, z: 1.0000002}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Finger
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Rist
+      position: {x: -0.0658039, y: 5.551115e-17, z: -5.685985e-32}
+      rotation: {x: 0.000000004331462, y: -0.000000013589914, z: -0.05252144, w: 0.99861985}
+      scale: {x: 1.0000002, y: 1, z: 1.0000002}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:en_l_Finger
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Finger
+      position: {x: -0.07733622, y: 4.3076652e-16, z: 1.0485399e-31}
+      rotation: {x: -0.000000017110464, y: -0.00000003362061, z: 0.105468884, w: 0.9944227}
+      scale: {x: 1.0000004, y: 1.0000004, z: 1.0000001}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Shoulder01
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Spine02
+      position: {x: -0.12456128, y: 0.045876898, z: -0.0024276471}
+      rotation: {x: 0.03284226, y: -0.05766871, z: 0.7167374, w: -0.69417816}
+      scale: {x: 1.0000001, y: 1, z: 0.9999999}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Shoulder02
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Shoulder01
+      position: {x: -0.08795207, y: -1.5099027e-17, z: -6.5680755e-18}
+      rotation: {x: -0.00027434152, y: -0.01854419, z: 0.014790061, w: 0.9997186}
+      scale: {x: 1.0000005, y: 1.000001, z: 1.0000005}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Elbow
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Shoulder02
+      position: {x: -0.245559, y: -1.6319908e-16, z: -3.3737375e-16}
+      rotation: {x: -0.0000000190048, y: -0.00000001862645, z: 0.030948825, w: 0.999521}
+      scale: {x: 1.0000004, y: 1.0000005, z: 1}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Rist
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Elbow
+      position: {x: -0.23630968, y: -1.1621492e-16, z: 2.6775392e-16}
+      rotation: {x: 0.000000006910958, y: -0.0000000043659187, z: 0.022104934, w: 0.99975574}
+      scale: {x: 0.9999996, y: 0.99999994, z: 1.0000002}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Finger
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Rist
+      position: {x: -0.06580318, y: 2.2151238e-17, z: 4.6691926e-18}
+      rotation: {x: 0.0000000033942218, y: -0.000000004593749, z: 0.052631166, w: 0.998614}
+      scale: {x: 1.0000002, y: 1, z: 0.9999999}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:en_r_Finger
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Finger
+      position: {x: -0.07733719, y: -3.1230846e-17, z: -1.0732691e-18}
+      rotation: {x: 2.2204455e-16, y: 4.440891e-16, z: 1.5592202e-17, w: 1}
+      scale: {x: 1.0000001, y: 1, z: 0.9999999}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Hip
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Main
+      position: {x: -0.053161297, y: -0.0003496075, z: 0}
+      rotation: {x: 0.019824155, y: -0.020097615, z: 0.7019673, w: 0.71164954}
+      scale: {x: 1, y: 1, z: 1.0000001}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Knee
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Hip
+      position: {x: -0.49966598, y: -0.007761716, z: 0.015367038}
+      rotation: {x: 0.00038438945, y: -0.0038553516, z: 0.01423769, w: 0.99989116}
+      scale: {x: 1, y: 0.9999999, z: 0.99999994}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Uncle
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Knee
+      position: {x: -0.32336718, y: -1.7062198e-16, z: -4.3853807e-17}
+      rotation: {x: -0.002778559, y: 0.4787359, z: -0.018090596, w: 0.87776816}
+      scale: {x: 1.0000002, y: 1.0000004, z: 1.0000001}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Toe
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Uncle
+      position: {x: -0.1074041, y: 4.5359694e-18, z: -9.757681e-17}
+      rotation: {x: -0.0053575574, y: 0.2776322, z: 0.0068358392, w: 0.9606482}
+      scale: {x: 1.0000004, y: 1.0000002, z: 1.0000004}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:en_l_Toe
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_l_Toe
+      position: {x: -0.08256832, y: 9.060659e-18, z: -1.8553008e-17}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      scale: {x: 1.0000001, y: 1.0000005, z: 1.0000004}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Hip
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_c_Main
+      position: {x: 0.0531613, y: -0.00034922728, z: -0.000000018890708}
+      rotation: {x: 0.020097576, y: -0.019824153, z: 0.71164954, w: 0.7019673}
+      scale: {x: 1.0000002, y: 1.0000002, z: 1}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Knee
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Hip
+      position: {x: -0.50000536, y: 0.000036508594, z: 0.015371203}
+      rotation: {x: -0.0003694892, y: -0.0038689962, z: -0.018077726, w: 0.99982905}
+      scale: {x: 1.0000001, y: 1.0000001, z: 0.99999994}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Uncle
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Knee
+      position: {x: -0.3234083, y: 2.3103102e-16, z: -4.2188474e-17}
+      rotation: {x: 0.009796578, y: 0.4786551, z: 0.037694756, w: 0.8771388}
+      scale: {x: 1.0000002, y: 1.0000002, z: 1.0000001}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Toe
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Uncle
+      position: {x: -0.10759245, y: -3.3499409e-18, z: 1.1868074e-16}
+      rotation: {x: 0.008780318, y: 0.27754417, z: -0.030531855, w: 0.96018755}
+      scale: {x: 1.0000006, y: 1.0000004, z: 1}
+    - name: ChMD_Omotegari_Shujinnkou_02_002:en_r_Toe
+      parentName: ChMD_Omotegari_Shujinnkou_02_002:mn_r_Toe
+      position: {x: -0.08256198, y: -2.1514084e-17, z: -1.6184255e-17}
+      rotation: {x: 0.0000000018626449, y: -0, z: -0.0000000032596286, w: 1}
+      scale: {x: 1.0000002, y: 1.0000001, z: 1.0000005}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 3
+  humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -257,7 +257,7 @@ public class LittleNuweBT
     {
         if (_health <= 0)
         {
-            _behaviourTree.YeildAllBehaviourTo(_deathBehaviour);
+            _behaviourTree.YieldAllBehaviourTo(_deathBehaviour);
         }
 
         _player = GameObject.FindWithTag("Player").transform;
