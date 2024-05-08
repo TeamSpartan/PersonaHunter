@@ -32,8 +32,6 @@ namespace Player.Param
 
 		///<summary>パリィで増加する体幹値の量</summary>
 		public float GetGiveValueOfParry => giveValueOfParry;
-
-		public bool GetIsAction => GetIsAttack || GetIsAvoid || GetIsParry;
 		
 		///<summary>攻撃中の判定</summary>
 		public bool GetIsAttack => _isAttack;
