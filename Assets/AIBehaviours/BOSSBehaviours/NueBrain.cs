@@ -56,6 +56,11 @@ public class NueBrain : MonoBehaviour
 
     [SerializeField, Header("ベースの攻撃")] private float _baseDamage;
 
+    /// <summary>
+    /// ベースのダメージ量
+    /// </summary>
+    public float GetBaseDamage => _baseDamage;
+
     #endregion
 
     #region ビヘイビア
