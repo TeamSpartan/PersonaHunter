@@ -35,6 +35,8 @@ namespace Player.Action
 
 		[SerializeField, Header("重力の大きさ")] private float _gravityvalue = 10f;
 
+		[SerializeField, Header("レイの長さ")] private float _raylength = 0.3f;
+
 		[SerializeField, Tooltip("接地判定が反応するLayer")]
 		LayerMask groundLayers;
 
@@ -78,15 +80,13 @@ namespace Player.Action
 			{
 				_targetRotation = Quaternion.LookRotation(_dir, Vector3.up);
 			}
-
 			transform.rotation = Quaternion.RotateTowards(transform.rotation, _targetRotation, rotateSpeed);
 
-			_rb.AddForce(_dir * moveSpeed * 20f, ForceMode.Force);
+			//加速
+			_rb.AddForce(GetSlopeMoveDirection(_dir * moveSpeed, 
+				NormalRay()), ForceMode.Force);
 			if (GroundCheck())
 			{
-				Debug.Log("グラウンド");
-				_rb.velocity = GetSlopeMoveDirection(_dir * moveSpeed, 
-					NormalRay());
 				SpeedControl();
 			}
 			else
@@ -110,14 +110,14 @@ namespace Player.Action
 			return Physics.CheckSphere(spherePosition, groundRadius, groundLayers, QueryTriggerInteraction.Ignore);
 		}
 
+		///<summary>法線ベクトルを返す</summary>
 		Vector3 NormalRay()
 		{
 			RaycastHit hit;
-			Ray ray = new Ray(transform.position, Vector3.down * .3f);
-			if (Physics.Raycast(ray, out hit, 10, groundLayers))
+			Ray ray = new Ray(transform.position, Vector3.down * _raylength);
+			if (Physics.Raycast(ray, out hit, _raylength, groundLayers))
 			{
-				Debug.Log("レイ"+ hit.normal);
-				Debug.DrawRay(transform.position, Vector3.down * .3f, Color.cyan);
+				Debug.DrawRay(transform.position, Vector3.down * _raylength, Color.cyan);
 				return hit.normal;
 			}
 			return Vector3.zero;
@@ -128,7 +128,6 @@ namespace Player.Action
 		{
 			if (_rb.velocity.magnitude > moveSpeed)
 			{
-				Debug.Log("速度制限");
 				_rb.velocity = GetSlopeMoveDirection(_dir * moveSpeed, NormalRay());
 			}
 		}
@@ -137,15 +136,10 @@ namespace Player.Action
 		/// 傾斜に合わせたベクトルに変えるメソッド
 		/// </summary>
 		/// <returns>傾斜に合わせたベクトル</returns>
+		/// <param name="dir"></param>
 		Vector3 GetSlopeMoveDirection(Vector3 dir, Vector3 normalVector)
 		{
 			return Vector3.ProjectOnPlane(dir, normalVector);
-		}
-
-		private void OnCollisionStay(Collision collision)
-		{
-			// 衝突した面の、接触した点における法線を取得
-			_groundNormalVector = collision.contacts[0].normal;
 		}
 	}
 }

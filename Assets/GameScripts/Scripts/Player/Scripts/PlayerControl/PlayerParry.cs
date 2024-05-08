@@ -12,6 +12,7 @@ namespace Player.Action
 	///<summary>プレイヤーのパリー</summary>
 	public class PlayerParry : MonoBehaviour
 	{
+		
 		public event System.Action OnParryStart,
 			OnParrySuccess,
 			OnEndParry,
@@ -24,8 +25,6 @@ namespace Player.Action
 		private ZoneObj _zoneObj;
 		private void OnEnable()
 		{
-			
-
 			
 		}
 
@@ -59,7 +58,7 @@ namespace Player.Action
 
 		void ParrySuccess()
 		{
-			_zoneObj.IncreaseGaugeValue(1);
+			_zoneObj.IncreaseGaugeValue(_playerParam.GetGiveValueOfParry);
 		}
 
 		///<summary>アニメーションイベントで呼び出す用</summary>------------------------------------------------------------------
@@ -100,6 +99,12 @@ namespace Player.Action
 			PlayerInputsAction.Instance.DeleteInputQueue(PlayerInputTypes.Parry);
 			_playerParam.SetIsAnimation(false);
 			PlayerInputsAction.Instance.EndAction();
+		}
+		//------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		void DebugComment(string comment)
+		{
+			Debug.Log(comment);
 		}
 	}
 }
