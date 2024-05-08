@@ -106,7 +106,7 @@ namespace PlayerCam.Scripts
                 .ForEach(_ => _.ELockOnTriggered += this.LockOnTriggerred);
 
             // ロックオン対象選択イベント発火もとへデリゲート登録
-            var lockOnEventHandler = boost.GetDerivedComponents<IInputValueReferencable>()[0];
+            var lockOnEventHandler = boost.GetDerivedComponents<ILockOnEventFirable>()[0];
             lockOnEventHandler.EvtCamLeftTarget += LockOnToLeftTarget;
             lockOnEventHandler.EvtCamRightTarget += LockOnToRightTarget;
 
@@ -243,11 +243,11 @@ namespace PlayerCam.Scripts
         {
             var iInput = boost.GetDerivedComponents<IInputValueReferencable>();
 
-            _moveX = iInput[0].GetHorizontalMoveValue();
-            _moveY = iInput[0].GetVerticalMoveValue();
+            _moveX = iInput[0].GetMoveValue().x;
+            _moveY = iInput[0].GetMoveValue().y;
 
-            _mouseX = iInput[0].GetHorizontalMouseMoveValue();
-            _mouseY = iInput[0].GetVerticalMouseMoveValue();
+            _mouseX = iInput[0].GetCamMoveValue().x;
+            _mouseY = iInput[0].GetCamMoveValue().y;
         }
 
         /// <summary>
