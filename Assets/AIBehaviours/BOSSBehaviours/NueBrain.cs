@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 /* 菅沼が主担当 */
 /// <summary>
 /// ぬえの第一形態の機能を提供
+/// ver 3.3.1
 /// </summary>
 public class NueBrain : MonoBehaviour
     , IMobBehaviourParameter
@@ -151,7 +152,7 @@ public class NueBrain : MonoBehaviour
     private float DistanceFromPlayer => Vector3.Distance(transform.position, _player.position);
 
     /// <summary> 怒り状態かのフラグ </summary>
-    private bool _isMad;
+    private bool IsMad => _healthMaxValue * .5f > _healthPoint;
 
     /// <summary> ひっかき行動の実行ロックのフラグ </summary>
     private bool _lockedClaw;
@@ -227,14 +228,15 @@ public class NueBrain : MonoBehaviour
         _tree.UpdateEventsYield();
         _playerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayers);
         _playerIsInRange = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
-        _isMad = _healthMaxValue * .5f > _healthPoint;
 
         if (!_playerFound)
         {
+            _tree.EndYieldBehaviourFrom(_currentYielded);
             _tree.JumpTo(_idle);
         }
         else if (!_playerIsInRange)
         {
+            _tree.EndYieldBehaviourFrom(_currentYielded);
             _tree.JumpTo(_getClose);
         }
 
@@ -271,12 +273,15 @@ public class NueBrain : MonoBehaviour
 
         _rush.AddBehaviour(Rush);
         _rush.SetYieldMode(true);
+        _rush.EBegin += () => { _anim.SetTrigger("Rush"); };
         _rush.EEnd += ResetAgentPath;
 
         _tail.AddBehaviour(Tail);
+        _tail.EBegin += () => { _anim.SetTrigger("Tail"); };
         _tail.SetYieldMode(true);
 
         _claw.AddBehaviour(Claw);
+        _claw.EBegin += () => { _anim.SetTrigger("Claw"); };
         _claw.SetYieldMode(true);
 
         _lookPlayer.AddBehaviour(LookPlayer);
@@ -369,6 +374,18 @@ public class NueBrain : MonoBehaviour
         _player = PlayerPR;
         if (_agent.destination != _player.position && !_agent.hasPath)
         {
+            var rand = Random.Range(1f, 100f);
+            if (rand < 50)
+            {
+                _anim.SetTrigger("Run");
+                _agent.speed = _baseMoveSpeed * 2f;
+            }
+            else
+            {
+                _anim.SetTrigger("Walk");
+                _agent.speed = _baseMoveSpeed;
+            }
+
             _agent.SetDestination(_player.position);
         }
     }
@@ -381,7 +398,7 @@ public class NueBrain : MonoBehaviour
         var dot = Vector3.Dot(_playerDirection.normalized, transform.forward);
         var forwardRadian = Mathf.Cos(90f * (3f / 4f) * Mathf.Deg2Rad);
         _player = PlayerPR;
-        
+
         var playerIsForward = dot > 0 && dot > forwardRadian;
         var playerIsSide = Mathf.Abs(dot) < forwardRadian;
         var rushRange = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
@@ -399,7 +416,6 @@ public class NueBrain : MonoBehaviour
             if (rushRange && !tailRange)
             {
                 _tree.YieldAllBehaviourTo(_rush);
-                _anim.SetTrigger("Rush");
             }
 
             // ひっかき距離内かつ正面にいるとき
@@ -408,27 +424,24 @@ public class NueBrain : MonoBehaviour
                 if (rand > 50)
                 {
                     _tree.YieldAllBehaviourTo(_claw);
-                    _anim.SetTrigger("Claw");
                 }
                 else
                 {
                     _tree.YieldAllBehaviourTo(_tail);
-                    _anim.SetTrigger("Tail");
                 }
             }
 
             if (playerIsForward && tailRange)
             {
                 _tree.YieldAllBehaviourTo(_tail);
-                _anim.SetTrigger("Tail");
             }
 
             if (playerIsSide)
             {
                 _tree.YieldAllBehaviourTo(_lookPlayer);
             }
-            
-            Random.InitState(Random.Range(0,128));
+
+            Random.InitState(Random.Range(0, 128));
         }
     }
 
@@ -440,7 +453,7 @@ public class NueBrain : MonoBehaviour
     private void Flinch()
     {
         _currentYielded = _flinch;
-        
+
         _elapsedFlinchingTime += Time.deltaTime;
 
         if (_elapsedFlinchingTime > _awaitTimeOnFlinching)
@@ -471,12 +484,12 @@ public class NueBrain : MonoBehaviour
             _agent.speed = _baseMoveSpeed * 3f;
             _agent.SetDestination(_player.position);
         }
-        else if(_agent.hasPath)
+        else if (_agent.hasPath)
         {
             if (DistanceFromPlayer < _clawAttackRange)
             {
                 _agent.ResetPath();
-                _tree.EndYieldBehaviourFrom(_rush);// _currentYielded -> _rush
+                _tree.EndYieldBehaviourFrom(_rush); // _currentYielded -> _rush
                 _tree.JumpTo(_await);
             }
         }
