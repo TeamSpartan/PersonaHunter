@@ -102,13 +102,13 @@ namespace Player.Input
 		}
 
 		//マウスのX軸方向の位置
-		public float GetHorizontalMouseMoveValue()
+		public float GetHorizontalCamMoveValue()
 		{
 			return GetCameraInput.x;
 		}
 
 		//マウスのY軸方向の位置
-		public float GetVerticalMouseMoveValue()
+		public float GetVerticalCamMoveValue()
 		{
 			return GetCameraInput.y;
 		}

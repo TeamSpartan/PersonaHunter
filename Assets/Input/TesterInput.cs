@@ -16,6 +16,8 @@ namespace Input
         private float _mouseV;
 
         public event Action ELockOnTriggered;
+        public Action EvtCamLeftTarget { get; set; }
+        public Action EvtCamRightTarget { get; set; }
 
         public void InitializeThisComponent()
         {
@@ -59,27 +61,14 @@ namespace Input
             _elapsedT = 0;
         }
 
-        public float GetHorizontalMoveValue()
+        public Vector2 GetMoveValue()
         {
-            return this._moveH;
+            return new Vector2(_moveH, _moveV);
         }
 
-        public float GetHorizontalMouseMoveValue()
+        public Vector2 GetCamMoveValue()
         {
-            return this._mouseH;
+            return new Vector2(_mouseH, _mouseV);
         }
-
-        public float GetVerticalMoveValue()
-        {
-            return this._moveV;
-        }
-
-        public float GetVerticalMouseMoveValue()
-        {
-            return this._mouseV;
-        }
-
-        public Action EvtCamLeftTarget { get; set; }
-        public Action EvtCamRightTarget { get; set; }
     }
 }

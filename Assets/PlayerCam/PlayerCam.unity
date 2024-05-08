@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 4
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
@@ -1905,16 +1905,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 234911605035656761, guid: a5159f21f860c184ca3f6d8e4fa9cd79,
-        type: 3}
-      propertyPath: m_BlendUpdateMethod
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5125772875571602486, guid: a5159f21f860c184ca3f6d8e4fa9cd79,
-        type: 3}
-      propertyPath: _player
-      value: 
-      objectReference: {fileID: 230240567}
     - target: {fileID: 5125772875571602486, guid: a5159f21f860c184ca3f6d8e4fa9cd79,
         type: 3}
       propertyPath: LockOnCamera
@@ -1925,11 +1915,6 @@ PrefabInstance:
       propertyPath: PlayerFollowingCam
       value: 
       objectReference: {fileID: 216425229}
-    - target: {fileID: 5125772875571602486, guid: a5159f21f860c184ca3f6d8e4fa9cd79,
-        type: 3}
-      propertyPath: MaxDistanceToCapture
-      value: 200
-      objectReference: {fileID: 0}
     - target: {fileID: 7027507214907803375, guid: a5159f21f860c184ca3f6d8e4fa9cd79,
         type: 3}
       propertyPath: m_Name

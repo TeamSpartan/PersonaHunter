@@ -128,6 +128,16 @@ public interface ILockOnEventFirable
     /// ロックオン入力があったとき
     /// </summary>
     public event Action ELockOnTriggered;
+
+    /// <summary>
+    /// 左のロックオン対象を選択する時のイベント
+    /// </summary>
+    public Action EvtCamLeftTarget { get; set; }
+
+    /// <summary>
+    /// 右のロックオン対象を選択する時のイベント
+    /// </summary>
+    public Action EvtCamRightTarget { get; set; }
 }
 
 /// <summary>
@@ -136,34 +146,13 @@ public interface ILockOnEventFirable
 public interface IInputValueReferencable
 {
     /// <summary>
-    /// キャラ移動 水平 の値を返す
+    /// キャラ移動 の値を返す
     /// </summary>
-    public float GetHorizontalMoveValue();
-    
+    public Vector2 GetMoveValue();
     /// <summary>
-    /// キャラ移動 垂直 の値を返す
+    /// マウス入力 の値を返す
     /// </summary>
-    public float GetVerticalMoveValue();
-    
-    /// <summary>
-    /// マウス入力 水平 の値を返す
-    /// </summary>
-    public float GetHorizontalMouseMoveValue();
-    
-    /// <summary>
-    /// マウス入力 垂直 の値を返す
-    /// </summary>
-    public float GetVerticalMouseMoveValue();
-
-    /// <summary>
-    /// 左のロックオン対象を選択する時のイベント
-    /// </summary>
-    public Action EvtCamLeftTarget { get; set; }
-    
-    /// <summary>
-    /// 右のロックオン対象を選択する時のイベント
-    /// </summary>
-    public Action EvtCamRightTarget { get; set; }
+    public Vector2 GetCamMoveValue();
 }
 
 /// <summary></summary>

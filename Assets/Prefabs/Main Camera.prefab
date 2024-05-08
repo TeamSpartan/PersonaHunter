@@ -112,7 +112,7 @@ MonoBehaviour:
   m_IgnoreTimeScale: 0
   m_WorldUpOverride: {fileID: 0}
   m_UpdateMethod: 0
-  m_BlendUpdateMethod: 1
+  m_BlendUpdateMethod: 0
   m_DefaultBlend:
     m_Style: 1
     m_Time: 2
@@ -271,6 +271,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LockOnRadius: 10
-  MaxDistanceToCapture: 100
+  MaxDistanceToCapture: 200
   PlayerFollowingCam: {fileID: 0}
   LockOnCamera: {fileID: 0}
