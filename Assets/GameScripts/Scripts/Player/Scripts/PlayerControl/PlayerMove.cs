@@ -10,7 +10,7 @@ namespace Player.Action
 {
 	//Rigidbodyを強制的にアタッチする
 	[RequireComponent(typeof(Rigidbody))]
-	public class PlayerMove : MonoBehaviour
+	public class PlayerMove : MonoBehaviour, IPlayerCameraTrasable
 	{
 		/// <summary>プレイヤーのRigidbody </summary>
 		Rigidbody _rb;
@@ -140,6 +140,11 @@ namespace Player.Action
 		Vector3 GetSlopeMoveDirection(Vector3 dir, Vector3 normalVector)
 		{
 			return Vector3.ProjectOnPlane(dir, normalVector);
+		}
+
+		public Transform GetPlayerCamTrasableTransform()
+		{
+			return this.transform;
 		}
 	}
 }

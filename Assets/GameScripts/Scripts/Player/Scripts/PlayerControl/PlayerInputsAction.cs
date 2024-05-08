@@ -24,7 +24,7 @@ namespace Player.Input
 		UI
 	}
 
-	public class PlayerInputsAction : MonoBehaviour, IInputValueReferencable
+	public class PlayerInputsAction : MonoBehaviour, IInputValueReferencable, ILockOnEventFirable
 	{
 		private static PlayerInputsAction _instance;
 
@@ -79,15 +79,12 @@ namespace Player.Input
 			}
 		}
 
-		public float GetHorizontalMoveValue()
+		public Vector2 GetMoveValue()
 		{
-			return GetMoveInput.x;
+			return _inputVector;
 		}
 
-		public float GetVerticalMoveValue()
-		{
-			return GetMoveInput.y;
-		}
+		
 
 
 		///<summary>カメラの移動入力、ロックオン時敵の切り替え	</summary>
@@ -101,18 +98,12 @@ namespace Player.Input
 			}
 		}
 
-		//マウスのX軸方向の位置
-		public float GetHorizontalCamMoveValue()
+		public Vector2 GetCamMoveValue()
 		{
-			return GetCameraInput.x;
+			return _inputCamera;
 		}
 
-		//マウスのY軸方向の位置
-		public float GetVerticalCamMoveValue()
-		{
-			return GetCameraInput.y;
-		}
-
+		public event System.Action ELockOnTriggered;
 		public System.Action EvtCamLeftTarget { get; set; }
 		public System.Action EvtCamRightTarget { get; set; }
 
@@ -387,5 +378,7 @@ namespace Player.Input
 			_gameInputs.UI.Cursor.performed -= OnCursor;
 			_gameInputs.UI.Cursor.canceled -= OnCursor;
 		}
+
+		
 	}
 }
