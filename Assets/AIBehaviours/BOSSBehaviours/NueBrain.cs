@@ -50,6 +50,17 @@ public class NueBrain : MonoBehaviour
     [SerializeField, Range(1f, 50f), Header("怒り時の移動速度")]
     private float _moveSpeedOnMad;
 
+    [SerializeField, Header("右前足首 ボーン")] private Transform _rightWristBone;
+    [SerializeField, Header("首の付け根 ボーン")] private Transform _neckRootBone;
+    [SerializeField, Header("しっぽ ボーン")] private Transform _tailBone;
+
+    [SerializeField, Header("ベースの攻撃")] private float _baseDamage;
+
+    /// <summary>
+    /// ベースのダメージ量
+    /// </summary>
+    public float GetBaseDamage => _baseDamage;
+
     #endregion
 
     #region ビヘイビア
@@ -209,10 +220,85 @@ public class NueBrain : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, _rushAttackRange);
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log("Attacked!");
+        }
+    }
+
+    /// <summary>
+    /// 当たり判定で検出したオブジェクト(i) のトランスフォームに対応したぬえの攻撃タイプを判定。
+    /// <para>
+    /// (i) 攻撃ごとの当たり判定のオブジェクト
+    /// </para>
+    /// </summary>
+    public NueAttackType GetAttackType(Transform other)
+    {
+        var ret = NueAttackType.Tail;
+        if (other == _tailBone)
+        {
+            ret = NueAttackType.Tail;
+        }
+
+        if (other == _neckRootBone)
+        {
+            ret = NueAttackType.Rush;
+        }
+
+        if (other == _rightWristBone)
+        {
+            ret = NueAttackType.Claw;
+        }
+
+        return ret;
+    }
+
+    /// <summary>
+    /// ぬえ 攻撃バリエーション 列挙型
+    /// </summary>
+    public enum NueAttackType
+    {
+        Rush,
+        Claw,
+        Tail
+    }
+
     public void BackToAwait()
     {
         _tree.EndYieldBehaviourFrom(_currentYielded);
         ResetAgentPath();
+    }
+
+    public void EnableClawCollider()
+    {
+        _rightWristBone.GetComponent<Collider>().enabled = true;
+    }
+
+    public void DisableClawCollider()
+    {
+        _rightWristBone.GetComponent<Collider>().enabled = false;
+    }
+
+    public void EnableRushCollider()
+    {
+        _neckRootBone.GetComponent<Collider>().enabled = true;
+    }
+
+    public void DisableRushCollider()
+    {
+        _neckRootBone.GetComponent<Collider>().enabled = false;
+    }
+
+    public void EnableTailCollider()
+    {
+        _tailBone.GetComponent<Collider>().enabled = true;
+    }
+
+    public void DisableTailCollider()
+    {
+        _tailBone.GetComponent<Collider>().enabled = false;
     }
 
     public void InitializeThisComponent()
