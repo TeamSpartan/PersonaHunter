@@ -9,7 +9,7 @@ namespace Sound
 	{
 		private static ADXPlayer _instance;
 		static public ADXPlayer Instance => _instance;
-		
+
 		[SerializeField] private CriAtomSource _BGMAtomSource;
 		[SerializeField] private CriAtomSource _MEAtomSource;
 		[SerializeField] private CriAtomSource _SEAtomSource;
@@ -18,13 +18,20 @@ namespace Sound
 		[SerializeField] private List<SESoundData> _seList = new();
 		[SerializeField] private List<MESoundData> _meList = new();
 		[SerializeField] private List<VoiceSoundData> _voiceList = new();
+		[SerializeField, Range(0f, 1f)] private float _masterVolume = 1f;
 		private CriAtomExPlayer _exPlayer;
 		private CriAtomExAcb _cueAcb;
-		
+
 		const string BGMSHEETNAME = "BGM";
 		const string SESHEETNAME = "SE";
 		const string MESHEETNAME = "ME";
 		const string VoiceSHEETNAME = "Voice";
+
+		///<summary>マスターボリュームの変更</summary>
+		public void MasterVolume(float masterVolume)
+		{
+			_masterVolume = masterVolume;
+		}
 
 		private void Awake()
 		{
@@ -61,7 +68,7 @@ namespace Sound
 
 			//キューの取得
 			BGMSoundData data = _bgmList.Find(data => data._BGM == bgm);
-			
+
 			//キューの有無
 			if (!_cueAcb.Exists(data?.AudioClipName))
 			{
@@ -71,7 +78,7 @@ namespace Sound
 
 			//キューの設定
 			_BGMAtomSource.cueName = data.AudioClipName;
-			_BGMAtomSource.volume = data.Volume;
+			_BGMAtomSource.volume = data.Volume * _masterVolume;
 			_BGMAtomSource.pitch = data.Pitch;
 
 			//オプションの設定
@@ -83,7 +90,7 @@ namespace Sound
 			//プレイ
 			_BGMAtomSource.Play();
 		}
-		
+
 		public void PlayBGM(BGMSoundData.BGM bgm, float volume = 1f, float pitch = 0f, bool isLoop = true)
 		{
 			//キューシートの設定
@@ -91,19 +98,20 @@ namespace Sound
 
 			//キューの取得
 			BGMSoundData data = _bgmList.Find(data => data._BGM == bgm);
-			
+
 			//キューの有無
 			if (!_cueAcb.Exists(data?.AudioClipName))
 			{
 				Debug.Log("Sound Not Found!");
 				return;
 			}
+
 			_exPlayer.ResetParameters();
 
 			//キューの設定
 			_exPlayer.SetCue(_cueAcb, data.AudioClipName);
 			_exPlayer.Loop(isLoop);
-			_exPlayer.SetVolume(volume);
+			_exPlayer.SetVolume(volume * _masterVolume);
 			_exPlayer.SetPitch(pitch);
 
 			//プレイ
@@ -119,17 +127,17 @@ namespace Sound
 
 			//キューの取得
 			SESoundData data = _seList.Find(data => data._SE == se);
-			
+
 			//キューの有無
 			if (!_cueAcb.Exists(data?.AudioClipName))
 			{
 				Debug.Log("Sound Not Found!");
 				return;
 			}
-			
+
 			//キューの設定
 			_SEAtomSource.cueName = data.AudioClipName;
-			_SEAtomSource.volume = data.Volume;
+			_SEAtomSource.volume = data.Volume * _masterVolume;
 			_SEAtomSource.pitch = data.Pitch;
 
 			//オプションの設定
@@ -152,17 +160,17 @@ namespace Sound
 
 			//キューの取得
 			SESoundData data = _seList.Find(data => data._SE == se);
-			
+
 			//キューの有無
 			if (!_cueAcb.Exists(data?.AudioClipName))
 			{
 				Debug.Log("Sound Not Found!");
 				return;
 			}
-			
+
 			//キューの設定
 			_source.cueName = data.AudioClipName;
-			_source.volume = data.Volume;
+			_source.volume = data.Volume * _masterVolume;
 			_source.pitch = data.Pitch;
 
 			//オプションの設定
@@ -175,7 +183,7 @@ namespace Sound
 			_source.Play();
 		}
 
-		
+
 		///<summary>MEを流す用の関数</summary>
 		public void PlayME(MESoundData.ME me, params IAudioPlayOption[] options)
 		{
@@ -185,17 +193,17 @@ namespace Sound
 
 			//キューの取得
 			MESoundData data = _meList.Find(data => data._ME == me);
-			
+
 			//キューの有無
 			if (!_cueAcb.Exists(data.AudioClipName))
 			{
 				Debug.Log("Sound Not Found!");
 				return;
 			}
-			
+
 			//キューの設定
 			_MEAtomSource.cueName = data.AudioClipName;
-			_MEAtomSource.volume = data.Volume;
+			_MEAtomSource.volume = data.Volume * _masterVolume;
 			_MEAtomSource.pitch = data.Pitch;
 
 			//オプションの設定
@@ -217,17 +225,17 @@ namespace Sound
 
 			//キューの取得
 			VoiceSoundData data = _voiceList.Find(data => data._Voice == voice);
-			
+
 			//キューの有無
 			if (!_cueAcb.Exists(data.AudioClipName))
 			{
 				Debug.Log("Sound Not Found!");
 				return;
 			}
-			
+
 			//キューの設定
 			_VoiceAtomSouce.cueName = data.AudioClipName;
-			_VoiceAtomSouce.volume = data.Volume;
+			_VoiceAtomSouce.volume = data.Volume * _masterVolume;
 			_VoiceAtomSouce.pitch = data.Pitch;
 
 			//オプションの設定
@@ -239,7 +247,7 @@ namespace Sound
 			//プレイ
 			_VoiceAtomSouce.Play();
 		}
-		
+
 		void OnDestroy()
 		{
 			CriAtom.RemoveCueSheet(BGMSHEETNAME);
@@ -249,8 +257,8 @@ namespace Sound
 			_exPlayer.Dispose();
 		}
 	}
-	
-	
+
+
 	[System.Serializable]
 	public class BGMSoundData
 	{
@@ -280,7 +288,7 @@ namespace Sound
 		{
 			Decision,
 			StartButton,
-			
+
 			//プレイヤー
 			PlayerDirtWalk,
 			PlayerGravelWalk,
@@ -295,7 +303,7 @@ namespace Sound
 			PlayerParry,
 			PlayerDamage,
 			PlayerDIe,
-			
+
 			//エネミー
 			EnemyDirtWalk,
 			EnemyGraveWalk,
@@ -308,7 +316,7 @@ namespace Sound
 			EnemyDamage,
 			EnemyInterval,
 			EnemyDie,
-			
+
 			//ボス
 			BossDirtWalk,
 			BossGraveWalk,
@@ -324,7 +332,7 @@ namespace Sound
 			BossDown,
 			BossDamage,
 			BossDie,
-			
+
 			//環境音
 			FieldWind,
 			FieldSparrow,
@@ -336,7 +344,7 @@ namespace Sound
 		[Range(0, 1)] public float Volume = 1;
 		[Range(-120, 120)] public float Pitch = 0;
 	}
-	
+
 	[System.Serializable]
 	public class MESoundData
 	{
@@ -366,14 +374,14 @@ namespace Sound
 			PlayerDamage,
 			PlayerBigDamage,
 			PlayerDie,
-			
+
 			//エネミー
 			EnemyAttack,
 			EnemyBigAttack,
 			EnemyDamage,
 			EnemyBigDamage,
 			EnemyDie,
-			
+
 			//ボス
 			BossScratchAttack,
 			BossTailAttack,
@@ -389,6 +397,4 @@ namespace Sound
 		[Range(0, 1)] public float Volume = 1;
 		[Range(-120, 120)] public float Pitch = 0;
 	}
-
-	
 }
