@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 /* 菅沼が主担当 */
 /// <summary>
 /// ぬえの第一形態の機能を提供
+/// ver 3.3.1
 /// </summary>
 public class NueBrain : MonoBehaviour
     , IMobBehaviourParameter
