@@ -14,6 +14,7 @@ public class NueBrain : MonoBehaviour
     , IInitializableComponent
     , IDulledTarget
     , IDamagedComponent
+, IPlayerCamLockable
 {
     #region 外部パラメータ
 
@@ -299,6 +300,11 @@ public class NueBrain : MonoBehaviour
     public void DisableTailCollider()
     {
         _tailBone.GetComponent<Collider>().enabled = false;
+    }
+    
+    public Transform GetLockableObjectTransform()
+    {
+        return this.transform;
     }
 
     public void InitializeThisComponent()
