@@ -452,12 +452,12 @@ public class Nue_v1_e2 : MonoBehaviour
         _health = _healthMaxValue;
     }
 
-    public void FixedThickThisComponent()
+    public void FixedTickThisComponent()
     {
         throw new System.NotImplementedException();
     }
 
-    public void ThickThisComponent()
+    public void TickThisComponent()
     {
         throw new System.NotImplementedException();
     }
