@@ -11,8 +11,6 @@ using DG.Tweening;
 /// </summary>
 public class GameLogic
     : SingletonBaseClass<GameLogic>
-        , IGuardEventHandler
-        , IEnemyAttackEventHandler
 {
     [SerializeField] private bool _debugging;
 
@@ -52,20 +50,6 @@ public class GameLogic
     {
         var targets = booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.EndDull());
-    }
-
-    /// <summary>
-    /// プレイヤーが呼び出す
-    /// </summary>
-    public void NotifyPlayerIsGuarding(GameObject enemy)
-    {
-    }
-
-    /// <summary>
-    /// 敵が呼び出す
-    /// </summary>
-    public void NotifyEnemyAttackCondition(GameObject instance, bool condition)
-    {
     }
 
     void InitializeGame()
