@@ -1,5 +1,6 @@
 using System;
 using SgLibUnite.BehaviourTree;
+using SgLibUnite.CodingBooster;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -14,7 +15,7 @@ public class NueBrain : MonoBehaviour
     , IInitializableComponent
     , IDulledTarget
     , IDamagedComponent
-, IPlayerCamLockable
+    , IPlayerCamLockable
 {
     #region 外部パラメータ
 
@@ -57,9 +58,7 @@ public class NueBrain : MonoBehaviour
 
     [SerializeField, Header("ベースの攻撃")] private float _baseDamage;
 
-    /// <summary>
-    /// ベースのダメージ量
-    /// </summary>
+    /// <summary> ベースのダメージ量 </summary>
     public float GetBaseDamage => _baseDamage;
 
     #endregion
@@ -175,11 +174,15 @@ public class NueBrain : MonoBehaviour
     /// <summary> 突進行動の実行ロックのフラグ </summary>
     private bool _lockedRush;
 
+    /// <summary> 開発効率化ライブラリ </summary>
+    private CBooster _boost = new();
+
     #endregion
 
     public void AddDamage(float dmg)
     {
         _healthPoint -= dmg;
+        _flinchPoint += dmg * .25f;
     }
 
     public void Kill()
@@ -225,7 +228,7 @@ public class NueBrain : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Attacked!");
+            CheckPlayerIsGuarding(other);
         }
     }
 
@@ -301,15 +304,22 @@ public class NueBrain : MonoBehaviour
     {
         _tailBone.GetComponent<Collider>().enabled = false;
     }
-    
+
     public Transform GetLockableObjectTransform()
     {
         return this.transform;
     }
 
-    public void NotifyAttackConditionNow(bool cond)
+    /// <summary> AnimationEventから呼び出す </summary>
+    public void CheckPlayerIsGuarding(Collider other)
     {
-        var gl = FindObjectOfType<GameLogic>();
+        if (other.GetComponent<IAbleToParry>() != null)
+        {
+            if (other.GetComponent<IAbleToParry>().NotifyPlayerIsGuarding())
+            {
+                GetParry();
+            }
+        }
     }
 
     public void InitializeThisComponent()
@@ -320,7 +330,7 @@ public class NueBrain : MonoBehaviour
         SetupComponent();
     }
 
-    private void FixedUpdate()
+    public void FixedThickThisComponent()
     {
         _tree.UpdateEventsYield();
         _playerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayers);
@@ -344,6 +354,10 @@ public class NueBrain : MonoBehaviour
 
         _tree.UpdateTransition(_tNameStartGetClose, ref _playerFound);
         _tree.UpdateTransition(_tNameStartThink, ref _playerIsInRange);
+    }
+
+    public void ThickThisComponent()
+    {
     }
 
     private void SetupBehaviours()
@@ -443,7 +457,7 @@ public class NueBrain : MonoBehaviour
         _tree.EndYieldBehaviourFrom(_flinch);
     }
 
-    public void GetStumble()
+    public void GetParry()
     {
         _tree.YieldAllBehaviourTo(_stumble);
         _anim.SetTrigger("GetParry");
@@ -556,6 +570,7 @@ public class NueBrain : MonoBehaviour
         if (_elapsedFlinchingTime > _awaitTimeOnFlinching)
         {
             _elapsedFlinchingTime = 0;
+            _flinchPoint = 0;
             _anim.SetTrigger("EndFlinch");
         }
     }

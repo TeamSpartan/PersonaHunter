@@ -231,6 +231,16 @@ public class LittleNuweBT
         _behaviourTree.StartBT();
     }
 
+    public void FixedThickThisComponent()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void ThickThisComponent()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void FinalizeThisComponent()
     {
     }

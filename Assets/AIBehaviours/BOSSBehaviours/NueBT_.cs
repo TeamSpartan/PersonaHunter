@@ -242,6 +242,16 @@ public class NueBT_
         }
     }
 
+    public void FixedThickThisComponent()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ThickThisComponent()
+    {
+        throw new NotImplementedException();
+    }
+
     public void FixedUpdate()
     {
         FindPlayer();

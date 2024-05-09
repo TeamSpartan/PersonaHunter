@@ -19,7 +19,7 @@ public class Unnko
         this._inputT = GameObject.FindFirstObjectByType<TesterInput>();
     }
 
-    private void FixedUpdate()
+    public void FixedThickThisComponent()
     {
         var brain = GameObject.FindFirstObjectByType<PlayerCameraBrain>();
         var f = Camera.main.transform.forward;
@@ -30,6 +30,11 @@ public class Unnko
         {
             transform.Translate(dir);
         }
+    }
+
+    public void ThickThisComponent()
+    {
+        
     }
 
     public void FinalizeThisComponent()

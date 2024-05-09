@@ -15,8 +15,7 @@ namespace PlayerCam.Scripts
     /// プレイヤ追跡とロックオンターゲットのロックオンを提供。
     /// </summary>
     public class PlayerCameraBrain
-        : MonoBehaviour,
-            IInitializableComponent
+        : MonoBehaviour
     {
         #region Parameter Exposing
 
@@ -95,7 +94,7 @@ namespace PlayerCam.Scripts
 
         #endregion
 
-        public void InitializeThisComponent()
+        private void Start()
         {
             // 検索にひっかかった最初のオブジェクトをプレイヤとする
             this._playerCurrent = boost.GetDerivedComponents<IPlayerCameraTrasable>()
@@ -123,7 +122,7 @@ namespace PlayerCam.Scripts
             this.gameObject.tag = "MainCamera";
         }
 
-        public void FinalizeThisComponent()
+        public void OnApplicationQuit()
         {
             // ロックオンイベント発火元へのデリゲート登録解除をする
             boost.GetDerivedComponents<ILockOnEventFirable>()

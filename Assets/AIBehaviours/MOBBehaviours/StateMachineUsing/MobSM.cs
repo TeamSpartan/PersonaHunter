@@ -251,6 +251,16 @@ public class MobSM
         _animator.SetLayerWeight(1, 0f);
     }
 
+    public void FixedThickThisComponent()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void ThickThisComponent()
+    {
+        throw new System.NotImplementedException();
+    }
+
     void UpdateConditions()
     {
         // 各コンディションの更新

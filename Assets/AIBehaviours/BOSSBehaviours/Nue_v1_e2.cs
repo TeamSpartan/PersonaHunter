@@ -452,6 +452,16 @@ public class Nue_v1_e2 : MonoBehaviour
         _health = _healthMaxValue;
     }
 
+    public void FixedThickThisComponent()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void ThickThisComponent()
+    {
+        throw new System.NotImplementedException();
+    }
+
     private void FixedUpdate()
     {
         _bt.UpdateEventsYield();
