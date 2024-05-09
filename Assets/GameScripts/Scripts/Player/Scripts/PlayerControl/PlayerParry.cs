@@ -10,9 +10,8 @@ namespace Player.Action
 	[RequireComponent(typeof(PlayerParam))]
 	[RequireComponent(typeof(Animator))]
 	///<summary>プレイヤーのパリー</summary>
-	public class PlayerParry : MonoBehaviour
+	public class PlayerParry : MonoBehaviour, IAbleToParry, IInitializableComponent
 	{
-		
 		public event System.Action OnParryStart,
 			OnParrySuccess,
 			OnEndParry,
@@ -23,25 +22,12 @@ namespace Player.Action
 		private Animator _animator;
 		private CBooster _cBooster = new();
 		private ZoneObj _zoneObj;
-		private void OnEnable()
-		{
-			
-		}
-
+		
 		private void Start()
 		{
 			_playerParam = GetComponentInParent<PlayerParam>();
 			_animator = GetComponentInParent<Animator>();
 			_zoneObj = GetComponent<ZoneObj>();
-		}
-
-		private void Update()
-		{
-			if (PlayerInputsAction.Instance.GetCurrentInputType == PlayerInputTypes.Parry &&
-			    !_playerParam.GetIsAnimation)
-			{
-				Parried();
-			}
 		}
 
 		void Parried()
@@ -56,6 +42,7 @@ namespace Player.Action
 			_animator.SetTrigger(_parryID);
 		}
 
+		//パリィの成功
 		void ParrySuccess()
 		{
 			_zoneObj.IncreaseGaugeValue(_playerParam.GetGiveValueOfParry);
@@ -69,11 +56,6 @@ namespace Player.Action
 				OnDuringParry?.Invoke();
 				return;
 			}
-			foreach (var IGuard in _cBooster.GetDerivedComponents<IAbleToParry>())
-			{
-				IGuard.EParrySucceed += ParrySuccess;
-				IGuard.NotifyPlayerIsGuarding(this.gameObject);
-			}
 			
 			_playerParam.SetIsParry(true);
 			OnParryStart?.Invoke();
@@ -84,10 +66,6 @@ namespace Player.Action
 			if (!_playerParam.GetIsParry)
 			{
 				return;
-			}
-			foreach (var IGuard in _cBooster.GetDerivedComponents<IAbleToParry>())
-			{
-				IGuard.EParrySucceed -= ParrySuccess;
 			}
 			
 			OnEndParry?.Invoke();
@@ -100,11 +78,33 @@ namespace Player.Action
 			_playerParam.SetIsAnimation(false);
 			PlayerInputsAction.Instance.EndAction();
 		}
-		//------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-		void DebugComment(string comment)
+		public bool NotifyPlayerIsGuarding()
 		{
-			Debug.Log(comment);
+			return _playerParam.GetIsParry;
+		}
+
+		public void InitializeThisComponent()
+		{
+		}
+
+		public void FixedTickThisComponent()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void TickThisComponent()
+		{
+			if (PlayerInputsAction.Instance.GetCurrentInputType == PlayerInputTypes.Parry &&
+			    !_playerParam.GetIsAnimation)
+			{
+				Parried();
+			}
+		}
+
+		public void FinalizeThisComponent()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
