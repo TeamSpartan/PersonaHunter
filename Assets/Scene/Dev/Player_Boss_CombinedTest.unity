@@ -859,26 +859,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2760979747039311329, guid: 49f446b6fc01b0c4ca8d1059499809d0,
-        type: 3}
-      propertyPath: m_Drag
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 2760979747039311329, guid: 49f446b6fc01b0c4ca8d1059499809d0,
-        type: 3}
-      propertyPath: m_UseGravity
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4855703141625555997, guid: 49f446b6fc01b0c4ca8d1059499809d0,
-        type: 3}
-      propertyPath: _baseDamage
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4855703141625555997, guid: 49f446b6fc01b0c4ca8d1059499809d0,
-        type: 3}
-      propertyPath: _sightRange
-      value: 60
-      objectReference: {fileID: 0}
     - target: {fileID: 6027365512163713768, guid: 49f446b6fc01b0c4ca8d1059499809d0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -934,15 +914,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: Nue
       objectReference: {fileID: 0}
-    - target: {fileID: 6408147637765486674, guid: 49f446b6fc01b0c4ca8d1059499809d0,
-        type: 3}
-      propertyPath: m_TagString
-      value: Nue
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 3224103617185109582, guid: 49f446b6fc01b0c4ca8d1059499809d0, type: 3}
-    - {fileID: 1933312856119660640, guid: 49f446b6fc01b0c4ca8d1059499809d0, type: 3}
-    - {fileID: 5198349447033284968, guid: 49f446b6fc01b0c4ca8d1059499809d0, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
