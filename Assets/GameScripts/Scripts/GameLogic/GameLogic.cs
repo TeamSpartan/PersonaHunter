@@ -74,6 +74,9 @@ public class GameLogic
         {
             Debug.Log($"{nameof(GameLogic)}:Game Is Running");
         }
+
+        var targ = booster.GetDerivedComponents<IInitializableComponent>();
+        targ.ForEach(_ => _.FixedTickThisComponent());
     }
 
     void FinalizeGame()

@@ -251,12 +251,12 @@ public class MobSM
         _animator.SetLayerWeight(1, 0f);
     }
 
-    public void FixedThickThisComponent()
+    public void FixedTickThisComponent()
     {
         throw new System.NotImplementedException();
     }
 
-    public void ThickThisComponent()
+    public void TickThisComponent()
     {
         throw new System.NotImplementedException();
     }

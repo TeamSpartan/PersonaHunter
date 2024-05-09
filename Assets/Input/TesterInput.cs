@@ -24,12 +24,12 @@ namespace Input
             _elapsedT = 0f;
         }
 
-        public void FixedThickThisComponent()
+        public void FixedTickThisComponent()
         {
             
         }
 
-        public void ThickThisComponent()
+        public void TickThisComponent()
         {
             if (UnityEngine.Input.GetMouseButton(2)  || UnityEngine.Input.GetKey(KeyCode.L))
             {

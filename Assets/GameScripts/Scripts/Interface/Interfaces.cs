@@ -19,12 +19,12 @@ public interface IInitializableComponent
     /// <summary>
     /// FixedUpdate
     /// </summary>
-    public void FixedThickThisComponent();
+    public void FixedTickThisComponent();
     
     /// <summary>
     /// Update
     /// </summary>
-    public void ThickThisComponent();
+    public void TickThisComponent();
 
     /// <summary>
     /// リセットの時に呼び出される

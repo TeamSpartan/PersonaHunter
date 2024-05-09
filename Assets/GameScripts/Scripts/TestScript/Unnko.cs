@@ -19,7 +19,7 @@ public class Unnko
         this._inputT = GameObject.FindFirstObjectByType<TesterInput>();
     }
 
-    public void FixedThickThisComponent()
+    public void FixedTickThisComponent()
     {
         var brain = GameObject.FindFirstObjectByType<PlayerCameraBrain>();
         var f = Camera.main.transform.forward;
@@ -32,7 +32,7 @@ public class Unnko
         }
     }
 
-    public void ThickThisComponent()
+    public void TickThisComponent()
     {
         
     }

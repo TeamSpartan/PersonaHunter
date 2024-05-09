@@ -231,12 +231,12 @@ public class LittleNuweBT
         _behaviourTree.StartBT();
     }
 
-    public void FixedThickThisComponent()
+    public void FixedTickThisComponent()
     {
         throw new System.NotImplementedException();
     }
 
-    public void ThickThisComponent()
+    public void TickThisComponent()
     {
         throw new System.NotImplementedException();
     }
