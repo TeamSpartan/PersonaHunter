@@ -69,7 +69,7 @@ namespace Player.Action
 				OnDuringParry?.Invoke();
 				return;
 			}
-			foreach (var IGuard in _cBooster.GetDerivedComponents<IGuardEventHandler>())
+			foreach (var IGuard in _cBooster.GetDerivedComponents<IAbleToParry>())
 			{
 				IGuard.EParrySucceed += ParrySuccess;
 				IGuard.NotifyPlayerIsGuarding(this.gameObject);
@@ -85,7 +85,7 @@ namespace Player.Action
 			{
 				return;
 			}
-			foreach (var IGuard in _cBooster.GetDerivedComponents<IGuardEventHandler>())
+			foreach (var IGuard in _cBooster.GetDerivedComponents<IAbleToParry>())
 			{
 				IGuard.EParrySucceed -= ParrySuccess;
 			}

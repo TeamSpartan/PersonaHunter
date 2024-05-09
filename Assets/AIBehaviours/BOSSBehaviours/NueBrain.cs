@@ -307,6 +307,11 @@ public class NueBrain : MonoBehaviour
         return this.transform;
     }
 
+    public void NotifyAttackConditionNow(bool cond)
+    {
+        var gl = FindObjectOfType<GameLogic>();
+    }
+
     public void InitializeThisComponent()
     {
         SetupBehaviours();

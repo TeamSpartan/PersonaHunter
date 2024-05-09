@@ -163,18 +163,9 @@ public interface IAudioPlayOption
 }
 
 /// <summary>
-/// GameLogicクラスが継承すべきインターフェイス。敵が攻撃中か否かをGameLogicへ送る
-/// </summary>
-public interface IEnemyAttackEventHandler
-{
-    public void NotifyEnemyAttackCondition(GameObject instance, bool condition);
-}
-
-/// <summary>
 /// プレイヤがガードをしている間に呼びだすメソッドが格納されている。GameLogicが継承すべきインターフェイス
 /// </summary>
-public interface IGuardEventHandler
+public interface IAbleToParry
 {
-    public void NotifyPlayerIsGuarding(GameObject enemy);
-    public Action EParrySucceed { get; set; }
+    public bool NotifyPlayerIsGuarding();
 }
