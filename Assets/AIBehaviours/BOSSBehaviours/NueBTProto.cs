@@ -285,6 +285,16 @@ public class NueBTProto
         _bt.StartBT();
     }
 
+    public void FixedThickThisComponent()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void ThickThisComponent()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void FinalizeThisComponent()
     {
     }

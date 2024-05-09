@@ -24,7 +24,12 @@ namespace Input
             _elapsedT = 0f;
         }
 
-        private void Update()
+        public void FixedThickThisComponent()
+        {
+            
+        }
+
+        public void ThickThisComponent()
         {
             if (UnityEngine.Input.GetMouseButton(2)  || UnityEngine.Input.GetKey(KeyCode.L))
             {

@@ -833,7 +833,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1251000558}
         m_TargetAssemblyTypeName: NueBrain, Assembly-CSharp
-        m_MethodName: GetStumble
+        m_MethodName: GetParry
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

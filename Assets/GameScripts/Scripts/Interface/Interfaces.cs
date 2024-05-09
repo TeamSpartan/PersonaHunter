@@ -17,6 +17,16 @@ public interface IInitializableComponent
     public void InitializeThisComponent();
 
     /// <summary>
+    /// FixedUpdate
+    /// </summary>
+    public void FixedThickThisComponent();
+    
+    /// <summary>
+    /// Update
+    /// </summary>
+    public void ThickThisComponent();
+
+    /// <summary>
     /// リセットの時に呼び出される
     /// </summary>
     public void FinalizeThisComponent();

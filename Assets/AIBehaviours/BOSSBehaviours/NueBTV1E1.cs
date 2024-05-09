@@ -371,6 +371,16 @@ public class NueBTV1E1
         _health = _healthMaxValue;
     }
 
+    public void FixedThickThisComponent()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void ThickThisComponent()
+    {
+        throw new System.NotImplementedException();
+    }
+
     private void FixedUpdate()
     {
         _bt.UpdateEventsYield();
