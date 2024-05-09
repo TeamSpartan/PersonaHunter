@@ -42,11 +42,12 @@ namespace Player.Input
 		private PlayerInputTypes _currentInput;
 		private InputType _inputType;
 
-		private bool _isLockOn = false;
-		private bool _isZone = false;
-		private bool _isCancel = false;
-		private bool _isDecision = false;
-		private bool _isConfirm = false;
+		private bool _isLockOn;
+		private bool _isZone;
+		private bool _isCancel;
+		private bool _isDecision;
+		private bool _isConfirm;
+		private bool _isDash;
 
 		private bool _isExternalInputBlocked;
 		private bool _playerControllerInputBlocked;
@@ -84,8 +85,6 @@ namespace Player.Input
 			return _inputVector;
 		}
 
-		
-
 
 		///<summary>カメラの移動入力、ロックオン時敵の切り替え	</summary>
 		public Vector2 GetCameraInput
@@ -100,6 +99,18 @@ namespace Player.Input
 
 		public Vector2 GetCamMoveValue()
 		{
+			if (_inputType == InputType.Player)
+			{
+				if (0 < _inputCamera.x)
+				{
+					EvtCamRightTarget.Invoke();
+				}
+				else if (_inputCamera.x < 0)
+				{
+					EvtCamLeftTarget.Invoke();
+				}
+			}
+
 			return _inputCamera;
 		}
 
@@ -121,6 +132,9 @@ namespace Player.Input
 
 		///<summary>ゾーン中か否か</summary>
 		public bool IsZone => _isZone;
+
+		///<summary>ダッシュする</summary>
+		public bool IsDash => _isDash;
 
 		void Awake()
 		{
@@ -222,7 +236,7 @@ namespace Player.Input
 
 		void OnZone(InputAction.CallbackContext context)
 		{
-			_isZone = !_isZone;
+			ELockOnTriggered?.Invoke();
 			Debug.Log("Zone");
 		}
 
@@ -273,6 +287,11 @@ namespace Player.Input
 			_cursorInput = context.ReadValue<Vector2>();
 		}
 
+		void OnDash(InputAction.CallbackContext context)
+		{
+			
+		}
+
 		void InGameInput()
 		{
 			//Move
@@ -291,7 +310,6 @@ namespace Player.Input
 
 			//Zone
 			_gameInputs.Player.Zone.started += OnZone;
-			_gameInputs.Player.Zone.canceled += OnZone;
 
 			//Camera
 			_gameInputs.Player.Camera.started += OnCamera;
@@ -304,6 +322,9 @@ namespace Player.Input
 			//Pause
 			_gameInputs.Player.Pause.started += OnPause;
 			_gameInputs.Player.Pause.canceled += OnPause;
+			
+			//Dash
+			_gameInputs.Player.Dash.started += OnDash;
 		}
 
 		void InGameDis()
@@ -324,7 +345,6 @@ namespace Player.Input
 
 			//Zone
 			_gameInputs.Player.Zone.started -= OnZone;
-			_gameInputs.Player.Zone.canceled -= OnZone;
 
 			//Camera
 			_gameInputs.Player.Camera.started -= OnCamera;
@@ -378,7 +398,5 @@ namespace Player.Input
 			_gameInputs.UI.Cursor.performed -= OnCursor;
 			_gameInputs.UI.Cursor.canceled -= OnCursor;
 		}
-
-		
 	}
 }

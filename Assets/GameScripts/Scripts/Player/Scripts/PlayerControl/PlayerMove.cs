@@ -1,8 +1,11 @@
 using System;
+using DG.Tweening;
 using Player.Input;
 using Player.Param;
+using PlayerCam.Scripts;
 using Sound;
 using Sound.PlayOption;
+using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,10 +13,12 @@ namespace Player.Action
 {
 	//Rigidbodyを強制的にアタッチする
 	[RequireComponent(typeof(Rigidbody))]
-	public class PlayerMove : MonoBehaviour, IPlayerCameraTrasable
+	public class PlayerMove : MonoBehaviour, IPlayerCameraTrasable, IInitializableComponent
 	{
 		/// <summary>プレイヤーのRigidbody </summary>
 		Rigidbody _rb;
+
+		private ReactiveProperty<Vector3> saveDir = new();
 
 		/// <summary>プレイヤーの移動方向 </summary>
 		Vector3 _dir;
@@ -45,12 +50,16 @@ namespace Player.Action
 		private Animator _animator;
 		private Vector3 _groundNormalVector;
 		private PlayerParam _playerParam;
+		private PlayerCameraBrain _playerCamera;
+		private DOTween _doTween;
+
 
 		void Start()
 		{
 			_rb = GetComponent<Rigidbody>();
 			_animator = GetComponentInChildren<Animator>();
 			_playerParam = GetComponent<PlayerParam>();
+			_playerCamera = FindObjectOfType<PlayerCameraBrain>();
 		}
 
 		private void FixedUpdate()
@@ -58,6 +67,7 @@ namespace Player.Action
 			if (!_playerParam.GetIsAnimation)
 			{
 				OnMove(PlayerInputsAction.Instance.GetMoveInput);
+				PlayerRotate(PlayerInputsAction.Instance.GetMoveInput);
 			}
 			else
 			{
@@ -75,15 +85,9 @@ namespace Player.Action
 			_dir.y = 0;
 			_dir = _dir.normalized;
 
-			//滑らかに進行方向に回転させる
-			if (_dir.magnitude > 0)
-			{
-				_targetRotation = Quaternion.LookRotation(_dir, Vector3.up);
-			}
-			transform.rotation = Quaternion.RotateTowards(transform.rotation, _targetRotation, rotateSpeed);
 
 			//加速
-			_rb.AddForce(GetSlopeMoveDirection(_dir * moveSpeed, 
+			_rb.AddForce(GetSlopeMoveDirection(_dir * moveSpeed,
 				NormalRay()), ForceMode.Force);
 			if (GroundCheck())
 			{
@@ -96,6 +100,24 @@ namespace Player.Action
 
 
 			_animator.SetFloat("Speed", _dir.magnitude);
+		}
+
+		///<summary>プレイヤーの向き</summary>
+		void PlayerRotate(Vector2 inputValue)
+		{
+			// if (_playerCamera.LockingOn)
+			// {
+			//transform.LookAt(_playerCamera.CurrentLockingOnTarget);
+			// }
+			// else
+			// {
+
+			if (_dir.magnitude > 0)
+			{
+			}
+
+			transform.forward += Vector3.Lerp(transform.forward, _dir, Time.deltaTime * rotateSpeed);
+			//}
 		}
 
 		/// <summary>プレイヤーの接地判定を判定するメソッド </summary>
@@ -120,6 +142,7 @@ namespace Player.Action
 				Debug.DrawRay(transform.position, Vector3.down * _raylength, Color.cyan);
 				return hit.normal;
 			}
+
 			return Vector3.zero;
 		}
 
@@ -144,7 +167,27 @@ namespace Player.Action
 
 		public Transform GetPlayerCamTrasableTransform()
 		{
-			return this.transform;
+			return transform;
+		}
+
+		public void InitializeThisComponent()
+		{
+		}
+
+		public void FixedTickThisComponent()
+		{
+			//throw new NotImplementedException();
+		}
+
+		public void TickThisComponent()
+		{
+			//throw new NotImplementedException();
+		}
+		
+
+		public void FinalizeThisComponent()
+		{
+			//throw new NotImplementedException();
 		}
 	}
 }

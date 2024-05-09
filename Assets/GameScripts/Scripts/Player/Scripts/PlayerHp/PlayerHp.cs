@@ -8,8 +8,11 @@ namespace Player.Hp
 	///<summary>プレイヤーHPの内部処理</summary>
 	public class PlayerHp : MonoBehaviour, IDamagedComponent
 	{
-		[SerializeField, Header("無敵フレーム")] private int invincibilityFrame;
+		[SerializeField, Header("無敵フレーム")] private int _invincibilityFrame;
+		[SerializeField, Header("リジェネまでの時間")] private float _regeneratWaitTime;
+		[SerializeField, Header("リジェネ速度")] private float _regenerationSpeed;
 
+		
 		public event System.Action OnDeath,
 			OnReceiveDamage,
 			OnReceiveHeal,
@@ -23,6 +26,8 @@ namespace Player.Hp
 		private float _initialHp;
 		private float _currentHp;
 		private int _frameSinceLastHit;
+		private float _regenerationTimer;
+		private bool _isRegeneration;
 
 		#region properties
 
@@ -57,7 +62,7 @@ namespace Player.Hp
 			//無敵時間中
 			if (_playerParam.GetIsDamage)
 			{
-				if (_frameSinceLastHit > invincibilityFrame)
+				if (_frameSinceLastHit > _invincibilityFrame)
 				{
 					_frameSinceLastHit = 0;
 					OnBecomeVulnerable?.Invoke();
@@ -68,6 +73,16 @@ namespace Player.Hp
 					++_frameSinceLastHit;
 				}
 			}
+			
+			//リジェネ
+			if (_isRegeneration)
+			{
+				if (_regenerationTimer > _regeneratWaitTime)
+				{
+					
+				}
+				_currentHp += (_initialHp - _currentHp) / _regenerationSpeed;
+			}
 		}
 
 		///<summary>HPのリセット</summary>
@@ -75,6 +90,26 @@ namespace Player.Hp
 		{
 			_currentHp = _initialHp;
 			OnResetDamage?.Invoke();
+		}
+		
+		private void OnTriggerEnter(Collider other)
+		{
+			if (!other.GetComponent<NueBrain>())
+			{
+				NueBrain nue = other.GetComponent<NueBrain>();
+				switch (other.GetComponent<NueBrain>().GetAttackType(other.transform))
+				{
+					case NueBrain.NueAttackType.Claw:
+						AddDamage(nue.GetBaseDamage);
+						break;
+					case NueBrain.NueAttackType.Rush :
+						AddDamage(nue.GetBaseDamage);
+						break;
+					case NueBrain.NueAttackType.Tail:
+						AddDamage(nue.GetBaseDamage);
+						break;
+				}
+			}
 		}
 
 		public void AddDamage(float dmg)
