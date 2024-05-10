@@ -94,19 +94,19 @@ namespace Player.Hp
 		
 		private void OnTriggerEnter(Collider other)
 		{
-			if (!other.GetComponent<NueBrain>())
+			if (!other.GetComponent<NuweBrain>())
 			{
-				NueBrain nue = other.GetComponent<NueBrain>();
-				switch (other.GetComponent<NueBrain>().GetAttackType(other.transform))
+				NuweBrain nuwe = other.GetComponent<NuweBrain>();
+				switch (other.GetComponent<NuweBrain>().GetAttackType(other.transform))
 				{
-					case NueBrain.NueAttackType.Claw:
-						AddDamage(nue.GetBaseDamage);
+					case NuweBrain.NueAttackType.Claw:
+						AddDamage(nuwe.GetBaseDamage);
 						break;
-					case NueBrain.NueAttackType.Rush :
-						AddDamage(nue.GetBaseDamage);
+					case NuweBrain.NueAttackType.Rush :
+						AddDamage(nuwe.GetBaseDamage);
 						break;
-					case NueBrain.NueAttackType.Tail:
-						AddDamage(nue.GetBaseDamage);
+					case NuweBrain.NueAttackType.Tail:
+						AddDamage(nuwe.GetBaseDamage);
 						break;
 				}
 			}
