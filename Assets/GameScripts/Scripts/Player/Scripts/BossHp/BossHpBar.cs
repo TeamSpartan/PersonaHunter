@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BossHpBar : BossHp
+public class BossHpBar : MonoBehaviour
 {
 	[SerializeField, Header("HPが減る速度")] private float _duration;
 	[SerializeField, Header("赤ゲージが残る時間")] private float _waitTime = .2f;
@@ -13,28 +13,32 @@ public class BossHpBar : BossHp
 
 	[SerializeField, Header("ボス初登場時のHPの増える速度")]
 	private float _hpDuration;
+
+	private float _initiateHp;
+	private float saveHp;
+	
+	private NuweBrain _nuweBrain;
 	private Tween _burnEffect;
 	
 
 	private void OnEnable()
 	{
-		base.OnEnable();
-		OnReceiveDamage += SetGauge;
 	}
 
 	private void Start()
 	{
-		gameObject.layer = 8;
+		_nuweBrain = GetComponent<NuweBrain>();
 		_healthImage.fillAmount = 1f;
 		_burnImage.fillAmount = 1f;
-		ResetDamage();
+		_initiateHp = _nuweBrain.GetMaxHP;
 	}
 
 	private void Update()
 	{
-		if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
+		if (saveHp != _nuweBrain.GetHealthPoint)
 		{
-			BarEffect();
+			SetGauge();
+			saveHp = _nuweBrain.GetHealthPoint;
 		}
 	}
 
@@ -42,9 +46,9 @@ public class BossHpBar : BossHp
 	{
 		Debug.Log("ゲージ");
 		_burnEffect?.Kill();
-		_healthImage.DOFillAmount(CurrentHp / InitiateHp, _duration).OnComplete(() =>
+		_healthImage.DOFillAmount(_nuweBrain.GetHealthPoint / _initiateHp, _duration).OnComplete(() =>
 		{
-			_burnEffect = _burnImage.DOFillAmount(CurrentHp / InitiateHp, _duration * 0.5f).SetDelay(_waitTime);
+			_burnEffect = _burnImage.DOFillAmount(_nuweBrain.GetHealthPoint / _initiateHp, _duration * 0.5f).SetDelay(_waitTime);
 		});
 	}
 
@@ -52,7 +56,7 @@ public class BossHpBar : BossHp
 	{
 		_healthImage.DOFillAmount(0, 0f);
 		_burnImage.DOFillAmount(0, 0f);
-		_healthImage.DOFillAmount(InitiateHp, _hpDuration);
-		_burnImage.DOFillAmount(InitiateHp, _hpDuration * 0.6f);
+		_healthImage.DOFillAmount(_initiateHp, _hpDuration);
+		_burnImage.DOFillAmount(_initiateHp, _hpDuration * 0.6f);
 	}
 }
