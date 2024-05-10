@@ -1,6 +1,7 @@
 using System;
 using Player.Action;
 using Player.Param;
+using SgLibUnite.CodingBooster;
 using UnityEngine;
 
 namespace Player.Hp
@@ -10,15 +11,16 @@ namespace Player.Hp
 	{
 		[SerializeField, Header("無敵フレーム")] private int _invincibilityFrame;
 		[SerializeField, Header("リジェネまでの時間")] private float _regeneratWaitTime;
-		[SerializeField, Header("リジェネ速度")] private float _regenerationSpeed;
+		[SerializeField, Header("リジェネ回復量"), Range(1f,100f)] private float _regenerationSpeed;
 
-		
+
 		public event System.Action OnDeath,
 			OnReceiveDamage,
 			OnReceiveHeal,
 			OnHitWhileInvulnerable,
 			OnBecomeVulnerable,
-			OnResetDamage;
+			OnResetDamage,
+			OnRegeneration;
 
 		private PlayerParam _playerParam;
 		private PlayerAvoid _playerAvoid;
@@ -46,6 +48,8 @@ namespace Player.Hp
 			OnReceiveHeal += () => Debug.Log("ReceiveHeal");
 			OnHitWhileInvulnerable += () => Debug.Log("HitWhileInvulnerable");
 			OnDeath += () => Debug.Log("Death");
+			OnRegeneration += () => Debug.Log("Regene");
+			OnReceiveDamage += () => _regenerationTimer = 0;
 
 			#endregion
 		}
@@ -73,16 +77,8 @@ namespace Player.Hp
 					++_frameSinceLastHit;
 				}
 			}
-			
-			//リジェネ
-			if (_isRegeneration)
-			{
-				if (_regenerationTimer > _regeneratWaitTime)
-				{
-					
-				}
-				_currentHp += (_initialHp - _currentHp) / _regenerationSpeed;
-			}
+
+			Regeneration();
 		}
 
 		///<summary>HPのリセット</summary>
@@ -90,26 +86,6 @@ namespace Player.Hp
 		{
 			_currentHp = _initialHp;
 			OnResetDamage?.Invoke();
-		}
-		
-		private void OnTriggerEnter(Collider other)
-		{
-			if (!other.GetComponent<NuweBrain>())
-			{
-				NuweBrain nuwe = other.GetComponent<NuweBrain>();
-				switch (other.GetComponent<NuweBrain>().GetAttackType(other.transform))
-				{
-					case NuweBrain.NueAttackType.Claw:
-						AddDamage(nuwe.GetBaseDamage);
-						break;
-					case NuweBrain.NueAttackType.Rush :
-						AddDamage(nuwe.GetBaseDamage);
-						break;
-					case NuweBrain.NueAttackType.Tail:
-						AddDamage(nuwe.GetBaseDamage);
-						break;
-				}
-			}
 		}
 
 		public void AddDamage(float dmg)
@@ -119,15 +95,17 @@ namespace Player.Hp
 				return;
 			}
 
-			if (_playerParam.GetIsAvoid && !_playerParam.GetIsJustAvoid)
-			{
-				_playerAvoid.OnAvoidSuccess.Invoke();
-				return;
-			}
-
+			//ジャスト回避
 			if (_playerParam.GetIsJustAvoid)
 			{
 				_playerAvoid.OnJustAvoidSuccess.Invoke(_playerParam.GetIncreaseValueOfJustAvoid);
+				return;
+			}
+
+			//普通の回避
+			if (_playerParam.GetIsAvoid)
+			{
+				_playerAvoid.OnAvoidSuccess.Invoke();
 				return;
 			}
 
@@ -144,6 +122,7 @@ namespace Player.Hp
 			{
 				//Processing when HP decreases
 				OnReceiveDamage?.Invoke();
+				SetRegenerate(false);
 				_playerParam.SetIsDamage(true);
 			}
 			else
@@ -157,58 +136,38 @@ namespace Player.Hp
 				OnDeath?.Invoke();
 		}
 
-		#region OverLoad
-
-		public void AddDamage(int dmg)
-		{
-			if (_currentHp <= 0 || _playerParam.GetIsParry)
-			{
-				return;
-			}
-
-			if (_playerParam.GetIsAvoid && !_playerParam.GetIsJustAvoid)
-			{
-				_playerAvoid.OnAvoidSuccess.Invoke();
-			}
-
-			if (_playerParam.GetIsJustAvoid)
-			{
-				_playerAvoid.OnJustAvoidSuccess.Invoke(_playerParam.GetIncreaseValueOfJustAvoid);
-			}
-
-
-			//Received damage while invincible
-			if (_playerParam.GetIsDamage)
-			{
-				OnHitWhileInvulnerable?.Invoke();
-				return;
-			}
-
-			_currentHp -= dmg;
-			if (dmg > 0)
-			{
-				//Processing when HP decreases
-				OnReceiveDamage?.Invoke();
-				_playerParam.SetIsDamage(true);
-			}
-			else
-			{
-				//Processing when HP increases
-				OnReceiveHeal?.Invoke();
-			}
-
-			//at time of death
-			if (_currentHp <= 0)
-				OnDeath?.Invoke();
-		}
-
-		#endregion
-
 
 		public void Kill()
 		{
 			_currentHp = 0;
 			OnDeath?.Invoke();
 		}
+
+		void Regeneration()
+		{
+			//リジェネ
+			if (_isRegeneration && _initialHp > _currentHp)
+			{
+				_currentHp += _regenerationSpeed * Time.deltaTime;
+				OnRegeneration?.Invoke();
+			}
+			else if(_isRegeneration)
+			{
+				_currentHp = _initialHp;
+			}
+
+			//リジェネの待ち時間
+			if (_regenerationTimer > _regeneratWaitTime && _initialHp > _currentHp)
+			{
+				SetRegenerate(true);
+				_regenerationTimer = 0;
+			}
+			else
+			{
+				_regenerationTimer += Time.deltaTime;
+			}
+		}
+
+		void SetRegenerate(bool value) { _isRegeneration = value; }
 	}
 }

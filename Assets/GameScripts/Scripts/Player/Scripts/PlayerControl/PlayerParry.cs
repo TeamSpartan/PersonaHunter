@@ -30,6 +30,14 @@ namespace Player.Action
 			_zoneObj = GetComponent<ZoneObj>();
 		}
 
+		private void Update()
+		{
+			if (PlayerInputsAction.Instance.GetCurrentInputType == PlayerInputTypes.Parry && !_playerParam.GetIsAnimation)
+			{
+				Parried();
+			}
+		}
+
 		void Parried()
 		{
 			if (_playerParam.GetIsParry)

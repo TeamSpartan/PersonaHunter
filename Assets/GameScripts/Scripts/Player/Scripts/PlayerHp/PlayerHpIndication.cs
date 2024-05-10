@@ -1,4 +1,5 @@
 using DG.Tweening;
+using SgLibUnite.CodingBooster;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,14 +14,41 @@ namespace Player.Hp
 		[SerializeField] private Image burnImage;
 
 		private Tween _burnEffect;
+		private CBooster _cBooster;
 
 		private void Start()
 		{
 			healthImage.fillAmount = 1f;
 			burnImage.fillAmount = 1f;
+			_cBooster = new();
 			OnReceiveDamage += SetGauge;
+			OnRegeneration += SetRegenerate;
 			Initialization();
 			ResetDamage();
+		}
+		
+		private void OnTriggerEnter(Collider other)
+		{
+			NuweBrain nue = _cBooster.GetComponentInHierarchie<NuweBrain>(other.gameObject);
+			if (nue != null)
+			{
+				switch (nue.GetAttackType(other.transform))
+				{
+					case NuweBrain.NueAttackType.Claw:
+						AddDamage(nue.GetBaseDamage);
+						break;
+					case NuweBrain.NueAttackType.Rush :
+						AddDamage(nue.GetBaseDamage);
+						break;
+					case NuweBrain.NueAttackType.Tail:
+						AddDamage(nue.GetBaseDamage);
+						break;
+				}
+			}
+			else
+			{
+				Debug.Log("null");
+			}
 		}
 
 		public void SetGauge()
@@ -30,6 +58,13 @@ namespace Player.Hp
 			{
 				_burnEffect = burnImage.DOFillAmount(CurrentHp / InitialHp, _duration * 0.5f).SetDelay(_waitTime);
 			});
+		}
+
+		public void SetRegenerate()
+		{
+			Debug.Log(CurrentHp / InitialHp);
+			healthImage.fillAmount = CurrentHp / InitialHp;
+			burnImage.fillAmount = CurrentHp / InitialHp;
 		}
 	}
 }

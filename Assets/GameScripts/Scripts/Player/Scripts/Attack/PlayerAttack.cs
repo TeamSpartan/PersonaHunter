@@ -13,7 +13,7 @@ public class PlayerAttack : MonoBehaviour
 	private PlayerParam _playerParam;
 	[SerializeField, Range(0f, 10f)] private float _attackingRange;
 	
-	private LayerMask _enemyLayerMask;
+	[SerializeField, Header("敵のレイヤー")] LayerMask _enemyLayerMask;
 
 	private bool _isGiveDamage = false;
 
@@ -24,9 +24,9 @@ public class PlayerAttack : MonoBehaviour
 
 	private void Start()
 	{
-		_enemyLayerMask = 1 << LayerMask.NameToLayer("Enemy");
 		_animator = GetComponent<Animator>();
 		_playerParam = GetComponent<PlayerParam>();
+		OnAttackSuccess += ()=> Debug.Log("success");
 	}
 
 	private void Update()
@@ -47,7 +47,7 @@ public class PlayerAttack : MonoBehaviour
 
 	private void AttackToEnemy()
 	{
-		var condition = Physics.OverlapSphere(transform.position , _attackingRange, _enemyLayerMask);
+		var condition = Physics.OverlapSphere(transform.position+ Vector3.up , _attackingRange, _enemyLayerMask);
 		if (condition != null)
 		{
 			IDamagedComponent iDamaged = null;
@@ -55,15 +55,23 @@ public class PlayerAttack : MonoBehaviour
 			{
 				if (collider.GetComponent<IDamagedComponent>() != null)
 				{
-					Debug.DrawRay(transform.position + Vector3.up, Vector3.forward, Color.green);
+					Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.green);
 					collider.GetComponent<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk);
 					OnAttackSuccess?.Invoke();
 					_isGiveDamage = true;
+					Debug.Log("aaaaa");
 				}
 				else if (collider.GetComponentInChildren<IDamagedComponent>() != null)
 				{
-					Debug.DrawRay(transform.position + Vector3.up, Vector3.forward, Color.green);
+					Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.green);
 					collider.GetComponentInChildren<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk);
+					OnAttackSuccess?.Invoke();
+					_isGiveDamage = true;
+				}
+				else if (collider.GetComponentInParent<IDamagedComponent>() != null)
+				{
+					Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.green);
+					collider.GetComponentInParent<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk);
 					OnAttackSuccess?.Invoke();
 					_isGiveDamage = true;
 				}
@@ -71,8 +79,10 @@ public class PlayerAttack : MonoBehaviour
 		}
 		else
 		{
-			Debug.DrawRay(transform.position + Vector3.up, Vector3.forward, Color.red);
+			Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.red);
 		}
+		Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.red);
+		Debug.Log(condition.Length);
 	}
 
 	/// <summary>
