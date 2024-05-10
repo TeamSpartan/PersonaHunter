@@ -60,9 +60,12 @@ public class NuweBrain : MonoBehaviour
 
     /// <summary> ベースのダメージ量 </summary>
     public float GetBaseDamage => _baseDamage;
-    
+
     /// <summary> 体力を取得する </summary>
     public float GetHealthPoint => _healthPoint;
+ 
+/// <summary> 最大体力を取得する </summary>
+        public float GetMaxHP => _healthMaxValue;
 
     #endregion
 
