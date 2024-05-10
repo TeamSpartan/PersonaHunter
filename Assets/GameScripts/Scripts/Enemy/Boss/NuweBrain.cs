@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 /// ぬえの第一形態の機能を提供
 /// ver 3.3.1
 /// </summary>
-public class NueBrain : MonoBehaviour
+public class NuweBrain : MonoBehaviour
     , IMobBehaviourParameter
     , IInitializableComponent
     , IDulledTarget
@@ -60,6 +60,9 @@ public class NueBrain : MonoBehaviour
 
     /// <summary> ベースのダメージ量 </summary>
     public float GetBaseDamage => _baseDamage;
+    
+    /// <summary> 体力を取得する </summary>
+    public float GetHealthPoint => _healthPoint;
 
     #endregion
 
