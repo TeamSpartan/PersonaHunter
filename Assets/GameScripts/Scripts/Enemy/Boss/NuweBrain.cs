@@ -1,4 +1,3 @@
-using System;
 using SgLibUnite.BehaviourTree;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
@@ -56,16 +55,16 @@ public class NuweBrain : MonoBehaviour
     [SerializeField, Header("首の付け根 ボーン")] private Transform _neckRootBone;
     [SerializeField, Header("しっぽ ボーン")] private Transform _tailBone;
 
-    [SerializeField, Header("ベースの攻撃")] private float _baseDamage;
+    [SerializeField, Header("ベースのダメージ")] private float _baseDamage;
 
     /// <summary> ベースのダメージ量 </summary>
     public float GetBaseDamage => _baseDamage;
 
     /// <summary> 体力を取得する </summary>
     public float GetHealthPoint => _healthPoint;
- 
-/// <summary> 最大体力を取得する </summary>
-        public float GetMaxHP => _healthMaxValue;
+
+    /// <summary> 最大体力を取得する </summary>
+    public float GetMaxHP => _healthMaxValue;
 
     #endregion
 
