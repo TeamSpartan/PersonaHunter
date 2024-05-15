@@ -89,6 +89,8 @@ public class NuweJuvenile : MonoBehaviour
 
     private bool _dummyCond = false;
 
+    private bool _foundPlayerMotionPlayed;
+
     #endregion
 
     #region タイマー
@@ -157,19 +159,26 @@ public class NuweJuvenile : MonoBehaviour
     }
 
     /// <summary> Animation Event から 呼び出し </summary>
-    public void EndIntimidate()
+    public void NotifyPlayEndIntimidate()
     {
-        _anim.SetTrigger("EndIntimidate");
+        _tree.EndYieldBehaviourFrom(_currentYielded);
+        _tree.JumpTo(_think);
     }
 
-    public void NotifyEndAttackMotion()
+    public void NotifyEndPlayAttackMotion()
     {
         _tree.EndYieldBehaviourFrom(_attackToPlayer);
+        _tree.YieldAllBehaviourTo(_intimidate);
     }
 
-    public void NotifyEndSearching()
+    public void NotifyEndPlaySearching()
     {
         _tree.EndYieldBehaviourFrom(_search);
+    }
+
+    public void NotifyFoundPlayer()
+    {
+        _foundPlayerMotionPlayed = true;
     }
 
     public void InitializeThisComponent()
@@ -192,23 +201,26 @@ public class NuweJuvenile : MonoBehaviour
         _dummy.AddBehaviour(() => { });
 
         _think.AddBehaviour(Think);
+        _think.ETick += () => { Debug.Log("Tick Think"); };
 
         _patrol.AddBehaviour(Patrol);
         _patrol.EBegin += () => { _anim.SetTrigger("Walk"); };
-        _patrol.EEnd += ResetPath;
         _patrol.EBegin += FindPlayer;
+        _patrol.EEnd += ResetPath;
         _patrol.SetYieldMode(true);
 
         _search.AddBehaviour(Search);
         _search.EBegin += ResetPath;
         _search.EBegin += FindPlayer;
         _search.EBegin += () => { _anim.SetTrigger("Search"); };
+        _search.EEnd += ResetPath;
         _search.SetYieldMode(true);
 
         _gotoPlayer.AddBehaviour(GotoPlayer);
         _gotoPlayer.EBegin += () => { _anim.SetTrigger("Walk"); };
         _gotoPlayer.EBegin += ResetPath;
         _gotoPlayer.EBegin += FindPlayer;
+        _gotoPlayer.EEnd += ResetPath;
         _gotoPlayer.SetYieldMode(true);
 
         _intimidate.AddBehaviour(Intimidate);
@@ -266,24 +278,29 @@ public class NuweJuvenile : MonoBehaviour
         var playerIsForward = dotProduct > 0 && dotProduct > forwardRad;
         var playerIsSide = Mathf.Abs(dotProduct) < forwardRad;
 
+        _elapsedAwaitTime += Time.deltaTime;
+        
         if (!playerIsInRange)
         {
-            Debug.Log($"TRANSIT PATROL");
+            _tree.EndYieldBehaviourFrom(_currentYielded);
             _tree.YieldAllBehaviourTo(_patrol);
+        }
+        else if (!playerIsForward)
+        {
+            _tree.EndYieldBehaviourFrom(_currentYielded);
+            _tree.YieldAllBehaviourTo(_lookToPlayer);
         }
     }
 
     /// <summary> パトロールをする </summary>
     private void Patrol()
     {
-        Debug.Log($"PATROL");
         _currentYielded = _patrol;
 
         var dis = Vector3.Distance(Path[_patrolPathIndex], transform.position);
 
         if (dis < 1.5f)
         {
-            
             var rand = Random.Range(1, 11);
             if (rand <= 3)
             {
@@ -301,6 +318,14 @@ public class NuweJuvenile : MonoBehaviour
         {
             _agent.SetDestination(Path[_patrolPathIndex]);
         }
+
+        var playerIsInRange = Physics.CheckSphere(transform.position, _sightRange, _playerLayerMask);
+
+        if (playerIsInRange)
+        {
+            _tree.EndYieldBehaviourFrom(_patrol);
+            _tree.YieldAllBehaviourTo(_lookToPlayer);
+        }
     }
 
     /// <summary> プレイヤの捜索 </summary>
@@ -312,6 +337,7 @@ public class NuweJuvenile : MonoBehaviour
 
         if (isFound)
         {
+            _tree.EndYieldBehaviourFrom(_search);
             _tree.YieldAllBehaviourTo(_lookToPlayer);
         }
     }
@@ -320,6 +346,7 @@ public class NuweJuvenile : MonoBehaviour
     private void GotoPlayer()
     {
         _currentYielded = _gotoPlayer;
+        FindPlayer();
 
         if (!_agent.hasPath && _agent.destination != _player.position)
         {
@@ -327,10 +354,12 @@ public class NuweJuvenile : MonoBehaviour
         }
         else
         {
-            var d = Vector3.Distance(_agent.destination, _player.position);
-            if (d < 1.5f)
+            var playerIsInAttackRange = Physics.CheckSphere(transform.position, _attackRange, _playerLayerMask);
+            if (playerIsInAttackRange)
             {
-                _agent.ResetPath();
+                Debug.Log("Jump To Attack"); 
+                _tree.EndYieldBehaviourFrom(_gotoPlayer);
+                _tree.YieldAllBehaviourTo(_attackToPlayer);
             }
         }
     }
@@ -346,6 +375,13 @@ public class NuweJuvenile : MonoBehaviour
         {
             _elapsedAwaitTime = 0;
             _anim.SetTrigger("EndIntimidate");
+            
+            var playerIsInAttackRange = Physics.CheckSphere(transform.position, _attackRange, _playerLayerMask);
+            if (playerIsInAttackRange)
+            {
+                _tree.EndYieldBehaviourFrom(_intimidate);
+                _tree.YieldAllBehaviourTo(_attackToPlayer);
+            }
         }
     }
 
@@ -353,6 +389,7 @@ public class NuweJuvenile : MonoBehaviour
     private void AttackToPlayer()
     {
         _currentYielded = _attackToPlayer;
+        Debug.Log("attack");
     }
 
     /// <summary> プレイヤを向く </summary>
@@ -367,9 +404,11 @@ public class NuweJuvenile : MonoBehaviour
         var forwardRadian = Mathf.Cos(90f / 4f * Mathf.Deg2Rad);
         var playerIsForward = dot > 0 && dot > forwardRadian;
 
-        if (playerIsForward)
+        if (playerIsForward && _foundPlayerMotionPlayed)
         {
             _tree.EndYieldBehaviourFrom(_lookToPlayer);
+            _tree.YieldAllBehaviourTo(_gotoPlayer);
+            _foundPlayerMotionPlayed = false;
         }
     }
 

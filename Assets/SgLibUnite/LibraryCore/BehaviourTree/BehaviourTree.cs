@@ -188,7 +188,7 @@ namespace SgLibUnite.BehaviourTree
                         _currentTransitionName = transition.Name;
                     }
                 }
-                else /* if (transition.Name == name) */
+                else
                 {
                     _currentBehaviour.Tick();
                 }
