@@ -167,6 +167,11 @@ public class NuweJuvenile : MonoBehaviour
         _tree.EndYieldBehaviourFrom(_attackToPlayer);
     }
 
+    public void NotifyEndSearching()
+    {
+        _tree.EndYieldBehaviourFrom(_search);
+    }
+
     public void InitializeThisComponent()
     {
         SetupComponent();
@@ -222,16 +227,20 @@ public class NuweJuvenile : MonoBehaviour
         _death.AddBehaviour(Death);
         _death.SetYieldMode(true);
 
-        _tree.ResistBehaviours(new[]
+        BTBehaviour[] behaviours = new[]
         {
             _think,
             _dummy,
-            _lookToPlayer,
-            _death,
-            _intimidate,
             _patrol,
             _search,
-        });
+            _gotoPlayer,
+            _intimidate,
+            _attackToPlayer,
+            _lookToPlayer,
+            _death
+        };
+
+        _tree.ResistBehaviours(behaviours);
     }
 
     private void SetupTransitions()
@@ -274,11 +283,24 @@ public class NuweJuvenile : MonoBehaviour
 
         if (dis < 1.5f)
         {
-            _patrolPathIndex = _patrolPathIndex + 1 < Path.Count ? _patrolPathIndex + 1 : 0;
+            
+            var rand = Random.Range(1, 11);
+            if (rand <= 3)
+            {
+                _tree.YieldAllBehaviourTo(_search);
+            }
+            else
+            {
+                _patrolPathIndex = _patrolPathIndex + 1 < Path.Count ? _patrolPathIndex + 1 : 0;
+                _agent.SetDestination(Path[_patrolPathIndex]);
+            }
+
+            Random.InitState(Random.Range(0, 256));
+        }
+        else if (_agent.destination != Path[_patrolPathIndex])
+        {
             _agent.SetDestination(Path[_patrolPathIndex]);
         }
-
-        _agent.SetDestination(Path[_patrolPathIndex]);
     }
 
     /// <summary> プレイヤの捜索 </summary>
