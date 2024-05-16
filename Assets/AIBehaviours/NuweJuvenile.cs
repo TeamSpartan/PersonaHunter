@@ -4,7 +4,6 @@ using SgLibUnite.AI;
 using UnityEngine;
 using SgLibUnite.BehaviourTree;
 using SgLibUnite.CodingBooster;
-using TMPro;
 using UnityEngine.AI;
 
 /// <summary>
@@ -33,6 +32,7 @@ public class NuweJuvenile : MonoBehaviour
     [SerializeField, Header("ベースの移動速度")] private float _baseMoveSpeed;
     [SerializeField, Header("ベースのダメージ")] private float _baseDamage;
     [SerializeField, Header("探索時間]")] private float _searchingTime;
+    [SerializeField, Header("威嚇時間]")] private float _intimidateTime;
 
     #endregion
 
@@ -72,12 +72,6 @@ public class NuweJuvenile : MonoBehaviour
 
     #region コンディション
 
-    private bool _condPlayerNotFound = false;
-
-    private bool _condSearchPlayer = false;
-
-    private bool _foundPlayerMotionPlayed;
-
     #endregion
 
     #region タイマー
@@ -85,6 +79,8 @@ public class NuweJuvenile : MonoBehaviour
     private float _elapsedAwaitTime;
 
     private float _elapsedSearchingTime;
+
+    private float _elapsedIntimidateTime;
 
     #endregion
 
@@ -168,21 +164,27 @@ public class NuweJuvenile : MonoBehaviour
         _patrol.AddBehaviour(Patrol);
         _patrol.EBegin += () => Debug.Log($"entry-patrol");
         _patrol.EEnd += () => Debug.Log($"exit-patrol");
+        _patrol.EBegin += () => { _anim.SetTrigger("Walk"); };
         _patrol.SetYieldMode(true);
 
         _search.AddBehaviour(Search);
         _search.EBegin += () => Debug.Log($"entry-search");
         _search.EEnd += () => Debug.Log($"exit-search");
+        _search.EBegin += () => { _anim.SetTrigger("Search"); };
         _search.SetYieldMode(true);
 
         _gotoPlayer.AddBehaviour(GotoPlayer);
         _gotoPlayer.EBegin += () => Debug.Log($"entry-goto player");
         _gotoPlayer.EEnd += () => Debug.Log($"exit-goto player");
+        _gotoPlayer.EBegin += () => { _anim.SetTrigger("Walk"); };
+        _gotoPlayer.EEnd += () => { _anim.ResetTrigger("Walk"); };
+        _gotoPlayer.EEnd += ResetPath;
         _gotoPlayer.SetYieldMode(true);
 
         _intimidate.AddBehaviour(Intimidate);
         _intimidate.EBegin += () => Debug.Log($"entry-inimidate");
         _intimidate.EEnd += () => Debug.Log($"exit-inimidate");
+        _intimidate.EBegin += () => { _anim.SetTrigger("StartIntimidate"); };
         _intimidate.SetYieldMode(true);
 
         _lookToPlayer.AddBehaviour(LookPlayer);
@@ -193,11 +195,13 @@ public class NuweJuvenile : MonoBehaviour
         _attackToPlayer.AddBehaviour(AttackToPlayer);
         _attackToPlayer.EBegin += () => Debug.Log($"entry-attacktkoplayer");
         _attackToPlayer.EEnd += () => Debug.Log($"exit-attacktkoplayer");
+        _attackToPlayer.EBegin += () => { _anim.SetTrigger("Pounce"); };
         _attackToPlayer.SetYieldMode(true);
 
         _death.AddBehaviour(Death);
         _death.EBegin += () => Debug.Log($"entry-death");
         _death.EEnd += () => Debug.Log($"exit-death");
+        _death.EBegin += () => { _anim.SetTrigger("Death"); };
         _death.SetYieldMode(true);
 
         BTBehaviour[] behaviours = new[]
@@ -221,6 +225,12 @@ public class NuweJuvenile : MonoBehaviour
     /// <summary> プレイヤのトランスフォームを取得 </summary>
     private void FindPlayer() => _player = GameObject.FindWithTag("Player").transform;
 
+    public void NotifyToBackThink()
+    {
+        _tree.EndYieldBehaviourFrom(_currentYielded);
+        _tree.YieldAllBehaviourTo(_think);
+    }
+
     /// <summary> 思考 </summary>
     private void Think()
     {
@@ -233,6 +243,7 @@ public class NuweJuvenile : MonoBehaviour
         var playerIsForward = dot > 0 && dot > forwardRadian;
         var playerIsSide = Mathf.Abs(dot) < forwardRadian;
         var playerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayerMask);
+        var inRange = Physics.CheckSphere(transform.position, _attackRange, _playerLayerMask);
 
         if (_elapsedAwaitTime > _awaitingTime)
         {
@@ -321,6 +332,7 @@ public class NuweJuvenile : MonoBehaviour
         }
         else if (_elapsedSearchingTime > _searchingTime)
         {
+            _elapsedSearchingTime = 0;
             _tree.EndYieldBehaviourFrom(_currentYielded);
             _tree.YieldAllBehaviourTo(_think);
         }
@@ -347,7 +359,7 @@ public class NuweJuvenile : MonoBehaviour
         {
             var rand = Random.Range(1, 11);
 
-            if (rand <= 4)
+            if (rand++ <= 9)
             {
                 _tree.EndYieldBehaviourFrom(_currentYielded);
                 _tree.YieldAllBehaviourTo(_attackToPlayer);
@@ -365,6 +377,8 @@ public class NuweJuvenile : MonoBehaviour
     {
         _currentYielded = _intimidate;
 
+        _elapsedIntimidateTime += Time.deltaTime;
+
         var isInRange = Physics.CheckSphere(transform.position, _attackRange, _playerLayerMask);
         var playerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayerMask);
 
@@ -374,12 +388,12 @@ public class NuweJuvenile : MonoBehaviour
             _tree.YieldAllBehaviourTo(_think);
         }
 
-        var rand = Random.Range(1, 11);
-
-        if (isInRange && rand <= 3)
+        if (_elapsedIntimidateTime > _intimidateTime)
         {
+            _elapsedIntimidateTime = 0;
+            _anim.SetTrigger("EndIntimidate");
             _tree.EndYieldBehaviourFrom(_currentYielded);
-            _tree.YieldAllBehaviourTo(_attackToPlayer);
+            _tree.YieldAllBehaviourTo(_think);
         }
     }
 
