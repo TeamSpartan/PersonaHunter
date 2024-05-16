@@ -2219,14 +2219,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _patrolPath: {fileID: 1954013908}
   _maxHealthPoint: 100
-  _awaitingTime: 5
-  _sightRange: 8.31
+  _awaitingTime: 2
+  _sightRange: 10
   _attackRange: 4.49
   _playerLayerMask:
     serializedVersion: 2
     m_Bits: 64
   _baseMoveSpeed: 4
   _baseDamage: 0.5
+  _searchingTime: 3
 --- !u!1 &521071509
 GameObject:
   m_ObjectHideFlags: 0

@@ -32,6 +32,7 @@ public class NuweJuvenile : MonoBehaviour
     [SerializeField, Header("プレイヤのレイヤー")] private LayerMask _playerLayerMask;
     [SerializeField, Header("ベースの移動速度")] private float _baseMoveSpeed;
     [SerializeField, Header("ベースのダメージ")] private float _baseDamage;
+    [SerializeField, Header("探索時間]")] private float _searchingTime;
 
     #endregion
 
@@ -82,6 +83,8 @@ public class NuweJuvenile : MonoBehaviour
     #region タイマー
 
     private float _elapsedAwaitTime;
+
+    private float _elapsedSearchingTime;
 
     #endregion
 
@@ -290,7 +293,8 @@ public class NuweJuvenile : MonoBehaviour
             var rand = Random.Range(1, 11);
             if (rand <= 3)
             {
-                _condSearchPlayer = true;
+                _tree.EndYieldBehaviourFrom(_currentYielded);
+                _tree.YieldAllBehaviourTo(_search);
             }
             else
             {
@@ -312,6 +316,8 @@ public class NuweJuvenile : MonoBehaviour
     {
         _currentYielded = _search;
 
+        _elapsedSearchingTime += Time.deltaTime;
+
         var playerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayerMask);
 
         if (playerFound)
@@ -319,24 +325,83 @@ public class NuweJuvenile : MonoBehaviour
             _tree.EndYieldBehaviourFrom(_currentYielded);
             _tree.YieldAllBehaviourTo(_gotoPlayer);
         }
+        else if (_elapsedSearchingTime > _searchingTime)
+        {
+            _tree.EndYieldBehaviourFrom(_currentYielded);
+            _tree.YieldAllBehaviourTo(_think);
+        }
     }
 
     /// <summary> プレイヤへ向かう </summary>
     private void GotoPlayer()
     {
         _currentYielded = _gotoPlayer;
+
+        FindPlayer();
+        _agent.SetDestination(_player.position);
+
+        var isInRange = Physics.CheckSphere(transform.position, _attackRange, _playerLayerMask);
+        var playerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayerMask);
+
+        if (!playerFound)
+        {
+            _tree.EndYieldBehaviourFrom(_currentYielded);
+            _tree.YieldAllBehaviourTo(_think);
+        }
+
+        if (isInRange)
+        {
+            var rand = Random.Range(1, 11);
+
+            if (rand <= 4)
+            {
+                _tree.EndYieldBehaviourFrom(_currentYielded);
+                _tree.YieldAllBehaviourTo(_attackToPlayer);
+            }
+            else
+            {
+                _tree.EndYieldBehaviourFrom(_currentYielded);
+                _tree.YieldAllBehaviourTo(_intimidate);
+            }
+        }
     }
 
     /// <summary> 威嚇する </summary>
     private void Intimidate()
     {
         _currentYielded = _intimidate;
+
+        var isInRange = Physics.CheckSphere(transform.position, _attackRange, _playerLayerMask);
+        var playerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayerMask);
+
+        if (!playerFound)
+        {
+            _tree.EndYieldBehaviourFrom(_currentYielded);
+            _tree.YieldAllBehaviourTo(_think);
+        }
+
+        var rand = Random.Range(1, 11);
+
+        if (isInRange && rand <= 3)
+        {
+            _tree.EndYieldBehaviourFrom(_currentYielded);
+            _tree.YieldAllBehaviourTo(_attackToPlayer);
+        }
     }
 
     /// <summary> プレイヤーを攻撃する </summary>
     private void AttackToPlayer()
     {
         _currentYielded = _attackToPlayer;
+
+        var isInRange = Physics.CheckSphere(transform.position, _attackRange, _playerLayerMask);
+        var playerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayerMask);
+
+        if (!playerFound)
+        {
+            _tree.EndYieldBehaviourFrom(_currentYielded);
+            _tree.YieldAllBehaviourTo(_think);
+        }
     }
 
     /// <summary> プレイヤを向く </summary>
