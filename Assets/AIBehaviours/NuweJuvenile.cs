@@ -240,19 +240,13 @@ public class NuweJuvenile : MonoBehaviour
             {
                 if (playerIsForward)
                 {
-                    if (_tree.CurrentYieldedEvent != _gotoPlayer)
-                    {
-                        _tree.EndYieldBehaviourFrom(_currentYielded);
-                        _tree.YieldAllBehaviourTo(_gotoPlayer);
-                    }
+                    _tree.EndYieldBehaviourFrom(_currentYielded);
+                    _tree.YieldAllBehaviourTo(_gotoPlayer);
                 }
                 else
                 {
-                    if (_tree.CurrentYieldedEvent != _lookToPlayer)
-                    {
-                        _tree.EndYieldBehaviourFrom(_currentYielded);
-                        _tree.YieldAllBehaviourTo(_lookToPlayer);
-                    }
+                    _tree.EndYieldBehaviourFrom(_currentYielded);
+                    _tree.YieldAllBehaviourTo(_lookToPlayer);
                 }
             }
             else
@@ -394,7 +388,6 @@ public class NuweJuvenile : MonoBehaviour
     {
         _currentYielded = _attackToPlayer;
 
-        var isInRange = Physics.CheckSphere(transform.position, _attackRange, _playerLayerMask);
         var playerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayerMask);
 
         if (!playerFound)
