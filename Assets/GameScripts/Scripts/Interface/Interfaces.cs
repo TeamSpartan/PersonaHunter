@@ -179,3 +179,9 @@ public interface IAbleToParry
 {
     public bool NotifyPlayerIsGuarding();
 }
+
+/// <summary> 当たり判定にて重なり合わせの判定範囲内にこのインターフェースを継承しているコンポーネントを検知したらここのメソッドを呼び出す </summary>
+public interface ICollisionOverLappable
+{
+    public void NotifyOverlap(Transform other);
+}

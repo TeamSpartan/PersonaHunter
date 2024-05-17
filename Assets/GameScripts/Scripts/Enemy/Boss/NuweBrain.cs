@@ -61,9 +61,10 @@ public class NuweBrain : MonoBehaviour
     [SerializeField, Header("オフセット")] private Vector3 _rushAtkColOffset;
 
     [SerializeField, Header("しっぽ ボーン")] private Transform _tailBone;
-    [SerializeField, Header("レイ：始点")] private Transform _tailRayStartPnt;
-    [SerializeField, Header("レイ：終点")] private Transform _tailRayEndPnt;
-    
+    [SerializeField, Header("半径")] private float _tailAtkColDetectRad;
+    [SerializeField, Header("始点")] private Transform _tailRayStartPnt;
+    [SerializeField, Header("終点")] private Transform _tailRayEndPnt;
+
 
     [SerializeField, Header("ベースのダメージ")] private float _baseDamage;
 
@@ -194,10 +195,10 @@ public class NuweBrain : MonoBehaviour
 
     /// <summary> しっぽ攻撃時の当たり判定中かのフラグ </summary>
     private bool _isCheckingTailColDetection;
-    
+
     /// <summary> ひっかき攻撃時の当たり判定中かのフラグ </summary>
     private bool _isCheckingClawColDetection;
-    
+
     /// <summary> 突進攻撃時の当たり判定中かのフラグ </summary>
     private bool _isCheckingRushColDetection;
 
@@ -252,7 +253,12 @@ public class NuweBrain : MonoBehaviour
         Gizmos.color = Color.gray;
         Gizmos.DrawSphere(_neckRootBone.position + _rushAtkColOffset, _rushAtkColDetectRad);
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(_tailRayStartPnt.position, _tailRayEndPnt.position);
+        var len = _tailRayEndPnt.position - _tailRayStartPnt.position;
+        len /= 5;
+        for (int i = 1; i < 6; ++i)
+        {
+            Gizmos.DrawSphere(_tailBone.position + (i * len), _tailAtkColDetectRad);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -308,31 +314,37 @@ public class NuweBrain : MonoBehaviour
 
     public void EnableClawCollider()
     {
+        _rightWristBone.GetComponent<Collider>().enabled = true;
         _isCheckingClawColDetection = true;
     }
 
     public void DisableClawCollider()
     {
+        _rightWristBone.GetComponent<Collider>().enabled = false;
         _isCheckingClawColDetection = false;
     }
 
     public void EnableRushCollider()
     {
+        _neckRootBone.GetComponent<Collider>().enabled = true;
         _isCheckingRushColDetection = true;
     }
 
     public void DisableRushCollider()
     {
+        _neckRootBone.GetComponent<Collider>().enabled = false;
         _isCheckingRushColDetection = false;
     }
 
     public void EnableTailCollider()
     {
+        _tailBone.GetComponent<Collider>().enabled = true;
         _isCheckingTailColDetection = true;
     }
 
     public void DisableTailCollider()
     {
+        _tailBone.GetComponent<Collider>().enabled = false;
         _isCheckingTailColDetection = false;
     }
 
@@ -622,6 +634,20 @@ public class NuweBrain : MonoBehaviour
     {
         _currentYielded = _rush;
 
+        // 
+        if (_isCheckingRushColDetection)
+        {
+            _player = PlayerPR;
+            if (Physics.CheckSphere(_neckRootBone.position + _rushAtkColOffset, _rushAtkColDetectRad, _playerLayers))
+            {
+                if (_player.GetComponent<ICollisionOverLappable>() != null)
+                {
+                    _player.GetComponent<ICollisionOverLappable>().NotifyOverlap(transform);
+                }
+            }
+        }
+        //
+
         if (_agent.destination != _player.position && !_agent.hasPath)
         {
             _agent.speed = _baseMoveSpeed * 3f;
@@ -642,6 +668,20 @@ public class NuweBrain : MonoBehaviour
     {
         _currentYielded = _tail;
 
+        //
+        if (_isCheckingTailColDetection)
+        {
+            _player = PlayerPR;
+            if (Physics.CheckCapsule(_tailRayStartPnt.position, _tailRayEndPnt.position, _tailAtkColDetectRad, _playerLayers))
+            {
+                if (_player.GetComponent<ICollisionOverLappable>() != null)
+                {
+                    _player.GetComponent<ICollisionOverLappable>().NotifyOverlap(transform);
+                }
+            }
+        }
+        //
+
         if (_agent.destination != transform.position && !_agent.hasPath)
         {
             _agent.SetDestination(transform.position);
@@ -651,6 +691,20 @@ public class NuweBrain : MonoBehaviour
     private void Claw()
     {
         _currentYielded = _claw;
+
+        //
+        if (_isCheckingClawColDetection)
+        {
+            _player = PlayerPR;
+            if (Physics.CheckSphere(_rightWristBone.position + _clawAtkColOffset, _clawAtkColDetectRad, _playerLayers))
+            {
+                if (_player.GetComponent<ICollisionOverLappable>() != null)
+                {
+                    _player.GetComponent<ICollisionOverLappable>().NotifyOverlap(transform);
+                }
+            }
+        }
+        //
 
         if (_agent.destination != transform.position && !_agent.hasPath)
         {
