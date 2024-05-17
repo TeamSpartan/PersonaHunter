@@ -178,6 +178,8 @@ public interface IAudioPlayOption
 public interface IAbleToParry
 {
     public bool NotifyPlayerIsGuarding();
+
+    public void ParrySuccess();
 }
 
 /// <summary> 当たり判定にて重なり合わせの判定範囲内にこのインターフェースを継承しているコンポーネントを検知したらここのメソッドを呼び出す </summary>

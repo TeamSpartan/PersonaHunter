@@ -34,6 +34,8 @@ public class NuweJuvenile : MonoBehaviour
     [SerializeField, Header("探索時間]")] private float _searchingTime;
     [SerializeField, Header("威嚇時間]")] private float _intimidateTime;
 
+    [SerializeField, Header("首のボーン")] private Transform _neckBone;
+
     #endregion
 
     #region 内部パラメータ
@@ -135,6 +137,16 @@ public class NuweJuvenile : MonoBehaviour
     }
 
     /// <summary> Animation Event から 呼び出し </summary>
+    public void EnableAttackCollider()
+    {
+        _neckBone.GetComponent<Collider>().enabled = true;
+    }
+
+    public void DisableAttackCollider()
+    {
+        _neckBone.GetComponent<Collider>().enabled = false;
+    }
+    
     public void InitializeThisComponent()
     {
         SetupComponent();

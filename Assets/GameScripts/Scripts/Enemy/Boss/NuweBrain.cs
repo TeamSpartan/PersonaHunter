@@ -332,13 +332,13 @@ public class NuweBrain : MonoBehaviour
         return this.transform;
     }
 
-    /// <summary> AnimationEventから呼び出す </summary>
     public void CheckPlayerIsGuarding(Collider other)
     {
         if (other.GetComponent<IAbleToParry>() != null)
         {
             if (other.GetComponent<IAbleToParry>().NotifyPlayerIsGuarding())
             {
+                other.GetComponent<IAbleToParry>().ParrySuccess();
                 GetParry();
             }
         }
