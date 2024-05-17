@@ -51,7 +51,7 @@ namespace Player.Action
 		}
 
 		//パリィの成功
-		void ParrySuccess()
+		public void ParrySuccess()
 		{
 			_zoneObj.IncreaseGaugeValue(_playerParam.GetGiveValueOfParry);
 		}
