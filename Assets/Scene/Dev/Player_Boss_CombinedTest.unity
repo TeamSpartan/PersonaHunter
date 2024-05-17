@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2153.9036, g: 2258.7034, b: 3283.4536, a: 1}
+  m_IndirectSpecularColor: {r: 2157.3088, g: 2261.1467, b: 3283.774, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -295,6 +295,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _attackingRange
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7903695708142354888, guid: e4f65e3960720324d833d92f853fc65d,
+        type: 3}
+      propertyPath: _enemyLayerMask.m_Bits
+      value: 512
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -864,6 +869,76 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _orientation
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _awaitingTime
+      value: 2.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _tailRayEndPnt
+      value: 
+      objectReference: {fileID: 903119296}
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _tailRayStartPnt
+      value: 
+      objectReference: {fileID: 903119297}
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _clawAtkColOffset.x
+      value: 0.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _clawAtkColOffset.y
+      value: -0.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _clawAtkColOffset.z
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _rushAtkColOffset.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _rushAtkColOffset.z
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _clawAtkColDetectRad
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _clawAtkColDitectRad
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _rushAtkColDetectRad
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _tailAtkColDetectRad
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251680272334625637, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+        type: 3}
+      propertyPath: _tailAtkColDetectHeight
+      value: 5.46
+      objectReference: {fileID: 0}
     - target: {fileID: 6027365512163713768, guid: 49f446b6fc01b0c4ca8d1059499809d0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -924,6 +999,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49f446b6fc01b0c4ca8d1059499809d0, type: 3}
+--- !u!4 &903119296 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7783768599627502197, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 903119295}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &903119297 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7415687966524905608, guid: 49f446b6fc01b0c4ca8d1059499809d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 903119295}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1628146132
 PrefabInstance:
   m_ObjectHideFlags: 0
