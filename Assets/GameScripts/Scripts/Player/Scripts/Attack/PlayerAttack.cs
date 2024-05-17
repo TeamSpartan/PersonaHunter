@@ -4,7 +4,7 @@ using Player.Input;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
 
-public class PlayerAttack : MonoBehaviour
+public class PlayerAttack : MonoBehaviour, IInitializableComponent
 {
 	//右側からの攻撃なら１、左側からの攻撃なら２
 	private int _currentName; //モーション名
@@ -17,16 +17,10 @@ public class PlayerAttack : MonoBehaviour
 
 	private bool _isGiveDamage = false;
 
-	public event System.Action OnAttackStart,
-		OnAttackSuccess,
-		OnEndAttack,
-		OnDuringAttack;
-
 	private void Start()
 	{
 		_animator = GetComponent<Animator>();
 		_playerParam = GetComponent<PlayerParam>();
-		OnAttackSuccess += ()=> Debug.Log("success");
 	}
 
 	private void Update()
@@ -57,22 +51,18 @@ public class PlayerAttack : MonoBehaviour
 				{
 					Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.green);
 					collider.GetComponent<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk);
-					OnAttackSuccess?.Invoke();
 					_isGiveDamage = true;
-					Debug.Log("aaaaa");
 				}
 				else if (collider.GetComponentInChildren<IDamagedComponent>() != null)
 				{
 					Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.green);
 					collider.GetComponentInChildren<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk);
-					OnAttackSuccess?.Invoke();
 					_isGiveDamage = true;
 				}
 				else if (collider.GetComponentInParent<IDamagedComponent>() != null)
 				{
 					Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.green);
 					collider.GetComponentInParent<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk);
-					OnAttackSuccess?.Invoke();
 					_isGiveDamage = true;
 				}
 			}
@@ -81,8 +71,6 @@ public class PlayerAttack : MonoBehaviour
 		{
 			Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.red);
 		}
-		Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.red);
-		Debug.Log(condition.Length);
 	}
 
 	/// <summary>
@@ -119,12 +107,10 @@ public class PlayerAttack : MonoBehaviour
 	{
 		if (_playerParam.GetIsAttack)
 		{
-			OnDuringAttack?.Invoke();
 			return;
 		}
 
 		_playerParam.SetIsAttack(true);
-		OnAttackStart?.Invoke();
 	}
 
 	public void EndAttack()
@@ -133,8 +119,6 @@ public class PlayerAttack : MonoBehaviour
 		{
 			return;
 		}
-
-		OnEndAttack?.Invoke();
 		_playerParam.SetIsAttack(false);
 		_isGiveDamage = false;
 	}
@@ -160,5 +144,25 @@ public class PlayerAttack : MonoBehaviour
 	private void OnDrawGizmos()
 	{
 		Gizmos.DrawWireSphere(transform.position, _attackingRange);
+	}
+
+	public void InitializeThisComponent()
+	{
+		
+	}
+
+	public void FixedTickThisComponent()
+	{
+		throw new NotImplementedException();
+	}
+
+	public void TickThisComponent()
+	{
+		throw new NotImplementedException();
+	}
+
+	public void FinalizeThisComponent()
+	{
+		throw new NotImplementedException();
 	}
 }
