@@ -12,10 +12,7 @@ namespace Player.Action
 	///<summary>プレイヤーのパリー</summary>
 	public class PlayerParry : MonoBehaviour, IAbleToParry, IInitializableComponent
 	{
-		public event System.Action OnParryStart,
-			OnParrySuccess,
-			OnEndParry,
-			OnDuringParry;
+		[SerializeField] private ParticleSystem _parry;
 
 		private int _parryID = Animator.StringToHash("IsParry");
 		private PlayerParam _playerParam;
@@ -27,7 +24,7 @@ namespace Player.Action
 		{
 			_playerParam = GetComponentInParent<PlayerParam>();
 			_animator = GetComponentInParent<Animator>();
-			_zoneObj = GetComponent<ZoneObj>();
+			_zoneObj = GetComponentInChildren<ZoneObj>();
 		}
 
 		private void Update()
@@ -42,7 +39,6 @@ namespace Player.Action
 		{
 			if (_playerParam.GetIsParry)
 			{
-				OnDuringParry?.Invoke();
 				return;
 			}
 
@@ -54,6 +50,7 @@ namespace Player.Action
 		public void ParrySuccess()
 		{
 			_zoneObj.IncreaseGaugeValue(_playerParam.GetGiveValueOfParry);
+			_parry.Play();
 		}
 
 		///<summary>アニメーションイベントで呼び出す用</summary>------------------------------------------------------------------
@@ -61,12 +58,10 @@ namespace Player.Action
 		{
 			if (_playerParam.GetIsParry)
 			{
-				OnDuringParry?.Invoke();
 				return;
 			}
 			
 			_playerParam.SetIsParry(true);
-			OnParryStart?.Invoke();
 		}
 
 		public void EndParry()
@@ -76,7 +71,6 @@ namespace Player.Action
 				return;
 			}
 			
-			OnEndParry?.Invoke();
 			_playerParam.SetIsParry(false);
 		}
 

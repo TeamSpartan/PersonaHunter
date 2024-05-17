@@ -52,30 +52,7 @@ namespace Player.Action
 		private PlayerParam _playerParam;
 		private PlayerCameraBrain _playerCamera;
 		private DOTween _doTween;
-
-
-		void Start()
-		{
-			_rb = GetComponent<Rigidbody>();
-			_animator = GetComponentInChildren<Animator>();
-			_playerParam = GetComponent<PlayerParam>();
-			_playerCamera = FindObjectOfType<PlayerCameraBrain>();
-		}
-
-		private void FixedUpdate()
-		{
-			if (!_playerParam.GetIsAnimation)
-			{
-				OnMove(PlayerInputsAction.Instance.GetMoveInput);
-				PlayerRotate(PlayerInputsAction.Instance.GetMoveInput);
-			}
-			else
-			{
-				_dir = Vector3.zero;
-				_targetRotation = this.transform.rotation;
-			}
-		}
-
+		
 		/// <summary>プレイヤーの移動処理のメソッド </summary>
 		private void OnMove(Vector2 inputValue)
 		{
@@ -105,19 +82,12 @@ namespace Player.Action
 		///<summary>プレイヤーの向き</summary>
 		void PlayerRotate(Vector2 inputValue)
 		{
-			// if (_playerCamera.LockingOn)
-			// {
-			//transform.LookAt(_playerCamera.CurrentLockingOnTarget);
-			// }
-			// else
-			// {
 
 			if (_dir.magnitude > 0)
 			{
 			}
 
 			transform.forward += Vector3.Lerp(transform.forward, _dir, Time.deltaTime * rotateSpeed);
-			//}
 		}
 
 		/// <summary>プレイヤーの接地判定を判定するメソッド </summary>
@@ -172,11 +142,24 @@ namespace Player.Action
 
 		public void InitializeThisComponent()
 		{
+			_rb = GetComponent<Rigidbody>();
+			_animator = GetComponentInChildren<Animator>();
+			_playerParam = GetComponent<PlayerParam>();
+			_playerCamera = FindObjectOfType<PlayerCameraBrain>();
 		}
 
 		public void FixedTickThisComponent()
 		{
-			//throw new NotImplementedException();
+			if (!_playerParam.GetIsAnimation)
+			{
+				OnMove(PlayerInputsAction.Instance.GetMoveInput);
+				PlayerRotate(PlayerInputsAction.Instance.GetMoveInput);
+			}
+			else
+			{
+				_dir = Vector3.zero;
+				_targetRotation = this.transform.rotation;
+			}
 		}
 
 		public void TickThisComponent()

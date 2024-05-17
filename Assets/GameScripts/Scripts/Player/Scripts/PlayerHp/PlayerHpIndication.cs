@@ -26,10 +26,12 @@ namespace Player.Hp
 			Initialization();
 			ResetDamage();
 		}
-		
+
 		private void OnTriggerEnter(Collider other)
 		{
-			NuweBrain nue = _cBooster.GetComponentInHierarchie<NuweBrain>(other.gameObject);
+			NuweBrain nue = other.GetComponentInParent<NuweBrain>();
+			NuweJuvenile mob = other.GetComponentInParent<NuweJuvenile>();
+			
 			if (nue != null)
 			{
 				switch (nue.GetAttackType(other.transform))
@@ -37,7 +39,7 @@ namespace Player.Hp
 					case NuweBrain.NueAttackType.Claw:
 						AddDamage(nue.GetBaseDamage);
 						break;
-					case NuweBrain.NueAttackType.Rush :
+					case NuweBrain.NueAttackType.Rush:
 						AddDamage(nue.GetBaseDamage);
 						break;
 					case NuweBrain.NueAttackType.Tail:
@@ -48,6 +50,11 @@ namespace Player.Hp
 			else
 			{
 				Debug.Log("null");
+			}
+
+			if (mob != null)
+			{
+				AddDamage(mob.GetBaseDamage);
 			}
 		}
 
@@ -62,7 +69,6 @@ namespace Player.Hp
 
 		public void SetRegenerate()
 		{
-			Debug.Log(CurrentHp / InitialHp);
 			healthImage.fillAmount = CurrentHp / InitialHp;
 			burnImage.fillAmount = CurrentHp / InitialHp;
 		}

@@ -1,4 +1,5 @@
-﻿using Player.Input;
+﻿using System;
+using Player.Input;
 using Player.Param;
 using UnityEngine;
 
@@ -7,17 +8,10 @@ namespace Player.Action
 	[RequireComponent(typeof(PlayerParam))]
 	[RequireComponent(typeof(Animator))]
 	///<summary>プレイヤーの回避</summary>
-	public class PlayerAvoid : MonoBehaviour
+	public class PlayerAvoid : MonoBehaviour, IInitializableComponent
 	{
 		
 		private int _avoidId = Animator.StringToHash("IsAvoid");
-
-		public event System.Action OnAvoidStart,
-			OnJustAvoidStart,
-			OnEvading,
-			OnJustEvading,
-			OnEndAvoid,
-			OnEndJustAvoid;
 
 
 		public System.Action OnAvoidSuccess;
@@ -31,24 +25,17 @@ namespace Player.Action
 		{
 			OnAvoidSuccess += () => Debug.Log("回避成功");
 			OnJustAvoidSuccess += _ => Debug.Log("ジャスト回避成功");
-			OnEvading += () => Debug.Log("回避中");
-			OnJustEvading += ()=> Debug.Log("ジャスト回避中");
 		}
 
 		private void Start()
 		{
 			_animator = GetComponent<Animator>();
 			_playerParam = GetComponent<PlayerParam>();
-			Initialization();
-		}
-
-		void Initialization()
-		{
-			
 		}
 
 		private void Update()
 		{
+			
 			if (PlayerInputsAction.Instance.GetCurrentInputType == PlayerInputTypes.Avoid && !_playerParam.GetIsAnimation)
 			{
 				Avoided();
@@ -59,7 +46,6 @@ namespace Player.Action
 		{
 			if (_playerParam.GetIsAvoid)
 			{
-				OnEvading?.Invoke();
 				return;
 			}
 
@@ -72,24 +58,20 @@ namespace Player.Action
 		{
 			if (_playerParam.GetIsAvoid)
 			{
-				OnEvading?.Invoke();
 				return;
 			}
 
 			_playerParam.SetIsAvoid(true);
-			OnAvoidStart?.Invoke();
 		}
 
 		public void JustAvoid()
 		{
 			if (_playerParam.GetIsJustAvoid)
 			{
-				OnJustEvading?.Invoke();
 				return;
 			}
 
 			_playerParam.SetIsJustAvoid(true);
-			OnJustAvoidStart?.Invoke();
 		}
 
 		public void EndAvoid()
@@ -99,7 +81,6 @@ namespace Player.Action
 				return;
 			}
 			
-			OnEndAvoid?.Invoke();
 			_playerParam.SetIsAvoid(false);
 			
 		}
@@ -111,7 +92,6 @@ namespace Player.Action
 				return;
 			}
 			
-			OnEndJustAvoid?.Invoke();
 			_playerParam.SetIsJustAvoid(false);
 		}
 
@@ -122,5 +102,23 @@ namespace Player.Action
 			PlayerInputsAction.Instance.EndAction();
 		}
 		//------------------------------------------------------------------------------------------------------------------------------------
+		public void InitializeThisComponent()
+		{
+			
+		}
+
+		public void FixedTickThisComponent()
+		{
+			//throw new System.NotImplementedException();
+		}
+
+		public void TickThisComponent()
+		{
+		}
+
+		public void FinalizeThisComponent()
+		{
+			//throw new System.NotImplementedException();
+		}
 	}
 }
