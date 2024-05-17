@@ -315,37 +315,49 @@ public class NuweBrain : MonoBehaviour
     public void EnableClawCollider()
     {
         _rightWristBone.GetComponent<Collider>().enabled = true;
+        //
         _isCheckingClawColDetection = true;
+        //
     }
 
     public void DisableClawCollider()
     {
         _rightWristBone.GetComponent<Collider>().enabled = false;
+        //
         _isCheckingClawColDetection = false;
+        //
     }
 
     public void EnableRushCollider()
     {
         _neckRootBone.GetComponent<Collider>().enabled = true;
+        //
         _isCheckingRushColDetection = true;
+        //
     }
 
     public void DisableRushCollider()
     {
         _neckRootBone.GetComponent<Collider>().enabled = false;
+        //
         _isCheckingRushColDetection = false;
+        //
     }
 
     public void EnableTailCollider()
     {
         _tailBone.GetComponent<Collider>().enabled = true;
+        //
         _isCheckingTailColDetection = true;
+        //
     }
 
     public void DisableTailCollider()
     {
         _tailBone.GetComponent<Collider>().enabled = false;
+        //
         _isCheckingTailColDetection = false;
+        //
     }
 
     public Transform GetLockableObjectTransform()
