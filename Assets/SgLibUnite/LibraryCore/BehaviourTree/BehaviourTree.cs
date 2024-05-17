@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using UnityEngine;
 
 namespace SgLibUnite.BehaviourTree
 {
@@ -189,7 +188,7 @@ namespace SgLibUnite.BehaviourTree
                         _currentTransitionName = transition.Name;
                     }
                 }
-                else /* if (transition.Name == name) */
+                else
                 {
                     _currentBehaviour.Tick();
                 }
@@ -216,12 +215,13 @@ namespace SgLibUnite.BehaviourTree
             }
         }
 
-        public void YeildAllBehaviourTo(BTBehaviour behaviour)
+        public void YieldAllBehaviourTo(BTBehaviour behaviour)
         {
             if (_btBehaviours.Contains(behaviour))
             {
                 _isYieldToEvent = true;
                 _yieldedBehaviourNow = behaviour;
+                _yieldedBehaviourNow.Begin();
             }
         }
 
@@ -230,6 +230,7 @@ namespace SgLibUnite.BehaviourTree
             if (_btBehaviours.Contains(behaviour))
             {
                 _isYieldToEvent = false;
+                _yieldedBehaviourNow.End();
             }
         }
 

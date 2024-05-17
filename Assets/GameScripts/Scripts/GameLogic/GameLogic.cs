@@ -1,6 +1,9 @@
+using System;
 using SgLibUnite.Singleton;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
+using UnityEngine.Rendering;
+using DG.Tweening;
 
 // 作成：菅沼
 /// <summary>
@@ -13,8 +16,22 @@ public class GameLogic
 
     private GameInfo _info;
 
+    public Action EParrySucceed { get; set; }
+
+    private Volume _volume;
+    private DifferenceOfGaussian _dog;
+
     // コーディング ブースタ クラス
     CBooster booster = new CBooster();
+
+    public void TaskOnDivedOnZone()
+    {
+        // var player = GameObject.FindWithTag("Player").transform;
+        // var ppos = Camera.main.WorldToViewportPoint(player.position);
+        // _dog.center.Override(new Vector2(ppos.x, ppos.y));
+        DOTween.To((_) => { _dog.elapsedTime.Override(_); },
+            0f, 1f, .75f);
+    }
 
     /// <summary>
     /// 集中 を 発火する
@@ -23,6 +40,7 @@ public class GameLogic
     {
         var targets = booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.StartDull());
+        TaskOnDivedOnZone();
     }
 
     /// <summary>
@@ -45,6 +63,9 @@ public class GameLogic
 
         var targets = booster.GetDerivedComponents<IInitializableComponent>();
         targets.ForEach(_ => _.InitializeThisComponent());
+        
+        // _volume = GameObject.FindFirstObjectByType<Volume>();
+        // _volume.profile.TryGet(out _dog);
     }
 
     void GameLoop()
@@ -53,6 +74,9 @@ public class GameLogic
         {
             Debug.Log($"{nameof(GameLogic)}:Game Is Running");
         }
+
+        var targ = booster.GetDerivedComponents<IInitializableComponent>();
+        targ.ForEach(_ => _.FixedTickThisComponent());
     }
 
     void FinalizeGame()

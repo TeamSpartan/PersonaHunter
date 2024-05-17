@@ -19,17 +19,22 @@ public class Unnko
         this._inputT = GameObject.FindFirstObjectByType<TesterInput>();
     }
 
-    private void FixedUpdate()
+    public void FixedTickThisComponent()
     {
         var brain = GameObject.FindFirstObjectByType<PlayerCameraBrain>();
         var f = Camera.main.transform.forward;
         var r = Camera.main.transform.right;
-        var dir = _inputT.GetHorizontalMoveValue() * f
-                  + _inputT.GetVerticalMoveValue() * r;
+        var dir = _inputT.GetMoveValue().x * f
+                  + _inputT.GetMoveValue().y * r;
         if (!brain.LockingOn)
         {
             transform.Translate(dir);
         }
+    }
+
+    public void TickThisComponent()
+    {
+        
     }
 
     public void FinalizeThisComponent()

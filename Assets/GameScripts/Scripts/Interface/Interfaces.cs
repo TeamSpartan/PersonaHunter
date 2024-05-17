@@ -1,4 +1,5 @@
 using System;
+using CriWare;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,6 +15,16 @@ public interface IInitializableComponent
     /// 起動の時に呼び出される
     /// </summary>
     public void InitializeThisComponent();
+
+    /// <summary>
+    /// FixedUpdate
+    /// </summary>
+    public void FixedTickThisComponent();
+    
+    /// <summary>
+    /// Update
+    /// </summary>
+    public void TickThisComponent();
 
     /// <summary>
     /// リセットの時に呼び出される
@@ -127,6 +138,16 @@ public interface ILockOnEventFirable
     /// ロックオン入力があったとき
     /// </summary>
     public event Action ELockOnTriggered;
+
+    /// <summary>
+    /// 左のロックオン対象を選択する時のイベント
+    /// </summary>
+    public Action EvtCamLeftTarget { get; set; }
+
+    /// <summary>
+    /// 右のロックオン対象を選択する時のイベント
+    /// </summary>
+    public Action EvtCamRightTarget { get; set; }
 }
 
 /// <summary>
@@ -135,22 +156,34 @@ public interface ILockOnEventFirable
 public interface IInputValueReferencable
 {
     /// <summary>
-    /// キャラ移動 水平 の値を返す
+    /// キャラ移動 の値を返す
     /// </summary>
-    public float GetHorizontalMoveValue();
-    
+    public Vector2 GetMoveValue();
     /// <summary>
-    /// キャラ移動 垂直 の値を返す
+    /// マウス入力 の値を返す
     /// </summary>
-    public float GetVerticalMoveValue();
-    
-    /// <summary>
-    /// マウス入力 水平 の値を返す
-    /// </summary>
-    public float GetHorizontalMouseMoveValue();
-    
-    /// <summary>
-    /// マウス入力 垂直 の値を返す
-    /// </summary>
-    public float GetVerticalMouseMoveValue();
+    public Vector2 GetCamMoveValue();
+}
+
+/// <summary></summary>
+public interface IAudioPlayOption
+{
+    ///<summary>音の設定</summary>
+    CriAtomSource ApplySetting(CriAtomSource target);
+}
+
+/// <summary>
+/// プレイヤがガードをしている間に呼びだすメソッドが格納されている。GameLogicが継承すべきインターフェイス
+/// </summary>
+public interface IAbleToParry
+{
+    public bool NotifyPlayerIsGuarding();
+
+    public void ParrySuccess();
+}
+
+/// <summary> 当たり判定にて重なり合わせの判定範囲内にこのインターフェースを継承しているコンポーネントを検知したらここのメソッドを呼び出す </summary>
+public interface ICollisionOverLappable
+{
+    public void NotifyOverlap(Transform other);
 }
