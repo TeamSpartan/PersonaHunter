@@ -2,6 +2,7 @@ using SgLibUnite.BehaviourTree;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 /* 菅沼が主担当 */
@@ -52,8 +53,18 @@ public class NuweBrain : MonoBehaviour
     private float _moveSpeedOnMad;
 
     [SerializeField, Header("右前足首 ボーン")] private Transform _rightWristBone;
+    [SerializeField, Header("当たり判定の半径")] private float _clawAtkColDetectRad;
+    [SerializeField, Header("オフセット")] private Vector3 _clawAtkColOffset;
+
     [SerializeField, Header("首の付け根 ボーン")] private Transform _neckRootBone;
+    [SerializeField, Header("当たり判定の半径")] private float _rushAtkColDetectRad;
+    [SerializeField, Header("オフセット")] private Vector3 _rushAtkColOffset;
+
     [SerializeField, Header("しっぽ ボーン")] private Transform _tailBone;
+    [SerializeField, Header("半径")] private float _tailAtkColDetectRad;
+    [SerializeField, Header("始点")] private Transform _tailRayStartPnt;
+    [SerializeField, Header("終点")] private Transform _tailRayEndPnt;
+
 
     [SerializeField, Header("ベースのダメージ")] private float _baseDamage;
 
@@ -182,6 +193,15 @@ public class NuweBrain : MonoBehaviour
     /// <summary> 開発効率化ライブラリ </summary>
     private CBooster _boost = new();
 
+    /// <summary> しっぽ攻撃時の当たり判定中かのフラグ </summary>
+    private bool _isCheckingTailColDetection;
+
+    /// <summary> ひっかき攻撃時の当たり判定中かのフラグ </summary>
+    private bool _isCheckingClawColDetection;
+
+    /// <summary> 突進攻撃時の当たり判定中かのフラグ </summary>
+    private bool _isCheckingRushColDetection;
+
     #endregion
 
     public void AddDamage(float dmg)
@@ -227,6 +247,18 @@ public class NuweBrain : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, _tailAttackRange);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, _rushAttackRange);
+
+        Gizmos.color = Color.black;
+        Gizmos.DrawSphere(_rightWristBone.position + _clawAtkColOffset, _clawAtkColDetectRad);
+        Gizmos.color = Color.gray;
+        Gizmos.DrawSphere(_neckRootBone.position + _rushAtkColOffset, _rushAtkColDetectRad);
+        Gizmos.color = Color.green;
+        var len = _tailRayEndPnt.position - _tailRayStartPnt.position;
+        len /= 5;
+        for (int i = 1; i < 6; ++i)
+        {
+            Gizmos.DrawSphere(_tailBone.position + (i * len), _tailAtkColDetectRad);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -283,31 +315,49 @@ public class NuweBrain : MonoBehaviour
     public void EnableClawCollider()
     {
         _rightWristBone.GetComponent<Collider>().enabled = true;
+        //
+        _isCheckingClawColDetection = true;
+        //
     }
 
     public void DisableClawCollider()
     {
         _rightWristBone.GetComponent<Collider>().enabled = false;
+        //
+        _isCheckingClawColDetection = false;
+        //
     }
 
     public void EnableRushCollider()
     {
         _neckRootBone.GetComponent<Collider>().enabled = true;
+        //
+        _isCheckingRushColDetection = true;
+        //
     }
 
     public void DisableRushCollider()
     {
         _neckRootBone.GetComponent<Collider>().enabled = false;
+        //
+        _isCheckingRushColDetection = false;
+        //
     }
 
     public void EnableTailCollider()
     {
         _tailBone.GetComponent<Collider>().enabled = true;
+        //
+        _isCheckingTailColDetection = true;
+        //
     }
 
     public void DisableTailCollider()
     {
         _tailBone.GetComponent<Collider>().enabled = false;
+        //
+        _isCheckingTailColDetection = false;
+        //
     }
 
     public Transform GetLockableObjectTransform()
@@ -596,6 +646,20 @@ public class NuweBrain : MonoBehaviour
     {
         _currentYielded = _rush;
 
+        // 
+        if (_isCheckingRushColDetection)
+        {
+            _player = PlayerPR;
+            if (Physics.CheckSphere(_neckRootBone.position + _rushAtkColOffset, _rushAtkColDetectRad, _playerLayers))
+            {
+                if (_player.GetComponent<ICollisionOverLappable>() != null)
+                {
+                    _player.GetComponent<ICollisionOverLappable>().NotifyOverlap(transform);
+                }
+            }
+        }
+        //
+
         if (_agent.destination != _player.position && !_agent.hasPath)
         {
             _agent.speed = _baseMoveSpeed * 3f;
@@ -616,6 +680,20 @@ public class NuweBrain : MonoBehaviour
     {
         _currentYielded = _tail;
 
+        //
+        if (_isCheckingTailColDetection)
+        {
+            _player = PlayerPR;
+            if (Physics.CheckCapsule(_tailRayStartPnt.position, _tailRayEndPnt.position, _tailAtkColDetectRad, _playerLayers))
+            {
+                if (_player.GetComponent<ICollisionOverLappable>() != null)
+                {
+                    _player.GetComponent<ICollisionOverLappable>().NotifyOverlap(transform);
+                }
+            }
+        }
+        //
+
         if (_agent.destination != transform.position && !_agent.hasPath)
         {
             _agent.SetDestination(transform.position);
@@ -625,6 +703,20 @@ public class NuweBrain : MonoBehaviour
     private void Claw()
     {
         _currentYielded = _claw;
+
+        //
+        if (_isCheckingClawColDetection)
+        {
+            _player = PlayerPR;
+            if (Physics.CheckSphere(_rightWristBone.position + _clawAtkColOffset, _clawAtkColDetectRad, _playerLayers))
+            {
+                if (_player.GetComponent<ICollisionOverLappable>() != null)
+                {
+                    _player.GetComponent<ICollisionOverLappable>().NotifyOverlap(transform);
+                }
+            }
+        }
+        //
 
         if (_agent.destination != transform.position && !_agent.hasPath)
         {
