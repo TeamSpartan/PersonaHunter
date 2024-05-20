@@ -5,10 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/OutdoorsScene.unity
-    guid: 8124e5870f4fd4c779e7a5f994e84ad1
   - enabled: 1
-    path: Assets/Scene/Dev/Player_Boss_CombinedTest.unity
-    guid: 20fe1684e9b1fc24daebb747fd818bad
+    path: Assets/Scene/Dev/NuweJ_Dev.unity
+    guid: 4f338db2275d056439f199913fbd5115
   m_configObjects: {}
