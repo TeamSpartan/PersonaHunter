@@ -54,10 +54,10 @@ namespace Player.Hp
 			#endregion
 		}
 
-		public void Initialization()
+		protected void Initialization()
 		{
-			_playerParam = GetComponentInParent<PlayerParam>();
-			_playerAvoid = GetComponentInParent<PlayerAvoid>();
+			_playerParam = GetComponent<PlayerParam>();
+			_playerAvoid = GetComponent<PlayerAvoid>();
 			_initialHp = _playerParam.GetInitialHp;
 		}
 
