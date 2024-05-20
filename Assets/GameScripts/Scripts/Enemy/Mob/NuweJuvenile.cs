@@ -164,6 +164,8 @@ public class NuweJuvenile : MonoBehaviour
     {
         _anim = GetComponent<Animator>();
         _agent = GetComponent<NavMeshAgent>();
+
+        _healthPoint = _maxHealthPoint;
     }
 
     private void SetupBehaviours()

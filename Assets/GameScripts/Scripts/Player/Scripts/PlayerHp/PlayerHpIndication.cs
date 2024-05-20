@@ -23,7 +23,7 @@ namespace Player.Hp
 			_cBooster = new();
 			OnReceiveDamage += SetGauge;
 			OnRegeneration += SetRegenerate;
-			Initialization();
+			base.Initialization();
 			ResetDamage();
 		}
 
