@@ -72,7 +72,7 @@ namespace name
 		private void OnTriggerEnter(Collider other)
 		{
 			NuweBrain nue = other.GetComponentInParent<NuweBrain>();
-			NuweJuvenile mob = other.GetComponentInParent<NuweJuvenile>();
+			KomashiraBrain mob = other.GetComponentInParent<KomashiraBrain>();
 			
 			if (nue != null)
 			{

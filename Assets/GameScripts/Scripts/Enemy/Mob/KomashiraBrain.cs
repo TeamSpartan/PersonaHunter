@@ -11,7 +11,7 @@ using UnityEngine.AI;
 ///  ぬゑ 幼体 （雑魚）
 /// ver 1.0.0
 /// </summary>
-public class NuweJuvenile : MonoBehaviour
+public class KomashiraBrain : MonoBehaviour
     , IMobBehaviourParameter
     , IInitializableComponent
     , IDulledTarget
