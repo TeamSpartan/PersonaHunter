@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using CriWare;
 using UnityEngine;
 using UnityEngine.AI;
@@ -186,4 +186,12 @@ public interface IAbleToParry
 public interface ICollisionOverLappable
 {
     public void NotifyOverlap(Transform other);
+}
+
+/// <summary>
+/// 敵を倒した時に呼びだす時
+/// </summary>
+public interface IDefeatBoss
+{
+    void DefeatBossEnemy();
 }
