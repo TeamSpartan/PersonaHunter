@@ -3,7 +3,17 @@ guid: e835905d3cf22ff46a0528332e9fff7a
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ChMD_Rig_itoryuhei_ZaKOMOMMSUTA_0301_MIi_body
+    second: {fileID: 2100000, guid: 8e6440441adca3341b079a702bafbadc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ChMD_Rig_itoryuhei_ZaKOMOMMSUTA_0301_MIi_mask
+    second: {fileID: 2100000, guid: 37d2e9a1aa9ffee4dbf445df47d4b813, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
