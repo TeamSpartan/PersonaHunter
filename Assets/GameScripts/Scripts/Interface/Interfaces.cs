@@ -174,16 +174,13 @@ public interface IAbleToParry
     public void ParrySuccess();
 }
 
-/// <summary> 当たり判定にて重なり合わせの判定範囲内にこのインターフェースを継承しているコンポーネントを検知したらここのメソッドを呼び出す </summary>
-public interface ICollisionOverLappable
-{
-    public void NotifyOverlap(Transform other);
-}
-
 /// <summary>
-/// 敵を倒した時に呼びだす時
+/// 敵を倒した時に呼びだすメソッドの実装を強制する。
 /// </summary>
-public interface IDefeatBoss
+public interface IDefeatableBoss
 {
-    void DefeatBossEnemy();
+    /// <summary>
+    /// BOSS撃破時に呼び出す。
+    /// </summary>
+    void DefeatedBoss();
 }
