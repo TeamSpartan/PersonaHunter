@@ -3,8 +3,6 @@ using DG.Tweening;
 using Player.Input;
 using Player.Param;
 using PlayerCam.Scripts;
-using Sound;
-using Sound.PlayOption;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
