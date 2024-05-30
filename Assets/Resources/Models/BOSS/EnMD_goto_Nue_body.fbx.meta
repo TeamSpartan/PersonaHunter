@@ -7,17 +7,17 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: EnMIi_Goto_Nue_body
+      name: EnMD_Rig_DS23A_Goto_Nue_Body_sample_EnMIi_Goto_Nue_body
     second: {fileID: 2100000, guid: d87ee1cb98161724a8114cc301f01a96, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: EnMIi_Goto_Nue_etcetera
+      name: EnMD_Rig_DS23A_Goto_Nue_Body_sample_EnMIi_Goto_Nue_etcetera
     second: {fileID: 2100000, guid: 820aec027bcf99a4494b5eb0a044e684, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: EnMIi_goto_Nue_Toukasozai
+      name: EnMD_Rig_DS23A_Goto_Nue_Body_sample_EnMIi_goto_Nue_Toukasozai
     second: {fileID: 2100000, guid: eeaaf92fb859675439c2ccb5967f3729, type: 2}
   materials:
     materialImportMode: 2
