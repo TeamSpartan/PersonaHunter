@@ -177,10 +177,10 @@ public interface IAbleToParry
 /// <summary>
 /// 敵を倒した時に呼びだすメソッドの実装を強制する。
 /// </summary>
-public interface IDefeatableBoss
+public interface IBossDieNotifiable
 {
     /// <summary>
     /// BOSS撃破時に呼び出す。
     /// </summary>
-    void DefeatedBoss();
+    void NotifyBossIsDeath();
 }

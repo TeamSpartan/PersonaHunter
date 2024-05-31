@@ -1,4 +1,3 @@
-using System;
 using SgLibUnite.BehaviourTree;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
@@ -615,6 +614,8 @@ public class NuweBrain : MonoBehaviour
 
     private void Death()
     {
+        _currentYielded = _death;
+        _boost.GetDerivedComponents<IBossDieNotifiable>()[0].NotifyBossIsDeath();
     }
 
     private void Flinch()   // 攻撃を受け続けてひるみ値がたまり切った際のイベント
