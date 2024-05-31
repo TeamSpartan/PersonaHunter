@@ -2055,7 +2055,7 @@ PrefabInstance:
     - target: {fileID: 2694334820608458257, guid: d7e65ebc2a7b36e4db19b4b4cffaff39,
         type: 3}
       propertyPath: m_Name
-      value: NuweJuvenile
+      value: Komashira
       objectReference: {fileID: 0}
     - target: {fileID: 2694334820608458257, guid: d7e65ebc2a7b36e4db19b4b4cffaff39,
         type: 3}
