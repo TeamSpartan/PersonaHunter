@@ -22,13 +22,21 @@ public class GameLogic
     private DifferenceOfGaussian _dog;
 
     // コーディング ブースタ クラス
-    CBooster booster = new CBooster();
+    CBooster _booster = new CBooster();
 
     public void TaskOnDivedOnZone()
     {
-        // var player = GameObject.FindWithTag("Player").transform;
-        // var ppos = Camera.main.WorldToViewportPoint(player.position);
-        // _dog.center.Override(new Vector2(ppos.x, ppos.y));
+        if (GameObject.FindWithTag("Player").transform != null)
+        {
+            var player = GameObject.FindWithTag("Player").transform;
+            var ppos = Camera.main.WorldToViewportPoint(player.position);
+            _dog.center.Override(new Vector2(ppos.x, ppos.y));
+        }
+        else
+        {
+            _dog.center.Override(Vector2.one * .5f);
+        }
+
         DOTween.To((_) => { _dog.elapsedTime.Override(_); },
             0f, 1f, .75f);
     }
@@ -38,7 +46,7 @@ public class GameLogic
     /// </summary>
     public void StartDiveInZone()
     {
-        var targets = booster.GetDerivedComponents<IDulledTarget>();
+        var targets = _booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.StartDull());
         TaskOnDivedOnZone();
     }
@@ -48,7 +56,7 @@ public class GameLogic
     /// </summary>
     public void GetOutOverZone()
     {
-        var targets = booster.GetDerivedComponents<IDulledTarget>();
+        var targets = _booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.EndDull());
     }
 
@@ -61,11 +69,14 @@ public class GameLogic
 
         _info = GameObject.FindFirstObjectByType<GameInfo>();
 
-        var targets = booster.GetDerivedComponents<IInitializableComponent>();
+        var targets = _booster.GetDerivedComponents<IInitializableComponent>();
         targets.ForEach(_ => _.InitializeThisComponent());
-        
-        // _volume = GameObject.FindFirstObjectByType<Volume>();
-        // _volume.profile.TryGet(out _dog);
+
+        if (GameObject.FindFirstObjectByType<Volume>() != null)
+        {
+            _volume = GameObject.FindFirstObjectByType<Volume>();
+            _volume.profile.TryGet(out _dog);
+        }
     }
 
     void GameLoop()
@@ -75,7 +86,7 @@ public class GameLogic
             Debug.Log($"{nameof(GameLogic)}:Game Is Running");
         }
 
-        var targ = booster.GetDerivedComponents<IInitializableComponent>();
+        var targ = _booster.GetDerivedComponents<IInitializableComponent>();
         targ.ForEach(_ => _.FixedTickThisComponent());
     }
 
@@ -86,7 +97,7 @@ public class GameLogic
             Debug.Log($"{nameof(GameLogic)}:Game Finalized");
         }
 
-        var targets = booster.GetDerivedComponents<IInitializableComponent>();
+        var targets = _booster.GetDerivedComponents<IInitializableComponent>();
         targets.ForEach(_ => _.FinalizeThisComponent());
     }
 
