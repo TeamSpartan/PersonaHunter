@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a4fa5191d5549449e97c95a8dab5a0, type: 3}
+  m_Name: MasterVerScenes
+  m_EditorClassIdentifier: 
+  MasterScenes:
+  - {fileID: 102900000, guid: 3d1254c4bd69ccf42a2bcb1bba7b72c2, type: 3}
+  - {fileID: 102900000, guid: ca8051dc1eba2a34fb0ab09101c62c99, type: 3}
+  - {fileID: 102900000, guid: 9473d877b4e17634d88a03c746cd11d6, type: 3}
+  - {fileID: 102900000, guid: e0b4c8f2ffc5ef247b65305d1a78faa7, type: 3}
+  - {fileID: 102900000, guid: 60094f39365f9634b8d763b9ece9efb6, type: 3}
