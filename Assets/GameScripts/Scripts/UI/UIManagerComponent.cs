@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 /* 作成 【菅沼】 */
 
@@ -10,7 +13,7 @@ using UnityEngine;
 public class UIManagerComponent : MonoBehaviour
 {
     [SerializeField] private GameObject _rootWindow;
-    
+
     public void CloseWindow(GameObject obj)
     {
         obj.GetComponentInChildren<Canvas>().sortingOrder = -32;
