@@ -8,7 +8,7 @@ using UnityEngine.AI;
 
 /// <summary>
 /// 菅沼 が 主担当
-///  ぬゑ 幼体 （雑魚）
+///  小猿（こましら）の機能を提供する
 /// ver 1.0.0
 /// </summary>
 public class KomashiraBrain : MonoBehaviour
@@ -136,7 +136,8 @@ public class KomashiraBrain : MonoBehaviour
         _healthPoint = val;
     }
 
-    /// <summary> Animation Event から 呼び出し </summary>
+    // Animation Event から 呼び出し
+    
     public void EnableAttackCollider()
     {
         _neckBone.GetComponent<Collider>().enabled = true;
@@ -146,7 +147,7 @@ public class KomashiraBrain : MonoBehaviour
     {
         _neckBone.GetComponent<Collider>().enabled = false;
     }
-    
+
     public void InitializeThisComponent()
     {
         SetupComponent();

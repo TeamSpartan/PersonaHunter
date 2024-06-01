@@ -1,5 +1,4 @@
-using System;
-using CriWare;
+﻿using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -165,13 +164,6 @@ public interface IInputValueReferencable
     public Vector2 GetCamMoveValue();
 }
 
-/// <summary></summary>
-public interface IAudioPlayOption
-{
-    ///<summary>音の設定</summary>
-    CriAtomSource ApplySetting(CriAtomSource target);
-}
-
 /// <summary>
 /// プレイヤがガードをしている間に呼びだすメソッドが格納されている。GameLogicが継承すべきインターフェイス
 /// </summary>
@@ -182,8 +174,13 @@ public interface IAbleToParry
     public void ParrySuccess();
 }
 
-/// <summary> 当たり判定にて重なり合わせの判定範囲内にこのインターフェースを継承しているコンポーネントを検知したらここのメソッドを呼び出す </summary>
-public interface ICollisionOverLappable
+/// <summary>
+/// 敵を倒した時に呼びだすメソッドの実装を強制する。
+/// </summary>
+public interface IBossDieNotifiable
 {
-    public void NotifyOverlap(Transform other);
+    /// <summary>
+    /// BOSS撃破時に呼び出す。
+    /// </summary>
+    void NotifyBossIsDeath();
 }

@@ -1,4 +1,3 @@
-using System;
 using SgLibUnite.BehaviourTree;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
@@ -6,6 +5,7 @@ using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 /* 菅沼が主担当 */
+
 /// <summary>
 /// ぬえの第一形態の機能を提供
 /// ver 3.3.1
@@ -242,16 +242,12 @@ public class NuweBrain : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, _rushAttackRange);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) // 右手、しっぽ、本体 にアタッチされているコライダーからの当たり判定のイベント
     {
         if (other.CompareTag("Player"))
         {
             CheckPlayerIsGuarding(other);
         }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
     }
 
     /// <summary>
@@ -291,37 +287,58 @@ public class NuweBrain : MonoBehaviour
         Tail
     }
 
+    /// <summary>
+    /// 待機に戻る。
+    /// </summary>
     public void BackToAwait()
     {
         _tree.EndYieldBehaviourFrom(_currentYielded);
         ResetAgentPath();
     }
 
+    /// <summary>
+    /// 右手のコライダーを有効化
+    /// </summary>
     public void EnableClawCollider()
     {
         _rightWristBone.GetComponent<Collider>().enabled = true;
     }
 
+    /// <summary>
+    /// 右手のコライダーを無効化
+    /// </summary>
     public void DisableClawCollider()
     {
         _rightWristBone.GetComponent<Collider>().enabled = false;
     }
 
+    /// <summary>
+    /// 突進のコライダーを有効化
+    /// </summary>
     public void EnableRushCollider()
     {
         _neckRootBone.GetComponent<Collider>().enabled = true;
     }
 
+    /// <summary>
+    /// 突進のコライダーを無効化
+    /// </summary>
     public void DisableRushCollider()
     {
         _neckRootBone.GetComponent<Collider>().enabled = false;
     }
 
+    /// <summary>
+    /// しっぽのコライダーを有効化
+    /// </summary>
     public void EnableTailCollider()
     {
         _tailBone.GetComponent<Collider>().enabled = true;
     }
 
+    /// <summary>
+    /// しっぽのコライダーを無効化
+    /// </summary>
     public void DisableTailCollider()
     {
         _tailBone.GetComponent<Collider>().enabled = false;
@@ -332,6 +349,9 @@ public class NuweBrain : MonoBehaviour
         return this.transform;
     }
 
+    /// <summary>
+    /// プレイヤと当たった判定のイベントが発火されたときにこれを呼び出してプレイヤがガード中か判定してそれに合わせた処理をする
+    /// </summary>
     public void CheckPlayerIsGuarding(Collider other)
     {
         if (other.GetComponent<IAbleToParry>() != null)
@@ -354,26 +374,27 @@ public class NuweBrain : MonoBehaviour
 
     public void FixedTickThisComponent()
     {
-        _tree.UpdateEventsYield();
+        _tree.UpdateEventsYield();  // 割り込みイベントを更新
         _playerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayers);
         _playerIsInRange = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
 
-        if (!_playerFound)
+        if (!_playerFound)  // プレイヤが見つからないならIdleに戻る
         {
             _tree.EndYieldBehaviourFrom(_currentYielded);
             _tree.JumpTo(_idle);
         }
-        else if (!_playerIsInRange)
+        else if (!_playerIsInRange) // 発見はしたが攻撃範囲内にいないとき
         {
             _tree.EndYieldBehaviourFrom(_currentYielded);
             _tree.JumpTo(_getClose);
         }
 
-        if (_flinchPoint > 100)
+        if (_flinchPoint > 100) // 攻撃を受け続けて怯み値がたまり切ったら
         {
             GetFinch();
         }
 
+        // イベントではない通常ビヘイビアの遷移が可能かチェック（更新）
         _tree.UpdateTransition(_tNameStartGetClose, ref _playerFound);
         _tree.UpdateTransition(_tNameStartThink, ref _playerIsInRange);
     }
@@ -382,6 +403,9 @@ public class NuweBrain : MonoBehaviour
     {
     }
 
+    /// <summary>
+    /// 各ビヘイビアをセットアップ
+    /// </summary>
     private void SetupBehaviours()
     {
         _idle.AddBehaviour(Idle);
@@ -421,6 +445,8 @@ public class NuweBrain : MonoBehaviour
         _lookPlayer.SetYieldMode(true);
         _lookPlayer.EBegin += FindPlayerDirection;
 
+        // ↑ でビヘイビアをどんなビヘイビアか指定している。また、ビヘイビアへ入った際の処理もここで指定している。
+        
         BTBehaviour[] behaviours = new[]
         {
             _idle,
@@ -436,9 +462,13 @@ public class NuweBrain : MonoBehaviour
             _lookPlayer,
         };
 
+        // BTにビヘイビアを登録。これがないと動かない
         _tree.ResistBehaviours(behaviours);
     }
 
+    /// <summary>
+    /// BTにトランジションを登録
+    /// </summary>
     private void MakeTransitions()
     {
         _tree.MakeTransition(_idle, _getClose, _tNameStartGetClose);
@@ -454,12 +484,15 @@ public class NuweBrain : MonoBehaviour
 
         if (_tree.CurrentBehaviour != _idle)
         {
-            _tree.JumpTo(_idle);
+            _tree.JumpTo(_idle);    // 初期化時のビヘイビアがIdle出ない場合にはIdleにジャンプしてIdleから遷移していくようにする
         }
     }
 
     private void ResetAgentPath() => _agent.ResetPath();
 
+    /// <summary>
+    /// プレイヤのトランスフォームを取得する
+    /// </summary>
     private Transform PlayerPR => GameObject.FindWithTag("Player").transform;
 
     private void FindPlayerDirection()
@@ -468,7 +501,7 @@ public class NuweBrain : MonoBehaviour
         _playerDirection = _player.position - transform.position;
     }
 
-    public void GetFinch()
+    public void GetFinch()  // 怯み発生時のメソッド
     {
         _tree.YieldAllBehaviourTo(_flinch);
         _anim.SetTrigger("GetFlinch");
@@ -479,7 +512,7 @@ public class NuweBrain : MonoBehaviour
         _tree.EndYieldBehaviourFrom(_flinch);
     }
 
-    public void GetParry()
+    public void GetParry()  // パリィ発生時のメソッド
     {
         _tree.YieldAllBehaviourTo(_stumble);
         _anim.SetTrigger("GetParry");
@@ -490,7 +523,7 @@ public class NuweBrain : MonoBehaviour
         _tree.EndYieldBehaviourFrom(_stumble);
     }
 
-    private void Idle()
+    private void Idle() // そのばにとどまる
     {
         if (!_agent.hasPath)
         {
@@ -502,7 +535,7 @@ public class NuweBrain : MonoBehaviour
         }
     }
 
-    private void GetClose()
+    private void GetClose() // プレイヤとの距離を詰める
     {
         _player = PlayerPR;
         if (_agent.destination != _player.position && !_agent.hasPath)
@@ -523,7 +556,7 @@ public class NuweBrain : MonoBehaviour
         }
     }
 
-    private void Await()
+    private void Await()    // 指定した時間待ち、プレイヤの位置や相対的な向きに応じて次にとるビヘイビアへ移行する
     {
         _elapsedAwaitingTime += Time.deltaTime;
 
@@ -581,9 +614,11 @@ public class NuweBrain : MonoBehaviour
 
     private void Death()
     {
+        _currentYielded = _death;
+        _boost.GetDerivedComponents<IBossDieNotifiable>()[0].NotifyBossIsDeath();
     }
 
-    private void Flinch()
+    private void Flinch()   // 攻撃を受け続けてひるみ値がたまり切った際のイベント
     {
         _currentYielded = _flinch;
 
@@ -597,7 +632,7 @@ public class NuweBrain : MonoBehaviour
         }
     }
 
-    private void Stumble()
+    private void Stumble()  // パリィ発生時のイベント
     {
         _currentYielded = _stumble;
         _elapsedStumbleingTime += Time.deltaTime;
@@ -609,7 +644,7 @@ public class NuweBrain : MonoBehaviour
         }
     }
 
-    private void Rush()
+    private void Rush() // 突進攻撃
     {
         _currentYielded = _rush;
 
@@ -629,7 +664,7 @@ public class NuweBrain : MonoBehaviour
         }
     }
 
-    private void Tail()
+    private void Tail() // しっぽ攻撃
     {
         _currentYielded = _tail;
 
@@ -639,7 +674,7 @@ public class NuweBrain : MonoBehaviour
         }
     }
 
-    private void Claw()
+    private void Claw() // ひっかき攻撃
     {
         _currentYielded = _claw;
 
@@ -649,7 +684,7 @@ public class NuweBrain : MonoBehaviour
         }
     }
 
-    private void LookPlayer()
+    private void LookPlayer()   // プレイヤを向く
     {
         _currentYielded = _lookPlayer;
 
