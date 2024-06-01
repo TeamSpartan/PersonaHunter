@@ -10,21 +10,25 @@ using UnityEngine.UI;
 /// <summary>
 /// UIの管理をする
 /// </summary>
-public class UIManagerComponent : MonoBehaviour
+public class WindowManager : MonoBehaviour
 {
     [SerializeField] private GameObject _rootWindow;
 
     public void CloseWindow(GameObject obj)
     {
         obj.GetComponentInChildren<Canvas>().sortingOrder = -32;
-        obj.GetComponentInChildren<CanvasGroup>().alpha = 0f;
+        var g = obj.GetComponentInChildren<CanvasGroup>();
+            g.alpha = 0f;
+            g.interactable = false;
         obj.transform.SetAsFirstSibling();
     }
 
     public void OpenWindow(GameObject obj)
     {
         obj.GetComponentInChildren<Canvas>().sortingOrder = 0;
-        obj.GetComponentInChildren<CanvasGroup>().alpha = 1;
+        var g = obj.GetComponentInChildren<CanvasGroup>();
+        g.alpha = 1f;
+        g.interactable = true;
         obj.transform.SetAsLastSibling();
     }
 
