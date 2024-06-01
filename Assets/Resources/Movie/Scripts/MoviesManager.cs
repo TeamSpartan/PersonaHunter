@@ -5,7 +5,7 @@ using UnityEngine.Timeline;
 
 // 作成 : 五島
 /// <summary>
-/// ムービーの再生を行います
+/// ムービーの再生等を行います
 /// </summary>
 [RequireComponent(typeof(PlayableDirector))]
 public class MoviesManager : MonoBehaviour
@@ -20,16 +20,34 @@ public class MoviesManager : MonoBehaviour
     }
 
     /// <summary>ムービー再生を行います</summary>
-    public void PlayMovie(MoveData.MoveType type)
+    public void PlayTimeline(MoveData.MoveType type)
     {
         TimelineAsset timeline = _timelines.FirstOrDefault(move => move.Type == type).Timeline;
         _playableDirector.Play(timeline);
     }
     /// <summary>ムービー再生を行います</summary>
-    public void PlayMovie(int id)
+    public void PlayTimeline(int id)
     {
         TimelineAsset timeline = _timelines[id].Timeline;
         _playableDirector.Play(timeline);
+    }
+    
+    //一時停止する
+    void PauseTimeline()
+    {
+        _playableDirector.Pause();
+    }
+ 
+    //一時停止を再開する
+    void ResumeTimeline()
+    {
+        _playableDirector.Resume();
+    }
+        
+    //停止する
+    void StopTimeline()
+    {
+        _playableDirector.Stop();       
     }
 }
 
