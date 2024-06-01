@@ -370,7 +370,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -32
   m_TargetDisplay: 0
 --- !u!114 &2968329213850535760
 MonoBehaviour:
@@ -420,7 +420,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2679377502505962814}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -590,7 +590,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8331031368402735237}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: OptionWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -734,7 +734,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8282084769113342379}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5470648815201982894, guid: c153fad19f91d894e98ab491a3c67a62,
+          type: 3}
+        m_TargetAssemblyTypeName: UIManagerComponent, Assembly-CSharp
+        m_MethodName: OpenPreviewWindow
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 6264907616193421098}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8442508604058626674
 GameObject:
   m_ObjectHideFlags: 0

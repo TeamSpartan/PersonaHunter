@@ -5,9 +5,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Linq;
 using SgLibUnite.Singleton;
-#if false
-using DG.Tweening;
-#endif
+using UnityEditor;
+
 // Auth : Suganuma
 namespace SgLibUnite
 {
@@ -25,6 +24,11 @@ namespace SgLibUnite
             public void LoadSceneByName(string sceneName)
             {
                 StartCoroutine(LoadSceneAcyncByName(sceneName));
+            }
+            
+            public void LoadSceneByName(SceneAsset scene)
+            {
+                StartCoroutine(LoadSceneAcyncByName(scene.name));
             }
 
             protected override void ToDoAtAwakeSingleton()
@@ -49,9 +53,6 @@ namespace SgLibUnite
                 {
                     nowLoadingPanel.transform.SetAsLastSibling();
                     nowLoadingPanel.SetActive(!false);
-#if false
-                    _loadingText.DOText("Loading...", 1);
-#endif
                     yield return null;
                 }
             }

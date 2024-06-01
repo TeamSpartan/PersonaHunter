@@ -165,12 +165,6 @@ namespace SgLibUnite.UI
 
         private void Update()
         {
-            if (GameObject.FindAnyObjectByType<GameInfo>().GetSceneStatus !=
-                GameInfo.SceneTransitStatus.WentToInGameScene)
-            {
-                return;
-            }
-
             _rect = ImageIcon.gameObject.GetComponent<RectTransform>();
 
             float canvasScale = transform.root.localScale.z;

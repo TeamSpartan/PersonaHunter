@@ -14,8 +14,6 @@ public class GameLogic
 {
     [SerializeField] private bool _debugging;
 
-    private GameInfo _info;
-
     public Action EParrySucceed { get; set; }
 
     private Volume _volume;
@@ -66,8 +64,6 @@ public class GameLogic
         {
             Debug.Log($"{nameof(GameLogic)}:Game Initialized");
         }
-
-        _info = GameObject.FindFirstObjectByType<GameInfo>();
 
         var targets = _booster.GetDerivedComponents<IInitializableComponent>();
         targets.ForEach(_ => _.InitializeThisComponent());

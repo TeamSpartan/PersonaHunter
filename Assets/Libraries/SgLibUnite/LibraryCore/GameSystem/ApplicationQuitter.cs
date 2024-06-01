@@ -12,21 +12,10 @@ namespace SgLibUnite
         {
             [SerializeField, Header("Player Tag")] string PlayerTag;
 
-            event Action<GameInfo.SceneTransitStatus> eventOnTransit;
-
-            public event Action<GameInfo.SceneTransitStatus>
-                EventOnQuitApp
-                {
-                    add { eventOnTransit += value; }
-                    remove { eventOnTransit -= value; }
-                }
-
-            Transform _pTrans;
-            GameInfo _gInfo;
+            Transform _player;
 
             protected override void ToDoAtAwakeSingleton()
             {
-                _gInfo = GameObject.FindFirstObjectByType<GameInfo>();
             }
 
             /// <summary> アプリケーションを閉じる </summary>
@@ -39,8 +28,6 @@ namespace SgLibUnite
 #endif
 
                 #endregion
-
-                eventOnTransit(_gInfo.GetSceneStatus);
 
                 Application.Quit();
             }
