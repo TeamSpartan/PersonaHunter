@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SgLibUnite.Singleton;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
@@ -13,9 +14,12 @@ public class GameLogic
     : SingletonBaseClass<GameLogic>
 {
     [SerializeField] private bool _debugging;
+    [SerializeField] private SceneInfo _sceneInfo;
 
     public Action EParrySucceed { get; set; }
 
+    private List<AsyncOperation> _asyncOperation = new List<AsyncOperation>();
+    private int _selectedSceneIndex;
     private Volume _volume;
     private DifferenceOfGaussian _dog;
 
