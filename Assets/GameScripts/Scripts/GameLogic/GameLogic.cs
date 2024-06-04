@@ -49,9 +49,6 @@ public class GameLogic
 
             GameObject.Instantiate(obj);
         }
-
-        // そのオブジェクトが有効か判定
-        Validation();
     }
 
     private void Start()
@@ -67,42 +64,6 @@ public class GameLogic
     private void OnApplicationQuit()
     {
         FinalizeGame();
-    }
-
-    private void Validation()
-    {
-        // プロローグを再生したかの静的フィールドにアクセス
-        var tempData = Resources.Load<TemporaryPlayerDataHolder>("Prefabs/GameSystem/TemporaryPlayerDataHolder");
-        if (tempData is not null)
-        {
-            _playedPrologue = tempData.PlayedPrologue;
-        }
-
-        // タイトル画面のバックグラウンドのオブジェクト
-        var obj = GameObject.Find("TitleImageBackGround");
-        var group = obj.transform.GetComponentInChildren<CanvasGroup>();
-        if (group is not null)
-        {
-            group.alpha = _playedPrologue ? 1 : 0;
-            group.interactable = group.blocksRaycasts = _playedPrologue;
-        }
-        else
-        {
-            Debug.Log($"TitleImageBackGround Is null");
-        }
-
-        // PressAnyButtonのパネル
-        obj = GameObject.Find("PressAnyButtonPanel");
-        group = obj.transform.GetComponentInChildren<CanvasGroup>();
-        if (group is not null)
-        {
-            group.alpha = !_playedPrologue ? 1 : 0;
-            group.interactable = group.blocksRaycasts = _playedPrologue;
-        }
-        else
-        {
-            Debug.Log($"PressAnyButtonPanel Is null");
-        }
     }
 
     public void TaskOnDivedOnZone()

@@ -285,7 +285,7 @@ PlayableDirector:
   m_GameObject: {fileID: 675279220}
   m_Enabled: 1
   serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: ac8dc561bb4aa4a41819d7f8734232a8, type: 2}
+  m_PlayableAsset: {fileID: 11400000, guid: a7107075646a2cf4cb839be6dd54d189, type: 2}
   m_InitialState: 1
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
@@ -376,7 +376,7 @@ MonoBehaviour:
         - m_Target: {fileID: 8362217317749248186, guid: bc1d2ea12fa3f704b8b7ba8882c6670b,
             type: 3}
           m_TargetAssemblyTypeName: TemporaryPlayerDataHolder, Assembly-CSharp
-          m_MethodName: NotifyplayedPrologue
+          m_MethodName: NotifyPlayedPrologue
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
