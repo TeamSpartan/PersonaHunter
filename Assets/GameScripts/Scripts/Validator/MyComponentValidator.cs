@@ -13,8 +13,6 @@ public class MyComponentValidator : MonoBehaviour
     void Start()
     {
         Validation();
-        
-        Debug.Log($"Prologue Played Condition ; {_playedPrologue}");
     }
 
     private void Validation()
@@ -36,7 +34,7 @@ public class MyComponentValidator : MonoBehaviour
         }
         else
         {
-            Debug.Log($"TitleImageBackGround Is null");
+            // Debug.Log($"TitleImageBackGround Is null");
         }
 
         // PressAnyButtonのパネル
@@ -50,7 +48,7 @@ public class MyComponentValidator : MonoBehaviour
         }
         else
         {
-            Debug.Log($"PressAnyButtonPanel Is null");
+            // Debug.Log($"PressAnyButtonPanel Is null");
         }
     }
 }

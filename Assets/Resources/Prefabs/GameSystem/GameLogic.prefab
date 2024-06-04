@@ -45,3 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _debugging: 0
+  _sceneInfo: {fileID: 11400000, guid: 3bc7069780a09b74e832e0560dd58adf, type: 2}
