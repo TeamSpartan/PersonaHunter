@@ -12,12 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08a4fa5191d5549449e97c95a8dab5a0, type: 3}
   m_Name: SceneInfo
   m_EditorClassIdentifier: 
-  TitleScenesName:
-  - Hoge
-  IngameScenesName:
-  - TestScene
-  - EnemyAIBT
-  - GameLogicDev
-  - PlayerCam
-  UniqueScenesName:
-  - Fuga
+  _masterScenes: []
