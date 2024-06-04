@@ -5,6 +5,8 @@ using SgLibUnite.CodingBooster;
 using UnityEngine;
 using UnityEngine.Rendering;
 using DG.Tweening;
+using SgLibUnite.Systems;
+using UnityEngine.SceneManagement;
 
 // 作成：菅沼
 /// <summary>
@@ -19,12 +21,89 @@ public class GameLogic
     public Action EParrySucceed { get; set; }
 
     private List<AsyncOperation> _asyncOperation = new List<AsyncOperation>();
-    private int _selectedSceneIndex;
-    private Volume _volume;
     private DifferenceOfGaussian _dog;
+    private Volume _volume;
+    private SceneLoader _sceneLoader;
+    private int _selectedSceneIndex;
+
+    #region Flags
+
+    private bool _playedPrologue;
+
+    #endregion
 
     // コーディング ブースタ クラス
     CBooster _booster = new CBooster();
+
+    protected override void ToDoAtAwakeSingleton()
+    {
+        if (_debugging)
+        {
+            Debug.Log($"Current Scene Index : {CheckSceneIndex(SceneManager.GetActiveScene())}");
+        }
+
+        // SceneLoader が Nullである場合には生成。
+        if (GameObject.FindFirstObjectByType<SceneLoader>() is null)
+        {
+            var obj = Resources.Load("Prefabs/GameSystem/SceneLoader") as GameObject;
+
+            GameObject.Instantiate(obj);
+        }
+
+        // そのオブジェクトが有効か判定
+        Validation();
+    }
+
+    private void Start()
+    {
+        InitializeGame();
+    }
+
+    private void FixedUpdate()
+    {
+        GameLoop();
+    }
+
+    private void OnApplicationQuit()
+    {
+        FinalizeGame();
+    }
+
+    private void Validation()
+    {
+        // プロローグを再生したかの静的フィールドにアクセス
+        var tempData = Resources.Load<TemporaryPlayerDataHolder>("Prefabs/GameSystem/TemporaryPlayerDataHolder");
+        if (tempData is not null)
+        {
+            _playedPrologue = tempData.PlayedPrologue;
+        }
+
+        // タイトル画面のバックグラウンドのオブジェクト
+        var obj = GameObject.Find("TitleImageBackGround");
+        var group = obj.transform.GetComponentInChildren<CanvasGroup>();
+        if (group is not null)
+        {
+            group.alpha = _playedPrologue ? 1 : 0;
+            group.interactable = group.blocksRaycasts = _playedPrologue;
+        }
+        else
+        {
+            Debug.Log($"TitleImageBackGround Is null");
+        }
+
+        // PressAnyButtonのパネル
+        obj = GameObject.Find("PressAnyButtonPanel");
+        group = obj.transform.GetComponentInChildren<CanvasGroup>();
+        if (group is not null)
+        {
+            group.alpha = !_playedPrologue ? 1 : 0;
+            group.interactable = group.blocksRaycasts = _playedPrologue;
+        }
+        else
+        {
+            Debug.Log($"PressAnyButtonPanel Is null");
+        }
+    }
 
     public void TaskOnDivedOnZone()
     {
@@ -62,7 +141,7 @@ public class GameLogic
         targets.ForEach(_ => _.EndDull());
     }
 
-    void InitializeGame()
+    private void InitializeGame()
     {
         if (_debugging)
         {
@@ -79,7 +158,7 @@ public class GameLogic
         }
     }
 
-    void GameLoop()
+    private void GameLoop()
     {
         if (_debugging)
         {
@@ -90,7 +169,7 @@ public class GameLogic
         targ.ForEach(_ => _.FixedTickThisComponent());
     }
 
-    void FinalizeGame()
+    private void FinalizeGame()
     {
         if (_debugging)
         {
@@ -101,22 +180,8 @@ public class GameLogic
         targets.ForEach(_ => _.FinalizeThisComponent());
     }
 
-    protected override void ToDoAtAwakeSingleton()
+    private int CheckSceneIndex(Scene scene)
     {
-    }
-
-    private void Start()
-    {
-        InitializeGame();
-    }
-
-    private void FixedUpdate()
-    {
-        GameLoop();
-    }
-
-    private void OnApplicationQuit()
-    {
-        FinalizeGame();
+        return _sceneInfo.MasterScenes.FindIndex(_ => _.name == scene.name);
     }
 }

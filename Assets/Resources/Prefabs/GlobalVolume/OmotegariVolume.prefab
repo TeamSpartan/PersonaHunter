@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3837399787350453332}
   - component: {fileID: 2048215657631660815}
+  - component: {fileID: 3672610991267687319}
   m_Layer: 0
   m_Name: OmotegariVolume
   m_TagString: Untagged
@@ -49,3 +50,15 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 7664d767da606494cba8f58bca643e8a, type: 2}
+--- !u!114 &3672610991267687319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7120630468666009285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 945d3b8983fba85468479d9aa350595c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

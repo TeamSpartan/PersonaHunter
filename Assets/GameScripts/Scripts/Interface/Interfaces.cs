@@ -19,7 +19,7 @@ public interface IInitializableComponent
     /// FixedUpdate
     /// </summary>
     public void FixedTickThisComponent();
-    
+
     /// <summary>
     /// Update
     /// </summary>
@@ -158,6 +158,7 @@ public interface IInputValueReferencable
     /// キャラ移動 の値を返す
     /// </summary>
     public Vector2 GetMoveValue();
+
     /// <summary>
     /// マウス入力 の値を返す
     /// </summary>
@@ -183,4 +184,21 @@ public interface IBossDieNotifiable
     /// BOSS撃破時に呼び出す。
     /// </summary>
     void NotifyBossIsDeath();
+}
+
+/// <summary>
+/// プレイヤのデータを格納しているクラスに継承してほしいインターフェース
+/// </summary>
+public interface IPlayerDataContainable
+{
+    /// <summary>
+    /// プロローグを再生したかのフラグを返す
+    /// </summary>
+    /// <returns></returns>
+    public bool PlayedPrologue { get; }
+
+    /// <summary>
+    /// プロローグを再生したことを通知する
+    /// </summary>
+    public void NotifyPlayedPrologue();
 }

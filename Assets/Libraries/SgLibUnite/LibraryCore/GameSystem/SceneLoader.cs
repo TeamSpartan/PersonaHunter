@@ -1,9 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Linq;
 using SgLibUnite.Singleton;
 using UnityEditor;
 
@@ -12,38 +10,31 @@ namespace SgLibUnite
 {
     namespace Systems
     {
-        public class SceneLoader : SingletonBaseClass<SceneLoader>
+        public class SceneLoader : MonoBehaviour
         {
-            [SerializeField, Header("Now Loading Panel")]
-            GameObject nowLoadingPanel;
-            [SerializeField, Header("Loading Text")]
-            Text loadingText;
-            [SerializeField, Header("The Fired Event On Transit Scene")]
-            public UnityEvent<Scene> eventOnSceneLoaded;
-
             public void LoadSceneByName(string sceneName)
             {
                 StartCoroutine(LoadSceneAcyncByName(sceneName));
             }
-            
-            public void LoadSceneByName(SceneAsset scene)
+
+            public void LoadScene(SceneAsset scene)
             {
                 StartCoroutine(LoadSceneAcyncByName(scene.name));
             }
 
-            protected override void ToDoAtAwakeSingleton()
+            public void LoadSceneAdditive(SceneAsset scene)
             {
-                nowLoadingPanel.SetActive(false);
-                nowLoadingPanel.transform.SetAsFirstSibling();
-                SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
+                StartCoroutine(LoadSceneAcyncByNameAdditive(scene.name));
             }
 
-            void SceneManager_activeSceneChanged(Scene arg0, Scene arg1)
+            public void UnLoadSceneByName(string sceneName)
             {
-                eventOnSceneLoaded.Invoke(arg1);   // 他クラスから
+                StartCoroutine(UnLoadSceneAsyncByName(sceneName));
+            }
 
-                nowLoadingPanel.transform.SetAsFirstSibling();
-                nowLoadingPanel.SetActive(false);
+            public void UnLoadScene(SceneAsset scene)
+            {
+                StartCoroutine(UnLoadSceneAsyncByName(scene.name));
             }
 
             IEnumerator LoadSceneAcyncByName(string sceneName)
@@ -51,16 +42,36 @@ namespace SgLibUnite
                 AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
                 while (!asyncLoad.isDone)
                 {
-                    nowLoadingPanel.transform.SetAsLastSibling();
-                    nowLoadingPanel.SetActive(!false);
                     yield return null;
                 }
             }
-        }
 
-        public interface IOnSceneTransit
-        {
-            public void OnSceneTransitComplete(Scene scene);
+            IEnumerator LoadSceneAcyncByNameAdditive(string sceneName)
+            {
+                AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+                while (!asyncLoad.isDone)
+                {
+                    yield return null;
+                }
+
+                var scene = SceneManager.GetSceneByName(sceneName);
+                SceneManager.SetActiveScene(scene);
+            }
+
+            IEnumerator UnLoadSceneAsyncByName(string sceneName)
+            {
+                var targetScene = SceneManager.GetSceneByName(sceneName);
+                var asyncOperation = SceneManager.UnloadSceneAsync(targetScene);
+                while (!asyncOperation.isDone)
+                {
+                    yield return null;
+                }
+            }
+
+            public interface IOnSceneTransit
+            {
+                public void OnSceneTransitComplete(Scene scene);
+            }
         }
     }
 }
