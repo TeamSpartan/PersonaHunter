@@ -3,7 +3,12 @@ guid: 5673f1b3c8a9ec3429b1f16080e8bd3a
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ChMIi_Omotegari_Shujinnkou01
+    second: {fileID: 2100000, guid: 5c3612fef4fc27c44abf19cb17e2ebaf, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

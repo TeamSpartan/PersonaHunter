@@ -90,7 +90,7 @@ public class GameLogic
     }
 
     /// <summary>
-    /// 
+    /// 一時停止を終了する
     /// </summary>
     public void StartResume()
     {
