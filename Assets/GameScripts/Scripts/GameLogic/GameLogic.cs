@@ -122,6 +122,11 @@ public class GameLogic
         var targets = _booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.EndDull());
     }
+    
+    public int CheckSceneIndex(Scene scene)
+    {
+        return _sceneInfo.MasterScenes.FindIndex(_ => _.name == scene.name);
+    }
 
     private void InitializeGame()
     {
@@ -160,10 +165,5 @@ public class GameLogic
 
         var target = _booster.GetDerivedComponents<IInitializableComponent>();
         target.ForEach(_ => _.FinalizeThisComponent());
-    }
-
-    private int CheckSceneIndex(Scene scene)
-    {
-        return _sceneInfo.MasterScenes.FindIndex(_ => _.name == scene.name);
     }
 }

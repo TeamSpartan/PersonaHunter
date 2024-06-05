@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// ユーザー定義のゲーム開始時にヴァリデーション処理を受け持つクラス。
@@ -16,6 +18,40 @@ public class MyComponentValidator : MonoBehaviour
     }
 
     private void Validation()
+    {
+        var scene = SceneManager.GetActiveScene();
+
+        switch (scene.name)
+        {
+            case ConstantValues.TitleScene:
+            {
+                ValidationOnTitleScene();
+                break;
+            }
+
+            case ConstantValues.PrologueScene:
+            {
+                break;
+            }
+
+            case ConstantValues.InGameScene:
+            {
+                break;
+            }
+
+            case ConstantValues.BossScene:
+            {
+                break;
+            }
+
+            case ConstantValues.EpilogueScene:
+            {
+                break;
+            }
+        }
+    }
+
+    private void ValidationOnTitleScene()
     {
         // プロローグを再生したかの静的フィールドにアクセス
         var tempData = Resources.Load<TemporaryPlayerDataHolder>("Prefabs/GameSystem/TemporaryPlayerDataHolder");
