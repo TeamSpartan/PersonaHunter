@@ -14,17 +14,23 @@ public class GameLogic
     : MonoBehaviour
 {
     [SerializeField] private bool _debugging;
-    [SerializeField] private SceneInfo _sceneInfo;
+    [SerializeField , Tooltip("シーンアセットの配列を格納しているアセット")] private SceneInfo _sceneInfo;
 
+    /// <summary> パリィ成功時のイベント </summary>
     public Action EParrySucceed { get; set; }
 
+    /// <summary> ガウス差分クラス </summary>
     private DifferenceOfGaussian _dog;
+    /// <summary> ポスプロをかけるために必要なVolumeクラス </summary>
     private Volume _volume;
+    /// <summary> シーン遷移クラス </summary>
     private SceneLoader _sceneLoader;
+    /// <summary> シーンのインデックス </summary>
     private int _selectedSceneIndex;
 
     #region Flags
 
+    /// <summary> プロローグ再生完了のフラグ </summary>
     private bool _playedPrologue;
 
     #endregion
