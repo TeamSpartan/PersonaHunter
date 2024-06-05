@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 /// ver 3.3.1
 /// </summary>
 public class NuweBrain : MonoBehaviour
-    , IMobBehaviourParameter
+    , IEnemiesParameter
     , IInitializableComponent
     , IDulledTarget
     , IDamagedComponent
@@ -704,5 +704,15 @@ public class NuweBrain : MonoBehaviour
     public void FinalizeThisComponent()
     {
         _tree.PauseBT();
+    }
+
+    public void PauseThisComponent()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void ResumeThisComponent()
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using SgLibUnite.Singleton;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -13,21 +11,26 @@ using UnityEngine.SceneManagement;
 /// オモテガリ ゲームロジック
 /// </summary>
 public class GameLogic
-    : SingletonBaseClass<GameLogic>
+    : MonoBehaviour
 {
     [SerializeField] private bool _debugging;
-    [SerializeField] private SceneInfo _sceneInfo;
+    [SerializeField , Tooltip("シーンアセットの配列を格納しているアセット")] private SceneInfo _sceneInfo;
 
+    /// <summary> パリィ成功時のイベント </summary>
     public Action EParrySucceed { get; set; }
 
-    private List<AsyncOperation> _asyncOperation = new List<AsyncOperation>();
+    /// <summary> ガウス差分クラス </summary>
     private DifferenceOfGaussian _dog;
+    /// <summary> ポスプロをかけるために必要なVolumeクラス </summary>
     private Volume _volume;
+    /// <summary> シーン遷移クラス </summary>
     private SceneLoader _sceneLoader;
+    /// <summary> シーンのインデックス </summary>
     private int _selectedSceneIndex;
 
     #region Flags
 
+    /// <summary> プロローグ再生完了のフラグ </summary>
     private bool _playedPrologue;
 
     #endregion
@@ -35,7 +38,7 @@ public class GameLogic
     // コーディング ブースタ クラス
     CBooster _booster = new CBooster();
 
-    protected override void ToDoAtAwakeSingleton()
+    private void Awake()
     {
         if (_debugging)
         {
@@ -68,11 +71,11 @@ public class GameLogic
 
     public void TaskOnDivedOnZone()
     {
-        if (GameObject.FindWithTag("Player").transform != null)
+        if (GameObject.FindWithTag("Player").transform is not null)
         {
             var player = GameObject.FindWithTag("Player").transform;
-            var ppos = Camera.main.WorldToViewportPoint(player.position);
-            _dog.center.Override(new Vector2(ppos.x, ppos.y));
+            var playerPos = Camera.main.WorldToViewportPoint(player.position);
+            _dog.center.Override(new Vector2(playerPos.x, playerPos.y));
         }
         else
         {
@@ -81,6 +84,24 @@ public class GameLogic
 
         DOTween.To((_) => { _dog.elapsedTime.Override(_); },
             0f, 1f, .75f);
+    }
+
+    /// <summary>
+    /// 一時停止を開始する
+    /// </summary>
+    public void StartPause()
+    {
+        var targets = _booster.GetDerivedComponents<IInitializableComponent>();
+        targets.ForEach(_ => _.PauseThisComponent());
+    }
+
+    /// <summary>
+    /// 一時停止を終了する
+    /// </summary>
+    public void StartResume()
+    {
+        var targets = _booster.GetDerivedComponents<IInitializableComponent>();
+        targets.ForEach(_ => _.ResumeThisComponent());
     }
 
     /// <summary>
@@ -101,6 +122,11 @@ public class GameLogic
         var targets = _booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.EndDull());
     }
+    
+    public int CheckSceneIndex(Scene scene)
+    {
+        return _sceneInfo.MasterScenes.FindIndex(_ => _.name == scene.name);
+    }
 
     private void InitializeGame()
     {
@@ -112,7 +138,7 @@ public class GameLogic
         var targets = _booster.GetDerivedComponents<IInitializableComponent>();
         targets.ForEach(_ => _.InitializeThisComponent());
 
-        if (GameObject.FindFirstObjectByType<Volume>() != null)
+        if (GameObject.FindFirstObjectByType<Volume>() is not null) // GameObject.FindFirstObjectByType<Volume>() != null
         {
             _volume = GameObject.FindFirstObjectByType<Volume>();
             _volume.profile.TryGet(out _dog);
@@ -126,8 +152,8 @@ public class GameLogic
             Debug.Log($"{nameof(GameLogic)}:Game Is Running");
         }
 
-        var targ = _booster.GetDerivedComponents<IInitializableComponent>();
-        targ.ForEach(_ => _.FixedTickThisComponent());
+        var target = _booster.GetDerivedComponents<IInitializableComponent>();
+        target.ForEach(_ => _.FixedTickThisComponent());
     }
 
     private void FinalizeGame()
@@ -137,12 +163,7 @@ public class GameLogic
             Debug.Log($"{nameof(GameLogic)}:Game Finalized");
         }
 
-        var targets = _booster.GetDerivedComponents<IInitializableComponent>();
-        targets.ForEach(_ => _.FinalizeThisComponent());
-    }
-
-    private int CheckSceneIndex(Scene scene)
-    {
-        return _sceneInfo.MasterScenes.FindIndex(_ => _.name == scene.name);
+        var target = _booster.GetDerivedComponents<IInitializableComponent>();
+        target.ForEach(_ => _.FinalizeThisComponent());
     }
 }

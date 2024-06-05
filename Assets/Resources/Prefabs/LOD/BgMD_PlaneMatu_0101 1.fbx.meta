@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5673f1b3c8a9ec3429b1f16080e8bd3a
+guid: 5d8886c02c071bc4cb3c5f1c8767967d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: ChMIi_Omotegari_Shujinnkou01
-    second: {fileID: 2100000, guid: 5c3612fef4fc27c44abf19cb17e2ebaf, type: 2}
+      name: BgMIi_PlaneMatu_0101
+    second: {fileID: 2100000, guid: 654970f066c994a78a4ac1365f1948fb, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

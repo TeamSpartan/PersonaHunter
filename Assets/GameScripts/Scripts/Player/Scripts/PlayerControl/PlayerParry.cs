@@ -7,106 +7,115 @@ using UnityEngine;
 
 namespace Player.Action
 {
-	[RequireComponent(typeof(PlayerParam))]
-	[RequireComponent(typeof(Animator))]
-	///<summary>プレイヤーのパリー</summary>
-	public class PlayerParry : MonoBehaviour, IAbleToParry, IInitializableComponent
-	{
-		[SerializeField] private ParticleSystem _parry;
+    [RequireComponent(typeof(PlayerParam))]
+    ///<summary>プレイヤーのパリー</summary>
+    public class PlayerParry : MonoBehaviour, IAbleToParry, IInitializableComponent
+    {
+        [SerializeField] private ParticleSystem _parry;
+        [SerializeField] private Animator _animator;
 
-		private int _parryID = Animator.StringToHash("IsParry");
-		private PlayerParam _playerParam;
-		private Animator _animator;
-		private CBooster _cBooster = new();
-		private ZoneObj _zoneObj;
-		
-		private void Start()
-		{
-			_playerParam = GetComponentInParent<PlayerParam>();
-			_animator = GetComponentInParent<Animator>();
-			_zoneObj = GetComponentInChildren<ZoneObj>();
-		}
+        private int _parryID = Animator.StringToHash("IsParry");
+        private PlayerParam _playerParam;
+        private CBooster _cBooster = new();
+        private ZoneObj _zoneObj;
 
-		private void Update()
-		{
-			if (PlayerInputsAction.Instance.GetCurrentInputType == PlayerInputTypes.Parry && !_playerParam.GetIsAnimation)
-			{
-				Parried();
-			}
-		}
+        private void Start()
+        {
+            _playerParam = GetComponentInParent<PlayerParam>();
+            _zoneObj = GetComponentInChildren<ZoneObj>();
+        }
 
-		void Parried()
-		{
-			if (_playerParam.GetIsParry)
-			{
-				return;
-			}
+        private void Update()
+        {
+            if (PlayerInputsAction.Instance.GetCurrentInputType == PlayerInputTypes.Parry &&
+                !_playerParam.GetIsAnimation)
+            {
+                Parried();
+            }
+        }
 
-			_playerParam.SetIsAnimation(true);
-			_animator.SetTrigger(_parryID);
-		}
+        void Parried()
+        {
+            if (_playerParam.GetIsParry)
+            {
+                return;
+            }
 
-		//パリィの成功
-		public void ParrySuccess()
-		{
-			_zoneObj.IncreaseGaugeValue(_playerParam.GetGiveValueOfParry);
-			_parry.Play();
-		}
+            _playerParam.SetIsAnimation(true);
+            _animator.SetTrigger(_parryID);
+        }
 
-		///<summary>アニメーションイベントで呼び出す用</summary>------------------------------------------------------------------
-		public void Parry()
-		{
-			if (_playerParam.GetIsParry)
-			{
-				return;
-			}
-			
-			_playerParam.SetIsParry(true);
-		}
+        //パリィの成功
+        public void ParrySuccess()
+        {
+            _zoneObj.IncreaseGaugeValue(_playerParam.GetGiveValueOfParry);
+            _parry.Play();
+        }
 
-		public void EndParry()
-		{
-			if (!_playerParam.GetIsParry)
-			{
-				return;
-			}
-			
-			_playerParam.SetIsParry(false);
-		}
+        ///<summary>アニメーションイベントで呼び出す用</summary>------------------------------------------------------------------
+        public void Parry()
+        {
+            if (_playerParam.GetIsParry)
+            {
+                return;
+            }
 
-		public void EndParryActions()
-		{
-			PlayerInputsAction.Instance.DeleteInputQueue(PlayerInputTypes.Parry);
-			_playerParam.SetIsAnimation(false);
-			PlayerInputsAction.Instance.EndAction();
-		}
+            _playerParam.SetIsParry(true);
+        }
 
-		public bool NotifyPlayerIsGuarding()
-		{
-			return _playerParam.GetIsParry;
-		}
+        public void EndParry()
+        {
+            if (!_playerParam.GetIsParry)
+            {
+                return;
+            }
 
-		public void InitializeThisComponent()
-		{
-		}
+            _playerParam.SetIsParry(false);
+        }
 
-		public void FixedTickThisComponent()
-		{
-			throw new NotImplementedException();
-		}
+        public void EndParryActions()
+        {
+            PlayerInputsAction.Instance.DeleteInputQueue(PlayerInputTypes.Parry);
+            _playerParam.SetIsAnimation(false);
+            PlayerInputsAction.Instance.EndAction();
+        }
 
-		public void TickThisComponent()
-		{
-			if (PlayerInputsAction.Instance.GetCurrentInputType == PlayerInputTypes.Parry &&
-			    !_playerParam.GetIsAnimation)
-			{
-				Parried();
-			}
-		}
+        public bool NotifyPlayerIsGuarding()
+        {
+            return _playerParam.GetIsParry;
+        }
 
-		public void FinalizeThisComponent()
-		{
-			throw new NotImplementedException();
-		}
-	}
+        public void InitializeThisComponent()
+        {
+        }
+
+        public void FixedTickThisComponent()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void TickThisComponent()
+        {
+            if (PlayerInputsAction.Instance.GetCurrentInputType == PlayerInputTypes.Parry &&
+                !_playerParam.GetIsAnimation)
+            {
+                Parried();
+            }
+        }
+
+        public void FinalizeThisComponent()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PauseThisComponent()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ResumeThisComponent()
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

@@ -165,4 +165,14 @@ public class PlayerAttack : MonoBehaviour, IInitializableComponent
 	{
 		throw new NotImplementedException();
 	}
+
+	public void PauseThisComponent()
+	{
+		throw new NotImplementedException();
+	}
+
+	public void ResumeThisComponent()
+	{
+		throw new NotImplementedException();
+	}
 }

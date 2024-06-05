@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.AI;
 
 // 各モジュール間のインターフェイスはここに集約
 
@@ -29,22 +28,16 @@ public interface IInitializableComponent
     /// リセットの時に呼び出される
     /// </summary>
     public void FinalizeThisComponent();
-}
-
-/// <summary>
-/// セーブデータに必要なプレイヤのコンポーネントが継承すべきインターフェイス
-/// </summary>
-public interface ISavablePlayerInfo
-{
-    /// <summary>
-    /// プレイヤーのトランスフォーム情報を設定
-    /// </summary>
-    public void SetPlayerTransform(Transform transform);
 
     /// <summary>
-    /// プレイヤーのトランスフォーム情報を返す 
+    /// 一時停止をする
     /// </summary>
-    public Transform GetPlayerTransform(); // データセーバから呼ばれる
+    public void PauseThisComponent();
+
+    /// <summary>
+    /// 一時停止から戻る
+    /// </summary>
+    public void ResumeThisComponent();
 }
 
 /// <summary>
@@ -66,7 +59,7 @@ public interface IDulledTarget
 /// <summary>
 /// 敵AI 本体のコンポーネントが継承すべきインターフェイス
 /// </summary>
-public interface IMobBehaviourParameter
+public interface IEnemiesParameter
 {
     /// <summary>
     /// 体力値を返す
@@ -77,17 +70,6 @@ public interface IMobBehaviourParameter
     /// 体力値を初期化する
     /// </summary>
     public void SetHealth(float val);
-}
-
-/// <summary>
-/// 敵AIのステートが継承すべきインターフェイス
-/// </summary>
-public interface IEnemyState
-{
-    /// <summary>
-    /// ステートを更新。これがないと毎フレーム処理が期待した通りに動作しない。
-    /// </summary>
-    public void UpdateState(Transform selfTransform, Transform targetTransform, NavMeshAgent agent);
 }
 
 /// <summary>
@@ -170,8 +152,14 @@ public interface IInputValueReferencable
 /// </summary>
 public interface IAbleToParry
 {
+    /// <summary>
+    /// プレイヤがガード中かのコンディションを返す
+    /// </summary>
     public bool NotifyPlayerIsGuarding();
 
+    /// <summary>
+    /// パリィ成功時に呼ぶ
+    /// </summary>
     public void ParrySuccess();
 }
 

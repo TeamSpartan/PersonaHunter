@@ -12,7 +12,7 @@ using UnityEngine.AI;
 /// ver 1.0.0
 /// </summary>
 public class KomashiraBrain : MonoBehaviour
-    , IMobBehaviourParameter
+    , IEnemiesParameter
     , IInitializableComponent
     , IDulledTarget
     , IDamagedComponent
@@ -463,6 +463,16 @@ public class KomashiraBrain : MonoBehaviour
     public void FinalizeThisComponent()
     {
         _tree.PauseBT();
+    }
+
+    public void PauseThisComponent()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void ResumeThisComponent()
+    {
+        throw new System.NotImplementedException();
     }
 
     public void StartDull()

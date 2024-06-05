@@ -42,6 +42,16 @@ public class Unnko
         Debug.Log($"{nameof(Unnko)} : Is Finalized");
     }
 
+    public void PauseThisComponent()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ResumeThisComponent()
+    {
+        throw new NotImplementedException();
+    }
+
     public Transform GetPlayerCamTrasableTransform()
     {
         return transform;

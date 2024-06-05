@@ -66,6 +66,16 @@ namespace Input
             _elapsedT = 0;
         }
 
+        public void PauseThisComponent()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ResumeThisComponent()
+        {
+            throw new NotImplementedException();
+        }
+
         public Vector2 GetMoveValue()
         {
             return new Vector2(_moveH, _moveV);
