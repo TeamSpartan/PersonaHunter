@@ -13,7 +13,6 @@ using UnityEngine.AI;
 /// </summary>
 public class KomashiraBrain : MonoBehaviour
     , IEnemiesParameter
-    , IInitializableComponent
     , IDulledTarget
     , IDamagedComponent
     , IPlayerCamLockable
@@ -148,7 +147,7 @@ public class KomashiraBrain : MonoBehaviour
         _neckBone.GetComponent<Collider>().enabled = false;
     }
 
-    public void InitializeThisComponent()
+    public void Start()
     {
         SetupComponent();
         SetupBehaviours();
@@ -451,28 +450,14 @@ public class KomashiraBrain : MonoBehaviour
         _currentYielded = _death;
     }
 
-    public void FixedTickThisComponent()
+    public void FixedUpdate()
     {
         _tree.UpdateEventsYield();
     }
 
-    public void TickThisComponent()
-    {
-    }
-
-    public void FinalizeThisComponent()
+    public void OnDisable()
     {
         _tree.PauseBT();
-    }
-
-    public void PauseThisComponent()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void ResumeThisComponent()
-    {
-        throw new System.NotImplementedException();
     }
 
     public void StartDull()

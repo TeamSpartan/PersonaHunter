@@ -7,7 +7,7 @@ namespace Player.Action
 {
 	[RequireComponent(typeof(PlayerParam))]
 	///<summary>プレイヤーの回避</summary>
-	public class PlayerAvoid : MonoBehaviour, IInitializableComponent
+	public class PlayerAvoid : MonoBehaviour
 	{
 		
 		private int _avoidId = Animator.StringToHash("IsAvoid");
@@ -99,35 +99,6 @@ namespace Player.Action
 			PlayerInputsAction.Instance.DeleteInputQueue(PlayerInputTypes.Avoid);
 			_playerParam.SetIsAnimation(false);
 			PlayerInputsAction.Instance.EndAction();
-		}
-		//------------------------------------------------------------------------------------------------------------------------------------
-		public void InitializeThisComponent()
-		{
-			
-		}
-
-		public void FixedTickThisComponent()
-		{
-			//throw new System.NotImplementedException();
-		}
-
-		public void TickThisComponent()
-		{
-		}
-
-		public void FinalizeThisComponent()
-		{
-			//throw new System.NotImplementedException();
-		}
-
-		public void PauseThisComponent()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void ResumeThisComponent()
-		{
-			throw new NotImplementedException();
 		}
 	}
 }

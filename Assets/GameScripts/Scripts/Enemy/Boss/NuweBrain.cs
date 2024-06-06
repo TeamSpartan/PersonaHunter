@@ -12,7 +12,6 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class NuweBrain : MonoBehaviour
     , IEnemiesParameter
-    , IInitializableComponent
     , IDulledTarget
     , IDamagedComponent
     , IPlayerCamLockable
@@ -364,7 +363,7 @@ public class NuweBrain : MonoBehaviour
         }
     }
 
-    public void InitializeThisComponent()
+    public void Start()
     {
         SetupBehaviours();
         MakeTransitions();
@@ -372,7 +371,7 @@ public class NuweBrain : MonoBehaviour
         SetupComponent();
     }
 
-    public void FixedTickThisComponent()
+    public void FixedUpdate()
     {
         _tree.UpdateEventsYield();  // 割り込みイベントを更新
         _playerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayers);
@@ -397,10 +396,6 @@ public class NuweBrain : MonoBehaviour
         // イベントではない通常ビヘイビアの遷移が可能かチェック（更新）
         _tree.UpdateTransition(_tNameStartGetClose, ref _playerFound);
         _tree.UpdateTransition(_tNameStartThink, ref _playerIsInRange);
-    }
-
-    public void TickThisComponent()
-    {
     }
 
     /// <summary>
@@ -701,18 +696,8 @@ public class NuweBrain : MonoBehaviour
         }
     }
 
-    public void FinalizeThisComponent()
+    public void OnDisable()
     {
         _tree.PauseBT();
-    }
-
-    public void PauseThisComponent()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void ResumeThisComponent()
-    {
-        throw new System.NotImplementedException();
     }
 }

@@ -14,17 +14,22 @@ public class GameLogic
     : MonoBehaviour
 {
     [SerializeField] private bool _debugging;
-    [SerializeField , Tooltip("シーンアセットの配列を格納しているアセット")] private SceneInfo _sceneInfo;
+
+    [SerializeField, Tooltip("シーンアセットの配列を格納しているアセット")]
+    private SceneInfo _sceneInfo;
 
     /// <summary> パリィ成功時のイベント </summary>
     public Action EParrySucceed { get; set; }
 
     /// <summary> ガウス差分クラス </summary>
     private DifferenceOfGaussian _dog;
+
     /// <summary> ポスプロをかけるために必要なVolumeクラス </summary>
     private Volume _volume;
+
     /// <summary> シーン遷移クラス </summary>
     private SceneLoader _sceneLoader;
+
     /// <summary> シーンのインデックス </summary>
     private int _selectedSceneIndex;
 
@@ -91,8 +96,6 @@ public class GameLogic
     /// </summary>
     public void StartPause()
     {
-        var targets = _booster.GetDerivedComponents<IInitializableComponent>();
-        targets.ForEach(_ => _.PauseThisComponent());
     }
 
     /// <summary>
@@ -100,8 +103,6 @@ public class GameLogic
     /// </summary>
     public void StartResume()
     {
-        var targets = _booster.GetDerivedComponents<IInitializableComponent>();
-        targets.ForEach(_ => _.ResumeThisComponent());
     }
 
     /// <summary>
@@ -122,7 +123,7 @@ public class GameLogic
         var targets = _booster.GetDerivedComponents<IDulledTarget>();
         targets.ForEach(_ => _.EndDull());
     }
-    
+
     public int CheckSceneIndex(Scene scene)
     {
         return _sceneInfo.MasterScenes.FindIndex(_ => _.name == scene.name);
@@ -135,10 +136,8 @@ public class GameLogic
             Debug.Log($"{nameof(GameLogic)}:Game Initialized");
         }
 
-        var targets = _booster.GetDerivedComponents<IInitializableComponent>();
-        targets.ForEach(_ => _.InitializeThisComponent());
-
-        if (GameObject.FindFirstObjectByType<Volume>() is not null) // GameObject.FindFirstObjectByType<Volume>() != null
+        if (GameObject
+                .FindFirstObjectByType<Volume>() is not null) // GameObject.FindFirstObjectByType<Volume>() != null
         {
             _volume = GameObject.FindFirstObjectByType<Volume>();
             _volume.profile.TryGet(out _dog);
@@ -151,9 +150,6 @@ public class GameLogic
         {
             Debug.Log($"{nameof(GameLogic)}:Game Is Running");
         }
-
-        var target = _booster.GetDerivedComponents<IInitializableComponent>();
-        target.ForEach(_ => _.FixedTickThisComponent());
     }
 
     private void FinalizeGame()
@@ -162,8 +158,5 @@ public class GameLogic
         {
             Debug.Log($"{nameof(GameLogic)}:Game Finalized");
         }
-
-        var target = _booster.GetDerivedComponents<IInitializableComponent>();
-        target.ForEach(_ => _.FinalizeThisComponent());
     }
 }

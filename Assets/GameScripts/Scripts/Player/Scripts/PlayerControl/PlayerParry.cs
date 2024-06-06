@@ -9,7 +9,7 @@ namespace Player.Action
 {
 	[RequireComponent(typeof(PlayerParam))]
 	///<summary>プレイヤーのパリー</summary>
-	public class PlayerParry : MonoBehaviour, IAbleToParry, IInitializableComponent
+	public class PlayerParry : MonoBehaviour, IAbleToParry
 	{
 		[SerializeField] private ParticleSystem _parry;
 
@@ -83,39 +83,6 @@ namespace Player.Action
 		public bool NotifyPlayerIsGuarding()
 		{
 			return _playerParam.GetIsParry;
-		}
-
-		public void InitializeThisComponent()
-		{
-		}
-
-		public void FixedTickThisComponent()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void TickThisComponent()
-		{
-			if (PlayerInputsAction.Instance.GetCurrentInputType == PlayerInputTypes.Parry &&
-			    !_playerParam.GetIsAnimation)
-			{
-				Parried();
-			}
-		}
-
-		public void FinalizeThisComponent()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void PauseThisComponent()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void ResumeThisComponent()
-		{
-			throw new NotImplementedException();
 		}
 	}
 }
