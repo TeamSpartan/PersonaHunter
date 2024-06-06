@@ -27,7 +27,7 @@ public class MapleTreeCuller : MonoBehaviour
         _renderer = GetComponentInChildren<MeshRenderer>();
     }
 
-    private void LateUpdate()
+    private void Update()
     {
         // カリングを開始する距離より遠い場合True
         var condition = Vector3.Distance(transform.position, _target.position) > _distanceToCulling;
