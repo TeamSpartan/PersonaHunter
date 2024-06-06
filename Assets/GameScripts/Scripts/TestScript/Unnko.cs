@@ -7,19 +7,18 @@ using UnityEngine;
 
 public class Unnko
     : MonoBehaviour
-        , IInitializableComponent
         , IPlayerCameraTrasable
 {
     private TesterInput _inputT;
 
-    public void InitializeThisComponent()
+    public void Start()
     {
         Debug.Log($"{nameof(Unnko)} : Is Init");
 
         this._inputT = GameObject.FindFirstObjectByType<TesterInput>();
     }
 
-    public void FixedTickThisComponent()
+    public void FixedUpdate()
     {
         var brain = GameObject.FindFirstObjectByType<PlayerCameraBrain>();
         var f = Camera.main.transform.forward;
@@ -31,12 +30,7 @@ public class Unnko
             transform.Translate(dir);
         }
     }
-
-    public void TickThisComponent()
-    {
-        
-    }
-
+    
     public void FinalizeThisComponent()
     {
         Debug.Log($"{nameof(Unnko)} : Is Finalized");

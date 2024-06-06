@@ -5,7 +5,6 @@ namespace Input
 {
     public class TesterInput
         : MonoBehaviour
-            , IInitializableComponent
             , ILockOnEventFirable
             , IInputValueReferencable
     {
@@ -19,17 +18,12 @@ namespace Input
         public Action EvtCamLeftTarget { get; set; }
         public Action EvtCamRightTarget { get; set; }
 
-        public void InitializeThisComponent()
+        public void Start()
         {
             _elapsedT = 0f;
         }
 
-        public void FixedTickThisComponent()
-        {
-            
-        }
-
-        public void TickThisComponent()
+        public void Update()
         {
             if (UnityEngine.Input.GetMouseButton(2)  || UnityEngine.Input.GetKey(KeyCode.L))
             {

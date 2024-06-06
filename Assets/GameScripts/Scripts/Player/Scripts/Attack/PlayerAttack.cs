@@ -4,7 +4,7 @@ using Player.Input;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
 
-public class PlayerAttack : MonoBehaviour, IInitializableComponent
+public class PlayerAttack : MonoBehaviour
 {
 	//右側からの攻撃なら１、左側からの攻撃なら２
 	private int _currentName; //モーション名
