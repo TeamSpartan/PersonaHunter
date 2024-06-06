@@ -13,17 +13,24 @@ public class MapleTreeCuller : MonoBehaviour
     [SerializeField, Header("このオブジェクトとの距離を計測する")]
     private Transform _target;
 
+    private MeshRenderer _renderer;
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
 
         Gizmos.DrawWireSphere(transform.position, _distanceToCulling);
     }
-    
+
+    private void Start()
+    {
+        _renderer = GetComponentInChildren<MeshRenderer>();
+    }
+
     private void LateUpdate()
     {
-        // カリングを開始する距離より近い場合True
-        var condition = Vector3.Distance(transform.position, _target.position) < _distanceToCulling;
-        this.gameObject.SetActive(condition);
+        // カリングを開始する距離より遠い場合True
+        var condition = Vector3.Distance(transform.position, _target.position) > _distanceToCulling;
+        _renderer.enabled = !condition;
     }
 }
