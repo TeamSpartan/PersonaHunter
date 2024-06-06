@@ -4,43 +4,6 @@ using UnityEngine;
 // 各モジュール間のインターフェイスはここに集約
 
 /// <summary>
-/// ゲームシーンに配置されるオブジェクトにアタッチされるユーザー定義コンポーネント
-/// はこれを継承すべき
-/// </summary>
-public interface IInitializableComponent
-{
-    /// <summary>
-    /// 起動の時に呼び出される
-    /// </summary>
-    public void InitializeThisComponent();
-
-    /// <summary>
-    /// FixedUpdate
-    /// </summary>
-    public void FixedTickThisComponent();
-
-    /// <summary>
-    /// Update
-    /// </summary>
-    public void TickThisComponent();
-
-    /// <summary>
-    /// リセットの時に呼び出される
-    /// </summary>
-    public void FinalizeThisComponent();
-
-    /// <summary>
-    /// 一時停止をする
-    /// </summary>
-    public void PauseThisComponent();
-
-    /// <summary>
-    /// 一時停止から戻る
-    /// </summary>
-    public void ResumeThisComponent();
-}
-
-/// <summary>
 /// 集中モードの時に鈍化するオブジェクトが継承すべきインターフェイス
 /// </summary>
 public interface IDulledTarget
@@ -190,3 +153,20 @@ public interface IPlayerDataContainable
     /// </summary>
     public void NotifyPlayedPrologue();
 }
+
+/// <summary>
+/// 一時停止機能できるコンポーネントが継承する
+/// </summary>
+public interface IPausableComponent
+{
+    /// <summary>
+    /// 一時停止をする
+    /// </summary>
+    public Action GetTaskOnPause();
+
+    /// <summary>
+    /// 一時停止から戻る
+    /// </summary>
+    public Action GetTaskOnResume();
+}
+

@@ -15,6 +15,7 @@ namespace SgLibUnite.CodingBooster
             var list = GameObject.FindObjectsOfType<GameObject>()
                 .Where(_ => _.GetComponent<T>() != null)
                 .Select(_ => _.GetComponent<T>()).ToList();
+            if (list.Count == 0) return null;
             return list;
         }
 
