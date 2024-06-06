@@ -244,17 +244,6 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""974370b3-5eed-46b5-8b19-b16069ce4936"",
-                    ""path"": ""<Mouse>/position"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Camera"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""6949c4d8-760f-44ba-9750-fd32e7ce7337"",
                     ""path"": ""<Gamepad>/rightStickPress"",
                     ""interactions"": ""Press"",
