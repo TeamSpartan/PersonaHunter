@@ -25,6 +25,12 @@ public class GameLogic
 
     /// <summary> 一時停止から抜けるときに走る処理 </summary>
     public event Action EResume;
+
+    /// <summary> ゾーンに入るときのイベントをここに登録 </summary>
+    public event Action EDiveZone;
+    
+    /// <summary> ゾーンから出るときのイベントをここに登録 </summary>
+    public event Action EOutZone;
     
     /// <summary> ガウス差分クラス </summary>
     private DifferenceOfGaussian _dog;
