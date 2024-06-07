@@ -68,6 +68,8 @@ public class KomashiraBrain : MonoBehaviour
     /// <summary> パトロールパスのポイントのインデックス </summary>
     private int _patrolPathIndex;
 
+    private GameLogic _logic;
+
     #endregion
 
     #region コンディション
@@ -148,7 +150,8 @@ public class KomashiraBrain : MonoBehaviour
 
     public void Start()
     {
-        GameObject.FindAnyObjectByType<GameLogic>().ApplyEnemyTransform(transform);
+        _logic = GameObject.FindAnyObjectByType<GameLogic>();
+        _logic.ApplyEnemyTransform(transform);
 
         SetupComponent();
         SetupBehaviours();

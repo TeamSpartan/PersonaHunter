@@ -193,6 +193,8 @@ public class NuweBrain : MonoBehaviour
     /// <summary> 突進攻撃時の当たり判定中かのフラグ </summary>
     private bool _isCheckingRushColDetection;
 
+    private GameLogic _logic;
+
     #endregion
 
     public void AddDamage(float dmg)
@@ -364,8 +366,9 @@ public class NuweBrain : MonoBehaviour
 
     public void Start()
     {
-        GameObject.FindAnyObjectByType<GameLogic>().ApplyEnemyTransform(transform);
-        
+        _logic = GameObject.FindAnyObjectByType<GameLogic>();
+        _logic.ApplyEnemyTransform(transform);
+
         SetupBehaviours();
         MakeTransitions();
         _tree.StartBT();
@@ -374,11 +377,11 @@ public class NuweBrain : MonoBehaviour
 
     public void FixedUpdate()
     {
-        _tree.UpdateEventsYield();  // 割り込みイベントを更新
+        _tree.UpdateEventsYield(); // 割り込みイベントを更新
         _playerFound = Physics.CheckSphere(transform.position, _sightRange, _playerLayers);
         _playerIsInRange = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
 
-        if (!_playerFound)  // プレイヤが見つからないならIdleに戻る
+        if (!_playerFound) // プレイヤが見つからないならIdleに戻る
         {
             _tree.EndYieldBehaviourFrom(_currentYielded);
             _tree.JumpTo(_idle);
@@ -442,7 +445,7 @@ public class NuweBrain : MonoBehaviour
         _lookPlayer.EBegin += FindPlayerDirection;
 
         // ↑ でビヘイビアをどんなビヘイビアか指定している。また、ビヘイビアへ入った際の処理もここで指定している。
-        
+
         BTBehaviour[] behaviours = new[]
         {
             _idle,
@@ -480,7 +483,7 @@ public class NuweBrain : MonoBehaviour
 
         if (_tree.CurrentBehaviour != _idle)
         {
-            _tree.JumpTo(_idle);    // 初期化時のビヘイビアがIdle出ない場合にはIdleにジャンプしてIdleから遷移していくようにする
+            _tree.JumpTo(_idle); // 初期化時のビヘイビアがIdle出ない場合にはIdleにジャンプしてIdleから遷移していくようにする
         }
     }
 
@@ -497,7 +500,7 @@ public class NuweBrain : MonoBehaviour
         _playerDirection = _player.position - transform.position;
     }
 
-    public void GetFinch()  // 怯み発生時のメソッド
+    public void GetFinch() // 怯み発生時のメソッド
     {
         _tree.YieldAllBehaviourTo(_flinch);
         _anim.SetTrigger("GetFlinch");
@@ -508,7 +511,7 @@ public class NuweBrain : MonoBehaviour
         _tree.EndYieldBehaviourFrom(_flinch);
     }
 
-    public void GetParry()  // パリィ発生時のメソッド
+    public void GetParry() // パリィ発生時のメソッド
     {
         _tree.YieldAllBehaviourTo(_stumble);
         _anim.SetTrigger("GetParry");
@@ -552,7 +555,7 @@ public class NuweBrain : MonoBehaviour
         }
     }
 
-    private void Await()    // 指定した時間待ち、プレイヤの位置や相対的な向きに応じて次にとるビヘイビアへ移行する
+    private void Await() // 指定した時間待ち、プレイヤの位置や相対的な向きに応じて次にとるビヘイビアへ移行する
     {
         _elapsedAwaitingTime += Time.deltaTime;
 
@@ -614,7 +617,7 @@ public class NuweBrain : MonoBehaviour
         _boost.GetDerivedComponents<IBossDieNotifiable>()[0].NotifyBossIsDeath();
     }
 
-    private void Flinch()   // 攻撃を受け続けてひるみ値がたまり切った際のイベント
+    private void Flinch() // 攻撃を受け続けてひるみ値がたまり切った際のイベント
     {
         _currentYielded = _flinch;
 
@@ -628,7 +631,7 @@ public class NuweBrain : MonoBehaviour
         }
     }
 
-    private void Stumble()  // パリィ発生時のイベント
+    private void Stumble() // パリィ発生時のイベント
     {
         _currentYielded = _stumble;
         _elapsedStumbleingTime += Time.deltaTime;
@@ -680,7 +683,7 @@ public class NuweBrain : MonoBehaviour
         }
     }
 
-    private void LookPlayer()   // プレイヤを向く
+    private void LookPlayer() // プレイヤを向く
     {
         _currentYielded = _lookPlayer;
 
