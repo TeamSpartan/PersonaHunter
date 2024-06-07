@@ -13,7 +13,6 @@ using UnityEngine.AI;
 /// </summary>
 public class KomashiraBrain : MonoBehaviour
     , IEnemiesParameter
-    , IDulledTarget
     , IDamagedComponent
     , IPlayerCamLockable
 {
@@ -136,7 +135,7 @@ public class KomashiraBrain : MonoBehaviour
     }
 
     // Animation Event から 呼び出し
-    
+
     public void EnableAttackCollider()
     {
         _neckBone.GetComponent<Collider>().enabled = true;
@@ -150,7 +149,7 @@ public class KomashiraBrain : MonoBehaviour
     public void Start()
     {
         GameObject.FindAnyObjectByType<GameLogic>().ApplyEnemyTransform(transform);
-        
+
         SetupComponent();
         SetupBehaviours();
         _tree.StartBT();

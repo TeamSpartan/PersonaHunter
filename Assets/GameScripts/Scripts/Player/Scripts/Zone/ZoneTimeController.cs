@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Player.Zone
 {
 	/// <summary>SlowTime時の処理をします</summary>
-	public class ZoneTimeController : MonoBehaviour, IDulledTarget
+	public class ZoneTimeController : MonoBehaviour
 	{
 		[SerializeField, Tooltip("制限時間"), Header("制限時間")]
 		private float zoneTimeLimit = 10f;

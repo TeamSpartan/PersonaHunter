@@ -12,7 +12,6 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class NuweBrain : MonoBehaviour
     , IEnemiesParameter
-    , IDulledTarget
     , IDamagedComponent
     , IPlayerCamLockable
 {
