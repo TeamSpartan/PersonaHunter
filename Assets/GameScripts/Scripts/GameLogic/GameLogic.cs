@@ -66,12 +66,10 @@ public class GameLogic
 
     private void FixedUpdate()
     {
-        GameLoop();
     }
 
     private void OnApplicationQuit()
     {
-        FinalizeGame();
     }
 
     public void TaskOnDivedOnZone()
@@ -141,22 +139,6 @@ public class GameLogic
         {
             _volume = GameObject.FindFirstObjectByType<Volume>();
             _volume.profile.TryGet(out _dog);
-        }
-    }
-
-    private void GameLoop()
-    {
-        if (_debugging)
-        {
-            Debug.Log($"{nameof(GameLogic)}:Game Is Running");
-        }
-    }
-
-    private void FinalizeGame()
-    {
-        if (_debugging)
-        {
-            Debug.Log($"{nameof(GameLogic)}:Game Finalized");
         }
     }
 }
