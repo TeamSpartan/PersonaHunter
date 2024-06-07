@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using SgLibUnite.CodingBooster;
 using UnityEngine;
 using UnityEngine.Rendering;
 using DG.Tweening;
+using SgLibUnite.Singleton;
 using SgLibUnite.Systems;
 using UnityEngine.SceneManagement;
 
@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 /// オモテガリ ゲームロジック
 /// </summary>
 public class GameLogic
-    : MonoBehaviour
+    : SingletonBaseClass<GameLogic>
         , IBossDieNotifiable
 {
     /// <summary> パリィ成功時のイベント </summary>
@@ -49,13 +49,10 @@ public class GameLogic
 
     #endregion
 
-    // コーディング ブースタ クラス
-    CBooster _booster = new CBooster();
-
     /// <summary> 敵のトランスフォーム </summary>
     private List<Transform> _enemies = new List<Transform>();
 
-    private void Awake()
+    protected override void ToDoAtAwakeSingleton()
     {
         // SceneLoader が Nullである場合には生成。
         if (GameObject.FindFirstObjectByType<SceneLoader>() is null)
@@ -69,14 +66,6 @@ public class GameLogic
     private void Start()
     {
         InitializeGame();
-    }
-
-    private void FixedUpdate()
-    {
-    }
-
-    private void OnApplicationQuit()
-    {
     }
 
     /// <summary>

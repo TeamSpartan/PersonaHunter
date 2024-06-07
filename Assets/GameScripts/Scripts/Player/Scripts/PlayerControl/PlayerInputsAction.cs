@@ -253,6 +253,7 @@ namespace Player.Input
 		void OnLockOn(InputAction.CallbackContext context)
 		{
 			_isLockOn = !_isLockOn;
+			ELockOnTriggered?.Invoke();
 		}
 
 		void OnPause(InputAction.CallbackContext context)

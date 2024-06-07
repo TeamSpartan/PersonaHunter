@@ -81,10 +81,6 @@ public class MyComponentValidator : MonoBehaviour
             group.alpha = _playedPrologue ? 1 : 0;
             group.interactable = group.blocksRaycasts = _playedPrologue;
         }
-        else
-        {
-            // Debug.Log($"TitleImageBackGround Is null");
-        }
 
         // PressAnyButtonのパネル
         obj = GameObject.Find("PressAnyButtonPanel");
@@ -94,10 +90,6 @@ public class MyComponentValidator : MonoBehaviour
             {
                 GameObject.Destroy(obj);
             }
-        }
-        else
-        {
-            // Debug.Log($"PressAnyButtonPanel Is null");
         }
     }
 }
