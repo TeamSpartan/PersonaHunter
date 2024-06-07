@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
+using Player.Action;
+using Player.Input;
 using UnityEngine;
 using SgLibUnite.CodingBooster;
 
@@ -92,22 +94,28 @@ namespace PlayerCam.Scripts
         private CinemachineVirtualCamera _playerFollowCam;
         private CinemachineVirtualCamera _lockOnCam;
 
+        // プレイヤ入力クラス
+        private PlayerInputsAction _playerInput;
+
+        private GameLogic _logic;
+
         #endregion
 
         private void Start()
         {
+            // ゲームロジックを取得
+            _logic = GameObject.FindAnyObjectByType<GameLogic>();
+
             // 検索にひっかかった最初のオブジェクトをプレイヤとする
-            this._playerCurrent = boost.GetDerivedComponents<IPlayerCameraTrasable>()
-                .First().GetPlayerCamTrasableTransform();
+            this._playerCurrent = GameObject.FindAnyObjectByType<PlayerMove>().transform;
 
             // ロックオンイベント発火元へのデリゲート登録をする
-            boost.GetDerivedComponents<ILockOnEventFirable>()
-                .ForEach(_ => _.ELockOnTriggered += this.LockOnTriggerred);
+            _playerInput = GameObject.FindAnyObjectByType<PlayerInputsAction>();
+            _playerInput.ELockOnTriggered += LockOnTriggerred;
 
             // ロックオン対象選択イベント発火もとへデリゲート登録
-            var lockOnEventHandler = boost.GetDerivedComponents<ILockOnEventFirable>()[0];
-            lockOnEventHandler.EvtCamLeftTarget += LockOnToLeftTarget;
-            lockOnEventHandler.EvtCamRightTarget += LockOnToRightTarget;
+            _playerInput.EvtCamRightTarget += LockOnToRightTarget;
+            _playerInput.EvtCamLeftTarget += LockOnToLeftTarget;
 
             // 内部パラメータ初期化
             this._lockOnRadius = LockOnRadius; // 半径
@@ -125,8 +133,7 @@ namespace PlayerCam.Scripts
         public void OnApplicationQuit()
         {
             // ロックオンイベント発火元へのデリゲート登録解除をする
-            boost.GetDerivedComponents<ILockOnEventFirable>()
-                .ForEach(_ => _.ELockOnTriggered -= this.LockOnTriggerred);
+            _playerInput.ELockOnTriggered -= LockOnTriggerred;
         }
 
         private void Update()
@@ -217,7 +224,6 @@ namespace PlayerCam.Scripts
 
             if (_lockOnTargets is not null)
             {
-
                 // ビューポート座標:ワールド座標の連想配列を作成
                 foreach (var lockOnTarget in _lockOnTargets)
                 {
@@ -250,13 +256,13 @@ namespace PlayerCam.Scripts
 
         void GetInputValue()
         {
-            var iInput = boost.GetDerivedComponents<IInputValueReferencable>();
+            var iInput = _playerInput;
 
-            _moveX = iInput[0].GetMoveValue().x;
-            _moveY = iInput[0].GetMoveValue().y;
+            _moveX = iInput.GetMoveValue().x;
+            _moveY = iInput.GetMoveValue().y;
 
-            _mouseX = iInput[0].GetCamMoveValue().x;
-            _mouseY = iInput[0].GetCamMoveValue().y;
+            _mouseX = iInput.GetCamMoveValue().x;
+            _mouseY = iInput.GetCamMoveValue().y;
         }
 
         /// <summary>
@@ -265,7 +271,7 @@ namespace PlayerCam.Scripts
         void LockOnToLeftTarget()
         {
             if (_currentLockOnTarget is null) return;
-            
+
             // 現在ロックオンしているターゲットのインデックスを取得
             var vportpos = Camera.main.WorldToViewportPoint(_currentLockOnTarget.position);
             var index = _vportTransformDic.Values.ToList().FindIndex(x => x == vportpos);
@@ -273,7 +279,7 @@ namespace PlayerCam.Scripts
             {
                 index--;
             }
-            
+
             _currentLockOnTarget = _vportTransformDic.Keys.ToList()[index];
 
             _theta = GetRadianValueToLookAtTarget();
@@ -285,7 +291,7 @@ namespace PlayerCam.Scripts
         void LockOnToRightTarget()
         {
             if (_currentLockOnTarget is null) return;
-            
+
             // 現在ロックオンしているターゲットのインデックスを取得
             var vportpos = Camera.main.WorldToViewportPoint(_currentLockOnTarget.position);
             var index = _vportTransformDic.Values.ToList().FindIndex(x => x == vportpos);
@@ -293,7 +299,7 @@ namespace PlayerCam.Scripts
             {
                 index++;
             }
-            
+
             _currentLockOnTarget = _vportTransformDic.Keys.ToList()[index];
 
             _theta = GetRadianValueToLookAtTarget();
@@ -341,7 +347,7 @@ namespace PlayerCam.Scripts
             // とりあえず正面のターゲットへロックオン
             var len = _lockOnTargets.Count;
             _currentLockOnTarget = _lockOnTargets[(len - 1) / 2];
-            
+
             _theta = GetRadianValueToLookAtTarget();
 
             // ロックオンカメラに切り替え
@@ -362,7 +368,7 @@ namespace PlayerCam.Scripts
             // 第2証言 ０ 未満 -１．５ 以上
             // 第1証言 -１．５ 未満 -３以上
             // 単位は ラジアン
-            LockOnRadius = _lockOnRadius = Vector3.Distance(_currentLockOnTarget.position,_playerCurrent.position);
+            LockOnRadius = _lockOnRadius = Vector3.Distance(_currentLockOnTarget.position, _playerCurrent.position);
 
             // The Subtraction for calculate Vector Player position-supposed 
             // ロックオン発動時のプレイヤの位置を設定するためのベクトル
@@ -390,9 +396,7 @@ namespace PlayerCam.Scripts
 
         private List<Transform> GetLockableTargets()
         {
-            return boost.GetDerivedComponents<IPlayerCamLockable>()
-                .Select(_ => _.GetLockableObjectTransform())
-                .Where(_ =>
+            return _logic.GetEnemies().Where(_ =>
                     Vector3.Distance(_playerCurrent.position, _.position) <= MaxDistanceToCapture
                     || Camera.main.WorldToScreenPoint(_.position).x <= Camera.main.pixelWidth - 1
                     && Camera.main.WorldToScreenPoint(_.position).y <= Camera.main.pixelHeight - 1

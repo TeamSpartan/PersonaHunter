@@ -365,6 +365,8 @@ public class NuweBrain : MonoBehaviour
 
     public void Start()
     {
+        GameObject.FindAnyObjectByType<GameLogic>().ApplyEnemyTransform(transform);
+        
         SetupBehaviours();
         MakeTransitions();
         _tree.StartBT();

@@ -8,19 +8,19 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Resources/Scenes/Dev/EnemiesTest/NuweJ_Dev.unity
     guid: 4f338db2275d056439f199913fbd5115
-  - enabled: 0
+  - enabled: 1
     path: Assets/Resources/Scenes/Title.unity
     guid: ca8051dc1eba2a34fb0ab09101c62c99
-  - enabled: 0
+  - enabled: 1
     path: Assets/Resources/Scenes/Prologue.unity
     guid: 3d1254c4bd69ccf42a2bcb1bba7b72c2
   - enabled: 1
     path: Assets/Resources/Scenes/Main(ingame).unity
     guid: d42cdab8268f3ff4dbdc577e3cd43cf3
-  - enabled: 0
+  - enabled: 1
     path: Assets/Resources/Scenes/Epilogue.unity
     guid: 60094f39365f9634b8d763b9ece9efb6
-  - enabled: 0
+  - enabled: 1
     path: Assets/Resources/Scenes/BossScene.unity
     guid: 397c1c021907f0a4b9e071e184ef31b3
   m_configObjects: {}

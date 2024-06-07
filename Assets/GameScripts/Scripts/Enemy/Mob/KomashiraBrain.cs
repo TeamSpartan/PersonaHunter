@@ -149,6 +149,8 @@ public class KomashiraBrain : MonoBehaviour
 
     public void Start()
     {
+        GameObject.FindAnyObjectByType<GameLogic>().ApplyEnemyTransform(transform);
+        
         SetupComponent();
         SetupBehaviours();
         _tree.StartBT();

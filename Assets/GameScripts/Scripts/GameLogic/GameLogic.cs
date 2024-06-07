@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -13,14 +14,18 @@ using UnityEngine.SceneManagement;
 public class GameLogic
     : MonoBehaviour
 {
-    [SerializeField] private bool _debugging;
-
     [SerializeField, Tooltip("シーンアセットの配列を格納しているアセット")]
     private SceneInfo _sceneInfo;
 
     /// <summary> パリィ成功時のイベント </summary>
-    public Action EParrySucceed { get; set; }
+    public event Action EParrySucceed;
 
+    /// <summary> 一時停止処理が走った時の処理 </summary>
+    public event Action EPause;
+
+    /// <summary> 一時停止から抜けるときに走る処理 </summary>
+    public event Action EResume;
+    
     /// <summary> ガウス差分クラス </summary>
     private DifferenceOfGaussian _dog;
 
@@ -43,13 +48,11 @@ public class GameLogic
     // コーディング ブースタ クラス
     CBooster _booster = new CBooster();
 
+    /// <summary> 敵のトランスフォーム </summary>
+    private List<Transform> _enemies = new List<Transform>();
+
     private void Awake()
     {
-        if (_debugging)
-        {
-            Debug.Log($"Current Scene Index : {CheckSceneIndex(SceneManager.GetActiveScene())}");
-        }
-
         // SceneLoader が Nullである場合には生成。
         if (GameObject.FindFirstObjectByType<SceneLoader>() is null)
         {
@@ -66,12 +69,26 @@ public class GameLogic
 
     private void FixedUpdate()
     {
-        GameLoop();
     }
 
     private void OnApplicationQuit()
     {
-        FinalizeGame();
+    }
+
+    /// <summary>
+    /// 敵のトランスフォームを登録
+    /// </summary>
+    public void ApplyEnemyTransform(Transform enemy)
+    {
+        _enemies.Add(enemy);
+    }
+
+    /// <summary>
+    /// 敵を取得する
+    /// </summary>
+    public List<Transform> GetEnemies()
+    {
+        return _enemies;
     }
 
     public void TaskOnDivedOnZone()
@@ -110,8 +127,6 @@ public class GameLogic
     /// </summary>
     public void StartDiveInZone()
     {
-        var targets = _booster.GetDerivedComponents<IDulledTarget>();
-        targets.ForEach(_ => _.StartDull());
         TaskOnDivedOnZone();
     }
 
@@ -120,8 +135,6 @@ public class GameLogic
     /// </summary>
     public void GetOutOverZone()
     {
-        var targets = _booster.GetDerivedComponents<IDulledTarget>();
-        targets.ForEach(_ => _.EndDull());
     }
 
     public int CheckSceneIndex(Scene scene)
@@ -131,32 +144,11 @@ public class GameLogic
 
     private void InitializeGame()
     {
-        if (_debugging)
-        {
-            Debug.Log($"{nameof(GameLogic)}:Game Initialized");
-        }
-
         if (GameObject
                 .FindFirstObjectByType<Volume>() is not null) // GameObject.FindFirstObjectByType<Volume>() != null
         {
             _volume = GameObject.FindFirstObjectByType<Volume>();
             _volume.profile.TryGet(out _dog);
-        }
-    }
-
-    private void GameLoop()
-    {
-        if (_debugging)
-        {
-            Debug.Log($"{nameof(GameLogic)}:Game Is Running");
-        }
-    }
-
-    private void FinalizeGame()
-    {
-        if (_debugging)
-        {
-            Debug.Log($"{nameof(GameLogic)}:Game Finalized");
         }
     }
 }
