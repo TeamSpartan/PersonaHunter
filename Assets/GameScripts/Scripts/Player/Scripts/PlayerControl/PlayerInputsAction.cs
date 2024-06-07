@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -25,6 +27,7 @@ namespace Player.Input
 	public class PlayerInputsAction : MonoBehaviour, IInputValueReferencable, ILockOnEventFirable
 	{
 		private static PlayerInputsAction _instance;
+
 		public static PlayerInputsAction Instance => _instance;
 
 		[SerializeField, Header("インプット保存の上限")] private int maxInputCount = 5;
@@ -49,9 +52,6 @@ namespace Player.Input
 		private bool _isExternalInputBlocked;
 		private bool _playerControllerInputBlocked;
 
-		private float _elapsedT;
-		
-		
 		///<summary>InGame用とUI用の切り替え</summary>
 		public void ChangeInputType(InputType inputType)
 		{
@@ -99,7 +99,17 @@ namespace Player.Input
 
 		public Vector2 GetCamMoveValue()
 		{
-			
+			if (_inputType == InputType.Player)
+			{
+				if (0 < _inputCamera.x)
+				{
+					EvtCamRightTarget.Invoke();
+				}
+				else if (_inputCamera.x < 0)
+				{
+					EvtCamLeftTarget.Invoke();
+				}
+			}
 
 			return _inputCamera;
 		}
@@ -146,25 +156,10 @@ namespace Player.Input
 			InGameDis();
 		}
 
-		private void Start()
-		{
-			_elapsedT = 0f;
-		}
-
 		void Update()
 		{
 			if (_inputType == InputType.Player)
 				InputTypeUpdate();
-			
-			if (IsLockOn)
-			{
-				_elapsedT += Time.deltaTime;
-			}
-			if (_elapsedT > 1f)
-			{
-				ELockOnTriggered();
-				_elapsedT = 0;
-			}
 		}
 
 		///<summary>アニメーションが終わったら実行</summary>
@@ -253,17 +248,6 @@ namespace Player.Input
 		private void OnCamera(InputAction.CallbackContext context)
 		{
 			_inputCamera = context.ReadValue<Vector2>();
-			if (_inputType == InputType.Player && _isLockOn)
-			{
-				if (0 < _inputCamera.x)
-				{
-					EvtCamRightTarget();
-				}
-				else if (_inputCamera.x < 0)
-				{
-					EvtCamLeftTarget();
-				}
-			}
 		}
 
 		void OnLockOn(InputAction.CallbackContext context)
@@ -329,6 +313,7 @@ namespace Player.Input
 
 			//Camera
 			_gameInputs.Player.Camera.started += OnCamera;
+			_gameInputs.Player.Camera.performed += OnCamera;
 			_gameInputs.Player.Camera.canceled += OnCamera;
 
 			//LockOn
@@ -363,6 +348,7 @@ namespace Player.Input
 
 			//Camera
 			_gameInputs.Player.Camera.started -= OnCamera;
+			_gameInputs.Player.Camera.performed -= OnCamera;
 			_gameInputs.Player.Camera.canceled -= OnCamera;
 
 			//LockOn
