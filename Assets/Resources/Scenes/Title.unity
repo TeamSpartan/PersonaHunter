@@ -507,6 +507,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6473171719771247451, guid: e22f43277a250984899e3fb33e17053d,
+        type: 3}
+      propertyPath: _firstSelectedInTitle
+      value: 
+      objectReference: {fileID: 1267266761}
     - target: {fileID: 6722733173500040237, guid: e22f43277a250984899e3fb33e17053d,
         type: 3}
       propertyPath: m_Name
@@ -955,7 +960,7 @@ PrefabInstance:
     - target: {fileID: 7666623064989849761, guid: d9af35f07310280498662c1482a28749,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7666623064989849761, guid: d9af35f07310280498662c1482a28749,
         type: 3}
@@ -970,7 +975,7 @@ PrefabInstance:
     - target: {fileID: 7666623064989849761, guid: d9af35f07310280498662c1482a28749,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LoadScene
+      value: LoadSceneByName
       objectReference: {fileID: 0}
     - target: {fileID: 7666623064989849761, guid: d9af35f07310280498662c1482a28749,
         type: 3}
@@ -981,12 +986,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 102900000, guid: d42cdab8268f3ff4dbdc577e3cd43cf3,
+      objectReference: {fileID: 0}
+    - target: {fileID: 7666623064989849761, guid: d9af35f07310280498662c1482a28749,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Main(ingame)
+      objectReference: {fileID: 0}
     - target: {fileID: 7666623064989849761, guid: d9af35f07310280498662c1482a28749,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEditor.SceneAsset, UnityEditor.CoreModule
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8274355798512563343, guid: d9af35f07310280498662c1482a28749,
         type: 3}
@@ -1043,7 +1052,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 1267266761}
+  m_FirstSelected: {fileID: 7421450936925382565}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &2109868166
@@ -1409,72 +1418,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates:
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 707964379}
-          m_TargetAssemblyTypeName: SgLibUnite.Systems.SceneLoader, Assembly-CSharp
-          m_MethodName: LoadScene
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 102900000, guid: 3d1254c4bd69ccf42a2bcb1bba7b72c2,
-              type: 3}
-            m_ObjectArgumentAssemblyTypeName: UnityEditor.SceneAsset, UnityEditor.CoreModule
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 707964379}
-          m_TargetAssemblyTypeName: SgLibUnite.Systems.SceneLoader, Assembly-CSharp
-          m_MethodName: LoadScene
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 102900000, guid: 3d1254c4bd69ccf42a2bcb1bba7b72c2,
-              type: 3}
-            m_ObjectArgumentAssemblyTypeName: UnityEditor.SceneAsset, UnityEditor.CoreModule
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
   - eventID: 15
     callback:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 707964379}
           m_TargetAssemblyTypeName: SgLibUnite.Systems.SceneLoader, Assembly-CSharp
-          m_MethodName: LoadScene
-          m_Mode: 2
+          m_MethodName: LoadSceneByName
+          m_Mode: 5
           m_Arguments:
-            m_ObjectArgument: {fileID: 102900000, guid: 3d1254c4bd69ccf42a2bcb1bba7b72c2,
-              type: 3}
-            m_ObjectArgumentAssemblyTypeName: UnityEditor.SceneAsset, UnityEditor.CoreModule
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 11
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 707964379}
-          m_TargetAssemblyTypeName: SgLibUnite.Systems.SceneLoader, Assembly-CSharp
-          m_MethodName: LoadScene
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 102900000, guid: 3d1254c4bd69ccf42a2bcb1bba7b72c2,
-              type: 3}
-            m_ObjectArgumentAssemblyTypeName: UnityEditor.SceneAsset, UnityEditor.CoreModule
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
+            m_StringArgument: Prologue
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!1660057539 &9223372036854775807

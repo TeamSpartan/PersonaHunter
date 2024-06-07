@@ -13,11 +13,8 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class GameLogic
     : MonoBehaviour
-, IBossDieNotifiable
+        , IBossDieNotifiable
 {
-    [SerializeField, Tooltip("シーンアセットの配列を格納しているアセット")]
-    private SceneInfo _sceneInfo;
-
     /// <summary> パリィ成功時のイベント </summary>
     public event Action EParrySucceed;
 
@@ -149,14 +146,8 @@ public class GameLogic
         if (EOutZone is not null) EOutZone.Invoke();
     }
 
-    public int CheckSceneIndex(Scene scene)
-    {
-        return _sceneInfo.MasterScenes.FindIndex(_ => _.name == scene.name);
-    }
-    
     public void NotifyBossIsDeath()
     {
-        
     }
 
     private void InitializeGame()

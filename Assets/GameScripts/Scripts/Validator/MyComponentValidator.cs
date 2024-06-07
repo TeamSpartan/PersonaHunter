@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -9,6 +10,8 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class MyComponentValidator : MonoBehaviour
 {
+    [SerializeField] private GameObject _firstSelectedInTitle;
+    
     private bool _playedPrologue;
 
     // Start is called before the first frame update
@@ -58,6 +61,16 @@ public class MyComponentValidator : MonoBehaviour
         if (tempData is not null)
         {
             _playedPrologue = tempData.PlayedPrologue;
+        }
+        
+        // EventSystem の選択オブジェクトを変更
+        if (tempData.PlayedPrologue)
+        {
+            var es = GameObject.FindAnyObjectByType<EventSystem>();
+            if (es is not null)
+            {
+                es.firstSelectedGameObject = _firstSelectedInTitle;
+            }
         }
 
         // タイトル画面のバックグラウンドのオブジェクト
