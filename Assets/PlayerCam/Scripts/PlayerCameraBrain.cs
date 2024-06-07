@@ -97,10 +97,15 @@ namespace PlayerCam.Scripts
         // プレイヤ入力クラス
         private PlayerInputsAction _playerInput;
 
+        private GameLogic _logic;
+
         #endregion
 
         private void Start()
         {
+            // ゲームロジックを取得
+            _logic = GameObject.FindAnyObjectByType<GameLogic>();
+
             // 検索にひっかかった最初のオブジェクトをプレイヤとする
             this._playerCurrent = GameObject.FindAnyObjectByType<PlayerMove>().transform;
 
@@ -391,9 +396,7 @@ namespace PlayerCam.Scripts
 
         private List<Transform> GetLockableTargets()
         {
-            return boost.GetDerivedComponents<IPlayerCamLockable>()
-                .Select(_ => _.GetLockableObjectTransform())
-                .Where(_ =>
+            return _logic.GetEnemies().Where(_ =>
                     Vector3.Distance(_playerCurrent.position, _.position) <= MaxDistanceToCapture
                     || Camera.main.WorldToScreenPoint(_.position).x <= Camera.main.pixelWidth - 1
                     && Camera.main.WorldToScreenPoint(_.position).y <= Camera.main.pixelHeight - 1

@@ -4,22 +4,6 @@ using UnityEngine;
 // 各モジュール間のインターフェイスはここに集約
 
 /// <summary>
-/// 集中モードの時に鈍化するオブジェクトが継承すべきインターフェイス
-/// </summary>
-public interface IDulledTarget
-{
-    /// <summary>
-    /// 集中モード開始時に呼ばれる
-    /// </summary>
-    public void StartDull();
-
-    /// <summary>
-    /// 集中モード終了時に呼ばれる
-    /// </summary>
-    public void EndDull();
-}
-
-/// <summary>
 /// 敵AI 本体のコンポーネントが継承すべきインターフェイス
 /// </summary>
 public interface IEnemiesParameter
@@ -153,20 +137,3 @@ public interface IPlayerDataContainable
     /// </summary>
     public void NotifyPlayedPrologue();
 }
-
-/// <summary>
-/// 一時停止機能できるコンポーネントが継承する
-/// </summary>
-public interface IPausableComponent
-{
-    /// <summary>
-    /// 一時停止をする
-    /// </summary>
-    public Action GetTaskOnPause();
-
-    /// <summary>
-    /// 一時停止から戻る
-    /// </summary>
-    public Action GetTaskOnResume();
-}
-
