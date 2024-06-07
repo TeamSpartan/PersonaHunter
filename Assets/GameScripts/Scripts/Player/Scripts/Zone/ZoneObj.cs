@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace Player.Zone
 {
 	/// <summary>SlowTime用のゲージ</summary>
-	public class ZoneObj : MonoBehaviour, IDulledTarget
+	public class ZoneObj : MonoBehaviour
 	{
 		[SerializeField] private GameObject zoneObj;
 
