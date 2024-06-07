@@ -3,7 +3,6 @@ using System.Linq;
 using SgLibUnite.AI;
 using UnityEngine;
 using SgLibUnite.BehaviourTree;
-using SgLibUnite.CodingBooster;
 using UnityEngine.AI;
 
 /// <summary>
@@ -49,9 +48,6 @@ public class KomashiraBrain : MonoBehaviour
 
     /// <summary> プレイヤのトランスフォーム </summary>
     private Transform _player;
-
-    /// <summary> 開発ブースター </summary>
-    private CBooster _booster = new();
 
     /// <summary> 体力 </summary>
     private float _healthPoint;

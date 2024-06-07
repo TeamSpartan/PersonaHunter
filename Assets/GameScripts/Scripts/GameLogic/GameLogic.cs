@@ -13,6 +13,7 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class GameLogic
     : MonoBehaviour
+, IBossDieNotifiable
 {
     [SerializeField, Tooltip("シーンアセットの配列を格納しているアセット")]
     private SceneInfo _sceneInfo;
@@ -97,7 +98,7 @@ public class GameLogic
         return _enemies;
     }
 
-    public void StartPostProDoD() // あとで私的メソッドにします
+    public void StartPostProDoG() // あとで私的メソッドにします
     {
         if (GameObject.FindWithTag("Player").transform is not null)
         {
@@ -137,7 +138,7 @@ public class GameLogic
     {
         if (EDiveZone is not null) EDiveZone.Invoke();
 
-        StartPostProDoD();
+        StartPostProDoG();
     }
 
     /// <summary>
@@ -151,6 +152,11 @@ public class GameLogic
     public int CheckSceneIndex(Scene scene)
     {
         return _sceneInfo.MasterScenes.FindIndex(_ => _.name == scene.name);
+    }
+    
+    public void NotifyBossIsDeath()
+    {
+        
     }
 
     private void InitializeGame()

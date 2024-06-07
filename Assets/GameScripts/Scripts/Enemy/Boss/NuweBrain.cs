@@ -1,5 +1,4 @@
 using SgLibUnite.BehaviourTree;
-using SgLibUnite.CodingBooster;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -180,9 +179,6 @@ public class NuweBrain : MonoBehaviour
 
     /// <summary> 突進行動の実行ロックのフラグ </summary>
     private bool _lockedRush;
-
-    /// <summary> 開発効率化ライブラリ </summary>
-    private CBooster _boost = new();
 
     /// <summary> しっぽ攻撃時の当たり判定中かのフラグ </summary>
     private bool _isCheckingTailColDetection;
@@ -614,7 +610,7 @@ public class NuweBrain : MonoBehaviour
     private void Death()
     {
         _currentYielded = _death;
-        _boost.GetDerivedComponents<IBossDieNotifiable>()[0].NotifyBossIsDeath();
+        GameObject.FindAnyObjectByType<GameLogic>().NotifyBossIsDeath();
     }
 
     private void Flinch() // 攻撃を受け続けてひるみ値がたまり切った際のイベント
