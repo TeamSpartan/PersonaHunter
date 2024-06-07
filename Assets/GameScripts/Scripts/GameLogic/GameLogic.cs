@@ -13,6 +13,7 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class GameLogic
     : MonoBehaviour
+, IBossDieNotifiable
 {
     [SerializeField, Tooltip("シーンアセットの配列を格納しているアセット")]
     private SceneInfo _sceneInfo;
@@ -28,10 +29,10 @@ public class GameLogic
 
     /// <summary> ゾーンに入るときのイベントをここに登録 </summary>
     public event Action EDiveZone;
-    
+
     /// <summary> ゾーンから出るときのイベントをここに登録 </summary>
     public event Action EOutZone;
-    
+
     /// <summary> ガウス差分クラス </summary>
     private DifferenceOfGaussian _dog;
 
@@ -97,7 +98,7 @@ public class GameLogic
         return _enemies;
     }
 
-    public void TaskOnDivedOnZone()
+    public void StartPostProDoG() // あとで私的メソッドにします
     {
         if (GameObject.FindWithTag("Player").transform is not null)
         {
@@ -119,6 +120,7 @@ public class GameLogic
     /// </summary>
     public void StartPause()
     {
+        if (EPause is not null) EPause.Invoke();
     }
 
     /// <summary>
@@ -126,6 +128,7 @@ public class GameLogic
     /// </summary>
     public void StartResume()
     {
+        if (EResume is not null) EResume.Invoke();
     }
 
     /// <summary>
@@ -133,7 +136,9 @@ public class GameLogic
     /// </summary>
     public void StartDiveInZone()
     {
-        TaskOnDivedOnZone();
+        if (EDiveZone is not null) EDiveZone.Invoke();
+
+        StartPostProDoG();
     }
 
     /// <summary>
@@ -141,17 +146,23 @@ public class GameLogic
     /// </summary>
     public void GetOutOverZone()
     {
+        if (EOutZone is not null) EOutZone.Invoke();
     }
 
     public int CheckSceneIndex(Scene scene)
     {
         return _sceneInfo.MasterScenes.FindIndex(_ => _.name == scene.name);
     }
+    
+    public void NotifyBossIsDeath()
+    {
+        
+    }
 
     private void InitializeGame()
     {
-        if (GameObject
-                .FindFirstObjectByType<Volume>() is not null) // GameObject.FindFirstObjectByType<Volume>() != null
+        if (GameObject.FindFirstObjectByType<Volume>() is not null)
+            // GameObject.FindFirstObjectByType<Volume>() != null
         {
             _volume = GameObject.FindFirstObjectByType<Volume>();
             _volume.profile.TryGet(out _dog);
