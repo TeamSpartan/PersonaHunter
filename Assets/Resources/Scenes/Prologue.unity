@@ -389,15 +389,14 @@ MonoBehaviour:
           m_CallState: 2
         - m_Target: {fileID: 1256450207}
           m_TargetAssemblyTypeName: SgLibUnite.Systems.SceneLoader, Assembly-CSharp
-          m_MethodName: LoadScene
-          m_Mode: 2
+          m_MethodName: LoadSceneByName
+          m_Mode: 5
           m_Arguments:
-            m_ObjectArgument: {fileID: 102900000, guid: ca8051dc1eba2a34fb0ab09101c62c99,
-              type: 3}
-            m_ObjectArgumentAssemblyTypeName: UnityEditor.SceneAsset, UnityEditor.CoreModule
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: 
+            m_StringArgument: Title
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!1 &900732330
@@ -617,74 +616,6 @@ MonoBehaviour:
   m_PointlightHDType: 0
   m_SpotLightShape: 0
   m_AreaLightShape: 0
---- !u!1001 &1123660593
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 7085970545585200722, guid: 34a24805fdbcab7498d4e5885a909433,
-        type: 3}
-      propertyPath: m_Name
-      value: GameLogic
-      objectReference: {fileID: 0}
-    - target: {fileID: 7542280179161640836, guid: 34a24805fdbcab7498d4e5885a909433,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -6.101615
-      objectReference: {fileID: 0}
-    - target: {fileID: 7542280179161640836, guid: 34a24805fdbcab7498d4e5885a909433,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.6965547
-      objectReference: {fileID: 0}
-    - target: {fileID: 7542280179161640836, guid: 34a24805fdbcab7498d4e5885a909433,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -5.4683146
-      objectReference: {fileID: 0}
-    - target: {fileID: 7542280179161640836, guid: 34a24805fdbcab7498d4e5885a909433,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7542280179161640836, guid: 34a24805fdbcab7498d4e5885a909433,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7542280179161640836, guid: 34a24805fdbcab7498d4e5885a909433,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7542280179161640836, guid: 34a24805fdbcab7498d4e5885a909433,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7542280179161640836, guid: 34a24805fdbcab7498d4e5885a909433,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7542280179161640836, guid: 34a24805fdbcab7498d4e5885a909433,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7542280179161640836, guid: 34a24805fdbcab7498d4e5885a909433,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 34a24805fdbcab7498d4e5885a909433, type: 3}
 --- !u!1 &1174649771
 GameObject:
   m_ObjectHideFlags: 0
@@ -1460,4 +1391,3 @@ SceneRoots:
   - {fileID: 1202988832}
   - {fileID: 675279222}
   - {fileID: 1256450206}
-  - {fileID: 1123660593}

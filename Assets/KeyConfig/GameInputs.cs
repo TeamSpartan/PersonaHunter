@@ -107,6 +107,24 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectTargetRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""9d919e4f-c7f1-492d-9790-efa7e070eb66"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectTargetLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""36a7f6bb-395b-4f35-822b-6b0ee66304f4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -417,6 +435,50 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cb93c4ff-54d3-4c48-acc6-1073aa6ecc11"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectTargetRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b84d5fdd-e445-46a1-86ad-7e9ea4688560"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectTargetRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0c00bde8-15fd-42fb-86d3-4e0de5ebb677"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectTargetLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cd098d6a-2b54-4744-8162-b62ea0843a29"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectTargetLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -522,6 +584,8 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         m_Player_Zone = m_Player.FindAction("Zone", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
+        m_Player_SelectTargetRight = m_Player.FindAction("SelectTargetRight", throwIfNotFound: true);
+        m_Player_SelectTargetLeft = m_Player.FindAction("SelectTargetLeft", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Decision = m_UI.FindAction("Decision", throwIfNotFound: true);
@@ -598,6 +662,8 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Zone;
     private readonly InputAction m_Player_Pause;
     private readonly InputAction m_Player_Dash;
+    private readonly InputAction m_Player_SelectTargetRight;
+    private readonly InputAction m_Player_SelectTargetLeft;
     public struct PlayerActions
     {
         private @GameInputs m_Wrapper;
@@ -611,6 +677,8 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         public InputAction @Zone => m_Wrapper.m_Player_Zone;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
+        public InputAction @SelectTargetRight => m_Wrapper.m_Player_SelectTargetRight;
+        public InputAction @SelectTargetLeft => m_Wrapper.m_Player_SelectTargetLeft;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -647,6 +715,12 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
             @Dash.started += instance.OnDash;
             @Dash.performed += instance.OnDash;
             @Dash.canceled += instance.OnDash;
+            @SelectTargetRight.started += instance.OnSelectTargetRight;
+            @SelectTargetRight.performed += instance.OnSelectTargetRight;
+            @SelectTargetRight.canceled += instance.OnSelectTargetRight;
+            @SelectTargetLeft.started += instance.OnSelectTargetLeft;
+            @SelectTargetLeft.performed += instance.OnSelectTargetLeft;
+            @SelectTargetLeft.canceled += instance.OnSelectTargetLeft;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -678,6 +752,12 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
             @Dash.started -= instance.OnDash;
             @Dash.performed -= instance.OnDash;
             @Dash.canceled -= instance.OnDash;
+            @SelectTargetRight.started -= instance.OnSelectTargetRight;
+            @SelectTargetRight.performed -= instance.OnSelectTargetRight;
+            @SelectTargetRight.canceled -= instance.OnSelectTargetRight;
+            @SelectTargetLeft.started -= instance.OnSelectTargetLeft;
+            @SelectTargetLeft.performed -= instance.OnSelectTargetLeft;
+            @SelectTargetLeft.canceled -= instance.OnSelectTargetLeft;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -776,6 +856,8 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         void OnZone(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
+        void OnSelectTargetRight(InputAction.CallbackContext context);
+        void OnSelectTargetLeft(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

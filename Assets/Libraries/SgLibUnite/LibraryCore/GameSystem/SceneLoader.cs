@@ -17,24 +17,9 @@ namespace SgLibUnite
                 StartCoroutine(LoadSceneAcyncByName(sceneName));
             }
 
-            public void LoadScene(SceneAsset scene)
-            {
-                StartCoroutine(LoadSceneAcyncByName(scene.name));
-            }
-
-            public void LoadSceneAdditive(SceneAsset scene)
-            {
-                StartCoroutine(LoadSceneAcyncByNameAdditive(scene.name));
-            }
-
             public void UnLoadSceneByName(string sceneName)
             {
                 StartCoroutine(UnLoadSceneAsyncByName(sceneName));
-            }
-
-            public void UnLoadScene(SceneAsset scene)
-            {
-                StartCoroutine(UnLoadSceneAsyncByName(scene.name));
             }
 
             IEnumerator LoadSceneAcyncByName(string sceneName)
@@ -44,18 +29,6 @@ namespace SgLibUnite
                 {
                     yield return null;
                 }
-            }
-
-            IEnumerator LoadSceneAcyncByNameAdditive(string sceneName)
-            {
-                AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-                while (!asyncLoad.isDone)
-                {
-                    yield return null;
-                }
-
-                var scene = SceneManager.GetSceneByName(sceneName);
-                SceneManager.SetActiveScene(scene);
             }
 
             IEnumerator UnLoadSceneAsyncByName(string sceneName)

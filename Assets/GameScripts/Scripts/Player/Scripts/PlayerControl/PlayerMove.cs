@@ -64,7 +64,7 @@ namespace Player.Action
 			}
 			else
 			{
-				_rb.AddForce(Vector3.down.normalized * _gravityValue);
+				_rb.AddForce(Vector3.down * _gravityValue);
 			}
 
 			if (PlayerInputsAction.Instance.GetMoveInput == Vector2.zero)

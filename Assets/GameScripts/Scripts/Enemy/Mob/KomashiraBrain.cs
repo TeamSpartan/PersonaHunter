@@ -17,7 +17,7 @@ public class KomashiraBrain : MonoBehaviour
 {
     #region 公開パラメータ
 
-    [SerializeField, Header("パトロール経路")] private PatrollerPathContainer _patrolPath;
+    [SerializeField, Header("パトロール経路")] private PatrollerPath _patrolPath;
 
     [Space(10)] [SerializeField, Header("体力の最大値")]
     private float _maxHealthPoint;
@@ -215,7 +215,7 @@ public class KomashiraBrain : MonoBehaviour
         _death.AddBehaviour(Death);
         _death.EBegin += () => Debug.Log($"entry-death");
         _death.EEnd += () => Debug.Log($"exit-death");
-        _death.EBegin += () => { _anim.SetTrigger("Death"); };
+        _death.EBegin += () => { _anim.SetTrigger("Die"); };
         _death.SetYieldMode(true);
 
         BTBehaviour[] behaviours = new[]
@@ -448,6 +448,7 @@ public class KomashiraBrain : MonoBehaviour
     private void Death()
     {
         _currentYielded = _death;
+        Debug.Log("Death Now");
     }
 
     public void FixedUpdate()
@@ -474,12 +475,28 @@ public class KomashiraBrain : MonoBehaviour
 
     public void AddDamage(float dmg)
     {
-        _healthPoint -= dmg;
+        if (_healthPoint > 0)
+        {
+            _healthPoint -= dmg;
+            if (_healthPoint <= 0)
+            {
+                _tree.EndYieldBehaviourFrom(_currentYielded);
+                _tree.YieldAllBehaviourTo(_death);
+            }
+        }
     }
 
     public void Kill()
     {
         _healthPoint = 0;
+        _tree.EndYieldBehaviourFrom(_currentYielded);
+        _tree.YieldAllBehaviourTo(_death);
+    }
+
+    public void ConfirmDeath()
+    {
+        _tree.PauseBT();
+        Destroy(this.gameObject, 1f);
     }
 
     public Transform GetLockableObjectTransform()

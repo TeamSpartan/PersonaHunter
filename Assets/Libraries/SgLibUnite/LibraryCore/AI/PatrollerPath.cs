@@ -9,7 +9,7 @@ namespace SgLibUnite
     namespace AI
     {
         /// <summary> 道筋の座標情報を格納している </summary>
-        public class PatrollerPathContainer : MonoBehaviour
+        public class PatrollerPath : MonoBehaviour
         {
             [SerializeField, Header("Path Color")] Color color = Color.yellow;
 
