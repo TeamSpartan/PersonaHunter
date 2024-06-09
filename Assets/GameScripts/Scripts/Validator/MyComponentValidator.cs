@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using SgLibUnite.Singleton;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,11 +9,15 @@ using UnityEngine.SceneManagement;
 /// <summary>
 /// ユーザー定義のゲーム開始時にヴァリデーション処理を受け持つクラス。
 /// </summary>
-public class MyComponentValidator : MonoBehaviour
+public class MyComponentValidator : SingletonBaseClass<MyComponentValidator>
 {
     [SerializeField] private GameObject _firstSelectedInTitle;
     
     private bool _playedPrologue;
+    
+    protected override void ToDoAtAwakeSingleton()
+    {
+    }
 
     // Start is called before the first frame update
     void Start()

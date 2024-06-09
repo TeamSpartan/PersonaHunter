@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// シーン内のゲームオブジェクトをDDOLへ登録してシーンに必ず１コは存在するようにする機能を提供する。
 /// </summary>
-public class SigledObject : MonoBehaviour
+public class SingledObject : MonoBehaviour
 {
     private void Start()
     {

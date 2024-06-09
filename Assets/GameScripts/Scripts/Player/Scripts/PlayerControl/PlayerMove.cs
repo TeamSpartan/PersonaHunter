@@ -54,8 +54,6 @@ namespace Player.Action
 			_dir = Camera.main.transform.TransformDirection(_dir);
 			_dir.y = 0;
 			_dir = _dir.normalized;
-			Debug.Log(inputValue);
-
 
 			if (GroundCheck())
 			{

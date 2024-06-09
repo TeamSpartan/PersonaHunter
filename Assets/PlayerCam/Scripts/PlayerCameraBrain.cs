@@ -5,6 +5,7 @@ using Player.Action;
 using Player.Input;
 using UnityEngine;
 using SgLibUnite.CodingBooster;
+using SgLibUnite.Singleton;
 
 namespace PlayerCam.Scripts
 {
@@ -16,7 +17,7 @@ namespace PlayerCam.Scripts
     /// プレイヤ追跡とロックオンターゲットのロックオンを提供。
     /// </summary>
     public class PlayerCameraBrain
-        : MonoBehaviour
+        : SingletonBaseClass<PlayerCameraBrain>
     {
         #region Parameter Exposing
 
@@ -99,6 +100,10 @@ namespace PlayerCam.Scripts
         private GameLogic _logic;
 
         #endregion
+        
+        protected override void ToDoAtAwakeSingleton()
+        {
+        }
 
         private void Start()
         {
@@ -127,6 +132,10 @@ namespace PlayerCam.Scripts
 
             // メインカメラであってほしいので
             this.gameObject.tag = "MainCamera";
+            
+            // DDOLへ各カメラを登録
+            GameObject.DontDestroyOnLoad(_playerFollowCam.gameObject);
+            GameObject.DontDestroyOnLoad(_lockOnCam.gameObject);
         }
 
         public void OnApplicationQuit()

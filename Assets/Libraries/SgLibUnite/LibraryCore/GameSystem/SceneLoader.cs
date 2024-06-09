@@ -10,8 +10,12 @@ namespace SgLibUnite
 {
     namespace Systems
     {
-        public class SceneLoader : MonoBehaviour
+        public class SceneLoader : SingletonBaseClass<SceneLoader>
         {
+            protected override void ToDoAtAwakeSingleton()
+            {
+            }
+            
             public void LoadSceneByName(string sceneName)
             {
                 StartCoroutine(LoadSceneAcyncByName(sceneName));
