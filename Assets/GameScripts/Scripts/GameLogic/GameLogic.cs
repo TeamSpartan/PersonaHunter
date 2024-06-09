@@ -84,7 +84,7 @@ public class GameLogic
         return _enemies;
     }
 
-    public void StartPostProDoG() // あとで私的メソッドにします
+    private void StartPostProDoG()
     {
         if (GameObject.FindWithTag("Player").transform is not null)
         {

@@ -162,6 +162,12 @@ namespace PlayerCam.Scripts
             // ターゲットを常に正面左側からソートした状態の状態を格納
             _lockOnTargets = GetSortedLockOnTargets();
 
+            // ロックオンターゲットがないなら何もしない
+            if (_lockOnTargets is null || _currentLockOnTarget is null)
+            {
+                return;
+            }
+
             // 通常カメラとは視点は大きな変化はなし、ロックオンターゲット中心に
             // 円形を描くような左右移動をする。
             // 前後（敵に対して）すると半径の値が変動

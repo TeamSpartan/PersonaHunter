@@ -30,7 +30,7 @@ public class WindowManager : MonoBehaviour
 
     private void Start()
     {
-        var tempData = Resources.Load<TemporaryPlayerDataHolder>("Prefabs/GameSystem/TemporaryPlayerDataHolder");
+        var tempData = Resources.Load<ClientDataHolder>("Prefabs/GameSystem/ClientDataHolder");
         if (tempData.PlayedPrologue)
         {
             OpenWindow(_rootWindow);

@@ -136,4 +136,14 @@ public interface IPlayerDataContainable
     /// プロローグを再生したことを通知する
     /// </summary>
     public void NotifyPlayedPrologue();
+
+    /// <summary>
+    /// データのセーブをする
+    /// </summary>
+    public void SaveData();
+
+    /// <summary>
+    /// データの読み込みをする
+    /// </summary>
+    public void LoadData();
 }
