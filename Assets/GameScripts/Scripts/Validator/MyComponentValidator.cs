@@ -57,7 +57,7 @@ public class MyComponentValidator : MonoBehaviour
     private void ValidationOnTitleScene()
     {
         // プロローグを再生したかの静的フィールドにアクセス
-        var tempData = Resources.Load<TemporaryPlayerDataHolder>("Prefabs/GameSystem/TemporaryPlayerDataHolder");
+        var tempData = Resources.Load<ClientDataHolder>("Prefabs/GameSystem/ClientDataHolder");
         if (tempData is not null)
         {
             _playedPrologue = tempData.PlayedPrologue;

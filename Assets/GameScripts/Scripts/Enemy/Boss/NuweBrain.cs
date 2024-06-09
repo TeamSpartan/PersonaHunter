@@ -226,7 +226,7 @@ public class NuweBrain : MonoBehaviour
         _anim.SetLayerWeight(1, 0f);
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, _sightRange);
