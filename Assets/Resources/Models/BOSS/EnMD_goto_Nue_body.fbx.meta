@@ -19,6 +19,21 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: EnMD_Rig_DS23A_Goto_Nue_Body_sample_EnMIi_goto_Nue_Toukasozai
     second: {fileID: 2100000, guid: eeaaf92fb859675439c2ccb5967f3729, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: EnTX_Goto_Nue_body_cl
+    second: {fileID: 2800000, guid: 60753af05260b45498122e67e43ae42a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: EnTX_Goto_Nue_etcetera_cl
+    second: {fileID: 2800000, guid: 7abb96b2348b5ff46b701a6501045001, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: EnTX_goto_Nue_Toukasozai
+    second: {fileID: 2800000, guid: 0f063c4808b8bbb4cb49d43000d4bc58, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

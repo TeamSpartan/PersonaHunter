@@ -3,7 +3,27 @@ guid: 9cccdeb724706b6459cf5c5b0fb636b0
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EnMD_DS23A_Goto_Nue_Omen_sample_EnMIi_Goto_Nue_etcetera
+    second: {fileID: 2100000, guid: 33e59209a91f5bd4fab3ffb2d0d0fe3a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EnMD_DS23A_Goto_Nue_Omen_sample_EnMIi_goto_Nue_Toukasozai
+    second: {fileID: 2100000, guid: 0cba8a752de7de049bf8e111ffd42493, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: EnMIi_Goto_Nue_etcetera_Base_color
+    second: {fileID: 2800000, guid: 7de307124c139c24cb980fcecd2b309f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: EnTX_goto_Nue_Toukasozai
+    second: {fileID: 2800000, guid: ea971ca8ecbbff54fb0ce22e8cfc07d7, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
