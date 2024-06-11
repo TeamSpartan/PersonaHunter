@@ -582,6 +582,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4582766506313854488}
+  - component: {fileID: 6647268412848952448}
   - component: {fileID: 7492898135145974534}
   - component: {fileID: 6265088955766530078}
   - component: {fileID: 1814319305656246739}
@@ -617,6 +618,18 @@ Transform:
   - {fileID: 3816909302969658098}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 158.96, z: 0}
+--- !u!114 &6647268412848952448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6325915568887808110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 945d3b8983fba85468479d9aa350595c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7492898135145974534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -647,7 +660,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rotateSpeed: 20
   _cameraRotateSpeed: 5
-  _moveSpeed: 60.9
+  _moveSpeed: 15
   _maxSpeed: 15
   _groundOffSetY: -0.14
   _groundRadius: 0.5

@@ -1,17 +1,16 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using SgLibUnite.Singleton;
-using UnityEditor;
 
 // Auth : Suganuma
 namespace SgLibUnite
 {
     namespace Systems
     {
+        /* 各シーンのオブジェクトが参照を持っていて依存をしているため、シングルトンだめ */
+        
         public class SceneLoader : MonoBehaviour
-        {
+        {   
             public void LoadSceneByName(string sceneName)
             {
                 StartCoroutine(LoadSceneAcyncByName(sceneName));

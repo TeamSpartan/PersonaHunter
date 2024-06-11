@@ -5,6 +5,7 @@ using Player.Action;
 using Player.Input;
 using UnityEngine;
 using SgLibUnite.CodingBooster;
+using SgLibUnite.Singleton;
 
 namespace PlayerCam.Scripts
 {
@@ -16,7 +17,7 @@ namespace PlayerCam.Scripts
     /// プレイヤ追跡とロックオンターゲットのロックオンを提供。
     /// </summary>
     public class PlayerCameraBrain
-        : MonoBehaviour
+        : SingletonBaseClass<PlayerCameraBrain>
     {
         #region Parameter Exposing
 
@@ -99,6 +100,10 @@ namespace PlayerCam.Scripts
         private GameLogic _logic;
 
         #endregion
+        
+        protected override void ToDoAtAwakeSingleton()
+        {
+        }
 
         private void Start()
         {
@@ -127,6 +132,10 @@ namespace PlayerCam.Scripts
 
             // メインカメラであってほしいので
             this.gameObject.tag = "MainCamera";
+            
+            // DDOLへ各カメラを登録
+            GameObject.DontDestroyOnLoad(_playerFollowCam.gameObject);
+            GameObject.DontDestroyOnLoad(_lockOnCam.gameObject);
         }
 
         public void OnApplicationQuit()
@@ -157,6 +166,9 @@ namespace PlayerCam.Scripts
             }
         }
 
+        /// <summary>
+        /// 毎フレーム 処理するロックオン中の挙動
+        /// </summary>
         void CamLockingOn_Tick()
         {
             // ターゲットを常に正面左側からソートした状態の状態を格納
@@ -209,7 +221,7 @@ namespace PlayerCam.Scripts
             var playerRight = Mathf.Cos(_theta) * _lockOnRadius;
             var playerForward = Mathf.Sin(_theta) * _lockOnRadius;
             var pDir = new Vector2(playerRight, playerForward);
-
+            
             var target = _currentLockOnTarget;
             var centerPosition = target.position;
 

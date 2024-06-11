@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Player.Action;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+
+/* 各シーンのオブジェクトが参照を持っていて依存をしているため、シングルトンだめ */
 
 /// <summary>
 /// ユーザー定義のゲーム開始時にヴァリデーション処理を受け持つクラス。
@@ -11,7 +14,7 @@ using UnityEngine.SceneManagement;
 public class MyComponentValidator : MonoBehaviour
 {
     [SerializeField] private GameObject _firstSelectedInTitle;
-    
+
     private bool _playedPrologue;
 
     // Start is called before the first frame update
@@ -39,11 +42,13 @@ public class MyComponentValidator : MonoBehaviour
 
             case ConstantValues.InGameScene:
             {
+                SpawnPlayerToPoint();
                 break;
             }
 
             case ConstantValues.BossScene:
             {
+                SpawnPlayerToPoint();
                 break;
             }
 
@@ -62,7 +67,7 @@ public class MyComponentValidator : MonoBehaviour
         {
             _playedPrologue = tempData.PlayedPrologue;
         }
-        
+
         // EventSystem の選択オブジェクトを変更
         if (tempData.PlayedPrologue)
         {
@@ -91,5 +96,14 @@ public class MyComponentValidator : MonoBehaviour
                 GameObject.Destroy(obj);
             }
         }
+    }
+
+    private void SpawnPlayerToPoint()
+    {
+        var player = GameObject.FindAnyObjectByType<PlayerMove>().gameObject;
+        var spawnPos = GameObject.FindWithTag("SpawnPos").transform;
+
+        player.transform.position = spawnPos.position;
+        player.transform.rotation = spawnPos.rotation;
     }
 }
