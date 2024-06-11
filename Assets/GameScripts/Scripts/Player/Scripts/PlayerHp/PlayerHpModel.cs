@@ -1,4 +1,5 @@
-﻿using Player.Action;
+﻿using System;
+using Player.Action;
 using Player.Param;
 using UniRx;
 using UnityEngine;
@@ -56,6 +57,17 @@ namespace name
 
         private void Update()
         {
+            // ヴァリデーション
+            if (_nue is null)
+            {
+                _nue = GameObject.FindFirstObjectByType<NuweBrain>();
+            }
+
+            if (_mob is null)
+            {
+                _mob = GameObject.FindFirstObjectByType<KomashiraBrain>();
+            }
+
             //無敵時間中
             if (_playerParam.GetIsDamage)
             {
@@ -88,11 +100,9 @@ namespace name
                     case NuweBrain.NueAttackType.Tail:
                         AddDamage(_nue.GetBaseDamage);
                         break;
+                    default:
+                        throw new Exception("ぬえの攻撃の攻撃タイプがわかりません");
                 }
-            }
-            else
-            {
-                Debug.Log("null");
             }
 
             if (_mob != null)

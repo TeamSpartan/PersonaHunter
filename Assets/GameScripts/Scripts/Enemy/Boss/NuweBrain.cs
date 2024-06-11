@@ -254,7 +254,7 @@ public class NuweBrain : MonoBehaviour
     /// </summary>
     public NueAttackType GetAttackType(Transform other)
     {
-        var ret = NueAttackType.Tail;
+        var ret = NueAttackType.None;
         if (other == _tailBone)
         {
             ret = NueAttackType.Tail;
@@ -272,6 +272,14 @@ public class NuweBrain : MonoBehaviour
 
         return ret;
     }
+    
+    public NueAttackType GetAttackType(NueAttackType attackType)
+    {
+        Transform ret = null;
+        
+    
+        return ret;
+    }
 
     /// <summary>
     /// ぬえ 攻撃バリエーション 列挙型
@@ -280,7 +288,8 @@ public class NuweBrain : MonoBehaviour
     {
         Rush,
         Claw,
-        Tail
+        Tail,
+        None
     }
 
     /// <summary>
