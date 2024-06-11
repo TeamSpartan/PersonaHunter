@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Player.Action;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -41,11 +42,13 @@ public class MyComponentValidator : MonoBehaviour
 
             case ConstantValues.InGameScene:
             {
+                SpawnPlayerToPoint();
                 break;
             }
 
             case ConstantValues.BossScene:
             {
+                SpawnPlayerToPoint();
                 break;
             }
 
@@ -93,5 +96,14 @@ public class MyComponentValidator : MonoBehaviour
                 GameObject.Destroy(obj);
             }
         }
+    }
+
+    private void SpawnPlayerToPoint()
+    {
+        var player = GameObject.FindAnyObjectByType<PlayerMove>().gameObject;
+        var spawnPos = GameObject.FindWithTag("SpawnPos").transform;
+
+        player.transform.position = spawnPos.position;
+        player.transform.rotation = spawnPos.rotation;
     }
 }
