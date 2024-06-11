@@ -92,6 +92,7 @@ public class PlayerAttack : MonoBehaviour
 			_currentName = 2;
 			_playerParam.SetIsAnimation(true);
 		}
+		PlayerInputsAction.Instance.RunCancel();
 	}
 
 	/// <summary>
@@ -146,33 +147,4 @@ public class PlayerAttack : MonoBehaviour
 		Gizmos.DrawWireSphere(transform.position, _attackingRange);
 	}
 
-	public void InitializeThisComponent()
-	{
-		
-	}
-
-	public void FixedTickThisComponent()
-	{
-		throw new NotImplementedException();
-	}
-
-	public void TickThisComponent()
-	{
-		throw new NotImplementedException();
-	}
-
-	public void FinalizeThisComponent()
-	{
-		throw new NotImplementedException();
-	}
-
-	public void PauseThisComponent()
-	{
-		throw new NotImplementedException();
-	}
-
-	public void ResumeThisComponent()
-	{
-		throw new NotImplementedException();
-	}
 }

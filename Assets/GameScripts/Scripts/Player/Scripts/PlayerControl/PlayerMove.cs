@@ -1,36 +1,33 @@
-using System;
 using DG.Tweening;
 using Player.Input;
 using Player.Param;
 using PlayerCam.Scripts;
-using UniRx;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Player.Action
 {
 	[RequireComponent(typeof(Rigidbody))]
 	public class PlayerMove : MonoBehaviour, IPlayerCameraTrasable
 	{
-		[SerializeField, Tooltip("プレイヤーの回転速度")]
-		float _rotateSpeed = 20f;
+		[SerializeField, Header("プレイヤーの回転速度")] float _rotateSpeed = 20f;
 
 		[SerializeField, Header("カメラの回転速度")] private float _cameraRotateSpeed = 3f;
 
-		[SerializeField, Tooltip("プレイヤーの移動速度")]
-		float _moveSpeed = 25f;
+		[SerializeField, Header("歩く速度")] float _walkSpeed = 10f;
 
-		[SerializeField, Header("最高速度")] private float _maxSpeed = 15f;
+		[SerializeField, Header("走る速度")] private float _runSpeed = 20f;
+		[SerializeField, Header("走るまでの時間")] private float _runTransitionTime = 1f;
 
-		[Header("接地判定")] [SerializeField, Tooltip("接地判定Y方向のオフセット"), Range(0, -1)]
+		[Header("接地判定の長さ")] [SerializeField, Tooltip("接地判定Y方向のオフセット"), Range(0, -1)]
 		float _groundOffSetY = -0.14f;
 
-		[SerializeField, Tooltip("接地判定の半径"), Range(0, 1)]
+		[SerializeField, Header("接地判定の半径"), Range(0, 1)]
 		float _groundRadius = 0.5f;
 
-		[SerializeField, Header("重力の大きさ")] private float _gravityValue = 10f;
+		[SerializeField, Header("重力の大きさ")] private float _gravityValue = 30f;
 
-		[SerializeField, Header("レイの長さ")] private float _rayLength = 0.3f;
+		[SerializeField, Header("ノーマル判定Rayの長さ")]
+		private float _rayLength = 0.3f;
 
 		[SerializeField, Tooltip("接地判定が反応するLayer")]
 		LayerMask _groundLayers;
@@ -46,6 +43,8 @@ namespace Player.Action
 		private PlayerCameraBrain _playerCamera;
 		private DOTween _doTween;
 
+		private float _speed;
+
 		/// <summary>プレイヤーの移動処理のメソッド </summary>
 		private void OnMove(Vector2 inputValue)
 		{
@@ -54,15 +53,17 @@ namespace Player.Action
 			_dir = Camera.main.transform.TransformDirection(_dir);
 			_dir.y = 0;
 			_dir = _dir.normalized;
+			Debug.Log(inputValue);
 
-			if (GroundCheck())
+
+			//走っていると
+			if (PlayerInputsAction.Instance.GetIsRun)
 			{
-				//加速
-				SpeedControl();
+				_rb.velocity = GetSlopeMoveDirection(_dir * _speed, NormalRay());
 			}
 			else
 			{
-				_rb.AddForce(Vector3.down * _gravityValue);
+				_rb.velocity = GetSlopeMoveDirection(_dir * _speed, NormalRay());
 			}
 
 			if (PlayerInputsAction.Instance.GetMoveInput == Vector2.zero)
@@ -70,14 +71,13 @@ namespace Player.Action
 				_rb.velocity = Vector3.zero;
 			}
 
-
 			_animator.SetFloat("Speed", _dir.magnitude);
 		}
 
 		///<summary>プレイヤーの向き</summary>
 		public void PlayerRotate(Vector3 dir)
 		{
-			if (PlayerInputsAction.Instance.IsLockOn)
+			if (PlayerInputsAction.Instance.GetIsLockOn)
 			{
 				_player.transform.LookAt(_playerCamera.CurrentLockingOnTarget);
 			}
@@ -85,12 +85,13 @@ namespace Player.Action
 			{
 				_player.transform.forward +=
 					Vector3.Lerp(_player.transform.forward, dir, Time.deltaTime * _rotateSpeed);
-				transform.forward += Vector3.Lerp(transform.forward, dir, Time.deltaTime * _cameraRotateSpeed);
+				if (PlayerInputsAction.Instance.GetCurrentInputType != PlayerInputTypes.Avoid)
+					transform.forward += Vector3.Lerp(transform.forward, dir, Time.deltaTime * _cameraRotateSpeed);
 			}
 		}
 
 		/// <summary>プレイヤーの接地判定を判定するメソッド </summary>
-		/// <returns>接地判定</returns>	
+		/// <returns>接地判定</returns>
 		bool GroundCheck()
 		{
 			//オフセットを計算して接地判定の球の位置を設定する
@@ -115,20 +116,6 @@ namespace Player.Action
 			return Vector3.zero;
 		}
 
-		/// <summary>プレイヤーの速度制限のメソッド </summary>
-		void SpeedControl()
-		{
-			if (_rb.velocity.magnitude > _maxSpeed)
-			{
-				_rb.velocity = GetSlopeMoveDirection(_dir * _maxSpeed, NormalRay());
-			}
-			else
-			{
-				_rb.AddForce(GetSlopeMoveDirection(_dir * _moveSpeed,
-					NormalRay()), ForceMode.Force);
-			}
-		}
-
 		/// <summary>
 		/// 傾斜に合わせたベクトルに変えるメソッド
 		/// </summary>
@@ -150,18 +137,41 @@ namespace Player.Action
 			_animator = GetComponentInChildren<Animator>();
 			_playerParam = GetComponent<PlayerParam>();
 			_playerCamera = FindObjectOfType<PlayerCameraBrain>();
+			_playerParam.SetIsRun(false);
+			_speed = _walkSpeed;
 		}
 
 		public void FixedUpdate()
 		{
-			if (!_playerParam.GetIsAnimation)
+			if (GroundCheck())
 			{
-				OnMove(PlayerInputsAction.Instance.GetMoveInput);
-				PlayerRotate(_dir);
+				if (!_playerParam.GetIsAnimation)
+				{
+					OnMove(PlayerInputsAction.Instance.GetMoveInput);
+					PlayerRotate(_dir);
+					//SpeedChange();
+				}
+				else if (!_playerParam.GetIsAvoid)
+				{
+					_rb.velocity = Vector3.zero;
+				}
 			}
-			else if (!_playerParam.GetIsAvoid)
+			else
 			{
-				_rb.velocity = Vector3.zero;
+				_rb.AddForce(Vector3.down * _gravityValue);
+			}
+		}
+
+
+		void SpeedChange()
+		{
+			if (_playerParam.GetIsRun)
+			{
+				_speed = _runSpeed;
+			}
+			else
+			{
+				_speed = _walkSpeed;
 			}
 		}
 	}
