@@ -1,6 +1,7 @@
 using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 /* 菅沼が主担当 */
@@ -57,6 +58,8 @@ public class NuweBrain : MonoBehaviour
 
 
     [SerializeField, Header("ベースのダメージ")] private float _baseDamage;
+
+    [SerializeField, Header("ボス撃破後のイベント")] private UnityEvent _bossDefeatedEvent;
 
     /// <summary> ベースのダメージ量 </summary>
     public float GetBaseDamage => _baseDamage;
@@ -195,8 +198,17 @@ public class NuweBrain : MonoBehaviour
 
     public void AddDamage(float dmg)
     {
-        _healthPoint -= dmg;
-        _flinchPoint += dmg * .25f;
+        if (_healthPoint > 0)
+        {
+            _healthPoint -= dmg;
+            _flinchPoint += dmg * .25f;
+
+            if (_healthPoint <= 0)
+            {
+                _tree.EndYieldBehaviourFrom(_currentYielded);
+                _tree.YieldAllBehaviourTo(_death);
+            }
+        }
     }
 
     public void Kill()
@@ -254,7 +266,7 @@ public class NuweBrain : MonoBehaviour
     /// </summary>
     public NueAttackType GetAttackType(Transform other)
     {
-        var ret = NueAttackType.Tail;
+        var ret = NueAttackType.None;
         if (other == _tailBone)
         {
             ret = NueAttackType.Tail;
@@ -280,7 +292,8 @@ public class NuweBrain : MonoBehaviour
     {
         Rush,
         Claw,
-        Tail
+        Tail,
+        None
     }
 
     /// <summary>
@@ -610,7 +623,14 @@ public class NuweBrain : MonoBehaviour
     private void Death()
     {
         _currentYielded = _death;
+
         GameObject.FindAnyObjectByType<GameLogic>().NotifyBossIsDeath();
+
+        _tree.PauseBT();
+        // コンポーネントの破棄
+        Destroy(GetComponent<Rigidbody>());
+        Destroy(_anim);
+        Destroy(_agent);
     }
 
     private void Flinch() // 攻撃を受け続けてひるみ値がたまり切った際のイベント
