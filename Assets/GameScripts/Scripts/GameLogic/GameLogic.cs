@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 using DG.Tweening;
 using SgLibUnite.Singleton;
 using SgLibUnite.Systems;
+using UnityEngine.SceneManagement;
 
 // 作成：菅沼
 /// <summary>
@@ -59,6 +60,16 @@ public class GameLogic
             var obj = Resources.Load("Prefabs/GameSystem/SceneLoader") as GameObject;
 
             GameObject.Instantiate(obj);
+        }
+    }
+
+    private void SceneManagerOnactiveSceneChanged(Scene arg0, Scene arg1)
+    {
+        if (arg0.name is ConstantValues.BossScene || arg0.name is ConstantValues.InGameScene)
+        {
+            // プレイヤとUIを破棄する
+            Destroy(GameObject.FindWithTag("PlayerUI"));
+            Destroy(GameObject.FindWithTag("Player"));
         }
     }
 
@@ -146,5 +157,8 @@ public class GameLogic
             _volume = GameObject.FindFirstObjectByType<Volume>();
             _volume.profile.TryGet(out _dog);
         }
+
+        var scene = SceneManager.GetActiveScene();
+        
     }
 }

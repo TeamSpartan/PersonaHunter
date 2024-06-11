@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using Player.Action;
+using Player.Input;
+using PlayerCam.Scripts;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 /* 各シーンのオブジェクトが参照を持っていて依存をしているため、シングルトンだめ */
@@ -32,11 +35,13 @@ public class MyComponentValidator : MonoBehaviour
             case ConstantValues.TitleScene:
             {
                 ValidationOnTitleScene();
+                ExcludeInGameObject();
                 break;
             }
 
             case ConstantValues.PrologueScene:
             {
+                ExcludeInGameObject();
                 break;
             }
 
@@ -54,6 +59,7 @@ public class MyComponentValidator : MonoBehaviour
 
             case ConstantValues.EpilogueScene:
             {
+                ExcludeInGameObject();
                 break;
             }
         }
@@ -105,5 +111,24 @@ public class MyComponentValidator : MonoBehaviour
 
         player.transform.position = spawnPos.position;
         player.transform.rotation = spawnPos.rotation;
+    }
+
+    private void ExcludeInGameObject()
+    {
+        // プレイヤとUIを破棄する
+        Destroy(GameObject.FindWithTag("PlayerUI"));
+        Destroy(GameObject.FindWithTag("Player"));
+
+        // DDOL解除
+        var lockOnCam = GameObject.FindWithTag("LockOnCam");
+        var followCam = GameObject.FindWithTag("FollowCam");
+        var scene = SceneManager.GetActiveScene();
+        SceneManager.MoveGameObjectToScene(lockOnCam, scene);
+        SceneManager.MoveGameObjectToScene(followCam, scene);
+        // デストロォォォォォイィィィィィィィ
+        Destroy(GameObject.FindAnyObjectByType<PlayerInputsAction>().gameObject);
+        Destroy(GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject);
+        Destroy(lockOnCam);
+        Destroy(followCam);
     }
 }

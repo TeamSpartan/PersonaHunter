@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.14448215, g: 0.16194595, b: 0.24615863, a: 1}
+  m_IndirectSpecularColor: {r: 0.14448191, g: 0.16194429, b: 0.24615553, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -18580,11 +18580,6 @@ PrefabInstance:
       propertyPath: m_LookAt
       value: 
       objectReference: {fileID: 775054580}
-    - target: {fileID: 7847164889435722649, guid: 37851c7f2467e794e90b4a9fd4c7a49e,
-        type: 3}
-      propertyPath: m_FollowOffset.z
-      value: -3
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -19753,8 +19748,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d34555a58b8db4bdea863b232bec9aff,
         type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d34555a58b8db4bdea863b232bec9aff,
+        type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 7887587906704532359, guid: d34555a58b8db4bdea863b232bec9aff,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7887587906704532359, guid: d34555a58b8db4bdea863b232bec9aff,
         type: 3}
@@ -22784,11 +22789,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 920719687879043868, guid: 1547e7000614e2b4b9061c49912316b8,
-        type: 3}
-      propertyPath: m_FollowOffset.z
-      value: -3
-      objectReference: {fileID: 0}
     - target: {fileID: 1020769755810079244, guid: 1547e7000614e2b4b9061c49912316b8,
         type: 3}
       propertyPath: m_Follow
@@ -22799,16 +22799,6 @@ PrefabInstance:
       propertyPath: m_LookAt
       value: 
       objectReference: {fileID: 775054580}
-    - target: {fileID: 1020769755810079244, guid: 1547e7000614e2b4b9061c49912316b8,
-        type: 3}
-      propertyPath: m_Lens.Dutch
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1020769755810079244, guid: 1547e7000614e2b4b9061c49912316b8,
-        type: 3}
-      propertyPath: m_Lens.FarClipPlane
-      value: 1000
-      objectReference: {fileID: 0}
     - target: {fileID: 6138030353263094280, guid: 1547e7000614e2b4b9061c49912316b8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -22863,11 +22853,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LockingOnCam
-      objectReference: {fileID: 0}
-    - target: {fileID: 7580039795143136816, guid: 1547e7000614e2b4b9061c49912316b8,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -41499,8 +41484,8 @@ GameObject:
   - component: {fileID: 807085471}
   - component: {fileID: 807085472}
   m_Layer: 0
-  m_Name: SceneTransporter
-  m_TagString: Untagged
+  m_Name: SceneTransporter_EditorOnly
+  m_TagString: EditorOnly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -41514,7 +41499,7 @@ Transform:
   m_GameObject: {fileID: 807085469}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.33, y: 30.69, z: -125.23}
+  m_LocalPosition: {x: 23.75, y: 1.13, z: -1.11}
   m_LocalScale: {x: 11.633794, y: 3.803814, z: 3.7342887}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -64041,6 +64026,69 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1254120635}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1255921743
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1255921745}
+  - component: {fileID: 1255921744}
+  m_Layer: 0
+  m_Name: SceneTransporter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1255921744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255921743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 392dafcb7e36f634da10405f6404fa73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  _bounds: {x: 4.42, y: 5, z: 5}
+  _unityEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1384211124}
+        m_TargetAssemblyTypeName: SgLibUnite.Systems.SceneLoader, Assembly-CSharp
+        m_MethodName: LoadSceneByName
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: BossScene
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!4 &1255921745
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255921743}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.38, y: 33.29, z: -155.28}
+  m_LocalScale: {x: 11.633794, y: 3.803814, z: 3.7342887}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1256406893 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 903f39cd8451846a88e7c282e2b9f9de,
@@ -112522,4 +112570,5 @@ SceneRoots:
   - {fileID: 271893106}
   - {fileID: 1306775648}
   - {fileID: 807085471}
+  - {fileID: 1255921745}
   - {fileID: 2129422052}

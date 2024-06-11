@@ -6,6 +6,7 @@ using Player.Input;
 using UnityEngine;
 using SgLibUnite.CodingBooster;
 using SgLibUnite.Singleton;
+using UnityEngine.SceneManagement;
 
 namespace PlayerCam.Scripts
 {
@@ -100,7 +101,7 @@ namespace PlayerCam.Scripts
         private GameLogic _logic;
 
         #endregion
-        
+
         protected override void ToDoAtAwakeSingleton()
         {
         }
@@ -132,10 +133,23 @@ namespace PlayerCam.Scripts
 
             // メインカメラであってほしいので
             this.gameObject.tag = "MainCamera";
-            
+
             // DDOLへ各カメラを登録
             GameObject.DontDestroyOnLoad(_playerFollowCam.gameObject);
             GameObject.DontDestroyOnLoad(_lockOnCam.gameObject);
+        }
+
+        private void SceneManagerOnactiveSceneChanged(Scene arg0, Scene arg1)
+        {
+            if (arg0.name is ConstantValues.BossScene || arg0.name is ConstantValues.InGameScene)
+            {
+                // DDOL解除
+                SceneManager.MoveGameObjectToScene(_playerFollowCam.gameObject, arg0);
+                SceneManager.MoveGameObjectToScene(_lockOnCam.gameObject, arg0);
+                // デストロォォォォォイィィィィィィィ
+                Destroy(_playerFollowCam.gameObject);
+                Destroy(_lockOnCam.gameObject);
+            }
         }
 
         public void OnApplicationQuit()
@@ -221,7 +235,7 @@ namespace PlayerCam.Scripts
             var playerRight = Mathf.Cos(_theta) * _lockOnRadius;
             var playerForward = Mathf.Sin(_theta) * _lockOnRadius;
             var pDir = new Vector2(playerRight, playerForward);
-            
+
             var target = _currentLockOnTarget;
             var centerPosition = target.position;
 

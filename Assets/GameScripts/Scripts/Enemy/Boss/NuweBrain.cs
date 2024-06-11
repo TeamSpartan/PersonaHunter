@@ -631,6 +631,7 @@ public class NuweBrain : MonoBehaviour
         Destroy(GetComponent<Rigidbody>());
         Destroy(_anim);
         Destroy(_agent);
+        _bossDefeatedEvent.Invoke();
     }
 
     private void Flinch() // 攻撃を受け続けてひるみ値がたまり切った際のイベント

@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Nue
   - SpawnPos
+  - PlayerUI
+  - LockOnCam
+  - FollowCam
   layers:
   - Default
   - TransparentFX

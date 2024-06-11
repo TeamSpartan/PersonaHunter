@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,12 +9,28 @@ namespace SgLibUnite
     namespace Systems
     {
         /* 各シーンのオブジェクトが参照を持っていて依存をしているため、シングルトンだめ */
-        
+
         public class SceneLoader : MonoBehaviour
-        {   
+        {
+            private bool _isLoading;
+
+            private void Start()
+            {
+                SceneManager.sceneLoaded += SceneManagerOnsceneLoaded;
+            }
+
+            private void SceneManagerOnsceneLoaded(Scene arg0, LoadSceneMode arg1)
+            {
+                _isLoading = false;
+            }
+
             public void LoadSceneByName(string sceneName)
             {
-                StartCoroutine(LoadSceneAcyncByName(sceneName));
+                if (_isLoading is false)
+                {
+                    _isLoading = true;
+                    StartCoroutine(LoadSceneAcyncByName(sceneName));
+                }
             }
 
             public void UnLoadSceneByName(string sceneName)
