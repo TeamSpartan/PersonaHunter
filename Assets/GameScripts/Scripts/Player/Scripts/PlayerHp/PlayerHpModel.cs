@@ -102,10 +102,6 @@ public class PlayerHpModel : MonoBehaviour
                     throw new Exception("ぬえの攻撃の攻撃タイプがわかりません");
             }
         }
-        else
-        {
-            throw new Exception("Nuwe Is NULL");
-        }
 
         if (_mob != null)
         {

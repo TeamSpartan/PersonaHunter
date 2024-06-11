@@ -448,17 +448,11 @@ public class KomashiraBrain : MonoBehaviour
     private void Death()
     {
         _currentYielded = _death;
-        Debug.Log("Death Now");
     }
 
     public void FixedUpdate()
     {
         _tree.UpdateEventsYield();
-    }
-
-    public void OnDisable()
-    {
-        _tree.PauseBT();
     }
 
     public void StartDull()
@@ -493,10 +487,14 @@ public class KomashiraBrain : MonoBehaviour
         _tree.YieldAllBehaviourTo(_death);
     }
 
-    public void ConfirmDeath()
+    public void ConfirmDeath() /* アニメションを再生仕切ってから破棄したいのでここに処理を書いている */
     {
         _tree.PauseBT();
-        Destroy(this.gameObject, 1f);
+        
+        // コンポーネントの破棄
+        Destroy(GetComponent<Rigidbody>());
+        Destroy(_anim);
+        Destroy(_agent);
     }
 
     public Transform GetLockableObjectTransform()
