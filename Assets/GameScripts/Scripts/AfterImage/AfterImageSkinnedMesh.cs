@@ -16,7 +16,7 @@ public class AfterImageSkinnedMesh : AfterImageBase
     private void SetRenderers()
     {
         _skinnedMeshRenderers.Clear();
-        foreach(var renderer in _meshParent.GetComponents<SkinnedMeshRenderer>())
+        foreach(var renderer in _meshParent.GetComponentsInChildren<SkinnedMeshRenderer>())
         {
             _skinnedMeshRenderers.Add(renderer);
         }
