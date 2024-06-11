@@ -272,14 +272,6 @@ public class NuweBrain : MonoBehaviour
 
         return ret;
     }
-    
-    // public NueAttackType GetAttackType(NueAttackType attackType)
-    // {
-    //     Transform ret = null;
-    //     
-    //
-    //     return ret;
-    // }
 
     /// <summary>
     /// ぬえ 攻撃バリエーション 列挙型

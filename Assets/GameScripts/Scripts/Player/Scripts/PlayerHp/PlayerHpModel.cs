@@ -3,6 +3,7 @@ using Player.Action;
 using Player.Param;
 using UniRx;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHpModel : MonoBehaviour
 {
@@ -50,22 +51,21 @@ public class PlayerHpModel : MonoBehaviour
         _initialHp = _playerParam.GetInitialHp;
         _nue = GameObject.FindFirstObjectByType<NuweBrain>();
         _mob = GameObject.FindFirstObjectByType<KomashiraBrain>();
+        SceneManager.sceneLoaded += SceneManagerOnsceneLoaded;
         ResetDamage();
+    }
+
+    private void SceneManagerOnsceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        if (arg0.name is ConstantValues.InGameScene || arg0.name is ConstantValues.BossScene)
+        {
+            _nue = GameObject.FindFirstObjectByType<NuweBrain>();
+            _mob = GameObject.FindFirstObjectByType<KomashiraBrain>();
+        }
     }
 
     private void Update()
     {
-        // ヴァリデーション
-        if (_nue is null)
-        {
-            _nue = GameObject.FindFirstObjectByType<NuweBrain>();
-        }
-
-        if (_mob is null)
-        {
-            _mob = GameObject.FindFirstObjectByType<KomashiraBrain>();
-        }
-
         //無敵時間中
         if (_playerParam.GetIsDamage)
         {
@@ -101,6 +101,10 @@ public class PlayerHpModel : MonoBehaviour
                 default:
                     throw new Exception("ぬえの攻撃の攻撃タイプがわかりません");
             }
+        }
+        else
+        {
+            throw new Exception("Nuwe Is NULL");
         }
 
         if (_mob != null)
@@ -195,4 +199,5 @@ public class PlayerHpModel : MonoBehaviour
     {
         _isRegeneration = value;
     }
+    
 }
