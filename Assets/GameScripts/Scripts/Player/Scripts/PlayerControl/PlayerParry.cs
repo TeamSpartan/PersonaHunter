@@ -18,7 +18,7 @@ namespace Player.Action
 		private Animator _animator;
 		private CBooster _cBooster = new();
 		private ZoneObj _zoneObj;
-		
+
 		private void Start()
 		{
 			_playerParam = GetComponentInParent<PlayerParam>();
@@ -28,7 +28,8 @@ namespace Player.Action
 
 		private void Update()
 		{
-			if (PlayerInputsAction.Instance.GetCurrentInputType == PlayerInputTypes.Parry && !_playerParam.GetIsAnimation)
+			if (PlayerInputsAction.Instance.GetCurrentInputType == PlayerInputTypes.Parry &&
+			    !_playerParam.GetIsAnimation)
 			{
 				Parried();
 			}
@@ -41,6 +42,7 @@ namespace Player.Action
 				return;
 			}
 
+			PlayerInputsAction.Instance.RunCancel();
 			_playerParam.SetIsAnimation(true);
 			_animator.SetTrigger(_parryID);
 		}
@@ -59,7 +61,7 @@ namespace Player.Action
 			{
 				return;
 			}
-			
+
 			_playerParam.SetIsParry(true);
 		}
 
@@ -69,7 +71,7 @@ namespace Player.Action
 			{
 				return;
 			}
-			
+
 			_playerParam.SetIsParry(false);
 		}
 

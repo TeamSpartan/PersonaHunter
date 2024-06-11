@@ -45,12 +45,59 @@ namespace Player.Input
 		private bool _isCancel;
 		private bool _isDecision;
 		private bool _isConfirm;
-		private bool _isDash;
+		private bool _isRun;
 
 		private bool _isExternalInputBlocked;
 		private bool _playerControllerInputBlocked;
 
-		private float _elapsedT;
+
+		public event System.Action ELockOnTriggered;
+		public System.Action EvtCamLeftTarget { get; set; }
+		public System.Action EvtCamRightTarget { get; set; }
+
+		///<summary>カーソルの位置</summary>
+		public Vector2 GetCursorInputInput => _cursorInput;
+
+		///<summary>現在の入力のタイプ</summary>
+		public PlayerInputTypes GetCurrentInputType => _currentInput;
+
+		///<summary>入力の種類</summary>
+		public InputType GetInputType => _inputType;
+
+		///<summary>ロックオン</summary>
+		public bool GetIsLockOn => _isLockOn;
+
+		///<summary>ゾーン中か否か</summary>
+		public bool GetIsZone => _isZone;
+
+		///<summary>ダッシュする</summary>
+		public bool GetIsRun => _isRun;
+
+		void Awake()
+		{
+			if (_instance == null)
+				_instance = this;
+
+			_gameInputs = new();
+		}
+
+		private void OnEnable()
+		{
+			_gameInputs.Enable();
+			InGameInput();
+		}
+
+		private void OnDisable()
+		{
+			_gameInputs.Disable();
+			InGameDis();
+		}
+
+		void Update()
+		{
+			if (_inputType == InputType.Player)
+				InputTypeUpdate();
+		}
 
 		///<summary>InGame用とUI用の切り替え</summary>
 		public void ChangeInputType(InputType inputType)
@@ -99,71 +146,7 @@ namespace Player.Input
 
 		public Vector2 GetCamMoveValue()
 		{
-
 			return _inputCamera;
-		}
-
-		public event System.Action ELockOnTriggered;
-		public System.Action EvtCamLeftTarget { get; set; }
-		public System.Action EvtCamRightTarget { get; set; }
-
-		///<summary></summary>
-		public Vector2 GetCursorInputInput => _cursorInput;
-
-		///<summary>現在の入力のタイプ</summary>
-		public PlayerInputTypes GetCurrentInputType => _currentInput;
-
-		///<summary>入力の種類</summary>
-		public InputType GetInputType => _inputType;
-
-		///<summary>ロックオン</summary>
-		public bool IsLockOn => _isLockOn;
-
-		///<summary>ゾーン中か否か</summary>
-		public bool IsZone => _isZone;
-
-		///<summary>ダッシュする</summary>
-		public bool IsDash => _isDash;
-
-		void Awake()
-		{
-			if (_instance == null)
-				_instance = this;
-
-			_gameInputs = new();
-		}
-
-		private void OnEnable()
-		{
-			_gameInputs.Enable();
-			InGameInput();
-		}
-
-		private void OnDisable()
-		{
-			_gameInputs.Disable();
-			InGameDis();
-		}
-
-		private void Start()
-		{
-			_elapsedT = 0f;
-		}
-
-		void Update()
-		{
-			if (_inputType == InputType.Player)
-				InputTypeUpdate();
-			if (_isLockOn)
-			{
-				_elapsedT += Time.deltaTime;
-			}
-
-			if (_elapsedT > 1f)
-			{
-				ELockOnTriggered();
-				_elapsedT = 0;
-			}
 		}
 
 		///<summary>アニメーションが終わったら実行</summary>
@@ -197,7 +180,13 @@ namespace Player.Input
 			return _inputQueue.Peek();
 		}
 
-		//------------------ここからは見なくて大丈夫----------------------------------------------------------------------------------------------
+		///<summary>攻撃後歩かせる</summary>
+		public void RunCancel()
+		{
+			_isRun = false;
+		}
+
+		//------------------ここからは見なくて大丈夫publicじゃないから----------------------------------------------------------------------------------------------
 
 		///<summary>入力をキューに保存する</summary>
 		void AddInputQueue(PlayerInputTypes playerInputType)
@@ -240,7 +229,6 @@ namespace Player.Input
 
 		void OnZone(InputAction.CallbackContext context)
 		{
-			ELockOnTriggered?.Invoke();
 			Debug.Log("Zone");
 		}
 
@@ -252,7 +240,7 @@ namespace Player.Input
 		private void OnCamera(InputAction.CallbackContext context)
 		{
 			_inputCamera = context.ReadValue<Vector2>();
-			
+
 			if (_inputType == InputType.Player)
 			{
 				if (0 < _inputCamera.x)
@@ -268,7 +256,6 @@ namespace Player.Input
 
 		void OnLockOn(InputAction.CallbackContext context)
 		{
-			_isLockOn = !_isLockOn;
 			ELockOnTriggered?.Invoke();
 		}
 
@@ -304,9 +291,9 @@ namespace Player.Input
 			_cursorInput = context.ReadValue<Vector2>();
 		}
 
-		void OnDash(InputAction.CallbackContext context)
+		void OnRun(InputAction.CallbackContext context)
 		{
-			
+			_isRun = !_isRun;
 		}
 
 		void InGameInput()
@@ -338,9 +325,9 @@ namespace Player.Input
 			//Pause
 			_gameInputs.Player.Pause.started += OnPause;
 			_gameInputs.Player.Pause.canceled += OnPause;
-			
+
 			//Dash
-			_gameInputs.Player.Dash.started += OnDash;
+			_gameInputs.Player.Dash.started += OnRun;
 		}
 
 		void InGameDis()
