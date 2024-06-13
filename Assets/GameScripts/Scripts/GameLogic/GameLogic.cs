@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using DG.Tweening;
+using Player.Action;
 using SgLibUnite.Systems;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 /* シングルトンやーめた。万能ではない */
 
@@ -16,6 +18,8 @@ public class GameLogic
     : MonoBehaviour
         , IBossDieNotifiable
 {
+    #region Acitons
+
     /// <summary> パリィ成功時のイベント </summary>
     public event Action EParrySucceed;
 
@@ -31,6 +35,8 @@ public class GameLogic
     /// <summary> ゾーンから出るときのイベントをここに登録 </summary>
     public event Action EOutZone;
 
+    #endregion
+
     /// <summary> ガウス差分クラス </summary>
     private DifferenceOfGaussian _dog;
 
@@ -43,21 +49,21 @@ public class GameLogic
     /// <summary> シーンのインデックス </summary>
     private int _selectedSceneIndex;
 
-    #region Flags
-
-    /// <summary> プロローグ再生完了のフラグ </summary>
-    private bool _playedPrologue;
-
-    #endregion
-
     /// <summary> 敵のトランスフォーム </summary>
     private List<Transform> _enemies = new List<Transform>();
+
+    public event Action TaskOnBossDefeated;
 
     private void OnEnable()
     {
         Initialize();
     }
-    
+
+    private void Start()
+    {
+        Initialize();
+    }
+
     /// <summary>
     /// 敵のトランスフォームを登録
     /// </summary>
@@ -127,25 +133,25 @@ public class GameLogic
 
     public void NotifyBossIsDeath()
     {
+        TaskOnBossDefeated();
     }
 
-    private void Initialize()
+    public void Initialize()
     {
         // SceneLoader が Nullである場合には生成。
         if (GameObject.FindFirstObjectByType<SceneLoader>() is null)
         {
-            var obj = Resources.Load("Prefabs/GameSystem/SceneLoader") as GameObject;
+            var sl = Resources.Load<GameObject>("Prefabs/GameSystem/SceneLoader");
 
-            GameObject.Instantiate(obj);
+            var obj = GameObject.Instantiate(sl);
+            _sceneLoader = obj.GetComponent<SceneLoader>();
         }
-        
+
         if (GameObject.FindFirstObjectByType<Volume>() is not null)
             // GameObject.FindFirstObjectByType<Volume>() != null
         {
             _volume = GameObject.FindFirstObjectByType<Volume>();
             _volume.profile.TryGet(out _dog);
         }
-
-        var scene = SceneManager.GetActiveScene();
     }
 }

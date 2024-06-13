@@ -56,7 +56,6 @@ public class NuweBrain : MonoBehaviour
 
     [SerializeField, Header("しっぽ ボーン")] private Transform _tailBone;
 
-
     [SerializeField, Header("ベースのダメージ")] private float _baseDamage;
 
     [SerializeField, Header("ボス撃破後のイベント")] private UnityEvent _bossDefeatedEvent;
