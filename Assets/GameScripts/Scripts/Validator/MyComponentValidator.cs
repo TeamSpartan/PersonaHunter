@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using Player.Action;
+using Player.Input;
+using PlayerCam.Scripts;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.Video;
 
 /* 各シーンのオブジェクトが参照を持っていて依存をしているため、シングルトンだめ */
 
@@ -17,10 +21,31 @@ public class MyComponentValidator : MonoBehaviour
 
     private bool _playedPrologue;
 
+    private ClientDataHolder _clientData;
+
+    private GameObject _bossAppearanceMovie;
+
+    private GameLogic _gameLogic;
+
+    private GameObject _player;
+    
+    private GameObject _moviePanel;
+
     // Start is called before the first frame update
     void Start()
     {
+        _clientData = Resources.Load<ClientDataHolder>("Prefabs/GameSystem/ClientDataHolder");
+        _gameLogic = GameObject.FindAnyObjectByType<GameLogic>();
+        _gameLogic.gameObject.SetActive(false);
+        _player = GameObject.FindAnyObjectByType<PlayerMove>().gameObject;
+
         Validation();
+        EnableLogic();
+    }
+
+    private void EnableLogic()
+    {
+        _gameLogic.gameObject.SetActive(true);
     }
 
     private void Validation()
@@ -31,45 +56,92 @@ public class MyComponentValidator : MonoBehaviour
         {
             case ConstantValues.TitleScene:
             {
+                _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Title;
+
                 ValidationOnTitleScene();
+                Exclude_InGameObject();
                 break;
             }
 
             case ConstantValues.PrologueScene:
             {
+                _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Prologue;
+
+                Exclude_InGameObject();
                 break;
             }
 
             case ConstantValues.InGameScene:
             {
+                _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.InGame;
+
                 SpawnPlayerToPoint();
                 break;
             }
 
             case ConstantValues.BossScene:
             {
-                SpawnPlayerToPoint();
+                _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.TransitedBossScene;
+                
+                // プレイヤ隠ぺい
+                _player.SetActive(false);
+
+                
+                // ムービー読み込み
+                _bossAppearanceMovie = Resources.Load<GameObject>("Prefabs/Video/BossAppearance");
+                
+                /* 例外がスローされたならここ以降は処理されない */
+                
+                // レンダーテクスチャ読み込み
+                _moviePanel = Resources.Load<GameObject>("Prefabs/UI/MoviePanel");
+
+                // ムービーオブジェクト生成と再生
+                _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.PlayingAppearanceMovie;
+                
+                // 描写パネル、ムービーの生成
+                var panel = GameObject.Instantiate(_moviePanel);
+                var movie = GameObject.Instantiate(_bossAppearanceMovie);
+                
+                var vp = movie.GetComponent<VideoPlayer>();
+                
+                vp.loopPointReached += OnloopPointReached_Appearance;
+                vp.loopPointReached += (source) =>
+                {
+                    DestroyImmediate(movie);
+                    DestroyImmediate(panel);
+                };
+
                 break;
             }
 
             case ConstantValues.EpilogueScene:
             {
+                _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Epilogue;
+
+                Exclude_InGameObject();
                 break;
             }
         }
     }
 
+    private void OnloopPointReached_Appearance(VideoPlayer source)
+    {
+        _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.FinishedPlayingAppearanceMovie;
+        source.targetCameraAlpha = 0f;
+        _player.SetActive(true);
+        SpawnPlayerToPoint();
+    }
+
     private void ValidationOnTitleScene()
     {
         // プロローグを再生したかの静的フィールドにアクセス
-        var tempData = Resources.Load<ClientDataHolder>("Prefabs/GameSystem/ClientDataHolder");
-        if (tempData is not null)
+        if (_clientData is not null)
         {
-            _playedPrologue = tempData.PlayedPrologue;
+            _playedPrologue = _clientData.PlayedPrologue;
         }
 
         // EventSystem の選択オブジェクトを変更
-        if (tempData.PlayedPrologue)
+        if (_clientData.PlayedPrologue)
         {
             var es = GameObject.FindAnyObjectByType<EventSystem>();
             if (es is not null)
@@ -105,5 +177,24 @@ public class MyComponentValidator : MonoBehaviour
 
         player.transform.position = spawnPos.position;
         player.transform.rotation = spawnPos.rotation;
+    }
+
+    private void Exclude_InGameObject()
+    {
+        // プレイヤとUIを破棄する
+        Destroy(GameObject.FindWithTag("PlayerUI"));
+        Destroy(GameObject.FindWithTag("Player"));
+
+        // DDOL解除
+        var lockOnCam = GameObject.FindWithTag("LockOnCam");
+        var followCam = GameObject.FindWithTag("FollowCam");
+        var scene = SceneManager.GetActiveScene();
+        SceneManager.MoveGameObjectToScene(lockOnCam, scene);
+        SceneManager.MoveGameObjectToScene(followCam, scene);
+        // デストロォォォォォイィィィィィィィ
+        Destroy(GameObject.FindAnyObjectByType<PlayerInputsAction>().gameObject);
+        Destroy(GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject);
+        Destroy(lockOnCam);
+        Destroy(followCam);
     }
 }

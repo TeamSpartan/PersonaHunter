@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using DG.Tweening;
-using SgLibUnite.Singleton;
 using SgLibUnite.Systems;
+using UnityEngine.SceneManagement;
+
+/* シングルトンやーめた。万能ではない */
 
 // 作成：菅沼
 /// <summary>
 /// オモテガリ ゲームロジック
 /// </summary>
 public class GameLogic
-    : SingletonBaseClass<GameLogic>
+    : MonoBehaviour
         , IBossDieNotifiable
 {
     /// <summary> パリィ成功時のイベント </summary>
@@ -51,7 +53,7 @@ public class GameLogic
     /// <summary> 敵のトランスフォーム </summary>
     private List<Transform> _enemies = new List<Transform>();
 
-    protected override void ToDoAtAwakeSingleton()
+    private void Awake()
     {
         // SceneLoader が Nullである場合には生成。
         if (GameObject.FindFirstObjectByType<SceneLoader>() is null)
@@ -59,6 +61,27 @@ public class GameLogic
             var obj = Resources.Load("Prefabs/GameSystem/SceneLoader") as GameObject;
 
             GameObject.Instantiate(obj);
+        }
+    }
+
+    private void OnEnable()
+    {
+        // SceneLoader が Nullである場合には生成。
+        if (GameObject.FindFirstObjectByType<SceneLoader>() is null)
+        {
+            var obj = Resources.Load("Prefabs/GameSystem/SceneLoader") as GameObject;
+
+            GameObject.Instantiate(obj);
+        }
+    }
+
+    private void SceneManagerOnactiveSceneChanged(Scene arg0, Scene arg1)
+    {
+        if (arg0.name is ConstantValues.BossScene || arg0.name is ConstantValues.InGameScene)
+        {
+            // プレイヤとUIを破棄する
+            Destroy(GameObject.FindWithTag("PlayerUI"));
+            Destroy(GameObject.FindWithTag("Player"));
         }
     }
 
@@ -146,5 +169,7 @@ public class GameLogic
             _volume = GameObject.FindFirstObjectByType<Volume>();
             _volume.profile.TryGet(out _dog);
         }
+
+        var scene = SceneManager.GetActiveScene();
     }
 }
