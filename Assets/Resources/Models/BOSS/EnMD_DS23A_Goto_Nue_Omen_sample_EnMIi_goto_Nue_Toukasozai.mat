@@ -15,6 +15,7 @@ Material:
   - _ALPHATEST_ON
   - _DISABLE_SSR_TRANSPARENT
   - _ENABLE_FOG_ON_TRANSPARENT
+  - _NORMALMAP
   - _NORMALMAP_TANGENT_SPACE
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
@@ -83,7 +84,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 24027d76641bebb41ac418d1da4079e9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMapOS:
