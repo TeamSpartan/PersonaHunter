@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using Player.Action;
 using Player.Input;
 using PlayerCam.Scripts;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using UnityEngine.Video;
 
 /* 各シーンのオブジェクトが参照を持っていて依存をしているため、シングルトンだめ */
@@ -88,7 +86,6 @@ public class MyComponentValidator : MonoBehaviour
 
                 // プレイヤ隠ぺい
                 _player.SetActive(false);
-
 
                 // ムービー読み込み
                 _bossAppearanceMovie = Resources.Load<GameObject>("Prefabs/Video/BossAppearance");

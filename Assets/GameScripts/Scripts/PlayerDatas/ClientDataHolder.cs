@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 /// <summary>
 /// 実装するプレイヤのセーブデータを保持するクラス
 /// </summary>

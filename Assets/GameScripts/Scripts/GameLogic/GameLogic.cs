@@ -53,43 +53,11 @@ public class GameLogic
     /// <summary> 敵のトランスフォーム </summary>
     private List<Transform> _enemies = new List<Transform>();
 
-    private void Awake()
-    {
-        // SceneLoader が Nullである場合には生成。
-        if (GameObject.FindFirstObjectByType<SceneLoader>() is null)
-        {
-            var obj = Resources.Load("Prefabs/GameSystem/SceneLoader") as GameObject;
-
-            GameObject.Instantiate(obj);
-        }
-    }
-
     private void OnEnable()
     {
-        // SceneLoader が Nullである場合には生成。
-        if (GameObject.FindFirstObjectByType<SceneLoader>() is null)
-        {
-            var obj = Resources.Load("Prefabs/GameSystem/SceneLoader") as GameObject;
-
-            GameObject.Instantiate(obj);
-        }
+        Initialize();
     }
-
-    private void SceneManagerOnactiveSceneChanged(Scene arg0, Scene arg1)
-    {
-        if (arg0.name is ConstantValues.BossScene || arg0.name is ConstantValues.InGameScene)
-        {
-            // プレイヤとUIを破棄する
-            Destroy(GameObject.FindWithTag("PlayerUI"));
-            Destroy(GameObject.FindWithTag("Player"));
-        }
-    }
-
-    private void Start()
-    {
-        InitializeGame();
-    }
-
+    
     /// <summary>
     /// 敵のトランスフォームを登録
     /// </summary>
@@ -161,8 +129,16 @@ public class GameLogic
     {
     }
 
-    private void InitializeGame()
+    private void Initialize()
     {
+        // SceneLoader が Nullである場合には生成。
+        if (GameObject.FindFirstObjectByType<SceneLoader>() is null)
+        {
+            var obj = Resources.Load("Prefabs/GameSystem/SceneLoader") as GameObject;
+
+            GameObject.Instantiate(obj);
+        }
+        
         if (GameObject.FindFirstObjectByType<Volume>() is not null)
             // GameObject.FindFirstObjectByType<Volume>() != null
         {
