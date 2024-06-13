@@ -28,7 +28,7 @@ public class MyComponentValidator : MonoBehaviour
     private GameLogic _gameLogic;
 
     private GameObject _player;
-    
+
     private GameObject _moviePanel;
 
     // Start is called before the first frame update
@@ -37,7 +37,10 @@ public class MyComponentValidator : MonoBehaviour
         _clientData = Resources.Load<ClientDataHolder>("Prefabs/GameSystem/ClientDataHolder");
         _gameLogic = GameObject.FindAnyObjectByType<GameLogic>();
         _gameLogic.gameObject.SetActive(false);
-        _player = GameObject.FindAnyObjectByType<PlayerMove>().gameObject;
+        if (GameObject.FindAnyObjectByType<PlayerMove>() is not null)
+        {
+            _player = GameObject.FindAnyObjectByType<PlayerMove>().gameObject;
+        }
 
         Validation();
         EnableLogic();
@@ -82,28 +85,28 @@ public class MyComponentValidator : MonoBehaviour
             case ConstantValues.BossScene:
             {
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.TransitedBossScene;
-                
+
                 // プレイヤ隠ぺい
                 _player.SetActive(false);
 
-                
+
                 // ムービー読み込み
                 _bossAppearanceMovie = Resources.Load<GameObject>("Prefabs/Video/BossAppearance");
-                
+
                 /* 例外がスローされたならここ以降は処理されない */
-                
+
                 // レンダーテクスチャ読み込み
                 _moviePanel = Resources.Load<GameObject>("Prefabs/UI/MoviePanel");
 
                 // ムービーオブジェクト生成と再生
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.PlayingAppearanceMovie;
-                
+
                 // 描写パネル、ムービーの生成
                 var panel = GameObject.Instantiate(_moviePanel);
                 var movie = GameObject.Instantiate(_bossAppearanceMovie);
-                
+
                 var vp = movie.GetComponent<VideoPlayer>();
-                
+
                 vp.loopPointReached += OnloopPointReached_Appearance;
                 vp.loopPointReached += (source) =>
                 {
