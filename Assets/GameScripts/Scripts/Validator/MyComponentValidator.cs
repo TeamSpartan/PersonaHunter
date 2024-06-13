@@ -6,8 +6,9 @@ using PlayerCam.Scripts;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.Video;
 
 /* 各シーンのオブジェクトが参照を持っていて依存をしているため、シングルトンだめ */
 
@@ -20,10 +21,29 @@ public class MyComponentValidator : MonoBehaviour
 
     private bool _playedPrologue;
 
+    private ClientDataHolder _clientData;
+
+    private GameObject _bossAppearanceMovie;
+
+    private GameLogic _gameLogic;
+
+    private GameObject _player;
+
     // Start is called before the first frame update
     void Start()
     {
+        _clientData = Resources.Load<ClientDataHolder>("Prefabs/GameSystem/ClientDataHolder");
+        _gameLogic = GameObject.FindAnyObjectByType<GameLogic>();
+        _gameLogic.gameObject.SetActive(false);
+        _player = GameObject.FindAnyObjectByType<PlayerMove>().gameObject;
+
         Validation();
+        EnableLogic();
+    }
+
+    private void EnableLogic()
+    {
+        _gameLogic.gameObject.SetActive(true);
     }
 
     private void Validation()
@@ -34,48 +54,79 @@ public class MyComponentValidator : MonoBehaviour
         {
             case ConstantValues.TitleScene:
             {
+                _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Title;
+
                 ValidationOnTitleScene();
-                ExcludeInGameObject();
+                Exclude_InGameObject();
                 break;
             }
 
             case ConstantValues.PrologueScene:
             {
-                ExcludeInGameObject();
+                _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Prologue;
+
+                Exclude_InGameObject();
                 break;
             }
 
             case ConstantValues.InGameScene:
             {
+                _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.InGame;
+
                 SpawnPlayerToPoint();
                 break;
             }
 
             case ConstantValues.BossScene:
             {
-                SpawnPlayerToPoint();
+                _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.TransitedBossScene;
+                
+                // プレイヤ隠ぺい
+                _player.SetActive(false);
+
+                // ムービー読み込み
+                _bossAppearanceMovie = Resources.Load<GameObject>("Movie/Videos/BossAppearance");
+
+                // ムービーオブジェクト生成と再生
+                _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.PlayingAppearanceMovie;
+                var obj = GameObject.Instantiate(_bossAppearanceMovie);
+                var vp = obj.GetComponent<VideoPlayer>();
+                vp.loopPointReached += OnloopPointReached_Appearance;
+
                 break;
             }
 
             case ConstantValues.EpilogueScene:
             {
-                ExcludeInGameObject();
+                _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Epilogue;
+
+                Exclude_InGameObject();
                 break;
             }
         }
     }
 
+    private void OnloopPointReached_Appearance(VideoPlayer source)
+    {
+        _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.FinishedPlayingAppearanceMovie;
+        source.targetCameraAlpha = 0f;
+        _player.SetActive(true);
+
+        GameObject.FindAnyObjectByType<RawImage>().enabled = false;
+        SpawnPlayerToPoint();
+        DestroyImmediate(source.gameObject);
+    }
+
     private void ValidationOnTitleScene()
     {
         // プロローグを再生したかの静的フィールドにアクセス
-        var tempData = Resources.Load<ClientDataHolder>("Prefabs/GameSystem/ClientDataHolder");
-        if (tempData is not null)
+        if (_clientData is not null)
         {
-            _playedPrologue = tempData.PlayedPrologue;
+            _playedPrologue = _clientData.PlayedPrologue;
         }
 
         // EventSystem の選択オブジェクトを変更
-        if (tempData.PlayedPrologue)
+        if (_clientData.PlayedPrologue)
         {
             var es = GameObject.FindAnyObjectByType<EventSystem>();
             if (es is not null)
@@ -113,7 +164,7 @@ public class MyComponentValidator : MonoBehaviour
         player.transform.rotation = spawnPos.rotation;
     }
 
-    private void ExcludeInGameObject()
+    private void Exclude_InGameObject()
     {
         // プレイヤとUIを破棄する
         Destroy(GameObject.FindWithTag("PlayerUI"));
