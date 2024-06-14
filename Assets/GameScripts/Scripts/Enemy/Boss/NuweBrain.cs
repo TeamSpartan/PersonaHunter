@@ -426,6 +426,7 @@ public class NuweBrain : MonoBehaviour
 
         _death.AddBehaviour(Death);
         _death.SetYieldMode(true);
+        _death.EBegin += () => { GameObject.FindAnyObjectByType<GameLogic>().NotifyBossIsDeath(); };
 
         _flinch.AddBehaviour(Flinch);
         _flinch.SetYieldMode(true);
@@ -623,7 +624,7 @@ public class NuweBrain : MonoBehaviour
     {
         _currentYielded = _death;
 
-        GameObject.FindAnyObjectByType<GameLogic>().NotifyBossIsDeath();
+        Debug.Log($"nuwe is death");
 
         _tree.PauseBT();
         // コンポーネントの破棄
