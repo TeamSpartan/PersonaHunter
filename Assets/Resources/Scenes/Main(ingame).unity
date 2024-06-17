@@ -52614,9 +52614,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6677932323194119194, guid: d7e65ebc2a7b36e4db19b4b4cffaff39,
         type: 3}
+      propertyPath: bar
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6677932323194119194, guid: d7e65ebc2a7b36e4db19b4b4cffaff39,
+        type: 3}
       propertyPath: _patrolPath
       value: 
       objectReference: {fileID: 2086674390}
+    - target: {fileID: 6677932323194119194, guid: d7e65ebc2a7b36e4db19b4b4cffaff39,
+        type: 3}
+      propertyPath: _barOffset.y
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -66622,11 +66632,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Komashira
-      objectReference: {fileID: 0}
-    - target: {fileID: 2702249725358041711, guid: d7e65ebc2a7b36e4db19b4b4cffaff39,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.56
       objectReference: {fileID: 0}
     - target: {fileID: 3328128866306057387, guid: d7e65ebc2a7b36e4db19b4b4cffaff39,
         type: 3}

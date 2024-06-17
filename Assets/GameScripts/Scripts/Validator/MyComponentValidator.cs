@@ -138,6 +138,10 @@ public class MyComponentValidator : MonoBehaviour
     
     private void ValidationOnBossScene()
     {
+        var bossHpBar = Resources.Load<GameObject>("Prefabs/UI/HpBar_Nue");
+        var ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>();
+        ingameUI.AddUIElements(GameObject.Instantiate(bossHpBar));
+        
         // プレイヤ隠ぺい
         _player.SetActive(false);
 

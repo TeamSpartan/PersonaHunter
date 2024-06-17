@@ -193,7 +193,7 @@ public class NuweBrain : MonoBehaviour
 
     private GameLogic _logic;
 
-    private PlayerHpView _hpView;
+    private NuweHpViewer _hpView;
 
     #endregion
 
@@ -378,7 +378,7 @@ public class NuweBrain : MonoBehaviour
 
     public void Start()
     {
-        _hpView = GetComponent<PlayerHpView>();
+        _hpView = GameObject.FindAnyObjectByType<NuweHpViewer>();
         _logic = GameObject.FindAnyObjectByType<GameLogic>();
         _logic.ApplyEnemyTransform(transform);
 

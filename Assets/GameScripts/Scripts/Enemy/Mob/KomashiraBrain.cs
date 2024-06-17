@@ -1,9 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SgLibUnite.AI;
 using UnityEngine;
 using SgLibUnite.BehaviourTree;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// 菅沼 が 主担当
@@ -32,7 +36,6 @@ public class KomashiraBrain : MonoBehaviour
     [SerializeField, Header("威嚇時間]")] private float _intimidateTime;
 
     [SerializeField, Header("首のボーン")] private Transform _neckBone;
-    [SerializeField, Header("HPバーのクラス")] private KomashiraHPBarManager _barManager;
 
     #endregion
 
@@ -50,8 +53,12 @@ public class KomashiraBrain : MonoBehaviour
     /// <summary> プレイヤのトランスフォーム </summary>
     private Transform _player;
 
+    private KomashiraHPBar _bar;
+    
     /// <summary> 体力 </summary>
     private float _healthPoint;
+
+    private Slider _slider;
 
     /// <summary> プレイヤからの距離 </summary>
     private float DistanceFromPlayer => Vector3.Distance(transform.position, _player.position);
@@ -147,6 +154,12 @@ public class KomashiraBrain : MonoBehaviour
 
     public void Start()
     {
+        var bar = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/UI/KomashiraHPBar"));
+        _bar = bar.GetComponent<KomashiraHPBar>();
+        _bar.SetFollowingTarget(transform);
+        _slider = _bar.GetComponent<Slider>();
+        _slider.maxValue = _maxHealthPoint;
+
         _logic = GameObject.FindAnyObjectByType<GameLogic>();
         _logic.ApplyEnemyTransform(transform);
 
@@ -159,6 +172,12 @@ public class KomashiraBrain : MonoBehaviour
         {
             _tree.YieldAllBehaviourTo(_think);
         }
+    }
+
+    private void Update()
+    {
+        if(_slider is not null)
+        _slider.value = _healthPoint;
     }
 
     private void SetupComponent()
@@ -470,10 +489,10 @@ public class KomashiraBrain : MonoBehaviour
 
     public void AddDamage(float dmg)
     {
-        if(_healthPoint < 0 && _currentYielded == _death) return;
-        _barManager.PunchGuage();
+        if (_healthPoint < 0 && _currentYielded == _death) return;
+        _bar.PunchGuage();
         _healthPoint -= dmg;
-        
+
         if (_healthPoint <= 0)
         {
             _tree.EndYieldBehaviourFrom(_currentYielded);
@@ -493,8 +512,7 @@ public class KomashiraBrain : MonoBehaviour
         _tree.PauseBT();
 
         // コンポーネントの破棄
-        GameObject.FindAnyObjectByType<InGameUIManager>().DestroyHpBar(_barManager.Myindex);
-        GameObject.Destroy(_barManager);
+        _bar.DestroySelf();
         Destroy(GetComponent<Rigidbody>());
         Destroy(_anim);
         Destroy(_agent);
