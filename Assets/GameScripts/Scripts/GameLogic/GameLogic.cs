@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using DG.Tweening;
-using Player.Action;
 using SgLibUnite.Systems;
-using UnityEngine.SceneManagement;
-using UnityEngine.Video;
 
 /* シングルトンやーめた。万能ではない */
 

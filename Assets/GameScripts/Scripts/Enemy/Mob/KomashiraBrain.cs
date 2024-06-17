@@ -32,6 +32,7 @@ public class KomashiraBrain : MonoBehaviour
     [SerializeField, Header("威嚇時間]")] private float _intimidateTime;
 
     [SerializeField, Header("首のボーン")] private Transform _neckBone;
+    [SerializeField, Header("HPバーのクラス")] private KomashiraHPBarManager _barManager;
 
     #endregion
 
@@ -492,6 +493,8 @@ public class KomashiraBrain : MonoBehaviour
         _tree.PauseBT();
         
         // コンポーネントの破棄
+        GameObject.FindAnyObjectByType<InGameUIManager>().DestroyHpBar(_barManager.Myindex);
+        GameObject.Destroy(_barManager);
         Destroy(GetComponent<Rigidbody>());
         Destroy(_anim);
         Destroy(_agent);
