@@ -70,7 +70,7 @@ public class InGameUIManager : MonoBehaviour
     public void DestroyHpBar(int index)
     {
         var obj = _hpBars[index];
-        _hpBars.RemoveAt(index);
+        _hpBars.Remove(obj);
         GameObject.Destroy(obj);
     }
 

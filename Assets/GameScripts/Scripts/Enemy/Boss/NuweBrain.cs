@@ -193,6 +193,8 @@ public class NuweBrain : MonoBehaviour
 
     private GameLogic _logic;
 
+    private PlayerHpView _hpView;
+
     #endregion
 
     public void AddDamage(float dmg)
@@ -201,6 +203,8 @@ public class NuweBrain : MonoBehaviour
         {
             _healthPoint -= dmg;
             _flinchPoint += dmg * .25f;
+            
+            _hpView.SetGauge(_healthMaxValue, _healthPoint);
 
             if (_healthPoint <= 0)
             {
@@ -374,6 +378,7 @@ public class NuweBrain : MonoBehaviour
 
     public void Start()
     {
+        _hpView = GetComponent<PlayerHpView>();
         _logic = GameObject.FindAnyObjectByType<GameLogic>();
         _logic.ApplyEnemyTransform(transform);
 

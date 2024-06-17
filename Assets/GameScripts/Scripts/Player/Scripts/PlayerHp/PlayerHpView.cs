@@ -3,7 +3,9 @@ using SgLibUnite.CodingBooster;
 using UnityEngine;
 using UnityEngine.UI;
 
-///<summary>summary</summary>
+///<summary>
+/// HPゲージを表示させる機能を提供する
+/// </summary>
 public class PlayerHpView : MonoBehaviour
 {
     [SerializeField, Header("HPが減る速度")] private float _duration;
