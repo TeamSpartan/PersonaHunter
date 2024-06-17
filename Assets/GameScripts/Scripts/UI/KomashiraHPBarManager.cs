@@ -5,7 +5,7 @@ using PlayerCam.Scripts;
 using UnityEngine;
 
 /// <summary>
-/// コマシラに対してアタッチをする
+/// コマシラのHPバーに対してアタッチをする
 /// </summary>
 public class KomashiraHPBarManager : MonoBehaviour
 {
@@ -18,9 +18,9 @@ public class KomashiraHPBarManager : MonoBehaviour
 
     private void Start()
     {
-        _mainCam = GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject.GetComponent<Camera>();
         _komashiraUI = GameObject.FindAnyObjectByType<KomashiraUIManager>();
-        _komashira = GameObject.FindAnyObjectByType<KomashiraBrain>();
+        _komashira = transform.root.gameObject.GetComponent<KomashiraBrain>();
+        _mainCam = GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject.GetComponent<Camera>();
         _myIndex = _komashiraUI.AddHPBar(_komashira.GetMaxHealthPoint);
     }
 
