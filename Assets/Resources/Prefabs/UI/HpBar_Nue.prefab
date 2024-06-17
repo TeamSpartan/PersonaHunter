@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 708916439499684369}
   - component: {fileID: 8105873647708093521}
+  - component: {fileID: 4701963271131182605}
   m_Layer: 5
   m_Name: HpBar_Nue
   m_TagString: Untagged
@@ -24,7 +25,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6051179054154444138}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -54,6 +55,18 @@ MonoBehaviour:
   _waitTime: 0.2
   healthImage: {fileID: 1830382004876897397}
   burnImage: {fileID: 919141989986115894}
+--- !u!225 &4701963271131182605
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6051179054154444138}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6423771828039132354
 GameObject:
   m_ObjectHideFlags: 0
