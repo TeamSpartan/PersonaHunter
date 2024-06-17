@@ -6,14 +6,18 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
+	[SerializeField, Range(0f, 10f)] private float _attackingRange;
+	[Header("攻撃倍率の最大値、最小値")]
+	[SerializeField] private float _maxAttackScale;
+	[SerializeField] private float _minAttackScale;
+	[SerializeField, Header("敵のレイヤー")] LayerMask _enemyLayerMask;
+	[SerializeField, Header("右からの攻撃")] private ParticleSystem _rightAttack;
+	[SerializeField, Header("左からの攻撃")] private ParticleSystem _leftAttack;
+	
 	//右側からの攻撃なら１、左側からの攻撃なら２
 	private int _currentName; //モーション名
 	Animator _animator;
-	private CBooster _booster = new();
 	private PlayerParam _playerParam;
-	[SerializeField, Range(0f, 10f)] private float _attackingRange;
-	
-	[SerializeField, Header("敵のレイヤー")] LayerMask _enemyLayerMask;
 
 	private bool _isGiveDamage = false;
 
@@ -82,6 +86,7 @@ public class PlayerAttack : MonoBehaviour
 		{
 			//右からの攻撃
 			_animator.SetTrigger("RightAttack");
+			_rightAttack.Play();
 			_currentName = 1;
 			_playerParam.SetIsAnimation(true);
 		}
@@ -89,6 +94,7 @@ public class PlayerAttack : MonoBehaviour
 		{
 			//左からの攻撃
 			_animator.SetTrigger("LeftAttack");
+			_leftAttack.Play();
 			_currentName = 2;
 			_playerParam.SetIsAnimation(true);
 		}

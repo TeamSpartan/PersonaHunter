@@ -17,7 +17,8 @@ namespace Player.Zone
 		private float _animationTime = 0.3f;
 
 		private bool _canIncreaseGaugeValue = true; // ゲージのValueを増加できるかのフラグ
-
+		
+		[SerializeField, Header("数珠の最大個数")]
 		private float _maxZoneObj = 5f;
 		private float _currentZoneGaugeValue;
 
