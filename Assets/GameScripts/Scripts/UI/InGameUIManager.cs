@@ -40,6 +40,7 @@ public class InGameUIManager : MonoBehaviour
         }
 
         var bar = GameObject.Instantiate(_barUITemplate, transform);
+        bar.name += _hpBars.Count.ToString();
         if (bar.TryGetComponent<Slider>(out var c))
         {
             c.maxValue = maxHp;
