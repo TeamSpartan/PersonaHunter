@@ -22,7 +22,6 @@ public class KomashiraHPBarManager : MonoBehaviour
 
     private void Update()
     {
-        _inGameUI.UpdateBarPos(_myIndex, _mainCam.WorldToScreenPoint(transform.position));
-        Debug.Log($"My Index ; {_myIndex}");
+        _inGameUI.UpdateHPBarPos(_myIndex, _mainCam.WorldToScreenPoint(transform.position));
     }
 }

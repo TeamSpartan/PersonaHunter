@@ -26,11 +26,19 @@ public class InGameUIManager : MonoBehaviour
         return _hpBars.Count - 1;
     }
 
-    public void UpdateBarPos(int index, Vector3 pos)
+    public void UpdateHPBarPos(int index, Vector3 pos)
     {
         if (_hpBars[index] is not null)
         {
-            _hpBars[index].transform.position = pos;
+            if (pos.z > 0)
+            {
+                _hpBars[index].SetActive(true);
+                _hpBars[index].transform.position = pos;
+            }
+            else
+            {
+                _hpBars[index].SetActive(false);
+            }
         }
     }
 }
