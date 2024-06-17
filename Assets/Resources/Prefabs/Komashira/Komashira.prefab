@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 884816790212725842}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.045, z: 0}
+  m_LocalPosition: {x: 0, y: 2.56, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1903,7 +1903,7 @@ MonoBehaviour:
   _searchingTime: 3
   _intimidateTime: 3
   _neckBone: {fileID: 2506846806624340203}
-  _barManager: {fileID: 7938235884033477169}
+  _barOffset: {fileID: 2702249725358041711}
 --- !u!4 &3328128866306057387 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d430cc52a2fe9f646931456ea1ae212c,
