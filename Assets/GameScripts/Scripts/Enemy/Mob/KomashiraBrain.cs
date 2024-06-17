@@ -493,7 +493,7 @@ public class KomashiraBrain : MonoBehaviour
         _tree.PauseBT();
         
         // コンポーネントの破棄
-        GameObject.FindAnyObjectByType<KomashiraUIManager>().DestroyHpBar(_barManager.Myindex);
+        GameObject.FindAnyObjectByType<InGameUIManager>().DestroyHpBar(_barManager.Myindex);
         GameObject.Destroy(_barManager);
         Destroy(GetComponent<Rigidbody>());
         Destroy(_anim);

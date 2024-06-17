@@ -9,7 +9,7 @@ using UnityEngine;
 /// </summary>
 public class KomashiraHPBarManager : MonoBehaviour
 {
-    private KomashiraUIManager _komashiraUI;
+    private InGameUIManager inGameUI;
     private KomashiraBrain _komashira;
     private Camera _mainCam;
     private int _myIndex = -1;
@@ -18,14 +18,14 @@ public class KomashiraHPBarManager : MonoBehaviour
 
     private void Start()
     {
-        _komashiraUI = GameObject.FindAnyObjectByType<KomashiraUIManager>();
+        inGameUI = GameObject.FindAnyObjectByType<InGameUIManager>();
         _komashira = transform.root.gameObject.GetComponent<KomashiraBrain>();
         _mainCam = GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject.GetComponent<Camera>();
-        _myIndex = _komashiraUI.AddHPBar(_komashira.GetMaxHealthPoint);
+        _myIndex = inGameUI.AddHPBar(_komashira.GetMaxHealthPoint, InGameUIManager.HPBarTemplate.Komashira);
     }
 
     private void Update()
     {
-        _komashiraUI.UpdateHPBar(_myIndex, _mainCam.WorldToScreenPoint(transform.position), _komashira.GetHealthPoint);
+        inGameUI.UpdateHPBar(_myIndex, _mainCam.WorldToScreenPoint(transform.position), _komashira.GetHealthPoint);
     }
 }

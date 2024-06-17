@@ -5,27 +5,40 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+
 /// <summary>
 /// インゲームのUIに対してアタッチをする
 /// </summary>
-public class KomashiraUIManager : MonoBehaviour
+public class InGameUIManager : MonoBehaviour
 {
     private List<GameObject> _hpBars = new List<GameObject>();
     private List<Slider> _sliders = new List<Slider>();
-    private GameObject _komashiraUITemplate;
+    private GameObject _barUITemplate;
+
+    public enum HPBarTemplate
+    {
+        Komashira,
+    }
 
     /// <summary>
     /// HPバーを追加して、このクラス内のHPバーのインデックスを返す
     /// </summary>
-    public int AddHPBar(float maxHp)
+    public int AddHPBar(float maxHp, HPBarTemplate template)
     {
-        Debug.Log($"add hp bar");
-        if (_komashiraUITemplate is null)
+        switch (template)
         {
-            _komashiraUITemplate = Resources.Load<GameObject>("Prefabs/UI/KomashiraHP");
+            case HPBarTemplate.Komashira:
+            {
+                if (_barUITemplate is null)
+                {
+                    _barUITemplate = Resources.Load<GameObject>("Prefabs/UI/KomashiraHP");
+                }
+
+                break;
+            }
         }
 
-        var bar = GameObject.Instantiate(_komashiraUITemplate, transform);
+        var bar = GameObject.Instantiate(_barUITemplate, transform);
         if (bar.TryGetComponent<Slider>(out var c))
         {
             c.maxValue = maxHp;
