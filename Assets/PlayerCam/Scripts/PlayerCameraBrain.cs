@@ -102,6 +102,20 @@ namespace PlayerCam.Scripts
 
         #endregion
 
+        public bool TryGetLockableTargets(out List<Transform> result)
+        {
+            if (_lockOnTargets.Count is 0)
+            {
+                result = null;
+                return false;
+            }
+            else
+            {
+                result = _lockOnTargets;
+                return true;
+            }
+        }
+
         protected override void ToDoAtAwakeSingleton()
         {
         }
@@ -152,7 +166,7 @@ namespace PlayerCam.Scripts
             }
         }
 
-        public void OnApplicationQuit()
+        private void OnApplicationQuit()
         {
             // ロックオンイベント発火元へのデリゲート登録解除をする
             _playerInput.ELockOnTriggered -= LockOnTriggerred;
@@ -425,7 +439,7 @@ namespace PlayerCam.Scripts
             return _lockOnTargets.OrderBy(v => (v.position - _playerCurrent.position).x).ToList();
         }
 
-        private List<Transform> GetLockableTargets()
+        public List<Transform> GetLockableTargets()
         {
             return _logic.GetEnemies().Where(_ =>
                     Vector3.Distance(_playerCurrent.position, _.position) <= MaxDistanceToCapture
