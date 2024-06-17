@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using DG.Tweening;
 
 
 /// <summary>
@@ -71,5 +72,10 @@ public class InGameUIManager : MonoBehaviour
         var obj = _hpBars[index];
         _hpBars.RemoveAt(index);
         GameObject.Destroy(obj);
+    }
+
+    public void PunchGuage(int index)
+    {
+        _sliders[index].transform.DOShakePosition(0.5f, 60f, 25);
     }
 }

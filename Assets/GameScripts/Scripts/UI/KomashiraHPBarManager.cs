@@ -16,6 +16,11 @@ public class KomashiraHPBarManager : MonoBehaviour
 
     public int Myindex => _myIndex;
 
+    public void PunchGuage()
+    {
+        inGameUI.PunchGuage(_myIndex);
+    }
+    
     private void Start()
     {
         inGameUI = GameObject.FindAnyObjectByType<InGameUIManager>();

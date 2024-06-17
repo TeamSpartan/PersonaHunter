@@ -470,14 +470,14 @@ public class KomashiraBrain : MonoBehaviour
 
     public void AddDamage(float dmg)
     {
-        if (_healthPoint > 0)
+        if(_healthPoint < 0 && _currentYielded == _death) return;
+        _barManager.PunchGuage();
+        _healthPoint -= dmg;
+        
+        if (_healthPoint <= 0)
         {
-            _healthPoint -= dmg;
-            if (_healthPoint <= 0)
-            {
-                _tree.EndYieldBehaviourFrom(_currentYielded);
-                _tree.YieldAllBehaviourTo(_death);
-            }
+            _tree.EndYieldBehaviourFrom(_currentYielded);
+            _tree.YieldAllBehaviourTo(_death);
         }
     }
 
@@ -491,7 +491,7 @@ public class KomashiraBrain : MonoBehaviour
     public void ConfirmDeath() /* アニメションを再生仕切ってから破棄したいのでここに処理を書いている */
     {
         _tree.PauseBT();
-        
+
         // コンポーネントの破棄
         GameObject.FindAnyObjectByType<InGameUIManager>().DestroyHpBar(_barManager.Myindex);
         GameObject.Destroy(_barManager);
