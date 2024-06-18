@@ -1,9 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SgLibUnite.AI;
 using UnityEngine;
 using SgLibUnite.BehaviourTree;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// 菅沼 が 主担当
@@ -49,8 +53,12 @@ public class KomashiraBrain : MonoBehaviour
     /// <summary> プレイヤのトランスフォーム </summary>
     private Transform _player;
 
+    private KomashiraHPBar _bar;
+    
     /// <summary> 体力 </summary>
     private float _healthPoint;
+
+    private Slider _slider;
 
     /// <summary> プレイヤからの距離 </summary>
     private float DistanceFromPlayer => Vector3.Distance(transform.position, _player.position);
@@ -146,6 +154,12 @@ public class KomashiraBrain : MonoBehaviour
 
     public void Start()
     {
+        var bar = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/UI/KomashiraHPBar"));
+        _bar = bar.GetComponent<KomashiraHPBar>();
+        _bar.SetFollowingTarget(transform);
+        _slider = _bar.GetComponent<Slider>();
+        _slider.maxValue = _maxHealthPoint;
+
         _logic = GameObject.FindAnyObjectByType<GameLogic>();
         _logic.ApplyEnemyTransform(transform);
 
@@ -158,6 +172,12 @@ public class KomashiraBrain : MonoBehaviour
         {
             _tree.YieldAllBehaviourTo(_think);
         }
+    }
+
+    private void Update()
+    {
+        if(_slider is not null)
+        _slider.value = _healthPoint;
     }
 
     private void SetupComponent()
@@ -469,14 +489,14 @@ public class KomashiraBrain : MonoBehaviour
 
     public void AddDamage(float dmg)
     {
-        if (_healthPoint > 0)
+        if (_healthPoint < 0 && _currentYielded == _death) return;
+        _bar.PunchGuage();
+        _healthPoint -= dmg;
+
+        if (_healthPoint <= 0)
         {
-            _healthPoint -= dmg;
-            if (_healthPoint <= 0)
-            {
-                _tree.EndYieldBehaviourFrom(_currentYielded);
-                _tree.YieldAllBehaviourTo(_death);
-            }
+            _tree.EndYieldBehaviourFrom(_currentYielded);
+            _tree.YieldAllBehaviourTo(_death);
         }
     }
 
@@ -490,8 +510,9 @@ public class KomashiraBrain : MonoBehaviour
     public void ConfirmDeath() /* アニメションを再生仕切ってから破棄したいのでここに処理を書いている */
     {
         _tree.PauseBT();
-        
+
         // コンポーネントの破棄
+        _bar.DestroySelf();
         Destroy(GetComponent<Rigidbody>());
         Destroy(_anim);
         Destroy(_agent);

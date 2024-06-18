@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
-using UnityEngine.Video;
 
 /* 各シーンのオブジェクトが参照を持っていて依存をしているため、シングルトンだめ */
 
@@ -84,35 +83,7 @@ public class MyComponentValidator : MonoBehaviour
             {
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.TransitedBossScene;
 
-                // プレイヤ隠ぺい
-                _player.SetActive(false);
-
-                // ムービー読み込み
-                var appearanceMovieGO = Resources.Load<GameObject>("Prefabs/Video/BossAppearance");
-                
-                /* 例外がスローされたならここ以降は処理されない */
-
-                // レンダーテクスチャ読み込み
-                _moviePanel = Resources.Load<GameObject>("Prefabs/UI/MoviePanel");
-
-                // ムービーオブジェクト生成と再生
-                _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.PlayingAppearanceMovie;
-
-                // 描写パネル、ムービーの生成
-                var panel = GameObject.Instantiate(_moviePanel);
-                var movie_appearance = GameObject.Instantiate(appearanceMovieGO);
-
-                var pd_appearance = movie_appearance.GetComponent<PlayableDirector>();
-
-                pd_appearance.paused += OnloopPointReached_Appearance;
-                pd_appearance.paused += (source) =>
-                {
-                    DestroyImmediate(movie_appearance);
-                    DestroyImmediate(panel);
-                };
-
-                // ロジックへイベント登録
-                _gameLogic.TaskOnBossDefeated += TaskOnBossDefeated;
+                ValidationOnBossScene();
 
                 break;
             }
@@ -126,44 +97,7 @@ public class MyComponentValidator : MonoBehaviour
             }
         }
     }
-
-    private void OnloopPointReached_Appearance(PlayableDirector source)
-    {
-        _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.FinishedPlayingAppearanceMovie;
-        GameObject.DestroyImmediate(source.gameObject);
-        _player.SetActive(true);
-        SpawnPlayerToPoint();
-    }
-
-    private void TaskOnBossDefeated()
-    {
-        var defeatedMovieGO = Resources.Load<GameObject>("Prefabs/Video/BossDefeated");
-        
-        var panel = GameObject.Instantiate(_moviePanel);
-        var movie_defeated = GameObject.Instantiate(defeatedMovieGO);
-
-        var pd_defeated = movie_defeated.GetComponent<PlayableDirector>();
-        pd_defeated.paused += OnloopPointReached_BossDefeated;
-        pd_defeated.paused += (source ) =>
-        {
-            DestroyImmediate(panel);
-            DestroyImmediate(movie_defeated);
-        };
-    }
-
-    private void OnloopPointReached_BossDefeated(PlayableDirector source)
-    {
-        Debug.Log($"Boss Defeated - ");
-        
-        // インゲームのコンテンツに使用していたオブジェクトを破棄
-        var player = GameObject.FindAnyObjectByType<PlayerMove>().gameObject;
-        var playerUI = GameObject.FindWithTag("PlayerUI");
-        DestroyImmediate(player);
-        DestroyImmediate(playerUI);
-        
-        GameObject.FindAnyObjectByType<SceneLoader>().LoadSceneByName(ConstantValues.EpilogueScene);
-    }
-
+    
     private void ValidationOnTitleScene()
     {
         // プロローグを再生したかの静的フィールドにアクセス
@@ -200,6 +134,77 @@ public class MyComponentValidator : MonoBehaviour
                 GameObject.Destroy(obj);
             }
         }
+    }
+    
+    private void ValidationOnBossScene()
+    {
+        GameObject.FindAnyObjectByType<InGameUIManager>().BossHPBarSetActive(true);
+        
+        // プレイヤ隠ぺい
+        _player.SetActive(false);
+
+        // ムービー読み込み
+        var appearanceMovieGO = Resources.Load<GameObject>("Prefabs/Video/BossAppearance");
+                
+        /* 例外がスローされたならここ以降は処理されない */
+
+        // レンダーテクスチャ読み込み
+        _moviePanel = Resources.Load<GameObject>("Prefabs/UI/MoviePanel");
+
+        // ムービーオブジェクト生成と再生
+        _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.PlayingAppearanceMovie;
+
+        // 描写パネル、ムービーの生成
+        var panel = GameObject.Instantiate(_moviePanel);
+        var movie_appearance = GameObject.Instantiate(appearanceMovieGO);
+
+        var pd_appearance = movie_appearance.GetComponent<PlayableDirector>();
+
+        pd_appearance.paused += OnloopPointReached_Appearance;
+        pd_appearance.paused += (source) =>
+        {
+            DestroyImmediate(movie_appearance);
+            DestroyImmediate(panel);
+        };
+
+        // ロジックへイベント登録
+        _gameLogic.TaskOnBossDefeated += TaskOnBossDefeated;
+    }
+
+    private void OnloopPointReached_Appearance(PlayableDirector source)
+    {
+        _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.FinishedPlayingAppearanceMovie;
+        
+        GameObject.DestroyImmediate(source.gameObject);
+        _player.SetActive(true);
+        SpawnPlayerToPoint();
+    }
+
+    private void TaskOnBossDefeated()
+    {
+        var defeatedMovieGO = Resources.Load<GameObject>("Prefabs/Video/BossDefeated");
+        
+        var panel = GameObject.Instantiate(_moviePanel);
+        var movie_defeated = GameObject.Instantiate(defeatedMovieGO);
+
+        var pd_defeated = movie_defeated.GetComponent<PlayableDirector>();
+        pd_defeated.paused += OnloopPointReached_BossDefeated;
+        pd_defeated.paused += (source ) =>
+        {
+            DestroyImmediate(panel);
+            DestroyImmediate(movie_defeated);
+        };
+    }
+
+    private void OnloopPointReached_BossDefeated(PlayableDirector source)
+    {
+        // インゲームのコンテンツに使用していたオブジェクトを破棄
+        var player = GameObject.FindAnyObjectByType<PlayerMove>().gameObject;
+        var playerUI = GameObject.FindWithTag("PlayerUI");
+        DestroyImmediate(player);
+        DestroyImmediate(playerUI);
+        
+        GameObject.FindAnyObjectByType<SceneLoader>().LoadSceneByName(ConstantValues.EpilogueScene);
     }
 
     private void SpawnPlayerToPoint()
