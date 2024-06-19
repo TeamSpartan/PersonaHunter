@@ -40,8 +40,7 @@ namespace Player.Zone
                 Debug.Log("ゾーンゲージマイナス");
             }
 
-            _gameLogic.GetOutOverZone();
-            _zoneObj.EndDull();
+            EndDull();
         }
 
         /// <summary>
@@ -49,7 +48,7 @@ namespace Player.Zone
         /// </summary>
         public void StartDull()
         {
-            if (_isSlowTime) return;
+            if (_isSlowTime || _zoneObj.ActiveZoneObjCount < 1) return;
 
             _exitFlag = false;
             _isSlowTime = true;

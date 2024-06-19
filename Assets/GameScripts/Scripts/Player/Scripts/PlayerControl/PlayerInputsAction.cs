@@ -256,11 +256,6 @@ namespace Player.Input
                     _zoneTimeController.StartDull();
                     Debug.Log("Zone");
                 }
-                else
-                {
-                    _zoneTimeController.EndDull();
-                    Debug.Log("Zone強制終了");
-                }
             }
         }
 

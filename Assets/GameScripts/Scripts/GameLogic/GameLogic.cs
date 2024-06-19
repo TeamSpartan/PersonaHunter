@@ -115,6 +115,9 @@ public class GameLogic
         {
             brain.EndDull();
         }
+        
+        DOTween.To((_) => { _dog.elapsedTime.Override(_); },
+            1f, 0f, .75f);
     }
 
     public void NotifyBossIsDeath()

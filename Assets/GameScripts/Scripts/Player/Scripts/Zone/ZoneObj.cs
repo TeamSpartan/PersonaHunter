@@ -23,7 +23,7 @@ namespace Player.Zone
 
 		private float _currentZoneGaugeValue;
 
-		public int EvacuationZoneObjCount => _evacuationZoneObj.Count;
+		public int ActiveZoneObjCount => _splineAnimates.Count;
 			
 		private ZoneTimeController _zoneTimeController;
 		private SplineContainer _spline;
