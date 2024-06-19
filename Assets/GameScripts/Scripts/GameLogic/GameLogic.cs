@@ -100,6 +100,8 @@ public class GameLogic
     public void StartPause()
     {
         if (EPause is not null) EPause.Invoke();
+        
+        Debug.Log($"GL ポーズ開始");
     }
 
     /// <summary>
@@ -108,6 +110,8 @@ public class GameLogic
     public void StartResume()
     {
         if (EResume is not null) EResume.Invoke();
+        
+        Debug.Log($"GL ポーズおーわり");
     }
 
     /// <summary>
@@ -117,7 +121,8 @@ public class GameLogic
     {
         if (EDiveZone is not null) EDiveZone.Invoke();
 
-        StartPostProDoG();
+        // StartPostProDoG();
+        Debug.Log($"GL ときとめ 開始");
     }
 
     /// <summary>
@@ -126,6 +131,8 @@ public class GameLogic
     public void GetOutOverZone()
     {
         if (EOutZone is not null) EOutZone.Invoke();
+        
+        Debug.Log($"GL ときとめ 終了");
     }
 
     public void NotifyBossIsDeath()

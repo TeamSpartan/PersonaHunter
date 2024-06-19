@@ -573,6 +573,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   zoneObj: {fileID: 8043150694989223900, guid: f34674a5680f3f54192ac919a5325904, type: 3}
   duration: 5
+  _maxZoneObj: 5
 --- !u!1 &6325915568887808110
 GameObject:
   m_ObjectHideFlags: 0
@@ -594,6 +595,7 @@ GameObject:
   - component: {fileID: 6219095507129589192}
   - component: {fileID: 8070292773428138616}
   - component: {fileID: 3048288299586786299}
+  - component: {fileID: 7517392817221623603}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -644,7 +646,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialHp: 100
   initialAtk: 30
-  increaseValueOfJustAvoid: 1
+  increaseValueOfJustAvoid: 5
   giveValueOfParry: 5
 --- !u!114 &6265088955766530078
 MonoBehaviour:
@@ -660,12 +662,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rotateSpeed: 20
   _cameraRotateSpeed: 5
-  _moveSpeed: 15
-  _maxSpeed: 15
+  _walkSpeed: 10
+  _runSpeed: 20
+  _runTransitionTime: 1
   _groundOffSetY: -0.14
   _groundRadius: 0.5
   _gravityValue: 40
-  _rayLength: 0.3
+  _rayLength: 1
   _groundLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -682,9 +685,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d344a4d64f644cfe8426d86db4d1debd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _avoidRange: 5
-  _maxDrag: 20
-  _duration: 1.5
+  _avoidRange: 1
+  _maxDrag: 5
+  _duration: 0.5
 --- !u!114 &8970022688340139165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -776,7 +779,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d91762d79e694df0bffd4d035914d061, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _invincibilityFrame: 1
+  _invincibilityFrame: 144
   _regeneratWaitTime: 5
   _regenerationSpeed: 0
 --- !u!114 &6219095507129589192
@@ -828,6 +831,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7517392817221623603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6325915568887808110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eeaed1725a34b77b53e41ec8420f746, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zoneTimeLimit: 5
 --- !u!1001 &981153202677907731
 PrefabInstance:
   m_ObjectHideFlags: 0
