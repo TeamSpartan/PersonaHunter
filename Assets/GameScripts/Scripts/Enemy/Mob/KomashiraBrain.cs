@@ -54,7 +54,7 @@ public class KomashiraBrain : MonoBehaviour
     private Transform _player;
 
     private KomashiraHPBar _bar;
-    
+
     /// <summary> 体力 </summary>
     private float _healthPoint;
 
@@ -152,14 +152,13 @@ public class KomashiraBrain : MonoBehaviour
         _neckBone.GetComponent<Collider>().enabled = false;
     }
 
-    public void Start()
+    private void Start()
     {
         var bar = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/UI/KomashiraHPBar"));
         _bar = bar.GetComponent<KomashiraHPBar>();
         _bar.SetFollowingTarget(transform);
         _slider = _bar.GetComponent<Slider>();
         _slider.maxValue = _maxHealthPoint;
-
         _logic = GameObject.FindAnyObjectByType<GameLogic>();
         _logic.ApplyEnemyTransform(transform);
 
@@ -176,8 +175,8 @@ public class KomashiraBrain : MonoBehaviour
 
     private void Update()
     {
-        if(_slider is not null)
-        _slider.value = _healthPoint;
+        if (_slider is not null)
+            _slider.value = _healthPoint;
     }
 
     private void SetupComponent()
@@ -477,14 +476,28 @@ public class KomashiraBrain : MonoBehaviour
 
     public void StartDull()
     {
-        _anim.SetLayerWeight(0, 0f);
-        _anim.SetLayerWeight(1, 1f);
+        // _anim.SetLayerWeight(0, 0f);
+        // _anim.SetLayerWeight(1, 1f);
+
+        _tree.EndYieldBehaviourFrom(_currentYielded);
+        _tree.PauseBT();
+        
+        _agent.ResetPath();
+        _anim.enabled = false;
+
+        Debug.Log($"コマシラ ときとめ");
     }
 
     public void EndDull()
     {
-        _anim.SetLayerWeight(0, 1f);
-        _anim.SetLayerWeight(1, 0f);
+        // _anim.SetLayerWeight(0, 1f);
+        // _anim.SetLayerWeight(1, 0f);
+
+        _tree.StartBT();
+        _tree.YieldAllBehaviourTo(_think);
+        _anim.enabled = true;
+
+        Debug.Log($"コマシラ ときとめおわり");
     }
 
     public void AddDamage(float dmg)

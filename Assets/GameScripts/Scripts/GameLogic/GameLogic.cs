@@ -18,19 +18,13 @@ public class GameLogic
     #region Acitons
 
     /// <summary> パリィ成功時のイベント </summary>
-    public event Action EParrySucceed;
+    public Action EParrySucceed;
 
     /// <summary> 一時停止処理が走った時の処理 </summary>
-    public event Action EPause;
+    public Action EPause;
 
     /// <summary> 一時停止から抜けるときに走る処理 </summary>
-    public event Action EResume;
-
-    /// <summary> ゾーンに入るときのイベントをここに登録 </summary>
-    public event Action EDiveZone;
-
-    /// <summary> ゾーンから出るときのイベントをここに登録 </summary>
-    public event Action EOutZone;
+    public Action EResume;
 
     #endregion
 
@@ -99,8 +93,8 @@ public class GameLogic
     /// </summary>
     public void StartPause()
     {
-        if (EPause is not null) EPause.Invoke();
-        
+        EPause();
+
         Debug.Log($"GL ポーズ開始");
     }
 
@@ -109,8 +103,8 @@ public class GameLogic
     /// </summary>
     public void StartResume()
     {
-        if (EResume is not null) EResume.Invoke();
-        
+        EResume();
+
         Debug.Log($"GL ポーズおーわり");
     }
 
@@ -119,7 +113,10 @@ public class GameLogic
     /// </summary>
     public void StartDiveInZone()
     {
-        if (EDiveZone is not null) EDiveZone.Invoke();
+        foreach (var brain in GameObject.FindObjectsByType<KomashiraBrain>(FindObjectsSortMode.None))
+        {
+            brain.StartDull();
+        }
 
         // StartPostProDoG();
         Debug.Log($"GL ときとめ 開始");
@@ -130,7 +127,10 @@ public class GameLogic
     /// </summary>
     public void GetOutOverZone()
     {
-        if (EOutZone is not null) EOutZone.Invoke();
+        foreach (var brain in GameObject.FindObjectsByType<KomashiraBrain>(FindObjectsSortMode.None))
+        {
+            brain.EndDull();
+        }
         
         Debug.Log($"GL ときとめ 終了");
     }
