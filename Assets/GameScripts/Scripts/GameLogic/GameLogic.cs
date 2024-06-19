@@ -45,14 +45,14 @@ public class GameLogic
 
     public event Action TaskOnBossDefeated;
 
-    private void OnEnable()
+    private void Start()
     {
         Initialize();
     }
 
-    private void Start()
+    private void Update()
     {
-        Initialize();
+        _dog.center.Override(Vector2.one * .5f);
     }
 
     /// <summary>
@@ -71,19 +71,8 @@ public class GameLogic
         return _enemies;
     }
 
-    private void StartPostProDoG()
+    public void StartPostProDoG()
     {
-        if (GameObject.FindWithTag("Player").transform is not null)
-        {
-            var player = GameObject.FindWithTag("Player").transform;
-            var playerPos = Camera.main.WorldToViewportPoint(player.position);
-            _dog.center.Override(new Vector2(playerPos.x, playerPos.y));
-        }
-        else
-        {
-            _dog.center.Override(Vector2.one * .5f);
-        }
-
         DOTween.To((_) => { _dog.elapsedTime.Override(_); },
             0f, 1f, .75f);
     }
@@ -94,8 +83,6 @@ public class GameLogic
     public void StartPause()
     {
         EPause();
-
-        Debug.Log($"GL ポーズ開始");
     }
 
     /// <summary>
@@ -104,8 +91,6 @@ public class GameLogic
     public void StartResume()
     {
         EResume();
-
-        Debug.Log($"GL ポーズおーわり");
     }
 
     /// <summary>
@@ -118,8 +103,7 @@ public class GameLogic
             brain.StartDull();
         }
 
-        // StartPostProDoG();
-        Debug.Log($"GL ときとめ 開始");
+        StartPostProDoG();
     }
 
     /// <summary>
@@ -131,8 +115,6 @@ public class GameLogic
         {
             brain.EndDull();
         }
-        
-        Debug.Log($"GL ときとめ 終了");
     }
 
     public void NotifyBossIsDeath()
@@ -151,11 +133,17 @@ public class GameLogic
             _sceneLoader = obj.GetComponent<SceneLoader>();
         }
 
-        if (GameObject.FindFirstObjectByType<Volume>() is not null)
-            // GameObject.FindFirstObjectByType<Volume>() != null
+        if (GameObject.FindAnyObjectByType<Volume>() is not null)
         {
             _volume = GameObject.FindFirstObjectByType<Volume>();
-            _volume.profile.TryGet(out _dog);
+            if (_volume.profile.TryGet(out _dog))
+            {
+                Debug.Log($"ガウス差分クラスないんだけど");
+            }
+        }
+        else
+        {
+            Debug.Log($"ボリュームねぇんだけど");
         }
     }
 }

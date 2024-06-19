@@ -5,7 +5,6 @@ using SgLibUnite.AI;
 using UnityEngine;
 using SgLibUnite.BehaviourTree;
 using UnityEngine.AI;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -529,6 +528,7 @@ public class KomashiraBrain : MonoBehaviour
         Destroy(GetComponent<Rigidbody>());
         Destroy(_anim);
         Destroy(_agent);
+        Destroy(GetComponent<KomashiraBrain>());
     }
 
     public Transform GetLockableObjectTransform()

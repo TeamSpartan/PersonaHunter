@@ -23,11 +23,12 @@ namespace Player.Zone
         public void SetFinishFlag(bool flag) => _finishFlag = flag;
 
         private ZoneObj _zoneObj;
-        private GameLogic _gameLogic = new();
+        private GameLogic _gameLogic;
 
         private void Start()
         {
             _zoneObj = FindObjectOfType<ZoneObj>();
+            _gameLogic = FindAnyObjectByType<GameLogic>();
         }
 
         IEnumerator ZoneTimerCountDown()
