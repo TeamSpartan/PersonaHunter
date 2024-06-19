@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using UnityEngine;
 
 namespace SgLibUnite.BehaviourTree
 {
@@ -170,7 +171,10 @@ namespace SgLibUnite.BehaviourTree
 
         public void UpdateTransition(string name, ref bool condition, bool equalsTo = true, bool isTrigger = false)
         {
-            if (_isPausing) return;
+            if (_isPausing)
+            {
+                return;
+            }
 
             if (_isYieldToEvent) return;
 
@@ -197,7 +201,11 @@ namespace SgLibUnite.BehaviourTree
 
         public void UpdateEventsYield()
         {
-            if (_isYieldToEvent)
+            if (_isPausing)
+            {
+                return;
+            }
+            else if (_isYieldToEvent)
             {
                 _yieldedBehaviourNow.Tick();
                 if (!_yieldedBehaviourNow.YieldManually)
@@ -237,12 +245,14 @@ namespace SgLibUnite.BehaviourTree
         public void PauseBT()
         {
             _isPausing = true;
+            Debug.Log($"BT ポージング");
         }
 
         public void StartBT()
         {
             _isPausing = false;
             _currentBehaviour.Begin();
+            Debug.Log($"BT スターティング");
         }
     }
 }

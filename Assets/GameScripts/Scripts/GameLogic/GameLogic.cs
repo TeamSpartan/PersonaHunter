@@ -18,19 +18,13 @@ public class GameLogic
     #region Acitons
 
     /// <summary> パリィ成功時のイベント </summary>
-    public event Action EParrySucceed;
+    public Action EParrySucceed;
 
     /// <summary> 一時停止処理が走った時の処理 </summary>
-    public event Action EPause;
+    public Action EPause;
 
     /// <summary> 一時停止から抜けるときに走る処理 </summary>
-    public event Action EResume;
-
-    /// <summary> ゾーンに入るときのイベントをここに登録 </summary>
-    public event Action EDiveZone;
-
-    /// <summary> ゾーンから出るときのイベントをここに登録 </summary>
-    public event Action EOutZone;
+    public Action EResume;
 
     #endregion
 
@@ -51,14 +45,14 @@ public class GameLogic
 
     public event Action TaskOnBossDefeated;
 
-    private void OnEnable()
+    private void Start()
     {
         Initialize();
     }
 
-    private void Start()
+    private void Update()
     {
-        Initialize();
+        _dog.center.Override(Vector2.one * .5f);
     }
 
     /// <summary>
@@ -77,19 +71,8 @@ public class GameLogic
         return _enemies;
     }
 
-    private void StartPostProDoG()
+    public void StartPostProDoG()
     {
-        if (GameObject.FindWithTag("Player").transform is not null)
-        {
-            var player = GameObject.FindWithTag("Player").transform;
-            var playerPos = Camera.main.WorldToViewportPoint(player.position);
-            _dog.center.Override(new Vector2(playerPos.x, playerPos.y));
-        }
-        else
-        {
-            _dog.center.Override(Vector2.one * .5f);
-        }
-
         DOTween.To((_) => { _dog.elapsedTime.Override(_); },
             0f, 1f, .75f);
     }
@@ -99,7 +82,7 @@ public class GameLogic
     /// </summary>
     public void StartPause()
     {
-        if (EPause is not null) EPause.Invoke();
+        EPause();
     }
 
     /// <summary>
@@ -107,7 +90,7 @@ public class GameLogic
     /// </summary>
     public void StartResume()
     {
-        if (EResume is not null) EResume.Invoke();
+        EResume();
     }
 
     /// <summary>
@@ -115,7 +98,10 @@ public class GameLogic
     /// </summary>
     public void StartDiveInZone()
     {
-        if (EDiveZone is not null) EDiveZone.Invoke();
+        foreach (var brain in GameObject.FindObjectsByType<KomashiraBrain>(FindObjectsSortMode.None))
+        {
+            brain.StartDull();
+        }
 
         StartPostProDoG();
     }
@@ -125,7 +111,13 @@ public class GameLogic
     /// </summary>
     public void GetOutOverZone()
     {
-        if (EOutZone is not null) EOutZone.Invoke();
+        foreach (var brain in GameObject.FindObjectsByType<KomashiraBrain>(FindObjectsSortMode.None))
+        {
+            brain.EndDull();
+        }
+        
+        DOTween.To((_) => { _dog.elapsedTime.Override(_); },
+            1f, 0f, .75f);
     }
 
     public void NotifyBossIsDeath()
@@ -144,11 +136,17 @@ public class GameLogic
             _sceneLoader = obj.GetComponent<SceneLoader>();
         }
 
-        if (GameObject.FindFirstObjectByType<Volume>() is not null)
-            // GameObject.FindFirstObjectByType<Volume>() != null
+        if (GameObject.FindAnyObjectByType<Volume>() is not null)
         {
             _volume = GameObject.FindFirstObjectByType<Volume>();
-            _volume.profile.TryGet(out _dog);
+            if (_volume.profile.TryGet(out _dog))
+            {
+                Debug.Log($"ガウス差分クラスないんだけど");
+            }
+        }
+        else
+        {
+            Debug.Log($"ボリュームねぇんだけど");
         }
     }
 }
