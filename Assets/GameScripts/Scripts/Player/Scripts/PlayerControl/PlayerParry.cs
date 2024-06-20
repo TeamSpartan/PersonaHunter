@@ -12,7 +12,7 @@ namespace Player.Action
 	///<summary>プレイヤーのパリー</summary>
 	public class PlayerParry : MonoBehaviour, IAbleToParry
 	{
-		[SerializeField] private ParticleSystem _parrySucceedEffect;
+		//[SerializeField] private ParticleSystem _parrySucceedEffect;
 
 		private int _parryID = Animator.StringToHash("IsParry");
 		private PlayerParam _playerParam;
@@ -52,7 +52,7 @@ namespace Player.Action
 		public void ParrySuccess()
 		{
 			_zoneObj.IncreaseGaugeValue(_playerParam.GetGiveValueOfParry);
-			_parrySucceedEffect.Play();
+			//_parrySucceedEffect.Play();
 		}
 
 		///<summary>アニメーションイベントで呼び出す用</summary>------------------------------------------------------------------
