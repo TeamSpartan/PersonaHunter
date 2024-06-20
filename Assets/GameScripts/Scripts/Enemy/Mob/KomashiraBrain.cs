@@ -158,18 +158,32 @@ public class KomashiraBrain : MonoBehaviour
         _bar.SetFollowingTarget(transform);
         _slider = _bar.GetComponent<Slider>();
         _slider.maxValue = _maxHealthPoint;
+        
         _logic = GameObject.FindAnyObjectByType<GameLogic>();
         _logic.ApplyEnemyTransform(transform);
 
+        _logic.EDiveZone += StartFreeze;
+        _logic.EGetoutZone += EndFreeze;
+        _logic.EPause += StartFreeze;
+        _logic.EResume += EndFreeze;
+
         SetupComponent();
         SetupBehaviours();
+        
         _tree.StartBT();
+        
         FindPlayer();
 
         if (_tree.CurrentYieldedEvent != _think)
         {
             _tree.YieldAllBehaviourTo(_think);
         }
+    }
+
+    private void OnDisable()
+    {
+        _logic.EDiveZone -= StartFreeze;
+        _logic.EGetoutZone -= EndFreeze;
     }
 
     private void Update()
@@ -473,21 +487,21 @@ public class KomashiraBrain : MonoBehaviour
         _tree.UpdateEventsYield();
     }
 
-    public void StartDull()
+    private void StartFreeze()
     {
         // _anim.SetLayerWeight(0, 0f);
         // _anim.SetLayerWeight(1, 1f);
 
         _tree.EndYieldBehaviourFrom(_currentYielded);
         _tree.PauseBT();
-        
+
         _agent.ResetPath();
         _anim.enabled = false;
 
         Debug.Log($"コマシラ ときとめ");
     }
 
-    public void EndDull()
+    private void EndFreeze()
     {
         // _anim.SetLayerWeight(0, 1f);
         // _anim.SetLayerWeight(1, 0f);

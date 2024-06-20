@@ -89,6 +89,18 @@ namespace Player.Input
         {
             _gameLogic = GameObject.FindAnyObjectByType<GameLogic>();
             _zoneTimeController = GameLogic.FindAnyObjectByType<ZoneTimeController>();
+
+            _gameLogic.EPause += () =>
+            {
+                _isPausing = true;
+                _inputQueue.Clear();
+            };
+            
+            _gameLogic.EResume += () =>
+            {
+                _isPausing = false;
+                _inputQueue.Clear();
+            };
         }
 
         private void OnEnable()
@@ -105,8 +117,12 @@ namespace Player.Input
 
         void Update()
         {
+            if (_isPausing) return;
+
             if (_inputType == InputType.Player)
+            {
                 InputTypeUpdate();
+            }
         }
 
         ///<summary>InGame用とUI用の切り替え</summary>
