@@ -64,7 +64,7 @@ namespace Player.Action
 				_rb.velocity = GetSlopeMoveDirection(_dir * _speed, NormalRay());
 			}
 
-			if (PlayerInputsAction.Instance.GetMoveInput == Vector2.zero)
+			if (PlayerInputsAction.Instance.GetMoveInput() == Vector2.zero)
 			{
 				_rb.velocity = Vector3.zero;
 			}
@@ -145,7 +145,7 @@ namespace Player.Action
 			{
 				if (!_playerParam.GetIsAnimation)
 				{
-					OnMove(PlayerInputsAction.Instance.GetMoveInput);
+					OnMove(PlayerInputsAction.Instance.GetMoveInput());
 					PlayerRotate(_dir);
 					//SpeedChange();
 				}

@@ -95,7 +95,7 @@ namespace Player.Input
                 _isPausing = true;
                 _inputQueue.Clear();
             };
-            
+
             _gameLogic.EResume += () =>
             {
                 _isPausing = false;
@@ -143,14 +143,11 @@ namespace Player.Input
         }
 
         ///<summary>プレイヤーの移動入力</summary>
-        public Vector2 GetMoveInput
+        public Vector2 GetMoveInput()
         {
-            get
-            {
-                if (_playerControllerInputBlocked || _isExternalInputBlocked)
-                    return Vector3.zero;
-                return _inputVector;
-            }
+            if (_playerControllerInputBlocked || _isExternalInputBlocked)
+                return Vector3.zero;
+            return _inputVector;
         }
 
         public Vector2 GetMoveValue()
