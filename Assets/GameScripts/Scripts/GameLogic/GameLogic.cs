@@ -53,6 +53,8 @@ public class GameLogic
 
     private void Start()
     {
+        GameObject.DontDestroyOnLoad(this);
+        
         Initialize();
     }
 
@@ -79,6 +81,8 @@ public class GameLogic
 
     public void StartPostProDoG()
     {
+        Debug.Log($"ガウス さっぶーーーーん");
+        
         DOTween.To((_) => { _dog.elapsedTime.Override(_); },
             0f, 1f, .75f);
     }

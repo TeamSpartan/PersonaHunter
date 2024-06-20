@@ -51,7 +51,12 @@ namespace Player.Zone
 		/// <summary>呼ばれたときにゲージのValueを増加させます</summary>
 		public void IncreaseGaugeValue(float value)
 		{
-			if (!_canIncreaseGaugeValue) return;
+			Debug.Log($"ゾーン ふやしたお");
+			if (!_canIncreaseGaugeValue)
+			{
+				Debug.Log($"ゾーン？ 増やせねぇぞばーかばーか");
+				return;
+			}
 
 			_currentZoneGaugeValue += value;
 			if (_currentZoneGaugeValue >= _maxZoneObj)

@@ -45,7 +45,7 @@ public class MyComponentValidator : MonoBehaviour
     private void EnableLogic()
     {
         _gameLogic.gameObject.SetActive(true);
-        //_gameLogic.Initialize();
+        _gameLogic.Initialize();
     }
 
     private void Validation()
@@ -140,6 +140,12 @@ public class MyComponentValidator : MonoBehaviour
     {
         GameObject.FindAnyObjectByType<InGameUIManager>().BossHPBarSetActive(true);
         
+        // コマシラ のHPバーを削除
+        foreach (var komashiraHpBar in GameObject.FindObjectsByType<KomashiraHPBar>(FindObjectsSortMode.None))
+        {
+            Destroy(komashiraHpBar.gameObject);
+        }
+        
         // プレイヤ隠ぺい
         _player.SetActive(false);
 
@@ -169,6 +175,9 @@ public class MyComponentValidator : MonoBehaviour
 
         // ロジックへイベント登録
         _gameLogic.TaskOnBossDefeated += TaskOnBossDefeated;
+        
+        // ぬえをまたまた初期化
+        GameObject.FindAnyObjectByType<NuweBrain>().Start();
     }
 
     private void OnloopPointReached_Appearance(PlayableDirector source)

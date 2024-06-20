@@ -203,7 +203,7 @@ public class NuweBrain : MonoBehaviour
         {
             _healthPoint -= dmg;
             _flinchPoint += dmg * .25f;
-            
+
             _hpView.SetGauge(_healthMaxValue, _healthPoint);
 
             if (_healthPoint <= 0)
@@ -229,21 +229,25 @@ public class NuweBrain : MonoBehaviour
         _healthPoint = val;
     }
 
-    public void StartDull()
+    private void StartFreeze()
     {
         // _anim.SetLayerWeight(0, 0f);
         // _anim.SetLayerWeight(1, 1f);
-        
+
         _tree.EndYieldBehaviourFrom(_currentYielded);
         _tree.PauseBT();
+
+        _agent.ResetPath();
+        _anim.enabled = false;
     }
 
-    public void EndDull()
+    private void EndFreeze()
     {
         // _anim.SetLayerWeight(0, 1f);
         // _anim.SetLayerWeight(1, 0f);
-        
+
         _tree.StartBT();
+        _anim.enabled = true;
     }
 
     private void OnDrawGizmosSelected()
@@ -380,16 +384,24 @@ public class NuweBrain : MonoBehaviour
             }
         }
     }
-
+    
     public void Start()
     {
         _hpView = GameObject.FindAnyObjectByType<NuweHpViewer>();
+        
         _logic = GameObject.FindAnyObjectByType<GameLogic>();
         _logic.ApplyEnemyTransform(transform);
 
+        _logic.EDiveZone += StartFreeze;
+        _logic.EGetoutZone += EndFreeze;
+        _logic.EPause += StartFreeze;
+        _logic.EResume += EndFreeze;
+
         SetupBehaviours();
         MakeTransitions();
+        
         _tree.StartBT();
+        
         SetupComponent();
     }
 

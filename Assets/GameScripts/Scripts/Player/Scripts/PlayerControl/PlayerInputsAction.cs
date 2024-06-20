@@ -87,18 +87,20 @@ namespace Player.Input
 
         private void Start()
         {
+            GameObject.DontDestroyOnLoad(this);
+            
             _gameLogic = GameObject.FindAnyObjectByType<GameLogic>();
             _zoneTimeController = GameLogic.FindAnyObjectByType<ZoneTimeController>();
 
             _gameLogic.EPause += () =>
             {
-                _isPausing = true;
+                _isPausing = _playerControllerInputBlocked = _isExternalInputBlocked = true;
                 _inputQueue.Clear();
             };
 
             _gameLogic.EResume += () =>
             {
-                _isPausing = false;
+                _isPausing = _playerControllerInputBlocked = _isExternalInputBlocked = false;
                 _inputQueue.Clear();
             };
         }
@@ -264,6 +266,11 @@ namespace Player.Input
         {
             if (context.ReadValueAsButton())
             {
+                if (_zoneTimeController is null)
+                {
+                    _zoneTimeController = GameObject.FindAnyObjectByType<ZoneTimeController>();
+                }
+                
                 if (!_zoneTimeController.GetIsSlowTime)
                 {
                     _zoneTimeController.StartDull();

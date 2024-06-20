@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using PlayerCam.Scripts;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// コマシラのHPバーに対してアタッチをする

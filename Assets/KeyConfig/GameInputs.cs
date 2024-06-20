@@ -320,7 +320,7 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""id"": ""74fd9e5d-acde-4644-a5ac-2ca461c84906"",
                     ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""AxisDeadzone(max=0.5)"",
                     ""groups"": """",
                     ""action"": ""Parry"",
                     ""isComposite"": false,

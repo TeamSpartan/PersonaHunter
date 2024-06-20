@@ -497,8 +497,6 @@ public class KomashiraBrain : MonoBehaviour
 
         _agent.ResetPath();
         _anim.enabled = false;
-
-        Debug.Log($"コマシラ ときとめ");
     }
 
     private void EndFreeze()
@@ -509,8 +507,6 @@ public class KomashiraBrain : MonoBehaviour
         _tree.StartBT();
         _tree.YieldAllBehaviourTo(_think);
         _anim.enabled = true;
-
-        Debug.Log($"コマシラ ときとめおわり");
     }
 
     public void AddDamage(float dmg)
