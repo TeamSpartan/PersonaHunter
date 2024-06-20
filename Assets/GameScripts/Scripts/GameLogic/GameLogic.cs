@@ -26,6 +26,12 @@ public class GameLogic
     /// <summary> 一時停止から抜けるときに走る処理 </summary>
     public Action EResume;
 
+    /// <summary> ゾーンに入るときに走る処理 </summary>
+    public Action EDiveZone;
+
+    /// <summary> ゾーンから出るときに走る処理 </summary>
+    public Action EGetoutZone;
+
     #endregion
 
     /// <summary> ガウス差分クラス </summary>
@@ -98,10 +104,7 @@ public class GameLogic
     /// </summary>
     public void StartDiveInZone()
     {
-        foreach (var brain in GameObject.FindObjectsByType<KomashiraBrain>(FindObjectsSortMode.None))
-        {
-            brain.StartDull();
-        }
+        EDiveZone();
 
         StartPostProDoG();
     }
@@ -111,11 +114,8 @@ public class GameLogic
     /// </summary>
     public void GetOutOverZone()
     {
-        foreach (var brain in GameObject.FindObjectsByType<KomashiraBrain>(FindObjectsSortMode.None))
-        {
-            brain.EndDull();
-        }
-        
+        EGetoutZone();
+
         DOTween.To((_) => { _dog.elapsedTime.Override(_); },
             1f, 0f, .75f);
     }

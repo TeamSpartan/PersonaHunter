@@ -75,7 +75,7 @@ namespace Player.Action
 				return;
 			}
 
-			_saveInputValue = PlayerInputsAction.Instance.GetMoveInput;
+			_saveInputValue = PlayerInputsAction.Instance.GetMoveInput();
 			_playerParam.SetIsAnimation(true);
 			_animator.SetTrigger(_avoidId);
 

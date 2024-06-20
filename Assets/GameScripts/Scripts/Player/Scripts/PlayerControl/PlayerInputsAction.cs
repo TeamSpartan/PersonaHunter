@@ -89,6 +89,18 @@ namespace Player.Input
         {
             _gameLogic = GameObject.FindAnyObjectByType<GameLogic>();
             _zoneTimeController = GameLogic.FindAnyObjectByType<ZoneTimeController>();
+
+            _gameLogic.EPause += () =>
+            {
+                _isPausing = true;
+                _inputQueue.Clear();
+            };
+
+            _gameLogic.EResume += () =>
+            {
+                _isPausing = false;
+                _inputQueue.Clear();
+            };
         }
 
         private void OnEnable()
@@ -105,8 +117,12 @@ namespace Player.Input
 
         void Update()
         {
+            if (_isPausing) return;
+
             if (_inputType == InputType.Player)
+            {
                 InputTypeUpdate();
+            }
         }
 
         ///<summary>InGame用とUI用の切り替え</summary>
@@ -127,14 +143,11 @@ namespace Player.Input
         }
 
         ///<summary>プレイヤーの移動入力</summary>
-        public Vector2 GetMoveInput
+        public Vector2 GetMoveInput()
         {
-            get
-            {
-                if (_playerControllerInputBlocked || _isExternalInputBlocked)
-                    return Vector3.zero;
-                return _inputVector;
-            }
+            if (_playerControllerInputBlocked || _isExternalInputBlocked)
+                return Vector3.zero;
+            return _inputVector;
         }
 
         public Vector2 GetMoveValue()
