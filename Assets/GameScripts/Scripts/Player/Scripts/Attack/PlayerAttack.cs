@@ -15,6 +15,10 @@ public class PlayerAttack : MonoBehaviour
 	
 	[SerializeField, Header("敵のレイヤー")] LayerMask _enemyLayerMask;
 
+	[SerializeField] private ParticleSystem _rightAttack;
+	
+	[SerializeField] private ParticleSystem _leftAttack;
+
 	private bool _isGiveDamage = false;
 
 	private void Start()
@@ -84,6 +88,7 @@ public class PlayerAttack : MonoBehaviour
 			_animator.SetTrigger("RightAttack");
 			_currentName = 1;
 			_playerParam.SetIsAnimation(true);
+			_rightAttack.Play();
 		}
 		else
 		{
@@ -91,6 +96,7 @@ public class PlayerAttack : MonoBehaviour
 			_animator.SetTrigger("LeftAttack");
 			_currentName = 2;
 			_playerParam.SetIsAnimation(true);
+			_leftAttack.Play();
 		}
 		PlayerInputsAction.Instance.RunCancel();
 	}
@@ -122,6 +128,9 @@ public class PlayerAttack : MonoBehaviour
 		}
 		_playerParam.SetIsAttack(false);
 		_isGiveDamage = false;
+		
+		_rightAttack.Stop();
+		_leftAttack.Stop();
 	}
 
 	///<summary>アニメーションの終わり</summary>
