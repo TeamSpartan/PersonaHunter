@@ -60,6 +60,10 @@ public class NuweBrain : MonoBehaviour
 
     [SerializeField, Header("ボス撃破後のイベント")] private UnityEvent _bossDefeatedEvent;
 
+    [SerializeField] private ParticleSystem _rushEffect;
+    
+    [SerializeField] private ParticleSystem _clawEffect;
+
     /// <summary> ベースのダメージ量 </summary>
     public float GetBaseDamage => _baseDamage;
 
@@ -268,6 +272,26 @@ public class NuweBrain : MonoBehaviour
         {
             CheckPlayerIsGuarding(other);
         }
+    }
+
+    public void PlayRushEffect()
+    {
+        _rushEffect.Play();
+    }
+
+    public void StopRushEffect()
+    {
+        _rushEffect.Stop();
+    }
+
+    public void PlayClawEffect()
+    {
+        _clawEffect.Play();
+    }
+
+    public void StopClawEffect()
+    {
+        _clawEffect.Stop();
     }
 
     /// <summary>
