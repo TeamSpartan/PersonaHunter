@@ -14,21 +14,23 @@ namespace Player.Zone
 		[SerializeField, Header("アニメーションスピード")]
 		private float duration = 5f;
 
+		[SerializeField]
+		private int _maxZoneObj = 5;
+		
 		private float _animationTime = 0.3f;
 
 		private bool _canIncreaseGaugeValue = true; // ゲージのValueを増加できるかのフラグ
-		
-		[SerializeField, Header("数珠の最大個数")]
-		private float _maxZoneObj = 5f;
+
 		private float _currentZoneGaugeValue;
 
-
-		
+		public int ActiveZoneObjCount => _splineAnimates.Count;
+			
 		private ZoneTimeController _zoneTimeController;
 		private SplineContainer _spline;
 		private PlayerAvoid _playerAvoid;
 		private List<SplineAnimate> _splineAnimates = new();
 		private List<SplineAnimate> _evacuationZoneObj = new();
+		
 
 		/// <summary>ゲージのValueを増加できるかのフラグを変更します</summary>
 		public void SetCanIncreaseGaugeValue(bool flag) => _canIncreaseGaugeValue = flag;
@@ -79,12 +81,13 @@ namespace Player.Zone
 		{
 			// ゲージの最大値を元に戻す
 			SetCanIncreaseGaugeValue(true);
+			Debug.Log($"ゾーン おーわり");
 		}
 
 		///<summary>ZoneGaugeが減った時に更新</summary>
 		public void ZoneDecreaseUpdate(float value)
 		{
-			if (_splineAnimates.Count < 0) return;
+			if (_splineAnimates.Count < 1) return;
 
 			// for (int i = Mathf.FloorToInt(value); i < _splineAnimates.Count; i++)
 			// {
@@ -99,7 +102,7 @@ namespace Player.Zone
 		///<summary>ZoneGaugeが 増えた時に更新</summary>
 		public void ZoneIncreaseUpdate(float currentValue)
 		{
-			if (_evacuationZoneObj.Count < 0) return;
+			if (_evacuationZoneObj.Count < 1) return;
 
 			for (int i = _splineAnimates.Count; i < Mathf.FloorToInt(currentValue); i++)
 			{

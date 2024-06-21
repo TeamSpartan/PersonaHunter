@@ -11,7 +11,7 @@ using UnityEngine.UI;
 /// </summary>
 public class InGameUIManager : MonoBehaviour
 {
-    [FormerlySerializedAs("_canvasGroup")] [SerializeField] private CanvasGroup _bossHPBar;
+    [SerializeField] private CanvasGroup _bossHPBar;
     
     public void AddUIElements(GameObject elem)
     {

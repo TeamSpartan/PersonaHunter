@@ -231,14 +231,19 @@ public class NuweBrain : MonoBehaviour
 
     public void StartDull()
     {
-        _anim.SetLayerWeight(0, 0f);
-        _anim.SetLayerWeight(1, 1f);
+        // _anim.SetLayerWeight(0, 0f);
+        // _anim.SetLayerWeight(1, 1f);
+        
+        _tree.EndYieldBehaviourFrom(_currentYielded);
+        _tree.PauseBT();
     }
 
     public void EndDull()
     {
-        _anim.SetLayerWeight(0, 1f);
-        _anim.SetLayerWeight(1, 0f);
+        // _anim.SetLayerWeight(0, 1f);
+        // _anim.SetLayerWeight(1, 0f);
+        
+        _tree.StartBT();
     }
 
     private void OnDrawGizmosSelected()

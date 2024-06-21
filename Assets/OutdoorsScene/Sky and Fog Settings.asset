@@ -1,5 +1,42 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4360025169596504918
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5379c744f40e44ed9f63172c0f034e62, type: 3}
+  m_Name: DifferenceOfGaussian
+  m_EditorClassIdentifier: 
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  coefficient:
+    m_OverrideState: 1
+    m_Value: 0.31
+  strength:
+    m_OverrideState: 1
+    m_Value: 2.9
+  elapsedTime:
+    m_OverrideState: 1
+    m_Value: 0
+  center:
+    m_OverrideState: 1
+    m_Value: {x: 0.5, y: 0.5}
+  gain:
+    m_OverrideState: 1
+    m_Value: 15
+  invers:
+    m_OverrideState: 1
+    m_Value: 1
+  multiply:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &-4290323644152324261
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -150,6 +187,7 @@ MonoBehaviour:
   - {fileID: 5037961231354823621}
   - {fileID: -4290323644152324261}
   - {fileID: 3025620732218499140}
+  - {fileID: -4360025169596504918}
 --- !u!114 &3025620732218499140
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -231,7 +269,7 @@ MonoBehaviour:
     m_Value: 64
   m_VolumetricFogBudget:
     m_OverrideState: 0
-    m_Value: 0.25
+    m_Value: 0.5
   m_ResolutionDepthRatio:
     m_OverrideState: 0
     m_Value: 0.5

@@ -45,7 +45,7 @@ public class MyComponentValidator : MonoBehaviour
     private void EnableLogic()
     {
         _gameLogic.gameObject.SetActive(true);
-        _gameLogic.Initialize();
+        //_gameLogic.Initialize();
     }
 
     private void Validation()

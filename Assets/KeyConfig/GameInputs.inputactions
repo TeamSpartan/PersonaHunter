@@ -29,7 +29,7 @@
                     "id": "d8a7a99c-cfed-44e7-ad08-8cd0ad85ad3d",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
@@ -38,7 +38,7 @@
                     "id": "a0373460-2c5d-4320-98c8-dfa096032d35",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
@@ -47,7 +47,7 @@
                     "id": "304e7631-09ff-4b42-bb31-02bddfbc9b3e",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
@@ -56,7 +56,7 @@
                     "id": "45f6b0ad-33b0-40da-8eb4-070b57888558",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
@@ -65,7 +65,7 @@
                     "id": "805185c0-2dfe-4b1a-8ef0-b6a25c010566",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
@@ -74,7 +74,7 @@
                     "id": "ffe14d07-dca0-4bc7-8b19-8d58429e1c08",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
@@ -92,7 +92,7 @@
                     "id": "9d919e4f-c7f1-492d-9790-efa7e070eb66",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
@@ -101,7 +101,7 @@
                     "id": "36a7f6bb-395b-4f35-822b-6b0ee66304f4",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 }
             ],
@@ -273,17 +273,6 @@
                 },
                 {
                     "name": "",
-                    "id": "8a9b64d2-2ceb-4c11-8b04-e2da697aced6",
-                    "path": "<XInputController>/rightShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "7c28833f-36f7-4360-b4a9-3e092c261eed",
                     "path": "<Keyboard>/k",
                     "interactions": "",
@@ -298,7 +287,7 @@
                     "id": "16e96959-7b9e-4971-b1a8-929556ce141c",
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "AxisDeadzone(max=0.5)",
                     "groups": "",
                     "action": "Attack",
                     "isComposite": false,
@@ -396,6 +385,17 @@
                     "name": "",
                     "id": "417786f8-0f6c-4510-b436-bcc99a351045",
                     "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1f27edc5-a728-4eec-9540-484e9ae9fa0f",
+                    "path": "<Keyboard>/p",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
