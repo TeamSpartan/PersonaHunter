@@ -4,15 +4,17 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using DG.Tweening;
 using SgLibUnite.Systems;
+using SgLibUnite.Singleton;
 
-/* シングルトンやーめた。万能ではない */
+/* インゲームシーンとボスシーン間でガウス差分の
+ ポスプロのボリュームの参照を保持したいのでシングルトン */
 
 // 作成：菅沼
 /// <summary>
 /// オモテガリ ゲームロジック
 /// </summary>
 public class GameLogic
-    : MonoBehaviour
+    : SingletonBaseClass<GameLogic>
         , IBossDieNotifiable
 {
     #region Acitons
@@ -51,11 +53,17 @@ public class GameLogic
 
     public event Action TaskOnBossDefeated;
 
+    private InGameUIManager _ingameUI;
+
+    protected override void ToDoAtAwakeSingleton()
+    {
+    }
+
     private void Start()
     {
-        GameObject.DontDestroyOnLoad(this);
-        
         Initialize();
+
+        _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>();
     }
 
     private void Update()
@@ -82,7 +90,7 @@ public class GameLogic
     public void StartPostProDoG()
     {
         Debug.Log($"ガウス さっぶーーーーん");
-        
+
         DOTween.To((_) => { _dog.elapsedTime.Override(_); },
             0f, 1f, .75f);
     }
@@ -93,6 +101,8 @@ public class GameLogic
     public void StartPause()
     {
         EPause();
+        
+        _ingameUI.DisplayPausingPanel();
     }
 
     /// <summary>
@@ -101,6 +111,8 @@ public class GameLogic
     public void StartResume()
     {
         EResume();
+        
+        _ingameUI.ClosePausingPanel();
     }
 
     /// <summary>

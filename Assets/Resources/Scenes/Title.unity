@@ -192,6 +192,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TitleSceneBackGround
       objectReference: {fileID: 0}
+    - target: {fileID: 9196305503757108373, guid: 78ac16f7cb961364e8096d2f4721c267,
+        type: 3}
+      propertyPath: m_Looping
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

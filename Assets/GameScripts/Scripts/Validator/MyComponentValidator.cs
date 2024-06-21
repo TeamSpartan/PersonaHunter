@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Player.Action;
@@ -18,6 +19,7 @@ using UnityEngine.SceneManagement;
 public class MyComponentValidator : MonoBehaviour
 {
     [SerializeField] private GameObject _firstSelectedInTitle;
+    [SerializeField] private List<GameObject> _destroyTargetOnDestroyedThis;
 
     private bool _playedPrologue;
     private ClientDataHolder _clientData;
@@ -30,7 +32,7 @@ public class MyComponentValidator : MonoBehaviour
     {
         _clientData = Resources.Load<ClientDataHolder>("Prefabs/GameSystem/ClientDataHolder");
         _gameLogic = GameObject.FindAnyObjectByType<GameLogic>();
-        _gameLogic.gameObject.SetActive(false);
+        //_gameLogic.gameObject.SetActive(false);
 
         // プレイヤ取得
         if (GameObject.FindAnyObjectByType<PlayerMove>() is not null)
@@ -39,13 +41,6 @@ public class MyComponentValidator : MonoBehaviour
         }
 
         Validation();
-        EnableLogic();
-    }
-
-    private void EnableLogic()
-    {
-        _gameLogic.gameObject.SetActive(true);
-        _gameLogic.Initialize();
     }
 
     private void Validation()
@@ -97,7 +92,15 @@ public class MyComponentValidator : MonoBehaviour
             }
         }
     }
-    
+
+    private void OnDestroy()
+    {
+        foreach (var target in _destroyTargetOnDestroyedThis)
+        {
+            Destroy(target);
+        }
+    }
+
     private void ValidationOnTitleScene()
     {
         // プロローグを再生したかの静的フィールドにアクセス
@@ -177,7 +180,7 @@ public class MyComponentValidator : MonoBehaviour
         _gameLogic.TaskOnBossDefeated += TaskOnBossDefeated;
         
         // ぬえをまたまた初期化
-        GameObject.FindAnyObjectByType<NuweBrain>().Start();
+        GameObject.FindAnyObjectByType<NuweBrain>().Init();
     }
 
     private void OnloopPointReached_Appearance(PlayableDirector source)

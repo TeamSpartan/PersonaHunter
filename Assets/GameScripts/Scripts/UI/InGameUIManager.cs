@@ -9,9 +9,10 @@ using UnityEngine.UI;
 /// <summary>
 /// インゲームのUIに対してアタッチをする
 /// </summary>
-public class InGameUIManager : MonoBehaviour
+public class InGameUIManager : WindowManager
 {
     [SerializeField] private CanvasGroup _bossHPBar;
+    [SerializeField] private GameObject _pausePanel;
     
     public void AddUIElements(GameObject elem)
     {
@@ -21,5 +22,21 @@ public class InGameUIManager : MonoBehaviour
     public void BossHPBarSetActive(bool c)
     {
         _bossHPBar.alpha = c ? 1 : 0;
+    }
+
+    public void DisplayPausingPanel()
+    {
+        if (_pausePanel.TryGetComponent<CanvasGroup>(out var canvasGroup))
+        {
+            canvasGroup.alpha = 1;
+        }
+    }
+
+    public void ClosePausingPanel()
+    {
+        if (_pausePanel.TryGetComponent<CanvasGroup>(out var canvasGroup))
+        {
+            canvasGroup.alpha = 0;
+        }
     }
 }

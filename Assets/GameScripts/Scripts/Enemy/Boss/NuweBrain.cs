@@ -409,7 +409,7 @@ public class NuweBrain : MonoBehaviour
         }
     }
     
-    public void Start()
+    public void Init()
     {
         _hpView = GameObject.FindAnyObjectByType<NuweHpViewer>();
         
@@ -472,7 +472,10 @@ public class NuweBrain : MonoBehaviour
 
         _death.AddBehaviour(Death);
         _death.SetYieldMode(true);
-        _death.EBegin += () => { GameObject.FindAnyObjectByType<GameLogic>().NotifyBossIsDeath(); };
+        _death.EBegin += () =>
+        {
+            GameObject.FindAnyObjectByType<GameLogic>().NotifyBossIsDeath();
+        };
 
         _flinch.AddBehaviour(Flinch);
         _flinch.SetYieldMode(true);
