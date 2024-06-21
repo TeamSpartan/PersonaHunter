@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ public class WindowManager : MonoBehaviour
     [SerializeField] private GameObject _rootWindow;
     [SerializeField] private List<GameObject> _invisibleWhenStarted;
     public GameObject RootWindow => _rootWindow;
+
+    protected Action EventAtStart;
 
     public void CloseWindow(GameObject obj)
     {
@@ -49,5 +52,8 @@ public class WindowManager : MonoBehaviour
                 obj.GetComponentInChildren<CanvasGroup>().alpha = 0;
             }
         }
+
+        if (EventAtStart is not null)
+            EventAtStart();
     }
 }

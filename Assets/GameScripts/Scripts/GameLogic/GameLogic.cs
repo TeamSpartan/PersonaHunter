@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using DG.Tweening;
+using Player.Input;
 using SgLibUnite.Systems;
 using SgLibUnite.Singleton;
+using UnityEngine.SceneManagement;
 
 /* インゲームシーンとボスシーン間でガウス差分の
  ポスプロのボリュームの参照を保持したいのでシングルトン */
@@ -55,6 +57,8 @@ public class GameLogic
 
     private InGameUIManager _ingameUI;
 
+    private PlayerInputsAction _playerInputs;
+
     protected override void ToDoAtAwakeSingleton()
     {
     }
@@ -64,12 +68,14 @@ public class GameLogic
         Initialize();
 
         _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>();
+        _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>();
     }
 
     private void Update()
     {
         _dog.center.Override(Vector2.one * .5f);
     }
+    
 
     /// <summary>
     /// 敵のトランスフォームを登録
@@ -146,9 +152,9 @@ public class GameLogic
         // SceneLoader が Nullである場合には生成。
         if (GameObject.FindFirstObjectByType<SceneLoader>() is null)
         {
-            var sl = Resources.Load<GameObject>("Prefabs/GameSystem/SceneLoader");
+            var sceneLoader = Resources.Load<GameObject>("Prefabs/GameSystem/SceneLoader");
 
-            var obj = GameObject.Instantiate(sl);
+            var obj = GameObject.Instantiate(sceneLoader);
             _sceneLoader = obj.GetComponent<SceneLoader>();
         }
 

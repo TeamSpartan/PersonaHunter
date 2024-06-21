@@ -5,6 +5,7 @@ using PlayerCam.Scripts;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 /// <summary>
 /// コマシラのHPバーに対してアタッチをする
@@ -37,6 +38,10 @@ public class KomashiraHPBar : MonoBehaviour
         _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>();
         _ingameUI.AddUIElements(this.gameObject);
         _canvasGroup = GetComponent<CanvasGroup>();
+        if (TryGetComponent<Slider>(out var slider))
+        {
+            slider.interactable = false;
+        }
     }
 
     private void Update()
