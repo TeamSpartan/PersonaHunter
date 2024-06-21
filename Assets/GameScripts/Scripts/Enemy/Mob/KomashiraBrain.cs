@@ -5,6 +5,7 @@ using SgLibUnite.AI;
 using UnityEngine;
 using SgLibUnite.BehaviourTree;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -158,7 +159,7 @@ public class KomashiraBrain : MonoBehaviour
         _bar.SetFollowingTarget(transform);
         _slider = _bar.GetComponent<Slider>();
         _slider.maxValue = _maxHealthPoint;
-        
+
         _logic = GameObject.FindAnyObjectByType<GameLogic>();
         _logic.ApplyEnemyTransform(transform);
 
@@ -169,9 +170,9 @@ public class KomashiraBrain : MonoBehaviour
 
         SetupComponent();
         SetupBehaviours();
-        
+
         _tree.StartBT();
-        
+
         FindPlayer();
 
         if (_tree.CurrentYieldedEvent != _think)
@@ -247,7 +248,12 @@ public class KomashiraBrain : MonoBehaviour
         _death.AddBehaviour(Death);
         _death.EBegin += () => Debug.Log($"entry-death");
         _death.EEnd += () => Debug.Log($"exit-death");
-        _death.EBegin += () => { _anim.SetTrigger("Die"); };
+        _death.EBegin += () =>
+        {
+            _anim.SetTrigger("Die");
+            _logic.EDiveZone -= StartFreeze;
+            _logic.EGetoutZone -= EndFreeze;
+        };
         _death.SetYieldMode(true);
 
         BTBehaviour[] behaviours = new[]
@@ -489,6 +495,8 @@ public class KomashiraBrain : MonoBehaviour
 
     private void StartFreeze()
     {
+        if (_healthPoint <= 0) return;
+
         // _anim.SetLayerWeight(0, 0f);
         // _anim.SetLayerWeight(1, 1f);
 
@@ -501,6 +509,8 @@ public class KomashiraBrain : MonoBehaviour
 
     private void EndFreeze()
     {
+        if (_healthPoint <= 0) return;
+
         // _anim.SetLayerWeight(0, 1f);
         // _anim.SetLayerWeight(1, 0f);
 
