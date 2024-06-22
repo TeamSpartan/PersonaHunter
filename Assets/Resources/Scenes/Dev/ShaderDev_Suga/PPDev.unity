@@ -742,7 +742,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1624199188}
         m_TargetAssemblyTypeName: GameLogic, Assembly-CSharp
-        m_MethodName: PlayDoGEffect
+        m_MethodName: StartPostProDoG
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
