@@ -7,7 +7,7 @@ namespace SgLibUnite
     {
         /// <summary> このクラスを継承することによって、シングルトンパターンのビヘイビアの機能を提供する </summary>
         /// <typeparam name="T"></typeparam>
-        public abstract class SingletonBaseClass<T> : MonoBehaviour where T : Component
+        public abstract class SingletonBaseClass<T> : MonoBehaviour where T : class
         {
             static T Instance;
             public static T SingletonInstance => Instance;

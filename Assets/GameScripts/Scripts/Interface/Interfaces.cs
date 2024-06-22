@@ -113,12 +113,18 @@ public interface IAbleToParry
 /// <summary>
 /// 敵を倒した時に呼びだすメソッドの実装を強制する。
 /// </summary>
-public interface IBossDieNotifiable
+public interface IEnemyDieNotifiable
 {
+    public enum EnemyType
+    {
+        Komashira,
+        Nue
+    }
+    
     /// <summary>
     /// BOSS撃破時に呼び出す。
     /// </summary>
-    void NotifyBossIsDeath();
+    void NotifyEnemyIsDeath(EnemyType type, GameObject enemy);
 }
 
 /// <summary>

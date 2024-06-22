@@ -55,7 +55,7 @@ namespace Player.Action
 			_dir = _dir.normalized;
 
 			//走っていると
-			if (PlayerInputsAction.Instance.GetIsRun)
+			if (PlayerInputsAction.Instance.IsRunning)
 			{
 				_rb.velocity = GetSlopeMoveDirection(_dir * _speed, NormalRay());
 			}
@@ -75,7 +75,7 @@ namespace Player.Action
 		///<summary>プレイヤーの向き</summary>
 		public void PlayerRotate(Vector3 dir)
 		{
-			if (PlayerInputsAction.Instance.GetIsLockOn)
+			if (PlayerInputsAction.Instance.IsLockingOn)
 			{
 				_player.transform.LookAt(_playerCamera.CurrentLockingOnTarget);
 			}

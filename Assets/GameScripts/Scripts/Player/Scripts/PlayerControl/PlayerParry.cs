@@ -4,6 +4,7 @@ using Player.Param;
 using Player.Zone;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player.Action
 {
@@ -11,7 +12,7 @@ namespace Player.Action
 	///<summary>プレイヤーのパリー</summary>
 	public class PlayerParry : MonoBehaviour, IAbleToParry
 	{
-		[SerializeField] private ParticleSystem _parry;
+		[SerializeField] private ParticleSystem _parrySucceedEffect;
 
 		private int _parryID = Animator.StringToHash("IsParry");
 		private PlayerParam _playerParam;
@@ -51,7 +52,7 @@ namespace Player.Action
 		public void ParrySuccess()
 		{
 			_zoneObj.IncreaseGaugeValue(_playerParam.GetGiveValueOfParry);
-			_parry.Play();
+			_parrySucceedEffect.Play();
 		}
 
 		///<summary>アニメーションイベントで呼び出す用</summary>------------------------------------------------------------------

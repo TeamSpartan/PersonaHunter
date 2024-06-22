@@ -4,6 +4,8 @@ using UnityEngine.AI;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
+// コードクリーン実施 【6/22：菅沼】
+
 /* 菅沼が主担当 */
 
 /// <summary>
@@ -15,7 +17,7 @@ public class NuweBrain : MonoBehaviour
     , IDamagedComponent
     , IPlayerCamLockable
 {
-    #region 外部パラメータ
+    #region 公開パラメータ
 
     [SerializeField, Header("体力の最大値")] private float _healthMaxValue;
 
@@ -59,6 +61,10 @@ public class NuweBrain : MonoBehaviour
     [SerializeField, Header("ベースのダメージ")] private float _baseDamage;
 
     [SerializeField, Header("ボス撃破後のイベント")] private UnityEvent _bossDefeatedEvent;
+
+    [SerializeField] private ParticleSystem _rushEffect;
+    
+    [SerializeField] private ParticleSystem _clawEffect;
 
     /// <summary> ベースのダメージ量 </summary>
     public float GetBaseDamage => _baseDamage;
@@ -203,7 +209,8 @@ public class NuweBrain : MonoBehaviour
         {
             _healthPoint -= dmg;
             _flinchPoint += dmg * .25f;
-            
+
+            // ゲージの表示を更新
             _hpView.SetGauge(_healthMaxValue, _healthPoint);
 
             if (_healthPoint <= 0)
@@ -217,6 +224,9 @@ public class NuweBrain : MonoBehaviour
     public void Kill()
     {
         _healthPoint = 0;
+        
+        _tree.EndYieldBehaviourFrom(_currentYielded);
+        _tree.YieldAllBehaviourTo(_death);
     }
 
     public float GetHealth()
@@ -229,21 +239,25 @@ public class NuweBrain : MonoBehaviour
         _healthPoint = val;
     }
 
-    public void StartDull()
+    public void StartFreeze()
     {
         // _anim.SetLayerWeight(0, 0f);
         // _anim.SetLayerWeight(1, 1f);
-        
+
         _tree.EndYieldBehaviourFrom(_currentYielded);
         _tree.PauseBT();
+
+        _agent.ResetPath();
+        _anim.enabled = false;
     }
 
-    public void EndDull()
+    public void EndFreeze()
     {
         // _anim.SetLayerWeight(0, 1f);
         // _anim.SetLayerWeight(1, 0f);
-        
+
         _tree.StartBT();
+        _anim.enabled = true;
     }
 
     private void OnDrawGizmosSelected()
@@ -264,6 +278,26 @@ public class NuweBrain : MonoBehaviour
         {
             CheckPlayerIsGuarding(other);
         }
+    }
+
+    public void PlayRushEffect()
+    {
+        _rushEffect.Play();
+    }
+
+    public void StopRushEffect()
+    {
+        _rushEffect.Stop();
+    }
+
+    public void PlayClawEffect()
+    {
+        _clawEffect.Play();
+    }
+
+    public void StopClawEffect()
+    {
+        _clawEffect.Stop();
     }
 
     /// <summary>
@@ -380,16 +414,19 @@ public class NuweBrain : MonoBehaviour
             }
         }
     }
-
-    public void Start()
+    
+    public void Initialize()
     {
         _hpView = GameObject.FindAnyObjectByType<NuweHpViewer>();
+        
         _logic = GameObject.FindAnyObjectByType<GameLogic>();
         _logic.ApplyEnemyTransform(transform);
 
         SetupBehaviours();
         MakeTransitions();
+        
         _tree.StartBT();
+        
         SetupComponent();
     }
 
@@ -420,9 +457,7 @@ public class NuweBrain : MonoBehaviour
         _tree.UpdateTransition(_tNameStartThink, ref _playerIsInRange);
     }
 
-    /// <summary>
-    /// 各ビヘイビアをセットアップ
-    /// </summary>
+    /// <summary> 各ビヘイビアをセットアップ </summary>
     private void SetupBehaviours()
     {
         _idle.AddBehaviour(Idle);
@@ -436,7 +471,10 @@ public class NuweBrain : MonoBehaviour
 
         _death.AddBehaviour(Death);
         _death.SetYieldMode(true);
-        _death.EBegin += () => { GameObject.FindAnyObjectByType<GameLogic>().NotifyBossIsDeath(); };
+        _death.EBegin += () =>
+        {
+            GameObject.FindAnyObjectByType<GameLogic>().NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType.Nue, gameObject);
+        };
 
         _flinch.AddBehaviour(Flinch);
         _flinch.SetYieldMode(true);
@@ -484,9 +522,7 @@ public class NuweBrain : MonoBehaviour
         _tree.ResistBehaviours(behaviours);
     }
 
-    /// <summary>
-    /// BTにトランジションを登録
-    /// </summary>
+    /// <summary> BTにトランジションを登録 </summary>
     private void MakeTransitions()
     {
         _tree.MakeTransition(_idle, _getClose, _tNameStartGetClose);
@@ -508,9 +544,7 @@ public class NuweBrain : MonoBehaviour
 
     private void ResetAgentPath() => _agent.ResetPath();
 
-    /// <summary>
-    /// プレイヤのトランスフォームを取得する
-    /// </summary>
+    /// <summary> プレイヤのトランスフォームを取得する </summary>
     private Transform PlayerPR => GameObject.FindWithTag("Player").transform;
 
     private void FindPlayerDirection()
@@ -571,6 +605,16 @@ public class NuweBrain : MonoBehaviour
             }
 
             _agent.SetDestination(_player.position);
+        }
+
+        // もしプレイヤに近づけたらAwaitへ戻る
+        if (_agent.hasPath)
+        {
+            var dis = Vector3.Distance(transform.position, _agent.destination);
+            if (dis < _tailAttackRange)
+            {
+                _tree.JumpTo(_await);
+            }
         }
     }
 
@@ -633,8 +677,6 @@ public class NuweBrain : MonoBehaviour
     private void Death()
     {
         _currentYielded = _death;
-
-        Debug.Log($"nuwe is death");
 
         _tree.PauseBT();
         // コンポーネントの破棄

@@ -17,6 +17,7 @@ public class KomashiraBrain : MonoBehaviour
     , IEnemiesParameter
     , IDamagedComponent
     , IPlayerCamLockable
+, IEnemyDieNotifiable
 {
     #region 公開パラメータ
 
@@ -158,32 +159,21 @@ public class KomashiraBrain : MonoBehaviour
         _bar.SetFollowingTarget(transform);
         _slider = _bar.GetComponent<Slider>();
         _slider.maxValue = _maxHealthPoint;
-        
+
         _logic = GameObject.FindAnyObjectByType<GameLogic>();
         _logic.ApplyEnemyTransform(transform);
 
-        _logic.EDiveZone += StartFreeze;
-        _logic.EGetoutZone += EndFreeze;
-        _logic.EPause += StartFreeze;
-        _logic.EResume += EndFreeze;
-
         SetupComponent();
         SetupBehaviours();
-        
+
         _tree.StartBT();
-        
+
         FindPlayer();
 
         if (_tree.CurrentYieldedEvent != _think)
         {
             _tree.YieldAllBehaviourTo(_think);
         }
-    }
-
-    private void OnDisable()
-    {
-        _logic.EDiveZone -= StartFreeze;
-        _logic.EGetoutZone -= EndFreeze;
     }
 
     private void Update()
@@ -203,51 +193,54 @@ public class KomashiraBrain : MonoBehaviour
     private void SetupBehaviours()
     {
         _think.AddBehaviour(Think);
-        _think.EBegin += () => Debug.Log($"entry-think");
-        _think.EEnd += () => Debug.Log($"exit-think");
+        // _think.EBegin += () => Debug.Log($"entry-think");
+        // _think.EEnd += () => Debug.Log($"exit-think");
         _think.SetYieldMode(true);
 
         _patrol.AddBehaviour(Patrol);
-        _patrol.EBegin += () => Debug.Log($"entry-patrol");
-        _patrol.EEnd += () => Debug.Log($"exit-patrol");
+        // _patrol.EBegin += () => Debug.Log($"entry-patrol");
+        // _patrol.EEnd += () => Debug.Log($"exit-patrol");
         _patrol.EBegin += () => { _anim.SetTrigger("Walk"); };
         _patrol.SetYieldMode(true);
 
         _search.AddBehaviour(Search);
-        _search.EBegin += () => Debug.Log($"entry-search");
-        _search.EEnd += () => Debug.Log($"exit-search");
+        // _search.EBegin += () => Debug.Log($"entry-search");
+        // _search.EEnd += () => Debug.Log($"exit-search");
         _search.EBegin += () => { _anim.SetTrigger("Search"); };
         _search.SetYieldMode(true);
 
         _gotoPlayer.AddBehaviour(GotoPlayer);
-        _gotoPlayer.EBegin += () => Debug.Log($"entry-goto player");
-        _gotoPlayer.EEnd += () => Debug.Log($"exit-goto player");
+        // _gotoPlayer.EBegin += () => Debug.Log($"entry-goto player");
+        // _gotoPlayer.EEnd += () => Debug.Log($"exit-goto player");
         _gotoPlayer.EBegin += () => { _anim.SetTrigger("Walk"); };
         _gotoPlayer.EEnd += () => { _anim.ResetTrigger("Walk"); };
         _gotoPlayer.EEnd += ResetPath;
         _gotoPlayer.SetYieldMode(true);
 
         _intimidate.AddBehaviour(Intimidate);
-        _intimidate.EBegin += () => Debug.Log($"entry-inimidate");
-        _intimidate.EEnd += () => Debug.Log($"exit-inimidate");
+        // _intimidate.EBegin += () => Debug.Log($"entry-inimidate");
+        // _intimidate.EEnd += () => Debug.Log($"exit-inimidate");
         _intimidate.EBegin += () => { _anim.SetTrigger("StartIntimidate"); };
         _intimidate.SetYieldMode(true);
 
         _lookToPlayer.AddBehaviour(LookPlayer);
-        _lookToPlayer.EBegin += () => Debug.Log($"entry-looktoplayer");
-        _lookToPlayer.EEnd += () => Debug.Log($"exit-looktoplayer");
+        // _lookToPlayer.EBegin += () => Debug.Log($"entry-looktoplayer");
+        // _lookToPlayer.EEnd += () => Debug.Log($"exit-looktoplayer");
         _lookToPlayer.SetYieldMode(true);
 
         _attackToPlayer.AddBehaviour(AttackToPlayer);
-        _attackToPlayer.EBegin += () => Debug.Log($"entry-attacktkoplayer");
-        _attackToPlayer.EEnd += () => Debug.Log($"exit-attacktkoplayer");
+        // _attackToPlayer.EBegin += () => Debug.Log($"entry-attacktkoplayer");
+        // _attackToPlayer.EEnd += () => Debug.Log($"exit-attacktkoplayer");
         _attackToPlayer.EBegin += () => { _anim.SetTrigger("Pounce"); };
         _attackToPlayer.SetYieldMode(true);
 
         _death.AddBehaviour(Death);
-        _death.EBegin += () => Debug.Log($"entry-death");
-        _death.EEnd += () => Debug.Log($"exit-death");
-        _death.EBegin += () => { _anim.SetTrigger("Die"); };
+        // _death.EBegin += () => Debug.Log($"entry-death");
+        // _death.EEnd += () => Debug.Log($"exit-death");
+        _death.EBegin += () =>
+        {
+            _anim.SetTrigger("Die");
+        };
         _death.SetYieldMode(true);
 
         BTBehaviour[] behaviours = new[]
@@ -487,8 +480,10 @@ public class KomashiraBrain : MonoBehaviour
         _tree.UpdateEventsYield();
     }
 
-    private void StartFreeze()
+    public void StartFreeze()
     {
+        if (_healthPoint <= 0) return;
+
         // _anim.SetLayerWeight(0, 0f);
         // _anim.SetLayerWeight(1, 1f);
 
@@ -497,20 +492,18 @@ public class KomashiraBrain : MonoBehaviour
 
         _agent.ResetPath();
         _anim.enabled = false;
-
-        Debug.Log($"コマシラ ときとめ");
     }
 
-    private void EndFreeze()
+    public void EndFreeze()
     {
+        if (_healthPoint <= 0) return;
+
         // _anim.SetLayerWeight(0, 1f);
         // _anim.SetLayerWeight(1, 0f);
 
         _tree.StartBT();
         _tree.YieldAllBehaviourTo(_think);
         _anim.enabled = true;
-
-        Debug.Log($"コマシラ ときとめおわり");
     }
 
     public void AddDamage(float dmg)
@@ -537,6 +530,9 @@ public class KomashiraBrain : MonoBehaviour
     {
         _tree.PauseBT();
 
+        // 死亡通知
+        _logic.NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType.Komashira, gameObject);
+        
         // コンポーネントの破棄
         _bar.DestroySelf();
         Destroy(GetComponent<Rigidbody>());
@@ -556,5 +552,10 @@ public class KomashiraBrain : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, _sightRange);
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, _attackRange);
+    }
+
+    public void NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType type, GameObject enemy)
+    {
+        
     }
 }
