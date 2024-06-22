@@ -187,7 +187,7 @@ public class MyComponentValidator : MonoBehaviour
         _gameLogic.TaskOnBossDefeated += TaskOnBossDefeated;
 
         // ぬえをまたまた初期化
-        GameObject.FindAnyObjectByType<NuweBrain>().Init();
+        GameObject.FindAnyObjectByType<NuweBrain>().Initialize();
     }
 
     private void OnloopPointReached_Appearance(PlayableDirector source)
