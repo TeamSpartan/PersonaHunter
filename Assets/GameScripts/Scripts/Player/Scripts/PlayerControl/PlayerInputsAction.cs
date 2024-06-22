@@ -40,7 +40,7 @@ namespace Player.Input
 
         [SerializeField, Header("インプット保存の上限")] private int maxEnqueueCount = 5;
         private Queue<PlayerInputTypes> _inputQueue = new();
-        private GameInputs _gameInputs = new(); // 低レベルAPIクラス   InputSystemのイベント提供クラス
+        private GameInputs _gameInputs; // 低レベルAPIクラス   InputSystemのイベント提供クラス
 
         private GameLogic _gameLogic;
         private ZoneTimeController _zoneTimeController;
@@ -105,6 +105,8 @@ namespace Player.Input
         {
             if (_instance == null)
             {_instance = this;}
+
+            _gameInputs = new();
         }
 
         private void Start()
