@@ -4,6 +4,10 @@ using Player.Zone;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+#region 設計
+// シングルトンはご法度で運用する
+#endregion
+
 // コードクリーン実施 【６／２２ ： 菅沼】
 // 低レベル入力イベント発火クラスへのデリゲート登録メソッドの
 // シグネイチャを変更
@@ -100,19 +104,26 @@ namespace Player.Input
 
         ///<summary>ダッシュする</summary>
         public bool IsRunning => _isRunning;
-
-        void Awake()
+        
+        private void OnEnable()
         {
             if (_instance == null)
             {_instance = this;}
 
             _gameInputs = new();
+            
+            _gameInputs.Enable();
+            InGameInput_AddingDelegate();
+        }
+
+        private void OnDisable()
+        {
+            _gameInputs.Disable();
+            InGameInput_RemoveDelegate();
         }
 
         private void Start()
         {
-            GameObject.DontDestroyOnLoad(this);
-
             _gameLogic = GameObject.FindAnyObjectByType<GameLogic>();
             _gameLogic.EPause += () => { _inputQueue.Clear(); };
             _gameLogic.EResume += () => { _inputQueue.Clear(); };
@@ -126,20 +137,10 @@ namespace Player.Input
                 ,
                 @$"
                 Input Type : {_inputType.ToString()}
+                Input Blocked : {_isExternalInputBlocked} , {_playerControllerInputBlocked}
                 ");
         }
 
-        private void OnEnable()
-        {
-            _gameInputs.Enable();
-            InGameInput_AddingDelegate();
-        }
-
-        private void OnDisable()
-        {
-            _gameInputs.Disable();
-            InGameInput_RemoveDelegate();
-        }
 
         void Update()
         {
@@ -152,6 +153,7 @@ namespace Player.Input
             // 入力モードがインゲームのものなら
             if (_inputType == InputType.Player)
             {
+                Debug.Log($"キュー 取り出しするわよ");
                 InputTypeUpdate();
             }
         }
