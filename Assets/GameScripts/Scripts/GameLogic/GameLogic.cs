@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using DG.Tweening;
@@ -17,24 +18,22 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class GameLogic
     : SingletonBaseClass<GameLogic>
-        , IBossDieNotifiable
+        , IEnemyDieNotifiable
 {
     #region Acitons
 
     /// <summary> パリィ成功時のイベント </summary>
-    public Action EParrySucceed;
+    public event Action EParrySucceed;
 
-    /// <summary> 一時停止処理が走った時の処理 </summary>
-    public Action EPause;
+    public event Action TaskOnBossDefeated;
 
-    /// <summary> 一時停止から抜けるときに走る処理 </summary>
-    public Action EResume;
+    /// <summary> システム面でのイベントをここへ登録。
+    /// 画面ポーズが走ったらこれを呼び出す </summary>
+    public event Action EPause;
 
-    /// <summary> ゾーンに入るときに走る処理 </summary>
-    public Action EDiveZone;
-
-    /// <summary> ゾーンから出るときに走る処理 </summary>
-    public Action EGetoutZone;
+    /// <summary> システム面でのイベントをここへ登録。
+    /// 画面リジュームが走ったらこれを呼び出す </summary>
+    public event Action EResume;
 
     #endregion
 
@@ -53,7 +52,6 @@ public class GameLogic
     /// <summary> 敵のトランスフォーム </summary>
     private List<Transform> _enemies = new List<Transform>();
 
-    public event Action TaskOnBossDefeated;
 
     private InGameUIManager _ingameUI;
 
@@ -69,13 +67,17 @@ public class GameLogic
 
         _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>();
         _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>();
+
+        SceneManager.activeSceneChanged += (arg0, scene) =>
+        {
+            _enemies.Clear();
+        };
     }
 
     private void Update()
     {
         _dog.center.Override(Vector2.one * .5f);
     }
-    
 
     /// <summary>
     /// 敵のトランスフォームを登録
@@ -108,6 +110,19 @@ public class GameLogic
     {
         EPause();
         
+        foreach (var enemy in _enemies)
+        {
+            if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
+            {
+                komashira.StartFreeze();
+            }
+
+            if (enemy.gameObject.TryGetComponent<NuweBrain>(out var nue))
+            {
+                nue.StartFreeze();
+            }
+        }
+        
         _ingameUI.DisplayPausingPanel();
     }
 
@@ -118,6 +133,19 @@ public class GameLogic
     {
         EResume();
         
+        foreach (var enemy in _enemies)
+        {
+            if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
+            {
+                komashira.EndFreeze();
+            }
+
+            if (enemy.gameObject.TryGetComponent<NuweBrain>(out var nue))
+            {
+                nue.EndFreeze();
+            }
+        }
+        
         _ingameUI.ClosePausingPanel();
     }
 
@@ -126,8 +154,19 @@ public class GameLogic
     /// </summary>
     public void StartDiveInZone()
     {
-        EDiveZone();
+        foreach (var enemy in _enemies)
+        {
+            if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
+            {
+                komashira.StartFreeze();
+            }
 
+            if (enemy.gameObject.TryGetComponent<NuweBrain>(out var nue))
+            {
+                nue.StartFreeze();
+            }
+        }
+        
         StartPostProDoG();
     }
 
@@ -136,15 +175,34 @@ public class GameLogic
     /// </summary>
     public void GetOutOverZone()
     {
-        EGetoutZone();
+        foreach (var enemy in _enemies)
+        {
+            if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
+            {
+                komashira.EndFreeze();
+            }
 
+            if (enemy.gameObject.TryGetComponent<NuweBrain>(out var nue))
+            {
+                nue.EndFreeze();
+            }
+        }
+        
         DOTween.To((_) => { _dog.elapsedTime.Override(_); },
             1f, 0f, .75f);
     }
 
-    public void NotifyBossIsDeath()
+    public void NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType type, GameObject enemy)
     {
-        TaskOnBossDefeated();
+        switch (type)
+        {
+            case IEnemyDieNotifiable.EnemyType.Nue:
+                TaskOnBossDefeated();
+                break;
+            
+            case IEnemyDieNotifiable.EnemyType.Komashira:
+                break;
+        }
     }
 
     public void Initialize()

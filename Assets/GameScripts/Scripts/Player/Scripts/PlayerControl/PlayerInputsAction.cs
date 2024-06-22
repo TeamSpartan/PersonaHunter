@@ -88,7 +88,7 @@ namespace Player.Input
         private void Start()
         {
             GameObject.DontDestroyOnLoad(this);
-            
+
             _gameLogic = GameObject.FindAnyObjectByType<GameLogic>();
             _zoneTimeController = GameLogic.FindAnyObjectByType<ZoneTimeController>();
 
@@ -103,6 +103,16 @@ namespace Player.Input
                 _isPausing = _playerControllerInputBlocked = _isExternalInputBlocked = false;
                 _inputQueue.Clear();
             };
+        }
+
+        private void OnGUI()
+        {
+            GUI.Box(new Rect(0f, 0f, 700f, 600f)
+                ,
+                @$"
+                Pausing : {_isPausing}
+                Input Type : {_inputType.ToString()}
+                ");
         }
 
         private void OnEnable()
@@ -270,7 +280,7 @@ namespace Player.Input
                 {
                     _zoneTimeController = GameObject.FindAnyObjectByType<ZoneTimeController>();
                 }
-                
+
                 if (!_zoneTimeController.GetIsSlowTime)
                 {
                     _zoneTimeController.StartDull();
@@ -313,23 +323,16 @@ namespace Player.Input
         {
             if (context.ReadValueAsButton())
             {
+                _isPausing = !_isPausing;
+                
                 if (_inputType == InputType.Player)
                 {
                     _inputType = InputType.UI;
-                }
-                else
-                {
-                    _inputType = InputType.Player;
-                }
-
-                _isPausing = !_isPausing;
-
-                if (_isPausing)
-                {
                     _gameLogic.StartPause();
                 }
                 else
                 {
+                    _inputType = InputType.Player;
                     _gameLogic.StartResume();
                 }
             }

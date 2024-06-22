@@ -418,7 +418,7 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""1f27edc5-a728-4eec-9540-484e9ae9fa0f"",
                     ""path"": ""<Keyboard>/p"",
-                    ""interactions"": """",
+                    ""interactions"": ""Hold(duration=1)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Pause"",

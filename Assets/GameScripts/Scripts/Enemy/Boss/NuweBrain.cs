@@ -233,7 +233,7 @@ public class NuweBrain : MonoBehaviour
         _healthPoint = val;
     }
 
-    private void StartFreeze()
+    public void StartFreeze()
     {
         // _anim.SetLayerWeight(0, 0f);
         // _anim.SetLayerWeight(1, 1f);
@@ -245,7 +245,7 @@ public class NuweBrain : MonoBehaviour
         _anim.enabled = false;
     }
 
-    private void EndFreeze()
+    public void EndFreeze()
     {
         // _anim.SetLayerWeight(0, 1f);
         // _anim.SetLayerWeight(1, 0f);
@@ -416,11 +416,6 @@ public class NuweBrain : MonoBehaviour
         _logic = GameObject.FindAnyObjectByType<GameLogic>();
         _logic.ApplyEnemyTransform(transform);
 
-        _logic.EDiveZone += StartFreeze;
-        _logic.EGetoutZone += EndFreeze;
-        _logic.EPause += StartFreeze;
-        _logic.EResume += EndFreeze;
-
         SetupBehaviours();
         MakeTransitions();
         
@@ -474,7 +469,7 @@ public class NuweBrain : MonoBehaviour
         _death.SetYieldMode(true);
         _death.EBegin += () =>
         {
-            GameObject.FindAnyObjectByType<GameLogic>().NotifyBossIsDeath();
+            GameObject.FindAnyObjectByType<GameLogic>().NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType.Nue, gameObject);
         };
 
         _flinch.AddBehaviour(Flinch);
