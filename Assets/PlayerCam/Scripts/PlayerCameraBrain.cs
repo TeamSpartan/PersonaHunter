@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
 using Player.Action;
@@ -26,7 +27,7 @@ namespace PlayerCam.Scripts
         private float LockOnRadius;
 
         [SerializeField, Header("The Max Distance Capurable Lock-On Target")]
-        private float MaxDistanceToCapture = 100f;
+        private float MaxDistanceToCapture;
 
         [SerializeField, Header("The Camera Default")]
         private CinemachineVirtualCamera PlayerFollowingCam;
@@ -137,7 +138,7 @@ namespace PlayerCam.Scripts
             _playerInput.EvtCamLeftTarget += LockOnToLeftTarget;
 
             // 内部パラメータ初期化
-            this._lockOnRadius = LockOnRadius; // 半径 | いったん これで初期化をする
+            this._lockOnRadius = LockOnRadius; // 半径 、 いったん これで初期化をする
             this._playerFollowCam = PlayerFollowingCam;
             this._lockOnCam = LockOnCamera;
             this._cinemachineBrain = GetComponent<CinemachineBrain>();
@@ -182,6 +183,12 @@ namespace PlayerCam.Scripts
             CamBehaviour_Tick();
         }
 
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(transform.position, MaxDistanceToCapture);
+        }
+
         void CamBehaviour_Tick()
         {
             if (_lockingOn)
@@ -206,9 +213,15 @@ namespace PlayerCam.Scripts
             var distance = Vector3.Distance(_currentLockOnTarget.transform.position
                 , _playerCurrent.transform.position);
 
-            _lockOnRadius = distance;
-
-            _theta = GetRadianValueToLookAtTarget();
+            if (distance > MaxDistanceToCapture)
+            {
+                LockOnTriggerred();
+            }
+            else
+            {
+                _lockOnRadius = distance;
+                _theta = GetRadianValueToLookAtTarget();
+            }
         }
 
         /// <summary>
