@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
 using Player.Action;
@@ -8,6 +7,8 @@ using UnityEngine;
 using SgLibUnite.CodingBooster;
 using SgLibUnite.Singleton;
 using UnityEngine.SceneManagement;
+
+// コードクリーン実施 【6/24：菅沼】
 
 namespace PlayerCam.Scripts
 {
@@ -189,10 +190,12 @@ namespace PlayerCam.Scripts
             Gizmos.DrawWireSphere(transform.position, MaxDistanceToCapture);
         }
 
-        void CamBehaviour_Tick()
+        private void CamBehaviour_Tick()
         {
             if (_lockingOn)
             {
+                // ロックオン軌道の半径と角度を更新 → 敵が動いてもプレイヤはその場にとどまる。
+                // この処理を挟まないと敵が動いた瞬間プレイヤが引っ張られることが起きる
                 UpdateRotatingRadiusAndAngle();
                 CamLockingOn_Tick();
             }
@@ -202,10 +205,11 @@ namespace PlayerCam.Scripts
             }
         }
 
-        // ロックオン中に移動できる半径 と 単位円上の動径の角度を求める。
-        void UpdateRotatingRadiusAndAngle()
+        /// <summary> ロックオン中に移動できる半径 と 単位円上の動径の角度を求める </summary>
+        private void UpdateRotatingRadiusAndAngle()
         {
-            if (_currentLockOnTarget is null)
+            // ロックオン中 又は 現在ロックオンしているターゲットが無ければ何もしない
+            if (!_lockingOn || _currentLockOnTarget is null)
             {
                 return;
             }
@@ -213,9 +217,13 @@ namespace PlayerCam.Scripts
             var distance = Vector3.Distance(_currentLockOnTarget.transform.position
                 , _playerCurrent.transform.position);
 
-            if (distance > MaxDistanceToCapture)
+            if (distance > MaxDistanceToCapture) // 最大捕捉距離から離れればロックオンの解除をする。
             {
                 LockOnTriggerred();
+                if (_lockingOn)
+                {
+                    _lockingOn = false;
+                } // ムダな処理だがとりあえず false をぶっこむ
             }
             else
             {
@@ -227,7 +235,7 @@ namespace PlayerCam.Scripts
         /// <summary>
         /// 毎フレーム 処理するロックオン中の挙動
         /// </summary>
-        void CamLockingOn_Tick()
+        private void CamLockingOn_Tick()
         {
             // ターゲットを常に正面左側からソートした状態の状態を格納
             _lockOnTargets = GetSortedLockOnTargets();
@@ -241,9 +249,6 @@ namespace PlayerCam.Scripts
             // 通常カメラとは視点は大きな変化はなし、ロックオンターゲット中心に
             // 円形を描くような左右移動をする。
             // 前後（敵に対して）すると半径の値が変動
-
-            var inputMove = new Vector2(_moveX, _moveY);
-            var inputLook = new Vector2(_mouseX, _mouseY);
 
             // 前後移動
 
@@ -322,22 +327,22 @@ namespace PlayerCam.Scripts
             }
         }
 
-        void CamDefault_Tick()
+        private void CamDefault_Tick()
         {
             // 基本的にオービタルカメラ。 左右のみ、すこし上からプレイヤを見下ろしている視点
             _playerFollowCam.Follow = _playerCurrent;
             _playerFollowCam.LookAt = _playerCurrent;
         }
 
-        void GetInputValue()
+        private void GetInputValue()
         {
-            var iInput = _playerInput;
+            var input = _playerInput;
 
-            _moveX = iInput.GetMoveValue().x;
-            _moveY = iInput.GetMoveValue().y;
+            _moveX = input.GetMoveValue().x;
+            _moveY = input.GetMoveValue().y;
 
-            _mouseX = iInput.GetCamMoveValue().x;
-            _mouseY = iInput.GetCamMoveValue().y;
+            _mouseX = input.GetCamMoveValue().x;
+            _mouseY = input.GetCamMoveValue().y;
         }
 
         /// <summary>
@@ -363,7 +368,7 @@ namespace PlayerCam.Scripts
         /// <summary>
         /// 右のロックオン対象へロックオン
         /// </summary>
-        void LockOnToRightTarget()
+        private void LockOnToRightTarget()
         {
             if (_currentLockOnTarget is null) return;
 
@@ -383,7 +388,7 @@ namespace PlayerCam.Scripts
         /// <summary>
         /// ロックオン入力が入った時に発火するイベントへの登録関数
         /// </summary>
-        void LockOnTriggerred()
+        private void LockOnTriggerred()
         {
             _lockingOn = !_lockingOn;
             _playerFollowCam.Priority = 0;
