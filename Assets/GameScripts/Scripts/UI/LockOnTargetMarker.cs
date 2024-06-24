@@ -38,9 +38,9 @@ public class LockOnTargetMarker : MonoBehaviour
         if (_cameraBrain.LockingOn
             && _cameraBrain.CurrentLockingOnTarget is not null)
         {
-            var screenspace = _camera.WorldToScreenPoint(_cameraBrain.CurrentLockingOnTarget.transform.position
+            var screenSpace = _camera.WorldToScreenPoint(_cameraBrain.CurrentLockingOnTarget.transform.position
                                                          + Vector3.up);
-            transform.position = screenspace;
+            transform.position = screenSpace;
         }
 
         DisplayMarkerWhenLockingOn();
