@@ -96,10 +96,6 @@ public class GameLogic
     {
         _isPausing = !_isPausing;
 
-        // インゲーム入力のブロック
-        _playerInputs.ControllerInputBlocked
-            = _playerInputs.ExternalInputBlocked = true;
-
         if (_isPausing)
         {
             StartPause();
@@ -120,6 +116,10 @@ public class GameLogic
     /// <summary> 一時停止を開始する </summary>
     public void StartPause()
     {
+        // インゲーム入力のブロック
+        _playerInputs.ControllerInputBlocked
+            = _playerInputs.ExternalInputBlocked = true;
+        
         EPause?.Invoke();
 
         foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
@@ -141,6 +141,10 @@ public class GameLogic
     /// <summary> 一時停止を終了する </summary>
     public void StartResume()
     {
+        // インゲーム入力のブロック解除
+        _playerInputs.ControllerInputBlocked
+            = _playerInputs.ExternalInputBlocked = false;
+        
         EResume?.Invoke();
 
         foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作

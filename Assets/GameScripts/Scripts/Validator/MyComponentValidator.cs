@@ -148,6 +148,10 @@ public class MyComponentValidator : MonoBehaviour
 
     private void ValidationOnBossScene()
     {
+        // 入力をブロック
+        var input = GameObject.FindAnyObjectByType<PlayerInputsAction>();
+        input.ControllerInputBlocked = input.ExternalInputBlocked = true;
+
         GameObject.FindAnyObjectByType<InGameUIManager>().BossHPBarSetActive(true);
 
         // コマシラ のHPバーを削除
@@ -196,6 +200,11 @@ public class MyComponentValidator : MonoBehaviour
 
         GameObject.DestroyImmediate(source.gameObject);
         _player.SetActive(true);
+
+        // 入力ブロックを解除
+        var input = GameObject.FindAnyObjectByType<PlayerInputsAction>();
+        input.ControllerInputBlocked = input.ExternalInputBlocked = false;
+
         SpawnPlayerToPoint();
     }
 
