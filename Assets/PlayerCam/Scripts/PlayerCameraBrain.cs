@@ -137,7 +137,7 @@ namespace PlayerCam.Scripts
             _playerInput.EvtCamLeftTarget += LockOnToLeftTarget;
 
             // 内部パラメータ初期化
-            this._lockOnRadius = LockOnRadius; // 半径
+            this._lockOnRadius = LockOnRadius; // 半径 | いったん これで初期化をする
             this._playerFollowCam = PlayerFollowingCam;
             this._lockOnCam = LockOnCamera;
             this._cinemachineBrain = GetComponent<CinemachineBrain>();
@@ -186,12 +186,29 @@ namespace PlayerCam.Scripts
         {
             if (_lockingOn)
             {
+                UpdateRotatingRadiusAndAngle();
                 CamLockingOn_Tick();
             }
             else
             {
                 CamDefault_Tick();
             }
+        }
+
+        // ロックオン中に移動できる半径 と 単位円上の動径の角度を求める。
+        void UpdateRotatingRadiusAndAngle()
+        {
+            if (_currentLockOnTarget is null)
+            {
+                return;
+            }
+
+            var distance = Vector3.Distance(_currentLockOnTarget.transform.position
+                , _playerCurrent.transform.position);
+
+            _lockOnRadius = distance;
+
+            _theta = GetRadianValueToLookAtTarget();
         }
 
         /// <summary>
