@@ -81,7 +81,7 @@ namespace PlayerCam.Scripts
         private float _lockOnRadius;
 
         /// <summary>
-        /// ロックオン対象
+        /// ロックオン対象 ないなら null
         /// </summary>
         private Transform _currentLockOnTarget;
 
@@ -401,6 +401,7 @@ namespace PlayerCam.Scripts
             else
             {
                 _lockOnTargets.Clear();
+                _currentLockOnTarget = null; 
 
                 _playerFollowCam.Priority = 1;
             }
