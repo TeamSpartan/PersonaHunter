@@ -3,34 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using DG.Tweening;
+using Player.Input;
 using SgLibUnite.Systems;
+using SgLibUnite.Singleton;
+using UnityEngine.SceneManagement;
 
-/* シングルトンやーめた。万能ではない */
+// コードクリーン実施 【６／２２：菅沼】
+// 各くそコードのリファクタ
+
+/* インゲームシーンとボスシーン間でガウス差分の
+ ポスプロのボリュームの参照を保持したいのでシングルトン */
+
+#region 設計思想
+// シングルトンパターン 適応で Title シーン から ヒエラルキーに常駐する
+#endregion
 
 // 作成：菅沼
 /// <summary>
 /// オモテガリ ゲームロジック
 /// </summary>
 public class GameLogic
-    : MonoBehaviour
-        , IBossDieNotifiable
+    : SingletonBaseClass<GameLogic>, IEnemyDieNotifiable
 {
-    #region Acitons
+    #region ゲームシステム構成クラス内イベント
 
     /// <summary> パリィ成功時のイベント </summary>
-    public Action EParrySucceed;
+    public event Action EParrySucceed;
 
-    /// <summary> 一時停止処理が走った時の処理 </summary>
-    public Action EPause;
+    /// <summary> ボスが撃破された時のタスク（処理、イベント） </summary>
+    public event Action TaskOnBossDefeated;
 
-    /// <summary> 一時停止から抜けるときに走る処理 </summary>
-    public Action EResume;
+    /// <summary> システム面でのイベントをここへ登録。
+    /// 画面ポーズが走ったらこれを呼び出す </summary>
+    public event Action EPause;
 
-    /// <summary> ゾーンに入るときに走る処理 </summary>
-    public Action EDiveZone;
-
-    /// <summary> ゾーンから出るときに走る処理 </summary>
-    public Action EGetoutZone;
+    /// <summary> システム面でのイベントをここへ登録。
+    /// 画面リジュームが走ったらこれを呼び出す </summary>
+    public event Action EResume;
 
     #endregion
 
@@ -43,110 +52,193 @@ public class GameLogic
     /// <summary> シーン遷移クラス </summary>
     private SceneLoader _sceneLoader;
 
-    /// <summary> シーンのインデックス </summary>
-    private int _selectedSceneIndex;
-
     /// <summary> 敵のトランスフォーム </summary>
     private List<Transform> _enemies = new List<Transform>();
 
-    public event Action TaskOnBossDefeated;
+    /// <summary> インゲームUI管理クラス </summary>
+    private InGameUIManager _ingameUI;
 
-    private void Start()
+    /// <summary> 入力バッファクラス </summary>
+    private PlayerInputsAction _playerInputs;
+
+    // ポーズ中のフラグ
+    private bool _isPausing;
+
+    protected override void ToDoAtAwakeSingleton()
+    {
+    }
+
+    private void Start()    // 生成時 初期化
     {
         Initialize();
     }
 
     private void Update()
     {
+        // ガウス差分クラスに対して毎フレーム始点のオーバーライドをする
         _dog.center.Override(Vector2.one * .5f);
     }
 
-    /// <summary>
-    /// 敵のトランスフォームを登録
-    /// </summary>
+    /// <summary> 敵のトランスフォームを登録 </summary>
     public void ApplyEnemyTransform(Transform enemy)
     {
         _enemies.Add(enemy);
     }
 
-    /// <summary>
-    /// 敵を取得する
-    /// </summary>
+    /// <summary> 敵を取得する </summary>
     public List<Transform> GetEnemies()
     {
         return _enemies;
     }
 
-    public void StartPostProDoG()
+    /// <summary> ポーズ リジューム が走る時に呼び出す </summary>
+    public void PauseResumeInputFired()
+    {
+        _isPausing = !_isPausing;
+
+        if (_isPausing)
+        {
+            StartPause();
+        }
+        else
+        {
+            StartResume();
+        }
+    }
+
+    /// <summary> ガウス差分ポスプロをかける </summary>
+    public void PlayDoGEffect()
     {
         DOTween.To((_) => { _dog.elapsedTime.Override(_); },
             0f, 1f, .75f);
     }
 
-    /// <summary>
-    /// 一時停止を開始する
-    /// </summary>
+    /// <summary> 一時停止を開始する </summary>
     public void StartPause()
     {
-        EPause();
+        // インゲーム入力のブロック
+        _playerInputs.ControllerInputBlocked
+            = _playerInputs.ExternalInputBlocked = true;
+        
+        EPause?.Invoke();
+
+        foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
+        {
+            if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
+            {
+                komashira.StartFreeze();
+            }
+
+            if (enemy.gameObject.TryGetComponent<NuweBrain>(out var nue))
+            {
+                nue.StartFreeze();
+            }
+        }
+
+        _ingameUI.DisplayPausingPanel();
     }
 
-    /// <summary>
-    /// 一時停止を終了する
-    /// </summary>
+    /// <summary> 一時停止を終了する </summary>
     public void StartResume()
     {
-        EResume();
+        // インゲーム入力のブロック解除
+        _playerInputs.ControllerInputBlocked
+            = _playerInputs.ExternalInputBlocked = false;
+        
+        EResume?.Invoke();
+
+        foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
+        {
+            if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
+            {
+                komashira.EndFreeze();
+            }
+
+            if (enemy.gameObject.TryGetComponent<NuweBrain>(out var nue))
+            {
+                nue.EndFreeze();
+            }
+        }
+
+        _ingameUI.ClosePausingPanel();
     }
 
-    /// <summary>
-    /// 集中 を 発火する
-    /// </summary>
+    /// <summary> 集中 を 発火する </summary>
     public void StartDiveInZone()
     {
-        EDiveZone();
+        foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
+        {
+            if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
+            {
+                komashira.StartFreeze();
+            }
 
-        StartPostProDoG();
+            if (enemy.gameObject.TryGetComponent<NuweBrain>(out var nue))
+            {
+                nue.StartFreeze();
+            }
+        }
+
+        PlayDoGEffect();
     }
 
-    /// <summary>
-    /// 集中 を 収束する
-    /// </summary>
+    /// <summary> 集中 を 収束する </summary>
     public void GetOutOverZone()
     {
-        EGetoutZone();
+        foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
+        {
+            if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
+            {
+                komashira.EndFreeze();
+            }
+
+            if (enemy.gameObject.TryGetComponent<NuweBrain>(out var nue))
+            {
+                nue.EndFreeze();
+            }
+        }
 
         DOTween.To((_) => { _dog.elapsedTime.Override(_); },
             1f, 0f, .75f);
     }
 
-    public void NotifyBossIsDeath()
+    public void NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType type, GameObject enemy)
     {
-        TaskOnBossDefeated();
+        switch (type)
+        {
+            case IEnemyDieNotifiable.EnemyType.Nue:
+                TaskOnBossDefeated(); // ボス撃破時の システムイベントの発火
+                break;
+
+            case IEnemyDieNotifiable.EnemyType.Komashira:
+                break;
+        }
     }
 
-    public void Initialize()
+    /// <summary> 初期化処理 </summary>
+    public void Initialize() // シングルトンでシーンに常駐してるので初期化ように実装
     {
+        _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>();
+        _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>();
+
+        SceneManager.activeSceneChanged += (arg0, scene) => { _enemies.Clear(); };
+
         // SceneLoader が Nullである場合には生成。
         if (GameObject.FindFirstObjectByType<SceneLoader>() is null)
         {
-            var sl = Resources.Load<GameObject>("Prefabs/GameSystem/SceneLoader");
+            var sceneLoader = Resources.Load<GameObject>("Prefabs/GameSystem/SceneLoader");
 
-            var obj = GameObject.Instantiate(sl);
+            var obj = GameObject.Instantiate(sceneLoader);
             _sceneLoader = obj.GetComponent<SceneLoader>();
         }
 
+        // ガウス差分クラスの取得
         if (GameObject.FindAnyObjectByType<Volume>() is not null)
         {
             _volume = GameObject.FindFirstObjectByType<Volume>();
             if (_volume.profile.TryGet(out _dog))
             {
-                Debug.Log($"ガウス差分クラスないんだけど");
             }
-        }
-        else
-        {
-            Debug.Log($"ボリュームねぇんだけど");
         }
     }
 }

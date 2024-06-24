@@ -3,15 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 /// <summary>
 /// インゲームのUIに対してアタッチをする
 /// </summary>
-public class InGameUIManager : MonoBehaviour
+public class InGameUIManager : WindowManager
 {
     [SerializeField] private CanvasGroup _bossHPBar;
+    [SerializeField] private GameObject _pausePanel;
+    [SerializeField] private GameObject _firstSelectedOnPause;
+
+    public void MakeActiveElements(GameObject obj)
+    {
+        var group = obj.GetComponent<CanvasGroup>();
+        group.interactable = group.blocksRaycasts = true;
+        group.alpha = 1;
+    }
+    
+    public void MakePassiveElements(GameObject obj)
+    {
+        var group = obj.GetComponent<CanvasGroup>();
+        group.interactable = group.blocksRaycasts = false;
+        group.alpha = 0;
+    }
     
     public void AddUIElements(GameObject elem)
     {
@@ -21,5 +38,40 @@ public class InGameUIManager : MonoBehaviour
     public void BossHPBarSetActive(bool c)
     {
         _bossHPBar.alpha = c ? 1 : 0;
+    }
+
+    public void DisplayPausingPanel()
+    {
+        if (_pausePanel.TryGetComponent<CanvasGroup>(out var canvasGroup))
+        {
+            Debug.Log($"ポーズ");
+            canvasGroup.alpha = 1;
+            canvasGroup.interactable = canvasGroup.blocksRaycasts = true;
+        }
+    }
+
+    public void ClosePausingPanel()
+    {
+        if (_pausePanel.TryGetComponent<CanvasGroup>(out var canvasGroup))
+        {
+            Debug.Log($"ポーズ おわり");
+            canvasGroup.alpha = 0;
+            canvasGroup.interactable = canvasGroup.blocksRaycasts = false;
+        }
+    }
+
+    private void OnEnable()
+    {
+        base.EventAtStart += TaskOnStart;
+    }
+
+    private void OnDisable()
+    {
+        base.EventAtStart -= TaskOnStart;
+    }
+
+    private void TaskOnStart()
+    {
+        GameObject.FindAnyObjectByType<EventSystem>().SetSelectedGameObject(_firstSelectedOnPause);
     }
 }

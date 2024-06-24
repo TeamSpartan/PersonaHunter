@@ -1,14 +1,19 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /* 作成 【菅沼】 */
 
 /// <summary>
-/// UIの管理をする
+/// UIの管理をする。 タイトル画面のUIを管理する
 /// </summary>
 public class WindowManager : MonoBehaviour
 {
     [SerializeField] private GameObject _rootWindow;
+    [SerializeField] private List<GameObject> _invisibleWhenStarted;
     public GameObject RootWindow => _rootWindow;
+
+    protected Action EventAtStart;
 
     public void CloseWindow(GameObject obj)
     {
@@ -35,5 +40,20 @@ public class WindowManager : MonoBehaviour
         {
             OpenWindow(_rootWindow);
         }
+
+        foreach (var obj in _invisibleWhenStarted)
+        {
+            if (obj.TryGetComponent<CanvasGroup>(out var canvasGroup))
+            {
+                canvasGroup.alpha = 0;
+            }
+            else
+            {
+                obj.GetComponentInChildren<CanvasGroup>().alpha = 0;
+            }
+        }
+
+        if (EventAtStart is not null)
+            EventAtStart();
     }
 }
