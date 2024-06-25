@@ -136,8 +136,12 @@ namespace PlayerCam.Scripts
             // 検索にひっかかった最初のオブジェクトをプレイヤとする
             this._playerCurrent = GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include).transform;
 
-            // ロックオンイベント発火元へのデリゲート登録をする
             _playerInput = GameObject.FindAnyObjectByType<PlayerInputsAction>();
+            _playerInput.ELockOnTriggered -= LockOnTriggerred;
+            _playerInput.EvtCamRightTarget -= LockOnToRightTarget;
+            _playerInput.EvtCamLeftTarget -= LockOnToLeftTarget;
+
+            // ロックオンイベント発火元へのデリゲート登録をする
             _playerInput.ELockOnTriggered += LockOnTriggerred;
 
             // ロックオン対象選択イベント発火もとへデリゲート登録
@@ -407,7 +411,7 @@ namespace PlayerCam.Scripts
             else
             {
                 _lockOnTargets.Clear();
-                _currentLockOnTarget = null; 
+                _currentLockOnTarget = null;
 
                 _playerFollowCam.Priority = 1;
             }

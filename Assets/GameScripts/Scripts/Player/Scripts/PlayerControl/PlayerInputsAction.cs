@@ -82,7 +82,7 @@ namespace Player.Input
             set { _playerControllerInputBlocked = value; }
         }
 
-        public event System.Action ELockOnTriggered;
+        public System.Action ELockOnTriggered { get; set; }
         public System.Action EvtCamLeftTarget { get; set; }
         public System.Action EvtCamRightTarget { get; set; }
 

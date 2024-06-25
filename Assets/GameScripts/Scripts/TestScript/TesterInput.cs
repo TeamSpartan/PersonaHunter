@@ -13,8 +13,16 @@ namespace Input
         private float _mouseH;
         private float _moveV;
         private float _mouseV;
+        private Action eLockOnTriggered;
 
         public event Action ELockOnTriggered;
+
+        Action ILockOnEventFirable.ELockOnTriggered
+        {
+            get => eLockOnTriggered;
+            set => eLockOnTriggered = value;
+        }
+
         public Action EvtCamLeftTarget { get; set; }
         public Action EvtCamRightTarget { get; set; }
 

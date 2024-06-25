@@ -84,7 +84,7 @@ public class MyComponentValidator : MonoBehaviour
                 _cameraBrain.Init();
                 _inGameUIManager.TaskOnStart();
                 SpawnPlayerToPoint();
-                
+
                 break;
             }
 
@@ -96,7 +96,7 @@ public class MyComponentValidator : MonoBehaviour
                 _gameLogic.Initialize();
                 _cameraBrain.Init();
                 _inGameUIManager.TaskOnStart();
-                
+
                 break;
             }
 
@@ -193,8 +193,8 @@ public class MyComponentValidator : MonoBehaviour
         pd_appearance.paused += OnloopPointReached_Appearance;
         pd_appearance.paused += (source) =>
         {
-            DestroyImmediate(movie_appearance);
-            DestroyImmediate(panel);
+            Destroy(movie_appearance);
+            Destroy(panel);
         };
 
         // ロジックへイベント登録
@@ -208,7 +208,7 @@ public class MyComponentValidator : MonoBehaviour
     {
         _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.FinishedPlayingAppearanceMovie;
 
-        GameObject.DestroyImmediate(source.gameObject);
+        GameObject.Destroy(source.gameObject);
         _player.SetActive(true);
 
         // 入力ブロックを解除
@@ -229,8 +229,8 @@ public class MyComponentValidator : MonoBehaviour
         pd_defeated.paused += OnloopPointReached_BossDefeated;
         pd_defeated.paused += (source) =>
         {
-            DestroyImmediate(panel);
-            DestroyImmediate(movie_defeated);
+            Destroy(panel);
+            Destroy(movie_defeated);
         };
     }
 
@@ -239,8 +239,8 @@ public class MyComponentValidator : MonoBehaviour
         // インゲームのコンテンツに使用していたオブジェクトを破棄
         var player = GameObject.FindAnyObjectByType<PlayerMove>().gameObject;
         var playerUI = GameObject.FindWithTag("PlayerUI");
-        DestroyImmediate(player);
-        DestroyImmediate(playerUI);
+        Destroy(player);
+        Destroy(playerUI);
 
         GameObject.FindAnyObjectByType<SceneLoader>().LoadSceneByName(ConstantValues.EpilogueScene);
     }
@@ -277,9 +277,9 @@ public class MyComponentValidator : MonoBehaviour
         }
 
         // デストロォォォォォイィィィィィィィ
-        // if (GameObject.FindAnyObjectByType<PlayerInputsAction>().gameObject is not null)
-        //     Destroy(GameObject.FindAnyObjectByType<PlayerInputsAction>().gameObject);
-        // if (GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject is not null)
-        //     Destroy(GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject);
+        if (GameObject.FindAnyObjectByType<PlayerInputsAction>().gameObject is not null)
+            Destroy(GameObject.FindAnyObjectByType<PlayerInputsAction>().gameObject);
+        if (GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject is not null)
+            Destroy(GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject);
     }
 }

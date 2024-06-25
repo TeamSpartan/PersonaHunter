@@ -75,9 +75,12 @@ namespace Player.Action
 		///<summary>プレイヤーの向き</summary>
 		public void PlayerRotate(Vector3 dir)
 		{
-			if (PlayerInputsAction.Instance.IsLockingOn)
+			if (_playerCamera.LockingOn)
 			{
-				_player.transform.LookAt(_playerCamera.CurrentLockingOnTarget);
+				var look = _playerCamera.CurrentLockingOnTarget.position;
+				look.y = 0;
+				_player.transform.forward = look;
+
 			}
 			else
 			{
