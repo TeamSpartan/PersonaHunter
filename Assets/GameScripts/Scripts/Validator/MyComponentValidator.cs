@@ -36,6 +36,7 @@ public class MyComponentValidator : MonoBehaviour
     private GameLogic _gameLogic;
     private GameObject _player;
     private GameObject _moviePanel;
+    private PlayerCameraBrain _cameraBrain;
 
     private bool _playedPrologue;
 
@@ -49,7 +50,8 @@ public class MyComponentValidator : MonoBehaviour
     {
         _clientData = Resources.Load<ClientDataHolder>("Prefabs/GameSystem/ClientDataHolder");
         _gameLogic = GameObject.FindAnyObjectByType<GameLogic>();
-        _player = GameObject.FindAnyObjectByType<PlayerMove>().gameObject;
+        _cameraBrain = GameObject.FindAnyObjectByType<PlayerCameraBrain>();
+        _player = GameObject.FindAnyObjectByType<PlayerMove>()?.gameObject;
 
         var scene = SceneManager.GetActiveScene();
 
@@ -76,8 +78,10 @@ public class MyComponentValidator : MonoBehaviour
             {
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.InGame;
 
+                _gameLogic.Initialize();
+                // _cameraBrain.Init();
                 SpawnPlayerToPoint();
-
+                
                 break;
             }
 
@@ -86,7 +90,9 @@ public class MyComponentValidator : MonoBehaviour
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.TransitedBossScene;
 
                 ValidationOnBossScene();
-
+                _gameLogic.Initialize();
+                _cameraBrain.Init();
+                
                 break;
             }
 
@@ -254,12 +260,22 @@ public class MyComponentValidator : MonoBehaviour
         var lockOnCam = GameObject.FindWithTag("LockOnCam");
         var followCam = GameObject.FindWithTag("FollowCam");
         var scene = SceneManager.GetActiveScene();
-        SceneManager.MoveGameObjectToScene(lockOnCam, scene);
-        SceneManager.MoveGameObjectToScene(followCam, scene);
+        if (lockOnCam is not null)
+        {
+            SceneManager.MoveGameObjectToScene(lockOnCam, scene);
+            Destroy(lockOnCam);
+        }
+
+        if (followCam is not null)
+        {
+            SceneManager.MoveGameObjectToScene(followCam, scene);
+            Destroy(followCam);
+        }
+
         // デストロォォォォォイィィィィィィィ
-        Destroy(GameObject.FindAnyObjectByType<PlayerInputsAction>().gameObject);
-        Destroy(GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject);
-        Destroy(lockOnCam);
-        Destroy(followCam);
+        // if (GameObject.FindAnyObjectByType<PlayerInputsAction>().gameObject is not null)
+        //     Destroy(GameObject.FindAnyObjectByType<PlayerInputsAction>().gameObject);
+        // if (GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject is not null)
+        //     Destroy(GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject);
     }
 }

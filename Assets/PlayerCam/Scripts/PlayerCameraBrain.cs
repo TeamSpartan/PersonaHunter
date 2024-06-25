@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
 using Player.Action;
@@ -123,6 +124,11 @@ namespace PlayerCam.Scripts
         }
 
         private void Start()
+        {
+            Init();
+        }
+
+        public void Init()
         {
             // ゲームロジックを取得
             _logic = GameObject.FindAnyObjectByType<GameLogic>();
@@ -422,6 +428,7 @@ namespace PlayerCam.Scripts
             if (_lockOnTargets.Count() < 1)
             {
                 _lockingOn = false;
+                Debug.Log("ロックオン 中断");
                 return;
             }
 

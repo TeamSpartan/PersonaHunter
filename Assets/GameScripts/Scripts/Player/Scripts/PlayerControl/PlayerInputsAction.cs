@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Player.Zone;
+using SgLibUnite.Singleton;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -37,7 +38,7 @@ namespace Player.Input
     /// <summary>
     /// 入力バッファクラス
     /// </summary>
-    public class PlayerInputsAction : MonoBehaviour, IInputValueReferencable, ILockOnEventFirable
+    public class PlayerInputsAction : SingletonBaseClass<PlayerInputsAction>, IInputValueReferencable, ILockOnEventFirable
     {
         private static PlayerInputsAction _instance;
         public static PlayerInputsAction Instance => _instance;
@@ -153,7 +154,6 @@ namespace Player.Input
             // 入力モードがインゲームのものなら
             if (_inputType == InputType.Player)
             {
-                Debug.Log($"キュー 取り出しするわよ");
                 InputTypeUpdate();
             }
         }
@@ -414,11 +414,13 @@ namespace Player.Input
 
             //LockOn
             _gameInputs.Player.LockOn.started += OnLockOn;
+            _gameInputs.Player.LockOn.performed += OnLockOn;
+            _gameInputs.Player.LockOn.canceled += OnLockOn;
 
             //Pause
             _gameInputs.Player.Pause.started += OnPause;
             _gameInputs.Player.Pause.canceled += OnPause;
-
+            
             //Dash
             _gameInputs.Player.Dash.started += OnRun;
         }
@@ -448,6 +450,8 @@ namespace Player.Input
 
             //LockOn
             _gameInputs.Player.LockOn.started -= OnLockOn;
+            _gameInputs.Player.LockOn.performed -= OnLockOn;
+            _gameInputs.Player.LockOn.canceled -= OnLockOn;
 
             //Pause
             _gameInputs.Player.Pause.started -= OnPause;
@@ -492,6 +496,10 @@ namespace Player.Input
             _gameInputs.UI.Cursor.started -= OnCursor;
             _gameInputs.UI.Cursor.performed -= OnCursor;
             _gameInputs.UI.Cursor.canceled -= OnCursor;
+        }
+
+        protected override void ToDoAtAwakeSingleton()
+        {
         }
     }
 }
