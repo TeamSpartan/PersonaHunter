@@ -61,7 +61,7 @@ public class KomashiraHPBar : MonoBehaviour
         if (_followingTarget is not null)
         {
             if (_mainCam is null)
-                _mainCam = GameObject.FindAnyObjectByType<PlayerCameraBrain>().GetComponent<Camera>();
+                _mainCam = Camera.main;
             
             transform.position = _mainCam.WorldToScreenPoint(_followingTarget.position);
             _canvasGroup.alpha = transform.position.z > 0 ? 1 : 0;
