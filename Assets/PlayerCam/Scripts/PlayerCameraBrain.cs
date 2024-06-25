@@ -134,7 +134,7 @@ namespace PlayerCam.Scripts
             _logic = GameObject.FindAnyObjectByType<GameLogic>();
 
             // 検索にひっかかった最初のオブジェクトをプレイヤとする
-            this._playerCurrent = GameObject.FindAnyObjectByType<PlayerMove>().transform;
+            this._playerCurrent = GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include).transform;
 
             // ロックオンイベント発火元へのデリゲート登録をする
             _playerInput = GameObject.FindAnyObjectByType<PlayerInputsAction>();

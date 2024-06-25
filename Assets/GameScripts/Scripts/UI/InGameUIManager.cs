@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using SgLibUnite.Singleton;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+
+// シングルトン だめ
 
 /// <summary>
 /// インゲームのUIに対してアタッチをする
@@ -22,14 +25,14 @@ public class InGameUIManager : WindowManager
         group.interactable = group.blocksRaycasts = true;
         group.alpha = 1;
     }
-    
+
     public void MakePassiveElements(GameObject obj)
     {
         var group = obj.GetComponent<CanvasGroup>();
         group.interactable = group.blocksRaycasts = false;
         group.alpha = 0;
     }
-    
+
     public void AddUIElements(GameObject elem)
     {
         elem.transform.SetParent(transform);
@@ -70,8 +73,13 @@ public class InGameUIManager : WindowManager
         base.EventAtStart -= TaskOnStart;
     }
 
-    private void TaskOnStart()
+    public void TaskOnStart()
     {
-        GameObject.FindAnyObjectByType<EventSystem>().SetSelectedGameObject(_firstSelectedOnPause);
+        var gl = GameObject.FindAnyObjectByType<GameLogic>();
+        gl.EPause += () =>
+        {
+            GameObject.FindAnyObjectByType<EventSystem>().SetSelectedGameObject(_firstSelectedOnPause);
+        };
+        gl.EResume += () => { GameObject.FindAnyObjectByType<EventSystem>().SetSelectedGameObject(null); };
     }
 }

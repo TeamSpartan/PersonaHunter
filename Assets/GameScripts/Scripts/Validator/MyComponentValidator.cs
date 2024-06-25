@@ -37,6 +37,7 @@ public class MyComponentValidator : MonoBehaviour
     private GameObject _player;
     private GameObject _moviePanel;
     private PlayerCameraBrain _cameraBrain;
+    private InGameUIManager _inGameUIManager;
 
     private bool _playedPrologue;
 
@@ -52,6 +53,7 @@ public class MyComponentValidator : MonoBehaviour
         _gameLogic = GameObject.FindAnyObjectByType<GameLogic>();
         _cameraBrain = GameObject.FindAnyObjectByType<PlayerCameraBrain>();
         _player = GameObject.FindAnyObjectByType<PlayerMove>()?.gameObject;
+        _inGameUIManager = GameObject.FindAnyObjectByType<InGameUIManager>()?.GetComponent<InGameUIManager>();
 
         var scene = SceneManager.GetActiveScene();
 
@@ -79,7 +81,8 @@ public class MyComponentValidator : MonoBehaviour
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.InGame;
 
                 _gameLogic.Initialize();
-                // _cameraBrain.Init();
+                _cameraBrain.Init();
+                _inGameUIManager.TaskOnStart();
                 SpawnPlayerToPoint();
                 
                 break;
@@ -92,6 +95,7 @@ public class MyComponentValidator : MonoBehaviour
                 ValidationOnBossScene();
                 _gameLogic.Initialize();
                 _cameraBrain.Init();
+                _inGameUIManager.TaskOnStart();
                 
                 break;
             }
