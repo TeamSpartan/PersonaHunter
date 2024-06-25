@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SgLibUnite.Singleton;
 using UnityEngine;
 
 /* 作成 【菅沼】 */
@@ -49,7 +50,8 @@ public class WindowManager : MonoBehaviour
             }
             else
             {
-                obj.GetComponentInChildren<CanvasGroup>().alpha = 0;
+                if (obj.GetComponentInChildren<CanvasGroup>() is not null)
+                    obj.GetComponentInChildren<CanvasGroup>().alpha = 0;
             }
         }
 

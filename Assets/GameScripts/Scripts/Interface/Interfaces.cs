@@ -65,7 +65,7 @@ public interface ILockOnEventFirable
     /// <summary>
     /// ロックオン入力があったとき
     /// </summary>
-    public event Action ELockOnTriggered;
+    public Action ELockOnTriggered { get; set; }
 
     /// <summary>
     /// 左のロックオン対象を選択する時のイベント
