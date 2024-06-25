@@ -80,6 +80,9 @@ public class MyComponentValidator : MonoBehaviour
             {
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.InGame;
 
+                GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include).gameObject.SetActive(true);
+                GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include).gameObject.SetActive(true);
+
                 _gameLogic.Initialize();
                 _cameraBrain.Init();
                 _inGameUIManager.TaskOnStart();
@@ -256,30 +259,9 @@ public class MyComponentValidator : MonoBehaviour
 
     private void Exclude_InGameObject()
     {
-        // プレイヤとUIを破棄する
-        Destroy(GameObject.FindWithTag("PlayerUI"));
-        Destroy(GameObject.FindWithTag("Player"));
-
-        // DDOL解除
-        var lockOnCam = GameObject.FindWithTag("LockOnCam");
-        var followCam = GameObject.FindWithTag("FollowCam");
-        var scene = SceneManager.GetActiveScene();
-        if (lockOnCam is not null)
-        {
-            SceneManager.MoveGameObjectToScene(lockOnCam, scene);
-            Destroy(lockOnCam);
-        }
-
-        if (followCam is not null)
-        {
-            SceneManager.MoveGameObjectToScene(followCam, scene);
-            Destroy(followCam);
-        }
-
-        // デストロォォォォォイィィィィィィィ
-        if (GameObject.FindAnyObjectByType<PlayerInputsAction>().gameObject is not null)
-            Destroy(GameObject.FindAnyObjectByType<PlayerInputsAction>().gameObject);
-        if (GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject is not null)
-            Destroy(GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject);
+        if (GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include) is not null)
+            GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include).gameObject.SetActive(false);
+        if (GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include) is not null)
+            GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include).gameObject.SetActive(false);
     }
 }
