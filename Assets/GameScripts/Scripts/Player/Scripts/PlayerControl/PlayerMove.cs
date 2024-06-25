@@ -77,10 +77,8 @@ namespace Player.Action
 		{
 			if (_playerCamera.LockingOn)
 			{
-				var look = _playerCamera.CurrentLockingOnTarget.position;
-				look.y = 0;
-				_player.transform.forward = look;
-
+				_player.transform.forward +=
+					Vector3.Lerp(_player.transform.forward, dir, Time.deltaTime * _rotateSpeed);
 			}
 			else
 			{

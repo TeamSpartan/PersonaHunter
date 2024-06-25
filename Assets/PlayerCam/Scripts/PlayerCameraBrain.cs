@@ -178,10 +178,12 @@ namespace PlayerCam.Scripts
             }
         }
 
-        private void OnApplicationQuit()
+        private void OnDisable()
         {
             // ロックオンイベント発火元へのデリゲート登録解除をする
             _playerInput.ELockOnTriggered -= LockOnTriggerred;
+            _playerInput.EvtCamRightTarget -= LockOnToRightTarget;
+            _playerInput.EvtCamLeftTarget -= LockOnToLeftTarget;
         }
 
         private void Update()
@@ -293,13 +295,14 @@ namespace PlayerCam.Scripts
             // プレイヤ のトランスフォーム情報を初期化ー設定
             var playerRight = Mathf.Cos(_theta) * _lockOnRadius;
             var playerForward = Mathf.Sin(_theta) * _lockOnRadius;
-            var pDir = new Vector2(playerRight, playerForward);
+            var playerDestination = new Vector2(playerRight, playerForward);
 
             var target = _currentLockOnTarget;
             var centerPosition = target.position;
+            centerPosition.y = _playerCurrent.transform.position.y;
 
-            centerPosition.x += pDir.x; // right
-            centerPosition.z += pDir.y; // forward
+            centerPosition.x += playerDestination.x; // right
+            centerPosition.z += playerDestination.y; // forward
 
             var dir = new Vector3(target.position.x - _playerCurrent.position.x
                 , 0f
@@ -432,7 +435,6 @@ namespace PlayerCam.Scripts
             if (_lockOnTargets.Count() < 1)
             {
                 _lockingOn = false;
-                Debug.Log("ロックオン 中断");
                 return;
             }
 
@@ -492,7 +494,8 @@ namespace PlayerCam.Scripts
                     Vector3.Distance(_playerCurrent.position, _.position) <= MaxDistanceToCapture
                     || Camera.main.WorldToScreenPoint(_.position).x <= Camera.main.pixelWidth - 1
                     && Camera.main.WorldToScreenPoint(_.position).y <= Camera.main.pixelHeight - 1
-                    && Camera.main.WorldToScreenPoint(_.position).z > 0)
+                    && Camera.main.WorldToScreenPoint(_.position).z > 0
+                    && Vector3.Distance(transform.position, _.position) < MaxDistanceToCapture)
                 .ToList();
         }
     }
