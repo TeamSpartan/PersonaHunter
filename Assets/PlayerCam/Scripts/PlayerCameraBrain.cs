@@ -160,6 +160,15 @@ namespace PlayerCam.Scripts
             // メインカメラであってほしいので
             this.gameObject.tag = "MainCamera";
 
+            var cam = GameObject.FindObjectsByType<CinemachineVirtualCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None).ToList();
+            foreach (var virtualCamera in cam)
+            {
+                if (LockOnCamera != virtualCamera && PlayerFollowingCam != virtualCamera)
+                {
+                    Destroy(virtualCamera.gameObject);
+                }
+            }
+
             // DDOLへ各カメラを登録
             GameObject.DontDestroyOnLoad(_playerFollowCam.gameObject);
             GameObject.DontDestroyOnLoad(_lockOnCam.gameObject);
@@ -180,6 +189,7 @@ namespace PlayerCam.Scripts
 
         private void OnDisable()
         {
+            if(_playerInput is null ) return;
             // ロックオンイベント発火元へのデリゲート登録解除をする
             _playerInput.ELockOnTriggered -= LockOnTriggerred;
             _playerInput.EvtCamRightTarget -= LockOnToRightTarget;

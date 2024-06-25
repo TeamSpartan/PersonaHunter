@@ -19,7 +19,7 @@ public class KomashiraHPBar : MonoBehaviour
 
     public void PunchGuage()
     {
-        transform.DOShakePosition(.5f,100);
+        transform.DOShakePosition(.5f, 100);
     }
 
     public void SetFollowingTarget(Transform t)
@@ -32,6 +32,7 @@ public class KomashiraHPBar : MonoBehaviour
         GameObject.Destroy(this.gameObject);
     }
 
+
     private void Start()
     {
         _mainCam = GameObject.FindAnyObjectByType<PlayerCameraBrain>().GetComponent<Camera>();
@@ -42,12 +43,26 @@ public class KomashiraHPBar : MonoBehaviour
         {
             slider.interactable = false;
         }
+
+        SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged;
+    }
+
+    private void SceneManagerOnactiveSceneChanged(Scene arg0, Scene arg1)
+    {
+        if (arg0.name == ConstantValues.InGameScene)
+        {
+            SceneManager.MoveGameObjectToScene(gameObject, arg1);
+            DestroySelf();
+        }
     }
 
     private void Update()
     {
         if (_followingTarget is not null)
         {
+            if (_mainCam is null)
+                _mainCam = GameObject.FindAnyObjectByType<PlayerCameraBrain>().GetComponent<Camera>();
+            
             transform.position = _mainCam.WorldToScreenPoint(_followingTarget.position);
             _canvasGroup.alpha = transform.position.z > 0 ? 1 : 0;
         }
