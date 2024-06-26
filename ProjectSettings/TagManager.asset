@@ -10,6 +10,7 @@ TagManager:
   - LockOnCam
   - FollowCam
   - FirstSelectedUIElement
+  - ThisSceneOnly
   layers:
   - Default
   - TransparentFX

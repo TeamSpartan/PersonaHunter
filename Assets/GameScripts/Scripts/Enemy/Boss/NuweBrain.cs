@@ -417,9 +417,17 @@ public class NuweBrain : MonoBehaviour
     
     public void Initialize()
     {
-        _hpView = GameObject.FindAnyObjectByType<NuweHpViewer>();
+        _hpView = GameObject.FindAnyObjectByType<NuweHpViewer>(FindObjectsInactive.Include);
+        if (!_hpView.gameObject.activeSelf)
+        {
+            _hpView.gameObject.SetActive(true);
+        }
         
-        _logic = GameObject.FindAnyObjectByType<GameLogic>();
+        _logic = GameObject.FindAnyObjectByType<GameLogic>(FindObjectsInactive.Include);
+        if (!_logic.gameObject.activeSelf)
+        {
+            _logic.gameObject.SetActive(true);
+        }
         _logic.ApplyEnemyTransform(transform);
 
         SetupBehaviours();

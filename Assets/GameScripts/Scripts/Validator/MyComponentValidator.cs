@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Player.Action;
 using Player.Input;
 using PlayerCam.Scripts;
@@ -39,11 +40,21 @@ public class MyComponentValidator : MonoBehaviour
     private InGameUIManager _inGameUIManager;
 
     private bool _playedPrologue;
+    private List<GameObject> _thisSceneOnlyObj;
 
     // Start is called before the first frame update
     private void Start()
     {
         Validation();
+        SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged_DestroyThisSceneOnlyObj;
+    }
+
+    private void SceneManagerOnactiveSceneChanged_DestroyThisSceneOnlyObj(Scene arg0, Scene arg1)
+    {
+        foreach (var o in _thisSceneOnlyObj)
+        {
+            Destroy(o);
+        }
     }
 
     /// <summary> 各シーンに配置されたこのコンポーネントがアタッチされているオブジェクトが初期化されたタイミングで呼ばれる </summary>
@@ -52,26 +63,28 @@ public class MyComponentValidator : MonoBehaviour
         _clientData = Resources.Load<ClientDataHolder>("Prefabs/GameSystem/ClientDataHolder");
         _firstSelectedUIElemInScene = GameObject.FindWithTag("FirstSelectedUIElement");
 
+        _thisSceneOnlyObj = GameObject.FindGameObjectsWithTag("ThisSceneOnly").ToList();
+
         _gameLogic = GameObject.FindAnyObjectByType<GameLogic>(FindObjectsInactive.Include);
-        if (!_gameLogic.gameObject.activeSelf)
+        if (_gameLogic is not null && !_gameLogic.gameObject.activeSelf)
         {
             gameObject.gameObject.SetActive(true);
         }
 
         _cameraBrain = GameObject.FindAnyObjectByType<PlayerCameraBrain>(FindObjectsInactive.Include);
-        if (!_cameraBrain.gameObject.activeSelf)
+        if (_cameraBrain is not null && !_cameraBrain.gameObject.activeSelf)
         {
             _cameraBrain.gameObject.SetActive(true);
         }
 
         var playerMove = GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include);
-        if (!playerMove.gameObject.activeSelf)
+        if (playerMove is not null && !playerMove.gameObject.activeSelf)
         {
             _player = playerMove.gameObject;
         }
 
         _inGameUIManager = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
-        if (!_inGameUIManager.gameObject.activeSelf)
+        if (_inGameUIManager is not null && !_inGameUIManager.gameObject.activeSelf)
         {
             _inGameUIManager.gameObject.GetComponent<InGameUIManager>();
         }
@@ -214,10 +227,12 @@ public class MyComponentValidator : MonoBehaviour
         }
 
         // プレイヤ隠ぺい
-        if (!_player.activeSelf)
+        if (_player is null)
         {
-            _player.SetActive(false);
+            _player = GameObject.FindWithTag("Player");
         }
+
+        _player.SetActive(false);
 
         // ムービー読み込み
         var appearanceMovieGO = Resources.Load<GameObject>("Prefabs/Video/BossAppearance");
@@ -261,6 +276,15 @@ public class MyComponentValidator : MonoBehaviour
         // 入力ブロックを解除
         var input = GameObject.FindAnyObjectByType<PlayerInputsAction>();
         input.ControllerInputBlocked = input.ExternalInputBlocked = false;
+
+        // ぬえのHPバーを表示
+        var nuweHP = GameObject.FindAnyObjectByType<NuweHpViewer>(FindObjectsInactive.Include);
+        if (!nuweHP.gameObject.activeSelf)
+        {
+            nuweHP.gameObject.SetActive(true);
+        }
+
+        nuweHP.SetVisible(true);
 
         SpawnPlayerToPoint();
     }
