@@ -64,11 +64,13 @@ public class KomashiraHPBar : MonoBehaviour
 
     private void Update()
     {
+        if (_mainCam is null)
+        {
+            _mainCam = Camera.main;
+        }
+
         if (_followingTarget is not null)
         {
-            if (_mainCam is null)
-                _mainCam = Camera.main;
-
             transform.position = _mainCam.WorldToScreenPoint(_followingTarget.position);
             _canvasGroup.alpha = transform.position.z > 0 ? 1 : 0;
         }

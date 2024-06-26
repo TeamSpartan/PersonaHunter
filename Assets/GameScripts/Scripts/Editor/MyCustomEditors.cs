@@ -35,3 +35,13 @@ public class MyComponentValidatorEditor : Editor
         base.OnInspectorGUI();
     }
 }
+
+[CustomEditor(typeof(PlayerCam.Scripts.PlayerCameraBrain))]
+public class PlayerCameraBrainEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        GUILayout.Label("<color=#ff0000> シングルトン インスタンス</color>", DesignInfoStyle.GetExplainGUILayout());
+        base.OnInspectorGUI();
+    }
+}
