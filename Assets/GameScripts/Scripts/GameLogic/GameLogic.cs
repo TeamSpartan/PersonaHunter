@@ -6,6 +6,7 @@ using DG.Tweening;
 using Player.Input;
 using SgLibUnite.Systems;
 using SgLibUnite.Singleton;
+using UnityEditor;
 using UnityEngine.SceneManagement;
 
 // コードクリーン実施 【6/26：菅沼】
@@ -27,6 +28,7 @@ using UnityEngine.SceneManagement;
 public class GameLogic
     : SingletonBaseClass<GameLogic>, IEnemyDieNotifiable
 {
+    
     #region ゲームシステム構成クラス内イベント
 
     /// <summary> パリィ成功時のイベント </summary>

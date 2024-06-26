@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.14450605, g: 0.16198517, b: 0.24622396, a: 1}
+  m_IndirectSpecularColor: {r: 0.15506013, g: 0.18879989, b: 0.35450366, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -100478,6 +100478,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: InGameUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4252045673557813934, guid: 68c556d611e122b4b8b6a7e62f247949,
+        type: 3}
+      propertyPath: m_TagString
+      value: FirstSelectedUIElement
       objectReference: {fileID: 0}
     - target: {fileID: 6182078267060479850, guid: 68c556d611e122b4b8b6a7e62f247949,
         type: 3}
