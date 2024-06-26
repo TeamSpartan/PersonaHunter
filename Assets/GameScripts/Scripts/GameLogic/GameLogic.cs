@@ -28,7 +28,6 @@ using UnityEngine.SceneManagement;
 public class GameLogic
     : SingletonBaseClass<GameLogic>, IEnemyDieNotifiable
 {
-    
     #region ゲームシステム構成クラス内イベント
 
     /// <summary> パリィ成功時のイベント </summary>
@@ -312,7 +311,7 @@ public class GameLogic
 
         if (_volume.profile.TryGet(out DifferenceOfGaussian dog))
         {
-            dog = _dog;
+            _dog = dog;
         }
     }
 }
