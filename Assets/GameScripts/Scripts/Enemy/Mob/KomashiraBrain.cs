@@ -157,6 +157,7 @@ public class KomashiraBrain : MonoBehaviour
         var bar = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/UI/KomashiraHPBar"));
         _bar = bar.GetComponent<KomashiraHPBar>();
         _bar.SetFollowingTarget(transform);
+        
         _slider = _bar.GetComponent<Slider>();
         _slider.maxValue = _maxHealthPoint;
 
@@ -513,7 +514,21 @@ public class KomashiraBrain : MonoBehaviour
     public void AddDamage(float dmg)
     {
         if (_healthPoint < 0 && _currentYielded == _death) return;
+
+        if (_bar is null)
+        {
+            var hpBars =
+                GameObject.FindObjectsByType<KomashiraHPBar>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var bar in hpBars)
+            {
+                if (bar.FollowingTarget == transform && bar.TryGetComponent<KomashiraHPBar>(out var c))
+                {
+                    _bar = c;
+                }
+            }
+        }
         _bar.PunchGuage();
+        
         _healthPoint -= dmg;
 
         if (_healthPoint <= 0)

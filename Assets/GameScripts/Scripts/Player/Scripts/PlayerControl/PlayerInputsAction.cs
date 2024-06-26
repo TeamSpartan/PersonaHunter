@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Player.Zone;
+using PlayerCam.Scripts;
 using SgLibUnite.Singleton;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -68,6 +69,8 @@ namespace Player.Input
         private bool _isExternalInputBlocked;
         private bool _playerControllerInputBlocked;
 
+        private PlayerCameraBrain _cameraBrain;
+
         /// <summary> コントローラ以外の入力がブロックされてるか </summary>
         public bool ExternalInputBlocked
         {
@@ -130,6 +133,12 @@ namespace Player.Input
             _gameLogic.EResume += () => { _inputQueue.Clear(); };
 
             _zoneTimeController = GameLogic.FindAnyObjectByType<ZoneTimeController>();
+
+            _cameraBrain = GameObject.FindAnyObjectByType<PlayerCameraBrain>(FindObjectsInactive.Include);
+            if (!_cameraBrain.gameObject.activeSelf)
+            {
+                _cameraBrain.gameObject.SetActive(true);
+            }
         }
 
         private void OnGUI() // デバッグ表示
@@ -139,6 +148,7 @@ namespace Player.Input
                 @$"
                 Input Type : {_inputType.ToString()}
                 Input Blocked : {_isExternalInputBlocked} , {_playerControllerInputBlocked}
+                Locking On : {_cameraBrain.LockingOn}
                 ");
         }
 

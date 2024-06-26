@@ -7,9 +7,11 @@ using Player.Input;
 using UnityEngine;
 using SgLibUnite.CodingBooster;
 using SgLibUnite.Singleton;
+using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 
 // コードクリーン実施 【6/24：菅沼】
+// シングルトンパターンを採用
 
 namespace PlayerCam.Scripts
 {
@@ -121,6 +123,7 @@ namespace PlayerCam.Scripts
 
         protected override void ToDoAtAwakeSingleton()
         {
+            SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged;
         }
 
         private void Start()
@@ -143,7 +146,7 @@ namespace PlayerCam.Scripts
 
             // ロックオンイベント発火元へのデリゲート登録をする
             _playerInput.ELockOnTriggered += LockOnTriggerred;
-
+            
             // ロックオン対象選択イベント発火もとへデリゲート登録
             _playerInput.EvtCamRightTarget += LockOnToRightTarget;
             _playerInput.EvtCamLeftTarget += LockOnToLeftTarget;
@@ -160,7 +163,9 @@ namespace PlayerCam.Scripts
             // メインカメラであってほしいので
             this.gameObject.tag = "MainCamera";
 
-            var cam = GameObject.FindObjectsByType<CinemachineVirtualCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None).ToList();
+            var cam = GameObject
+                .FindObjectsByType<CinemachineVirtualCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .ToList();
             foreach (var virtualCamera in cam)
             {
                 if (LockOnCamera != virtualCamera && PlayerFollowingCam != virtualCamera)
@@ -175,8 +180,8 @@ namespace PlayerCam.Scripts
         }
 
         private void SceneManagerOnactiveSceneChanged(Scene arg0, Scene arg1)
-        {
-            if (arg0.name is ConstantValues.BossScene || arg0.name is ConstantValues.InGameScene)
+        {   
+            if (arg0.name is ConstantValues.BossScene /* || arg0.name is ConstantValues.InGameScene*/)
             {
                 // DDOL解除
                 SceneManager.MoveGameObjectToScene(_playerFollowCam.gameObject, arg0);
@@ -184,16 +189,16 @@ namespace PlayerCam.Scripts
                 // デストロォォォォォイィィィィィィィ
                 Destroy(_playerFollowCam.gameObject);
                 Destroy(_lockOnCam.gameObject);
+                
+                _playerInput.ELockOnTriggered -= LockOnTriggerred;
+                _playerInput.EvtCamRightTarget -= LockOnToRightTarget;
+                _playerInput.EvtCamLeftTarget -= LockOnToLeftTarget;
             }
         }
 
         private void OnDisable()
-        {
-            if(_playerInput is null ) return;
-            // ロックオンイベント発火元へのデリゲート登録解除をする
-            _playerInput.ELockOnTriggered -= LockOnTriggerred;
-            _playerInput.EvtCamRightTarget -= LockOnToRightTarget;
-            _playerInput.EvtCamLeftTarget -= LockOnToLeftTarget;
+        {   
+            SceneManager.activeSceneChanged -= SceneManagerOnactiveSceneChanged;
         }
 
         private void Update()
@@ -244,6 +249,7 @@ namespace PlayerCam.Scripts
                 LockOnTriggerred();
                 if (_lockingOn)
                 {
+                    Debug.Log($"捕捉可能距離にないのでロックおん強制解除");
                     _lockingOn = false;
                 } // ムダな処理だがとりあえず false をぶっこむ
             }
@@ -413,6 +419,8 @@ namespace PlayerCam.Scripts
         /// </summary>
         private void LockOnTriggerred()
         {
+            // Debug.Log($"トリガー");
+            
             _lockingOn = !_lockingOn;
             _playerFollowCam.Priority = 0;
             _lockOnCam.Priority = 0;
@@ -423,6 +431,8 @@ namespace PlayerCam.Scripts
             }
             else
             {
+                Debug.Log($"トリガー オン 解除");
+                
                 _lockOnTargets.Clear();
                 _currentLockOnTarget = null;
 
@@ -437,6 +447,8 @@ namespace PlayerCam.Scripts
             // Filter Captureable Target
             // 捕捉可能な距離圏内にいるターゲットを取得
             _lockOnTargets = GetLockableTargets();
+            
+            Debug.Log($"ロックオン 可能 ターゲット数 - {_lockOnTargets.Count}");
 
             // ロックオンターゲットのソート：左→右 ＿ 0 → Count - 1
             _lockOnTargets = GetSortedLockOnTargets();

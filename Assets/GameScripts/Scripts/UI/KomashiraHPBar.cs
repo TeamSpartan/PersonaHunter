@@ -17,6 +17,8 @@ public class KomashiraHPBar : MonoBehaviour
     private InGameUIManager _ingameUI;
     private CanvasGroup _canvasGroup;
 
+    public Transform FollowingTarget => _followingTarget;
+
     public void PunchGuage()
     {
         transform.DOShakePosition(.5f, 100);
@@ -51,7 +53,11 @@ public class KomashiraHPBar : MonoBehaviour
     {
         if (arg0.name == ConstantValues.InGameScene)
         {
-            SceneManager.MoveGameObjectToScene(gameObject, arg1);
+            if (transform.root.CompareTag("PlayerUI"))
+            {
+                SceneManager.MoveGameObjectToScene(gameObject, arg1);
+            }
+
             DestroySelf();
         }
     }
@@ -62,7 +68,7 @@ public class KomashiraHPBar : MonoBehaviour
         {
             if (_mainCam is null)
                 _mainCam = Camera.main;
-            
+
             transform.position = _mainCam.WorldToScreenPoint(_followingTarget.position);
             _canvasGroup.alpha = transform.position.z > 0 ? 1 : 0;
         }
