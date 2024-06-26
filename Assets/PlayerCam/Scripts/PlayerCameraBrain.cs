@@ -125,10 +125,10 @@ namespace PlayerCam.Scripts
 
         private void Start()
         {
-            Init();
+            Initialize();
         }
 
-        public void Init()
+        public void Initialize()
         {
             // ゲームロジックを取得
             _logic = GameObject.FindAnyObjectByType<GameLogic>();
