@@ -11,7 +11,7 @@ using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
-// コードクリーン 実施 【6/22日 ： 菅沼】
+// コードクリーン 実施 【6/26日 ： 菅沼】
 // リファクタも実施
 
 #region 設計思想
