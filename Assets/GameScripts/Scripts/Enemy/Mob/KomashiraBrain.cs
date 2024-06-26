@@ -161,7 +161,11 @@ public class KomashiraBrain : MonoBehaviour
         _slider.maxValue = _maxHealthPoint;
 
         _logic = GameObject.FindAnyObjectByType<GameLogic>();
-        _logic.ApplyEnemyTransform(transform);
+        var t = transform;
+        var p = transform.position;
+        p += Vector3.up;
+        t.position = p;
+        _logic.ApplyEnemyTransform(t);
 
         SetupComponent();
         SetupBehaviours();

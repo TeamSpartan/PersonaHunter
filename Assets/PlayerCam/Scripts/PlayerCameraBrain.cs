@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
 using Player.Action;
@@ -124,14 +125,23 @@ namespace PlayerCam.Scripts
 
         private void Start()
         {
+            Init();
+        }
+
+        public void Init()
+        {
             // ゲームロジックを取得
             _logic = GameObject.FindAnyObjectByType<GameLogic>();
 
             // 検索にひっかかった最初のオブジェクトをプレイヤとする
-            this._playerCurrent = GameObject.FindAnyObjectByType<PlayerMove>().transform;
+            this._playerCurrent = GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include).transform;
+
+            _playerInput = GameObject.FindAnyObjectByType<PlayerInputsAction>();
+            _playerInput.ELockOnTriggered -= LockOnTriggerred;
+            _playerInput.EvtCamRightTarget -= LockOnToRightTarget;
+            _playerInput.EvtCamLeftTarget -= LockOnToLeftTarget;
 
             // ロックオンイベント発火元へのデリゲート登録をする
-            _playerInput = GameObject.FindAnyObjectByType<PlayerInputsAction>();
             _playerInput.ELockOnTriggered += LockOnTriggerred;
 
             // ロックオン対象選択イベント発火もとへデリゲート登録
@@ -149,6 +159,15 @@ namespace PlayerCam.Scripts
 
             // メインカメラであってほしいので
             this.gameObject.tag = "MainCamera";
+
+            var cam = GameObject.FindObjectsByType<CinemachineVirtualCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None).ToList();
+            foreach (var virtualCamera in cam)
+            {
+                if (LockOnCamera != virtualCamera && PlayerFollowingCam != virtualCamera)
+                {
+                    Destroy(virtualCamera.gameObject);
+                }
+            }
 
             // DDOLへ各カメラを登録
             GameObject.DontDestroyOnLoad(_playerFollowCam.gameObject);
@@ -168,10 +187,13 @@ namespace PlayerCam.Scripts
             }
         }
 
-        private void OnApplicationQuit()
+        private void OnDisable()
         {
+            if(_playerInput is null ) return;
             // ロックオンイベント発火元へのデリゲート登録解除をする
             _playerInput.ELockOnTriggered -= LockOnTriggerred;
+            _playerInput.EvtCamRightTarget -= LockOnToRightTarget;
+            _playerInput.EvtCamLeftTarget -= LockOnToLeftTarget;
         }
 
         private void Update()
@@ -283,13 +305,14 @@ namespace PlayerCam.Scripts
             // プレイヤ のトランスフォーム情報を初期化ー設定
             var playerRight = Mathf.Cos(_theta) * _lockOnRadius;
             var playerForward = Mathf.Sin(_theta) * _lockOnRadius;
-            var pDir = new Vector2(playerRight, playerForward);
+            var playerDestination = new Vector2(playerRight, playerForward);
 
             var target = _currentLockOnTarget;
             var centerPosition = target.position;
+            centerPosition.y = _playerCurrent.transform.position.y;
 
-            centerPosition.x += pDir.x; // right
-            centerPosition.z += pDir.y; // forward
+            centerPosition.x += playerDestination.x; // right
+            centerPosition.z += playerDestination.y; // forward
 
             var dir = new Vector3(target.position.x - _playerCurrent.position.x
                 , 0f
@@ -401,7 +424,7 @@ namespace PlayerCam.Scripts
             else
             {
                 _lockOnTargets.Clear();
-                _currentLockOnTarget = null; 
+                _currentLockOnTarget = null;
 
                 _playerFollowCam.Priority = 1;
             }
@@ -481,7 +504,8 @@ namespace PlayerCam.Scripts
                     Vector3.Distance(_playerCurrent.position, _.position) <= MaxDistanceToCapture
                     || Camera.main.WorldToScreenPoint(_.position).x <= Camera.main.pixelWidth - 1
                     && Camera.main.WorldToScreenPoint(_.position).y <= Camera.main.pixelHeight - 1
-                    && Camera.main.WorldToScreenPoint(_.position).z > 0)
+                    && Camera.main.WorldToScreenPoint(_.position).z > 0
+                    && Vector3.Distance(transform.position, _.position) < MaxDistanceToCapture)
                 .ToList();
         }
     }

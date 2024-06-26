@@ -275,7 +275,7 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""6949c4d8-760f-44ba-9750-fd32e7ce7337"",
                     ""path"": ""<Gamepad>/rightStickPress"",
-                    ""interactions"": ""Press"",
+                    ""interactions"": ""Hold(duration=1)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""LockOn"",

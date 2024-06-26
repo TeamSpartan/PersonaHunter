@@ -36,6 +36,8 @@ public class MyComponentValidator : MonoBehaviour
     private GameLogic _gameLogic;
     private GameObject _player;
     private GameObject _moviePanel;
+    private PlayerCameraBrain _cameraBrain;
+    private InGameUIManager _inGameUIManager;
 
     private bool _playedPrologue;
 
@@ -49,7 +51,9 @@ public class MyComponentValidator : MonoBehaviour
     {
         _clientData = Resources.Load<ClientDataHolder>("Prefabs/GameSystem/ClientDataHolder");
         _gameLogic = GameObject.FindAnyObjectByType<GameLogic>();
-        _player = GameObject.FindAnyObjectByType<PlayerMove>().gameObject;
+        _cameraBrain = GameObject.FindAnyObjectByType<PlayerCameraBrain>();
+        _player = GameObject.FindAnyObjectByType<PlayerMove>()?.gameObject;
+        _inGameUIManager = GameObject.FindAnyObjectByType<InGameUIManager>()?.GetComponent<InGameUIManager>();
 
         var scene = SceneManager.GetActiveScene();
 
@@ -76,6 +80,12 @@ public class MyComponentValidator : MonoBehaviour
             {
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.InGame;
 
+                GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include).gameObject.SetActive(true);
+                GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include).gameObject.SetActive(true);
+
+                _gameLogic.Initialize();
+                _cameraBrain.Init();
+                _inGameUIManager.TaskOnStart();
                 SpawnPlayerToPoint();
 
                 break;
@@ -86,6 +96,9 @@ public class MyComponentValidator : MonoBehaviour
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.TransitedBossScene;
 
                 ValidationOnBossScene();
+                _gameLogic.Initialize();
+                _cameraBrain.Init();
+                _inGameUIManager.TaskOnStart();
 
                 break;
             }
@@ -183,8 +196,8 @@ public class MyComponentValidator : MonoBehaviour
         pd_appearance.paused += OnloopPointReached_Appearance;
         pd_appearance.paused += (source) =>
         {
-            DestroyImmediate(movie_appearance);
-            DestroyImmediate(panel);
+            Destroy(movie_appearance);
+            Destroy(panel);
         };
 
         // ロジックへイベント登録
@@ -198,7 +211,7 @@ public class MyComponentValidator : MonoBehaviour
     {
         _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.FinishedPlayingAppearanceMovie;
 
-        GameObject.DestroyImmediate(source.gameObject);
+        GameObject.Destroy(source.gameObject);
         _player.SetActive(true);
 
         // 入力ブロックを解除
@@ -219,8 +232,8 @@ public class MyComponentValidator : MonoBehaviour
         pd_defeated.paused += OnloopPointReached_BossDefeated;
         pd_defeated.paused += (source) =>
         {
-            DestroyImmediate(panel);
-            DestroyImmediate(movie_defeated);
+            Destroy(panel);
+            Destroy(movie_defeated);
         };
     }
 
@@ -229,8 +242,8 @@ public class MyComponentValidator : MonoBehaviour
         // インゲームのコンテンツに使用していたオブジェクトを破棄
         var player = GameObject.FindAnyObjectByType<PlayerMove>().gameObject;
         var playerUI = GameObject.FindWithTag("PlayerUI");
-        DestroyImmediate(player);
-        DestroyImmediate(playerUI);
+        Destroy(player);
+        Destroy(playerUI);
 
         GameObject.FindAnyObjectByType<SceneLoader>().LoadSceneByName(ConstantValues.EpilogueScene);
     }
@@ -246,20 +259,9 @@ public class MyComponentValidator : MonoBehaviour
 
     private void Exclude_InGameObject()
     {
-        // プレイヤとUIを破棄する
-        Destroy(GameObject.FindWithTag("PlayerUI"));
-        Destroy(GameObject.FindWithTag("Player"));
-
-        // DDOL解除
-        var lockOnCam = GameObject.FindWithTag("LockOnCam");
-        var followCam = GameObject.FindWithTag("FollowCam");
-        var scene = SceneManager.GetActiveScene();
-        SceneManager.MoveGameObjectToScene(lockOnCam, scene);
-        SceneManager.MoveGameObjectToScene(followCam, scene);
-        // デストロォォォォォイィィィィィィィ
-        Destroy(GameObject.FindAnyObjectByType<PlayerInputsAction>().gameObject);
-        Destroy(GameObject.FindAnyObjectByType<PlayerCameraBrain>().gameObject);
-        Destroy(lockOnCam);
-        Destroy(followCam);
+        if (GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include) is not null)
+            GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include).gameObject.SetActive(false);
+        if (GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include) is not null)
+            GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include).gameObject.SetActive(false);
     }
 }
