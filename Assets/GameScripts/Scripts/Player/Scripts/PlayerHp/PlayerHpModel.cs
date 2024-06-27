@@ -8,15 +8,14 @@ using UnityEngine.SceneManagement;
 public class PlayerHpModel : MonoBehaviour
 {
 	[SerializeField] private float _playerCurrentHp;
-	public float PlayerCurrentHp => _playerCurrentHp;
 
 	[SerializeField, Header("無敵フレーム")] private int _invincibilityFrame;
 	[SerializeField, Header("リジェネまでの時間")] private float _regeneratWaitTime = 5f;
 
 	[SerializeField, Header("リジェネ回復量"), Range(1f, 100f)]
 	private float _regenerationSpeed;
-
-
+	
+	public float PlayerCurrentHp => _playerCurrentHp;
 	public event System.Action<float, float> OnReceiveDamage,
 		OnRegeneration;
 
@@ -82,6 +81,11 @@ public class PlayerHpModel : MonoBehaviour
 			}
 		}
 
+		if (UnityEngine.Input.GetKeyDown(KeyCode.F))
+		{
+			AddDamage(100);
+		}
+
 		Regeneration();
 	}
 
@@ -128,14 +132,14 @@ public class PlayerHpModel : MonoBehaviour
 		//ジャスト回避
 		if (_playerParam.GetIsJustAvoid)
 		{
-			_playerAvoid.OnJustAvoidSuccess.Invoke(_playerParam.GetIncreaseValueOfJustAvoid);
+			_playerAvoid.OnJustAvoidSuccess?.Invoke(_playerParam.GetIncreaseValueOfJustAvoid);
 			return;
 		}
 
 		//普通の回避
 		if (_playerParam.GetIsAvoid)
 		{
-			_playerAvoid.OnAvoidSuccess.Invoke();
+			_playerAvoid.OnAvoidSuccess?.Invoke();
 			return;
 		}
 

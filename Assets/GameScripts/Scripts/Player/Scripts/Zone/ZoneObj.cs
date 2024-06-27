@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Player.Action;
 using UnityEngine;
@@ -14,9 +15,9 @@ namespace Player.Zone
 		[SerializeField, Header("アニメーションスピード")]
 		private float duration = 5f;
 
-		[SerializeField]
-		private int _maxZoneObj = 5;
-		
+		[SerializeField] private int _maxZoneObj = 5;
+
+		[SerializeField] private PlayerAvoid _playerAvoid;
 		private float _animationTime = 0.3f;
 
 		private bool _canIncreaseGaugeValue = true; // ゲージのValueを増加できるかのフラグ
@@ -24,13 +25,11 @@ namespace Player.Zone
 		private float _currentZoneGaugeValue;
 
 		public int ActiveZoneObjCount => _splineAnimates.Count;
-			
 		private ZoneTimeController _zoneTimeController;
 		private SplineContainer _spline;
-		private PlayerAvoid _playerAvoid;
 		private List<SplineAnimate> _splineAnimates = new();
 		private List<SplineAnimate> _evacuationZoneObj = new();
-		
+
 
 		/// <summary>ゲージのValueを増加できるかのフラグを変更します</summary>
 		public void SetCanIncreaseGaugeValue(bool flag) => _canIncreaseGaugeValue = flag;
@@ -39,8 +38,12 @@ namespace Player.Zone
 		{
 			_zoneTimeController = GetComponent<ZoneTimeController>();
 			_spline = GetComponent<SplineContainer>();
-			_playerAvoid = GetComponentInParent<PlayerAvoid>();
 			InitializedGauge();
+		}
+
+		private void OnEnable()
+		{
+			_playerAvoid.OnJustAvoidSuccess += IncreaseGaugeValue;
 		}
 
 		private void OnDisable()
@@ -67,7 +70,7 @@ namespace Player.Zone
 		void InitializedGauge()
 		{
 			_currentZoneGaugeValue = 0;
-			_playerAvoid.OnJustAvoidSuccess += IncreaseGaugeValue;
+			Debug.Log("aaa");
 
 			NotEnoughObj(Mathf.FloorToInt(_maxZoneObj));
 		}
@@ -137,7 +140,6 @@ namespace Player.Zone
 		{
 			for (int i = _splineAnimates.Count; i < value; i++)
 			{
-				
 				SplineAnimate splineAnimate = Instantiate(zoneObj, transform).GetComponent<SplineAnimate>();
 				splineAnimate.Container = _spline;
 				_evacuationZoneObj.Add(splineAnimate);

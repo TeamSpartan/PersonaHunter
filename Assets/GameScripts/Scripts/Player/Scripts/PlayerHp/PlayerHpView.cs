@@ -1,5 +1,6 @@
-﻿using DG.Tweening;
-using SgLibUnite.CodingBooster;
+﻿using System.Collections;
+using DG.Tweening;
+using SgLibUnite.Systems;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,37 +9,57 @@ using UnityEngine.UI;
 /// </summary>
 public class PlayerHpView : MonoBehaviour
 {
-    [SerializeField, Header("HPが減る速度")] private float _duration;
-    [SerializeField, Header("赤ゲージが残る時間")] private float _waitTime = .2f;
-    [SerializeField] private Image healthImage;
-    [SerializeField] private Image burnImage;
+	[SerializeField, Header("HPが減る速度")] private float _duration;
+	[SerializeField, Header("赤ゲージが残る時間")] private float _waitTime = .2f;
 
-    private Tween _burnEffect;
+	[SerializeField, Header("死んでからシーン移動までの時間")]
+	private float _waitDie = 3f;
 
-    private void Start()
-    {
-        healthImage.fillAmount = 1f;
-        burnImage.fillAmount = 1f;
-    }
+	[SerializeField] private Image healthImage;
+	[SerializeField] private Image burnImage;
+	[SerializeField, Header("死亡時のパネル")] private GameObject _diePanel;
 
-    ///<summary>受ダメージ時にゲージを変化させる</summary>
-    ///<param name="InitialHp">初期HP</param>
-    ///<param name="CurrentHp"	>現在のHP</param>
-    public void SetGauge(float InitialHp, float CurrentHp)
-    {
-        _burnEffect?.Kill();
-        healthImage.DOFillAmount(CurrentHp / InitialHp, _duration).OnComplete(() =>
-        {
-            _burnEffect = burnImage.DOFillAmount(CurrentHp / InitialHp, _duration * 0.5f).SetDelay(_waitTime);
-        });
-    }
+	private Tween _burnEffect;
+	private SceneLoader _sceneLoader;
 
-    ///<summary>リジェネ時にゲージを変化させる</summary>
-    ///<param name="InitialHp">初期HP</param>
-    ///<param name="CurrentHp"	>現在のHP</param>
-    public void SetRegenerate(float InitialHp, float CurrentHp)
-    {
-        healthImage.fillAmount = CurrentHp / InitialHp;
-        burnImage.fillAmount = CurrentHp / InitialHp;
-    }
+	private void Start()
+	{
+		healthImage.fillAmount = 1f;
+		burnImage.fillAmount = 1f;
+		_diePanel.SetActive(false);
+	}
+
+	///<summary>受ダメージ時にゲージを変化させる</summary>
+	///<param name="InitialHp">初期HP</param>
+	///<param name="CurrentHp"	>現在のHP</param>
+	public void SetGauge(float InitialHp, float CurrentHp)
+	{
+		_burnEffect?.Kill();
+		healthImage.DOFillAmount(CurrentHp / InitialHp, _duration).OnComplete(() =>
+		{
+			_burnEffect = burnImage.DOFillAmount(CurrentHp / InitialHp, _duration * 0.5f).SetDelay(_waitTime);
+		});
+	}
+
+	///<summary>リジェネ時にゲージを変化させる</summary>
+	///<param name="InitialHp">初期HP</param>
+	///<param name="CurrentHp"	>現在のHP</param>
+	public void SetRegenerate(float InitialHp, float CurrentHp)
+	{
+		healthImage.fillAmount = CurrentHp / InitialHp;
+		burnImage.fillAmount = CurrentHp / InitialHp;
+	}
+
+	public void DisplayDeadPanel()
+	{
+		_diePanel.SetActive(true);
+		StartCoroutine(WaitDie());
+	}
+
+	IEnumerator WaitDie()
+	{
+		yield return new WaitForSeconds(_waitDie);
+		_sceneLoader = FindObjectOfType<SceneLoader>();
+		_sceneLoader.LoadSceneByName("Title");
+	}
 }
