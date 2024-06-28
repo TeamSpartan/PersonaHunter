@@ -12,14 +12,10 @@ namespace Player.Action
 	{
 		[SerializeField, Header("回避距離")] private float _avoidRange = 5f;
 		[SerializeField] private float _maxDrag = 20f;
-
-		[SerializeField, Header("空気抵抗をMaxまでする時間")]
-		private float _duration = 1.5f;
-
+		[SerializeField, Header("空気抵抗をMaxまでする時間")] private float _duration = 1.5f;
 		public System.Action OnAvoidSuccess;
 		public System.Action<float> OnJustAvoidSuccess;
 
-		private AfterImageSkinnedMeshController _meshController;
 		private PlayerParam _playerParam;
 		private Animator _animator;
 		private Vector3 _dir;
@@ -32,11 +28,12 @@ namespace Player.Action
 
 		private void OnEnable()
 		{
+			OnAvoidSuccess += () => Debug.Log("回避成功");
+			OnJustAvoidSuccess += _ => Debug.Log("ジャスト回避成功");
 		}
 
 		private void Start()
 		{
-			_meshController = GetComponent<AfterImageSkinnedMeshController>();
 			_animator = GetComponent<Animator>();
 			_playerParam = GetComponent<PlayerParam>();
 			_playerMove = GetComponent<PlayerMove>();
@@ -44,7 +41,7 @@ namespace Player.Action
 			_drag = _rb.drag;
 		}
 
-		private void FixedUpdate()
+		private void Update()
 		{
 			if (PlayerInputsAction.Instance.GetCurrentInputType == PlayerInputTypes.Avoid &&
 			    !_playerParam.GetIsAnimation)
@@ -61,19 +58,14 @@ namespace Player.Action
 					_dir = new Vector3(_saveInputValue.x, 0, _saveInputValue.y);
 					_dir = Camera.main.transform.TransformDirection(_dir);
 				}
-
 				_dir.y = 0;
 				_dir = _dir.normalized;
 				//_rb.velocity = _playerMove.GetSlopeMoveDirection(_dir * _avoidRange, _playerMove.NormalRay());
 				_rb.AddForce(_playerMove.GetSlopeMoveDirection(_dir * _avoidRange, _playerMove.NormalRay()),
 					ForceMode.Impulse);
 				_playerMove.PlayerRotate(_dir);
-			}
-		}
 
-		private void OnDisable()
-		{
-			OnJustAvoidSuccess -= _ => Debug.Log("ジャスト回避成功");
+			}
 		}
 
 		void Avoided()
@@ -83,12 +75,11 @@ namespace Player.Action
 				return;
 			}
 
-			_meshController.IsCreate = true;
 			_saveInputValue = PlayerInputsAction.Instance.GetMoveInput();
 			_playerParam.SetIsAnimation(true);
 			_animator.SetTrigger(_avoidId);
 
-			_tween = DOTween.To(() => _rb.drag,
+			 _tween = DOTween.To(() => _rb.drag,
 				x => _rb.drag = x,
 				_maxDrag,
 				_duration).OnComplete(() => _rb.drag = 10f);
@@ -139,12 +130,12 @@ namespace Player.Action
 		{
 			_tween.Kill();
 			_rb.drag = _drag;
-			_meshController.IsCreate = false;
 			PlayerInputsAction.Instance.DeleteInputQueue(PlayerInputTypes.Avoid);
 			_playerParam.SetIsAnimation(false);
 			PlayerInputsAction.Instance.EndAction();
 		}
 
 		//------------------------------------------------------------------------------------------------------------------------------------
+
 	}
 }

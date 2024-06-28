@@ -12,9 +12,9 @@ public class IntroMovie : MonoBehaviour
 
     [SerializeField] private GameObject _fadeInOutPanel;
 
-    [SerializeField] private Text _textBox;
+    [SerializeField] private TextMeshProUGUI _textBox;
     
-    [SerializeField, TextArea] private List<string> _text;
+    [SerializeField] private List<string> _text;
     
     private bool _isFading;
     private int _cIndex;
