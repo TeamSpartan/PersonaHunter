@@ -16,9 +16,15 @@ public class PlayerHpModel : MonoBehaviour
     [SerializeField, Header("リジェネ回復量"), Range(1f, 100f)]
     private float _regenerationSpeed;
 
+    private Animator _animator;
+    private int _dieId = Animator.StringToHash("IsDie");
+    private int _takeDamageId = Animator.StringToHash("IsTakeDamage");
 
-    public event System.Action<float, float> OnReceiveDamage,
+
+    public event Action<float, float> OnReceiveDamage,
         OnRegeneration;
+
+    public event Action OnDie;
 
     private PlayerParam _playerParam;
     private PlayerAvoid _playerAvoid;
@@ -48,6 +54,7 @@ public class PlayerHpModel : MonoBehaviour
     {
         _playerParam = GetComponentInParent<PlayerParam>();
         _playerAvoid = GetComponentInParent<PlayerAvoid>();
+        _animator = GetComponent<Animator>();
         _initialHp = _playerParam.GetInitialHp;
         _nue = GameObject.FindFirstObjectByType<NuweBrain>();
         _mob = GameObject.FindFirstObjectByType<KomashiraBrain>();
@@ -144,7 +151,7 @@ public class PlayerHpModel : MonoBehaviour
         }
 
         //減算処理
-        if (dmg > 0f)
+        if (dmg > 0f && _playerCurrentHp > 0f)
         {
             _playerCurrentHp -= (int)dmg;
             //Processing when HP decreases
@@ -152,11 +159,15 @@ public class PlayerHpModel : MonoBehaviour
             _regenerationTimer = 0;
             SetRegenerate(false);
             _playerParam.SetIsDamage(true);
+            _animator.SetTrigger(_takeDamageId);
         }
 
         //at time of death
         if (_playerCurrentHp <= 0f)
         {
+            _animator.SetTrigger(_dieId);
+            _playerParam.SetIsDie(true);
+            OnDie?.Invoke();
         }
     }
 

@@ -23,6 +23,7 @@ namespace Player.Action
 		private Rigidbody _rb;
 		private PlayerMove _playerMove;
 		private Tween _tween;
+		private AfterImageSkinnedMeshController _afterImageController;
 		private int _avoidId = Animator.StringToHash("IsAvoid");
 		private float _drag;
 
@@ -38,6 +39,7 @@ namespace Player.Action
 			_playerParam = GetComponent<PlayerParam>();
 			_playerMove = GetComponent<PlayerMove>();
 			_rb = GetComponent<Rigidbody>();
+			_afterImageController = GetComponent<AfterImageSkinnedMeshController>();
 			_drag = _rb.drag;
 		}
 
@@ -78,6 +80,7 @@ namespace Player.Action
 			_saveInputValue = PlayerInputsAction.Instance.GetMoveInput();
 			_playerParam.SetIsAnimation(true);
 			_animator.SetTrigger(_avoidId);
+			_afterImageController.IsCreate = true;
 
 			 _tween = DOTween.To(() => _rb.drag,
 				x => _rb.drag = x,
@@ -129,10 +132,12 @@ namespace Player.Action
 		public void EndAvoidActions()
 		{
 			_tween.Kill();
+			_afterImageController.IsCreate = false;
 			_rb.drag = _drag;
 			PlayerInputsAction.Instance.DeleteInputQueue(PlayerInputTypes.Avoid);
 			_playerParam.SetIsAnimation(false);
 			PlayerInputsAction.Instance.EndAction();
+			
 		}
 
 		//------------------------------------------------------------------------------------------------------------------------------------

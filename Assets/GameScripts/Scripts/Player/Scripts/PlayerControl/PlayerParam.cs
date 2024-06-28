@@ -22,6 +22,7 @@ namespace Player.Param
         private bool _isParry;
         private bool _isAnimation;
         private bool _isRun;
+        private bool _isDie;
 
         //=================参照用==========================================================
         ///<summary>初期HP(参照用)</summary>
@@ -57,6 +58,9 @@ namespace Player.Param
         ///<summary>走り状態の判定</summary>
         public bool GetIsRun => _isRun;
 
+        /// <summary>死亡判定</summary>
+        public bool GetIsDie => _isDie;
+
 
         //================変更用============================================
         ///<summary>攻撃中（変更用）</summary>
@@ -79,5 +83,8 @@ namespace Player.Param
 
         ///<summary>走る判定（変更用）</summary>
         public bool SetIsRun(bool value) => _isRun = value;
+        
+        /// <summary>死亡判定(変更用)</summary>
+        public bool SetIsDie(bool value) => _isDie = value;
     }
 }
