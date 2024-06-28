@@ -205,14 +205,11 @@ public class MyComponentValidator : MonoBehaviour
     /// <summary> ボスシーンでのヴァリエーション </summary>
     private void ValidationOnBossScene()
     {
-        // 入力をブロック
-        var input = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
-        if (!input.gameObject.activeSelf)
-        {
-            input.gameObject.SetActive(true);
-        }
-
-        input.ControllerInputBlocked = input.ExternalInputBlocked = true;
+        // インゲーム入力をブロック
+        _gameLogic.SetInGameInputBlocked(true);
+                
+        // ポーズ入力をブロック 【入力タイプがUIになるのを防ぐ】
+        _gameLogic.SetPauseInputBlocked(true);
 
         var ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
         if (!ingameUI.gameObject.activeSelf)
@@ -256,6 +253,8 @@ public class MyComponentValidator : MonoBehaviour
         {
             Destroy(movie_appearance);
             Destroy(panel);
+            _gameLogic.SetInGameInputBlocked(false);
+            _gameLogic.SetPauseInputBlocked(false);
         };
 
         // ロジックへイベント登録

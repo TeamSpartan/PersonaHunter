@@ -87,6 +87,9 @@ namespace Player.Input
             get { return _playerControllerInputBlocked; }
             set { _playerControllerInputBlocked = value; }
         }
+        
+        /// <summary> ポーズの入力がブロックされてるか </summary>
+        public bool PauseInputBlocked { get; set; }
 
         public System.Action ELockOnTriggered { get; set; }
         public System.Action EvtCamLeftTarget { get; set; }
@@ -291,7 +294,11 @@ namespace Player.Input
         {
             if (context.ReadValueAsButton())
             {
-                AddInputQueue(PlayerInputTypes.Attack);
+                if (!(_playerControllerInputBlocked
+                      || _isExternalInputBlocked))
+                {
+                    AddInputQueue(PlayerInputTypes.Attack);
+                }
                 // Debug.Log("WaitAttack");
             }
         }
@@ -300,7 +307,11 @@ namespace Player.Input
         {
             if (context.ReadValueAsButton())
             {
-                AddInputQueue(PlayerInputTypes.Parry);
+                if (!(_playerControllerInputBlocked
+                      || _isExternalInputBlocked))
+                {
+                    AddInputQueue(PlayerInputTypes.Parry);
+                }
                 // Debug.Log("WaitParry");
             }
         }
@@ -309,7 +320,11 @@ namespace Player.Input
         {
             if (context.ReadValueAsButton())
             {
-                AddInputQueue(PlayerInputTypes.Avoid);
+                if (!(_playerControllerInputBlocked
+                      || _isExternalInputBlocked))
+                {
+                    AddInputQueue(PlayerInputTypes.Avoid);
+                }
                 // Debug.Log("WaitAvoid");
             }
         }
@@ -318,6 +333,12 @@ namespace Player.Input
         {
             if (context.ReadValueAsButton())
             {
+                if ((_playerControllerInputBlocked
+                     || _isExternalInputBlocked))
+                {
+                    return;
+                }
+
                 Debug.Log("ゾーン 入力あり");
                 if (_zoneTimeController is null)
                 {
@@ -333,24 +354,40 @@ namespace Player.Input
 
         private void OnMove(InputAction.CallbackContext context)
         {
-            _inputVector = context.ReadValue<Vector2>();
+            if (!(_playerControllerInputBlocked
+                  || _isExternalInputBlocked))
+            {
+                _inputVector = context.ReadValue<Vector2>();
+            }
+            else
+            {
+                _inputVector = Vector2.zero;
+            }
         }
 
         private void OnCamera(InputAction.CallbackContext context)
         {
-            _inputCamera = context.ReadValue<Vector2>();
-
-            if (_inputType == InputType.Player)
+            if (!(_playerControllerInputBlocked
+                  || _isExternalInputBlocked))
             {
-                // 左右入力が入ればロックオン対象切り替えイベントの発火
-                if (0 < _inputCamera.x)
+                _inputCamera = context.ReadValue<Vector2>();
+
+                if (_inputType == InputType.Player)
                 {
-                    EvtCamRightTarget.Invoke();
+                    // 左右入力が入ればロックオン対象切り替えイベントの発火
+                    if (0 < _inputCamera.x)
+                    {
+                        EvtCamRightTarget.Invoke();
+                    }
+                    else if (_inputCamera.x < 0)
+                    {
+                        EvtCamLeftTarget.Invoke();
+                    }
                 }
-                else if (_inputCamera.x < 0)
-                {
-                    EvtCamLeftTarget.Invoke();
-                }
+            }
+            else
+            {
+                _inputVector = Vector2.zero;
             }
         }
 
@@ -358,7 +395,11 @@ namespace Player.Input
         {
             if (context.ReadValueAsButton())
             {
-                ELockOnTriggered?.Invoke();
+                if (!(_playerControllerInputBlocked
+                      || _isExternalInputBlocked))
+                {
+                    ELockOnTriggered?.Invoke();
+                }
             }
         }
 
@@ -368,7 +409,7 @@ namespace Player.Input
             {
                 _gameLogic.PauseResumeInputFired();
 
-                if (_inputType == InputType.Player)
+                if (!PauseInputBlocked && _gameLogic.IsPausing)
                 {
                     _inputType = InputType.UI;
                 }
@@ -434,6 +475,7 @@ namespace Player.Input
 
             //Pause
             _gameInputs.Player.Pause.started += OnPause;
+            _gameInputs.Player.Pause.performed += OnPause;
             _gameInputs.Player.Pause.canceled += OnPause;
 
             //Dash
@@ -470,6 +512,7 @@ namespace Player.Input
 
             //Pause
             _gameInputs.Player.Pause.started -= OnPause;
+            _gameInputs.Player.Pause.performed -= OnPause;
             _gameInputs.Player.Pause.canceled -= OnPause;
         }
 

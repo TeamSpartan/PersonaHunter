@@ -46,6 +46,8 @@ public class GameLogic
 
     #endregion
 
+    public bool IsPausing => _isPausing;
+
     /// <summary> ガウス差分クラス </summary>
     private DifferenceOfGaussian _dog;
 
@@ -131,18 +133,7 @@ public class GameLogic
     /// <summary> 一時停止を開始する </summary>
     public void StartPause()
     {
-        if (_playerInputs is null)
-        {
-            _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
-            if (!_playerInputs.gameObject.activeSelf)
-            {
-                _playerInputs.gameObject.SetActive(true);
-            }
-        }
-
-        // インゲーム入力のブロック
-        _playerInputs.ControllerInputBlocked
-            = _playerInputs.ExternalInputBlocked = true;
+        SetInGameInputBlocked(true);
 
         EPause?.Invoke();
 
@@ -174,18 +165,7 @@ public class GameLogic
     /// <summary> 一時停止を終了する </summary>
     public void StartResume()
     {
-        if (_playerInputs is null)
-        {
-            _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
-            if (!_playerInputs.gameObject.activeSelf)
-            {
-                _playerInputs.gameObject.SetActive(true);
-            }
-        }
-
-        // インゲーム入力のブロック解除
-        _playerInputs.ControllerInputBlocked
-            = _playerInputs.ExternalInputBlocked = false;
+        SetInGameInputBlocked(false);
 
         EResume?.Invoke();
 
@@ -298,6 +278,32 @@ public class GameLogic
         }
 
         GetDoGComponent();
+    }
+
+    
+    /// <summary> ポーズ入力のブロックをする。 condition = True でブロック </summary>
+    /// <param name="condition"></param>
+    public void SetPauseInputBlocked(bool condition)
+    {
+        _playerInputs.PauseInputBlocked = condition;
+    }
+    
+    /// <summary> インゲームの入力をブロックするかコンディションを更新する </summary>
+    /// <param name="blockInput"></param>
+    public void SetInGameInputBlocked(bool blockInput)
+    {
+        if (_playerInputs is null)
+        {
+            _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
+            if (!_playerInputs.gameObject.activeSelf)
+            {
+                _playerInputs.gameObject.SetActive(true);
+            }
+        }
+
+        // インゲーム入力のブロック解除
+        _playerInputs.ControllerInputBlocked
+            = _playerInputs.ExternalInputBlocked = blockInput;
     }
 
     private void GetDoGComponent()
