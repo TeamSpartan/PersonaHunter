@@ -52,14 +52,15 @@ public class PlayerHpView : MonoBehaviour
 
 	public void DisplayDiePanel()
 	{
-		_diePanel?.SetActive(true);
+		_diePanel.SetActive(true);
 		StartCoroutine(WaitDie());
 	}
 
 	IEnumerator WaitDie()
 	{
 		yield return new WaitForSeconds(_dieWaitTime);
-		_sceneLoader = FindAnyObjectByType<SceneLoader>();
+		_diePanel.SetActive(false);
+		_sceneLoader = FindAnyObjectByType<SceneLoader>(FindObjectsInactive.Include);
 		_sceneLoader.LoadSceneByName("Title");
 	}
 }

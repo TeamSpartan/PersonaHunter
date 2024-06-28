@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.14442433, g: 0.1619009, b: 0.24606517, a: 1}
+  m_IndirectSpecularColor: {r: 0.14442314, g: 0.16190113, b: 0.24606088, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -83424,6 +83424,11 @@ PrefabInstance:
       propertyPath: _boneParent
       value: 
       objectReference: {fileID: 1568940987}
+    - target: {fileID: 2509691917467194955, guid: e4f65e3960720324d833d92f853fc65d,
+        type: 3}
+      propertyPath: _isCreate.value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2509691917467194955, guid: e4f65e3960720324d833d92f853fc65d,
         type: 3}
       propertyPath: _afterImageParent

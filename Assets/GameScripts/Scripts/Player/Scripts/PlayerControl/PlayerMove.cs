@@ -161,7 +161,6 @@ namespace Player.Action
 			}
 		}
 
-
 		void SpeedChange()
 		{
 			if (_playerParam.GetIsRun)

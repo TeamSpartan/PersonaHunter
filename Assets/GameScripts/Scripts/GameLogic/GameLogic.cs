@@ -122,6 +122,8 @@ public class GameLogic
     /// <summary> ガウス差分ポスプロをかける </summary>
     public void PlayDoGEffect()
     {
+        GetDoGComponent();
+
         DOTween.To((_) => { _dog.elapsedTime.Override(_); },
             0f, 1f, .75f);
     }
@@ -313,10 +315,10 @@ public class GameLogic
         if (_volume is not null && !_volume.gameObject.activeSelf)
         {
             _volume.gameObject.SetActive(true);
-            if (_volume.profile.TryGet(out DifferenceOfGaussian dog))
-            {
-                _dog = dog;
-            }
+        }
+        else if (_volume is not null && _volume.profile.TryGet(out DifferenceOfGaussian dog))
+        {
+            _dog = dog;
         }
     }
 }

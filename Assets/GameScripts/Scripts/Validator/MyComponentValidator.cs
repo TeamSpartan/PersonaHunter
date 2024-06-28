@@ -155,7 +155,6 @@ public class MyComponentValidator : MonoBehaviour
             {
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Epilogue;
 
-                _input.InputType = InputType.UI;
                 break;
             }
         }
@@ -386,7 +385,7 @@ public class MyComponentValidator : MonoBehaviour
         }
 
         var volume = GameObject.FindWithTag("OmotegariVolume");
-        if (option is not null)
+        if (volume is not null)
         {
             SceneManager.MoveGameObjectToScene(volume, scene);
         }

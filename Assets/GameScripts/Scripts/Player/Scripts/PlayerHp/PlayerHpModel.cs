@@ -80,6 +80,11 @@ public class PlayerHpModel : MonoBehaviour
             {
                 _frameSinceLastHit = 0;
                 _playerParam.SetIsDamage(false);
+
+                if (_playerParam.GetIsAnimation)
+                {
+                    _playerParam.SetIsAnimation(false);
+                }
             }
             else
             {
@@ -206,5 +211,4 @@ public class PlayerHpModel : MonoBehaviour
     {
         _isRegeneration = value;
     }
-    
 }
