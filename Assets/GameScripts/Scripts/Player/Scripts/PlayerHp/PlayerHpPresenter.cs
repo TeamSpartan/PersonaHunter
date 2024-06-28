@@ -14,6 +14,5 @@ public class PlayerHpPresenter : MonoBehaviour
 
         _playerHpModel.OnReceiveDamage += _playerHpView.SetGauge;
         _playerHpModel.OnRegeneration += _playerHpView.SetRegenerate;
-        _playerHpModel.Ondead += _playerHpView.DisplayDeadPanel;
     }
 }
