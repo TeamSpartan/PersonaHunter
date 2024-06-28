@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Player.Param
 {
     ///<summary>PlayerParam</summary>
-    public class PlayerParam : SingletonBaseClass<PlayerParam>
+    public class PlayerParam : MonoBehaviour
     {
         [SerializeField, Header("初期HP")] private float initialHp = 5f;
         [SerializeField, Header("初期攻撃力")] private float initialAtk = 10f;
@@ -79,9 +79,5 @@ namespace Player.Param
 
         ///<summary>走る判定（変更用）</summary>
         public bool SetIsRun(bool value) => _isRun = value;
-
-        protected override void ToDoAtAwakeSingleton()
-        {
-        }
     }
 }

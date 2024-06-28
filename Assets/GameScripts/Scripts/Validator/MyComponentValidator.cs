@@ -156,7 +156,6 @@ public class MyComponentValidator : MonoBehaviour
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Epilogue;
 
                 _input.InputType = InputType.UI;
-                Dispose_InGameObject();
                 break;
             }
         }
@@ -322,6 +321,9 @@ public class MyComponentValidator : MonoBehaviour
             Destroy(movie_defeated);
             _gameLogic.SetInGameInputBlocked(false);
             _gameLogic.SetPauseInputBlocked(false);
+            
+            // インゲームでつかっていたオブジェクトを破棄
+            Dispose_InGameObject();
         };
     }
 
@@ -372,7 +374,21 @@ public class MyComponentValidator : MonoBehaviour
         var ingameUI = GameObject.FindWithTag("PlayerUI");
         if (ingameUI is not null)
         {
+            SceneManager.MoveGameObjectToScene(ingameUI.gameObject, scene);
             Destroy(ingameUI);
+        }
+
+        var option = GameObject.FindWithTag("OptionWindow");
+        if (option is not null)
+        {
+            SceneManager.MoveGameObjectToScene(option, scene);
+            Destroy(option);
+        }
+
+        var volume = GameObject.FindWithTag("OmotegariVolume");
+        if (option is not null)
+        {
+            SceneManager.MoveGameObjectToScene(volume, scene);
         }
 
         var player = GameObject.FindAnyObjectByType<PlayerParam>(FindObjectsInactive.Include);

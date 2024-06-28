@@ -41,7 +41,7 @@ namespace Player.Input
     /// <summary>
     /// 入力バッファクラス
     /// </summary>
-    public class PlayerInputsAction : SingletonBaseClass<PlayerInputsAction>, IInputValueReferencable,
+    public class PlayerInputsAction : MonoBehaviour, IInputValueReferencable,
         ILockOnEventFirable
     {
         private static PlayerInputsAction _instance;
@@ -556,10 +556,6 @@ namespace Player.Input
             _gameInputs.UI.Cursor.started -= OnCursor;
             _gameInputs.UI.Cursor.performed -= OnCursor;
             _gameInputs.UI.Cursor.canceled -= OnCursor;
-        }
-
-        protected override void ToDoAtAwakeSingleton()
-        {
         }
     }
 }

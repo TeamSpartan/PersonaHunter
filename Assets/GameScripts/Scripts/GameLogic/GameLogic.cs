@@ -26,7 +26,7 @@ using UnityEngine.SceneManagement;
 /// オモテガリ ゲームロジック
 /// </summary>
 public class GameLogic
-    : SingletonBaseClass<GameLogic>, IEnemyDieNotifiable
+    : MonoBehaviour, IEnemyDieNotifiable
 {
     #region ゲームシステム構成クラス内イベント
 
@@ -68,10 +68,6 @@ public class GameLogic
 
     // ポーズ中のフラグ
     private bool _isPausing;
-
-    protected override void ToDoAtAwakeSingleton()
-    {
-    }
 
     private void Start() // 生成時 初期化
     {
