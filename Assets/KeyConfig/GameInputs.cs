@@ -428,7 +428,7 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""aa81b351-f534-4adb-8ef2-27cfd7bdd882"",
-                    ""path"": ""<Keyboard>/ctrl"",
+                    ""path"": """",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
