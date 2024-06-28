@@ -3,21 +3,23 @@ using Player.Param;
 using Player.Input;
 using SgLibUnite.CodingBooster;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PlayerAttack : MonoBehaviour
 {
+	[SerializeField, Range(0f, 10f)] private float _attackingRange;
+	[Header("攻撃倍率の最大値、最小値")]
+	[SerializeField, Range(0f, 2f)] private float _maxAttackScale = 0.8f;
+	[SerializeField, Range(0f, 2f)] private float _minAttackScale = 1.2f;
+	[SerializeField, Header("敵のレイヤー")] LayerMask _enemyLayerMask;
+	[SerializeField, Header("右からの攻撃")] private ParticleSystem _rightAttack;
+	[SerializeField, Header("左からの攻撃")] private ParticleSystem _leftAttack;
+	
 	//右側からの攻撃なら１、左側からの攻撃なら２
 	private int _currentName; //モーション名
 	Animator _animator;
-	private CBooster _booster = new();
 	private PlayerParam _playerParam;
-	[SerializeField, Range(0f, 10f)] private float _attackingRange;
-	
-	[SerializeField, Header("敵のレイヤー")] LayerMask _enemyLayerMask;
-
-	[SerializeField] private ParticleSystem _rightAttack;
-	
-	[SerializeField] private ParticleSystem _leftAttack;
+	private float _attackScale;
 
 	private bool _isGiveDamage = false;
 
@@ -54,19 +56,22 @@ public class PlayerAttack : MonoBehaviour
 				if (collider.GetComponent<IDamagedComponent>() != null)
 				{
 					Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.green);
-					collider.GetComponent<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk);
+					_attackScale = Random.Range(_minAttackScale, _maxAttackScale);
+					collider.GetComponent<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk * _attackScale);
 					_isGiveDamage = true;
 				}
 				else if (collider.GetComponentInChildren<IDamagedComponent>() != null)
 				{
 					Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.green);
-					collider.GetComponentInChildren<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk);
+					_attackScale = Random.Range(_minAttackScale, _maxAttackScale);
+					collider.GetComponentInChildren<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk * _attackScale);
 					_isGiveDamage = true;
 				}
 				else if (collider.GetComponentInParent<IDamagedComponent>() != null)
 				{
 					Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.green);
-					collider.GetComponentInParent<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk);
+					_attackScale = Random.Range(_minAttackScale, _maxAttackScale);
+					collider.GetComponentInParent<IDamagedComponent>().AddDamage(_playerParam.GetInitialAtk * _attackScale);
 					_isGiveDamage = true;
 				}
 			}
@@ -86,6 +91,7 @@ public class PlayerAttack : MonoBehaviour
 		{
 			//右からの攻撃
 			_animator.SetTrigger("RightAttack");
+			_rightAttack.Play();
 			_currentName = 1;
 			_playerParam.SetIsAnimation(true);
 			_rightAttack.Play();
@@ -94,6 +100,7 @@ public class PlayerAttack : MonoBehaviour
 		{
 			//左からの攻撃
 			_animator.SetTrigger("LeftAttack");
+			_leftAttack.Play();
 			_currentName = 2;
 			_playerParam.SetIsAnimation(true);
 			_leftAttack.Play();
