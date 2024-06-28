@@ -258,13 +258,13 @@ public class GameLogic
     public void Initialize() // シングルトンでシーンに常駐してるので初期化ように実装
     {
         _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
-        if (!_ingameUI.gameObject.activeSelf)
+        if (_ingameUI is not null && !_ingameUI.gameObject.activeSelf)
         {
             _ingameUI.gameObject.SetActive(true);
         }
 
         _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
-        if (!_playerInputs.gameObject.activeSelf)
+        if (_playerInputs is not null && !_playerInputs.gameObject.activeSelf)
         {
             _playerInputs.gameObject.SetActive(true);
         }
@@ -314,14 +314,13 @@ public class GameLogic
     {
         // ガウス差分クラスの取得
         _volume = GameObject.FindFirstObjectByType<Volume>(FindObjectsInactive.Include);
-        if (!_volume.gameObject.activeSelf)
+        if (_volume is not null && !_volume.gameObject.activeSelf)
         {
             _volume.gameObject.SetActive(true);
-        }
-
-        if (_volume.profile.TryGet(out DifferenceOfGaussian dog))
-        {
-            _dog = dog;
+            if (_volume.profile.TryGet(out DifferenceOfGaussian dog))
+            {
+                _dog = dog;
+            }
         }
     }
 }

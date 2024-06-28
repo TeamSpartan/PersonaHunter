@@ -6,143 +6,144 @@ using UnityEngine.UI;
 
 namespace Player.Zone
 {
-	/// <summary>SlowTime用のゲージ</summary>
-	public class ZoneObj : MonoBehaviour
-	{
-		[SerializeField] private GameObject zoneObj;
+    /// <summary>SlowTime用のゲージ</summary>
+    public class ZoneObj : MonoBehaviour
+    {
+        [SerializeField] private GameObject zoneObj;
 
-		[SerializeField, Header("アニメーションスピード")]
-		private float duration = 5f;
+        [SerializeField, Header("アニメーションスピード")]
+        private float duration = 5f;
 
-		[SerializeField]
-		private int _maxZoneObj = 5;
-		
-		private float _animationTime = 0.3f;
+        [SerializeField] private int _maxZoneObj = 5;
 
-		private bool _canIncreaseGaugeValue = true; // ゲージのValueを増加できるかのフラグ
+        private float _animationTime = 0.3f;
 
-		private float _currentZoneGaugeValue;
+        private bool _canIncreaseGaugeValue = true; // ゲージのValueを増加できるかのフラグ
 
-		public int ActiveZoneObjCount => _splineAnimates.Count;
-			
-		private ZoneTimeController _zoneTimeController;
-		private SplineContainer _spline;
-		private PlayerAvoid _playerAvoid;
-		private List<SplineAnimate> _splineAnimates = new();
-		private List<SplineAnimate> _evacuationZoneObj = new();
-		
+        private float _currentZoneGaugeValue;
 
-		/// <summary>ゲージのValueを増加できるかのフラグを変更します</summary>
-		public void SetCanIncreaseGaugeValue(bool flag) => _canIncreaseGaugeValue = flag;
+        public int ActiveZoneObjCount => _splineAnimates.Count;
 
-		private void Start()
-		{
-			_zoneTimeController = GetComponent<ZoneTimeController>();
-			_spline = GetComponent<SplineContainer>();
-			_playerAvoid = GetComponentInParent<PlayerAvoid>();
-			InitializedGauge();
-		}
+        private ZoneTimeController _zoneTimeController;
+        private SplineContainer _spline;
+        private PlayerAvoid _playerAvoid;
+        private List<SplineAnimate> _splineAnimates = new();
+        private List<SplineAnimate> _evacuationZoneObj = new();
 
-		private void OnDisable()
-		{
-			_playerAvoid.OnJustAvoidSuccess -= IncreaseGaugeValue;
-		}
 
-		/// <summary>呼ばれたときにゲージのValueを増加させます</summary>
-		public void IncreaseGaugeValue(float value)
-		{
-			Debug.Log($"ゾーン ふやしたお");
-			if (!_canIncreaseGaugeValue)
-			{
-				Debug.Log($"ゾーン？ 増やせねぇぞばーかばーか");
-				return;
-			}
+        /// <summary>ゲージのValueを増加できるかのフラグを変更します</summary>
+        public void SetCanIncreaseGaugeValue(bool flag) => _canIncreaseGaugeValue = flag;
 
-			_currentZoneGaugeValue += value;
-			if (_currentZoneGaugeValue >= _maxZoneObj)
-				_currentZoneGaugeValue = _maxZoneObj;
-			ZoneIncreaseUpdate(_currentZoneGaugeValue);
-		}
+        private void Start()
+        {
+            _zoneTimeController = GetComponent<ZoneTimeController>();
+            _spline = GetComponent<SplineContainer>();
+            _playerAvoid = GetComponentInParent<PlayerAvoid>();
+            InitializedGauge();
+        }
 
-		void InitializedGauge()
-		{
-			_currentZoneGaugeValue = 0;
-			_playerAvoid.OnJustAvoidSuccess += IncreaseGaugeValue;
+        private void OnDisable()
+        {
+            if (_playerAvoid is not null)
+            {
+                _playerAvoid.OnJustAvoidSuccess -= IncreaseGaugeValue;
+            }
+        }
 
-			NotEnoughObj(Mathf.FloorToInt(_maxZoneObj));
-		}
+        /// <summary>呼ばれたときにゲージのValueを増加させます</summary>
+        public void IncreaseGaugeValue(float value)
+        {
+            Debug.Log($"ゾーン ふやしたお");
+            if (!_canIncreaseGaugeValue)
+            {
+                Debug.Log($"ゾーン？ 増やせねぇぞばーかばーか");
+                return;
+            }
 
-		public void FixedUpdate()
-		{
-		}
+            _currentZoneGaugeValue += value;
+            if (_currentZoneGaugeValue >= _maxZoneObj)
+                _currentZoneGaugeValue = _maxZoneObj;
+            ZoneIncreaseUpdate(_currentZoneGaugeValue);
+        }
 
-		public void StartDull()
-		{
-			SetCanIncreaseGaugeValue(false);
-			// ゲージの最大値を制限時間の最大値と同じにする
-		}
+        void InitializedGauge()
+        {
+            _currentZoneGaugeValue = 0;
+            _playerAvoid.OnJustAvoidSuccess += IncreaseGaugeValue;
 
-		public void EndDull()
-		{
-			// ゲージの最大値を元に戻す
-			SetCanIncreaseGaugeValue(true);
-			Debug.Log($"ゾーン おーわり");
-		}
+            NotEnoughObj(Mathf.FloorToInt(_maxZoneObj));
+        }
 
-		///<summary>ZoneGaugeが減った時に更新</summary>
-		public void ZoneDecreaseUpdate(float value)
-		{
-			if (_splineAnimates.Count < 1) return;
+        public void FixedUpdate()
+        {
+        }
 
-			// for (int i = Mathf.FloorToInt(value); i < _splineAnimates.Count; i++)
-			// {
-			SplineAnimate splineAnimate = _splineAnimates[0];
-			splineAnimate.gameObject.SetActive(false);
-			_splineAnimates.Remove(splineAnimate);
-			_evacuationZoneObj.Add(splineAnimate);
-			AnimateUpdate();
-			//}
-		}
+        public void StartDull()
+        {
+            SetCanIncreaseGaugeValue(false);
+            // ゲージの最大値を制限時間の最大値と同じにする
+        }
 
-		///<summary>ZoneGaugeが 増えた時に更新</summary>
-		public void ZoneIncreaseUpdate(float currentValue)
-		{
-			if (_evacuationZoneObj.Count < 1) return;
+        public void EndDull()
+        {
+            // ゲージの最大値を元に戻す
+            SetCanIncreaseGaugeValue(true);
+            Debug.Log($"ゾーン おーわり");
+        }
 
-			for (int i = _splineAnimates.Count; i < Mathf.FloorToInt(currentValue); i++)
-			{
-				SplineAnimate splineAnim = _evacuationZoneObj[0];
-				splineAnim.Duration = duration;
-				splineAnim.gameObject.SetActive(true);
-				_splineAnimates.Add(splineAnim);
-				_evacuationZoneObj.Remove(splineAnim);
-				AnimateUpdate();
-			}
-		}
+        ///<summary>ZoneGaugeが減った時に更新</summary>
+        public void ZoneDecreaseUpdate(float value)
+        {
+            if (_splineAnimates.Count < 1) return;
 
-		//数珠の動きの更新。
-		void AnimateUpdate()
-		{
-			for (int i = 0; i < _splineAnimates.Count; i++)
-			{
-				_splineAnimates[i].Pause();
-				_splineAnimates[i].StartOffset = 1f / _splineAnimates.Count * i;
-				_splineAnimates[i].Restart(true);
-				//_splineAnimates[i].Play();
-			}
-		}
+            // for (int i = Mathf.FloorToInt(value); i < _splineAnimates.Count; i++)
+            // {
+            SplineAnimate splineAnimate = _splineAnimates[0];
+            splineAnimate.gameObject.SetActive(false);
+            _splineAnimates.Remove(splineAnimate);
+            _evacuationZoneObj.Add(splineAnimate);
+            AnimateUpdate();
+            //}
+        }
 
-		//オブジェクトが足りない場合、現在の値を入れる
-		void NotEnoughObj(int value)
-		{
-			for (int i = _splineAnimates.Count; i < value; i++)
-			{
-				
-				SplineAnimate splineAnimate = Instantiate(zoneObj, transform).GetComponent<SplineAnimate>();
-				splineAnimate.Container = _spline;
-				_evacuationZoneObj.Add(splineAnimate);
-				splineAnimate.gameObject.SetActive(false);
-			}
-		}
-	}
+        ///<summary>ZoneGaugeが 増えた時に更新</summary>
+        public void ZoneIncreaseUpdate(float currentValue)
+        {
+            if (_evacuationZoneObj.Count < 1) return;
+
+            for (int i = _splineAnimates.Count; i < Mathf.FloorToInt(currentValue); i++)
+            {
+                SplineAnimate splineAnim = _evacuationZoneObj[0];
+                splineAnim.Duration = duration;
+                splineAnim.gameObject.SetActive(true);
+                _splineAnimates.Add(splineAnim);
+                _evacuationZoneObj.Remove(splineAnim);
+                AnimateUpdate();
+            }
+        }
+
+        //数珠の動きの更新。
+        void AnimateUpdate()
+        {
+            for (int i = 0; i < _splineAnimates.Count; i++)
+            {
+                _splineAnimates[i].Pause();
+                _splineAnimates[i].StartOffset = 1f / _splineAnimates.Count * i;
+                _splineAnimates[i].Restart(true);
+                //_splineAnimates[i].Play();
+            }
+        }
+
+        //オブジェクトが足りない場合、現在の値を入れる
+        void NotEnoughObj(int value)
+        {
+            for (int i = _splineAnimates.Count; i < value; i++)
+            {
+                SplineAnimate splineAnimate = Instantiate(zoneObj, transform).GetComponent<SplineAnimate>();
+                splineAnimate.Container = _spline;
+                _evacuationZoneObj.Add(splineAnimate);
+                splineAnimate.gameObject.SetActive(false);
+            }
+        }
+    }
 }

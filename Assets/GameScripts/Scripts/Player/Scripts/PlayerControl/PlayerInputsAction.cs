@@ -87,7 +87,7 @@ namespace Player.Input
             get { return _playerControllerInputBlocked; }
             set { _playerControllerInputBlocked = value; }
         }
-        
+
         /// <summary> ポーズの入力がブロックされてるか </summary>
         public bool PauseInputBlocked { get; set; }
 
@@ -102,7 +102,12 @@ namespace Player.Input
         public PlayerInputTypes GetCurrentInputType => _currentInput;
 
         ///<summary>入力の種類</summary>
-        public InputType GetInputType => _inputType;
+        public InputType InputType
+        {
+            get { return _inputType; }
+
+            set { _inputType = value; }
+        }
 
         /* フラグだったらIsから始める */
 
@@ -130,8 +135,8 @@ namespace Player.Input
 
         private void OnDisable()
         {
-            _gameInputs.Disable();
             InGameInput_RemoveDelegate();
+            _gameInputs.Disable();
         }
 
         private void Start()
@@ -143,7 +148,7 @@ namespace Player.Input
             _zoneTimeController = GameLogic.FindAnyObjectByType<ZoneTimeController>();
 
             _cameraBrain = GameObject.FindAnyObjectByType<PlayerCameraBrain>(FindObjectsInactive.Include);
-            if (!_cameraBrain.gameObject.activeSelf)
+            if (_cameraBrain is not null && !_cameraBrain.gameObject.activeSelf)
             {
                 _cameraBrain.gameObject.SetActive(true);
             }
@@ -155,11 +160,8 @@ namespace Player.Input
                 ,
                 @$"
                 Input Type : {_inputType.ToString()}
-                Input Blocked : {_isExternalInputBlocked} , {_playerControllerInputBlocked}
-                Locking On : {_cameraBrain.LockingOn}
-                ");
+                Input Blocked : {_isExternalInputBlocked} , {_playerControllerInputBlocked}");
         }
-
 
         void Update()
         {

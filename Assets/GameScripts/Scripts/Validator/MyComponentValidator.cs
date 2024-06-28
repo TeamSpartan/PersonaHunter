@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Player.Action;
 using Player.Input;
+using Player.Param;
 using PlayerCam.Scripts;
 using SgLibUnite.Systems;
 using UnityEngine;
@@ -38,6 +39,7 @@ public class MyComponentValidator : MonoBehaviour
     private GameObject _moviePanel;
     private PlayerCameraBrain _cameraBrain;
     private InGameUIManager _inGameUIManager;
+    private PlayerInputsAction _input;
 
     private bool _playedPrologue;
     private List<GameObject> _thisSceneOnlyObj;
@@ -80,13 +82,25 @@ public class MyComponentValidator : MonoBehaviour
         var playerMove = GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include);
         if (playerMove is not null && !playerMove.gameObject.activeSelf)
         {
+            playerMove.gameObject.SetActive(true);
             _player = playerMove.gameObject;
         }
 
         _inGameUIManager = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
         if (_inGameUIManager is not null && !_inGameUIManager.gameObject.activeSelf)
         {
-            _inGameUIManager.gameObject.GetComponent<InGameUIManager>();
+            _inGameUIManager.gameObject.SetActive(true);
+        }
+
+        _input = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
+        if (_input is not null && !_input.gameObject.activeSelf)
+        {
+            _input.gameObject.SetActive(true);
+        }
+        else if (_input is not null)
+        {
+            // 【初期値はUIの入力タイプ】
+            _input.InputType = InputType.UI;
         }
 
         var scene = SceneManager.GetActiveScene();
@@ -98,7 +112,6 @@ public class MyComponentValidator : MonoBehaviour
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Title;
 
                 ValidationOnTitleScene();
-                Exclude_InGameObject();
                 break;
             }
 
@@ -106,7 +119,6 @@ public class MyComponentValidator : MonoBehaviour
             {
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Prologue;
 
-                Exclude_InGameObject();
                 break;
             }
 
@@ -120,8 +132,9 @@ public class MyComponentValidator : MonoBehaviour
                 _gameLogic.Initialize();
                 _cameraBrain.Initialize();
                 _inGameUIManager.ToDoOnStart();
-                SpawnPlayerToPoint();
+                _input.InputType = InputType.Player;
 
+                SpawnPlayerToPoint();
                 break;
             }
 
@@ -133,6 +146,7 @@ public class MyComponentValidator : MonoBehaviour
                 _gameLogic.Initialize();
                 _cameraBrain.Initialize();
                 _inGameUIManager.ToDoOnStart();
+                _input.InputType = InputType.Player;
 
                 break;
             }
@@ -141,7 +155,8 @@ public class MyComponentValidator : MonoBehaviour
             {
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Epilogue;
 
-                Exclude_InGameObject();
+                _input.InputType = InputType.UI;
+                Dispose_InGameObject();
                 break;
             }
         }
@@ -328,7 +343,7 @@ public class MyComponentValidator : MonoBehaviour
         }
 
         var sl = GameObject.FindAnyObjectByType<SceneLoader>(FindObjectsInactive.Include);
-        if (!sl.gameObject.activeSelf)
+        if (sl is not null && !sl.gameObject.activeSelf)
         {
             sl.gameObject.SetActive(true);
         }
@@ -350,14 +365,42 @@ public class MyComponentValidator : MonoBehaviour
     }
 
     /// <summary> インゲームのオブジェクトを使い回すのでひとまずInActiveにスイッチ </summary>
-    private void Exclude_InGameObject()
+    private void Dispose_InGameObject()
     {
-        var ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
-        var playerMove = GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include);
+        var scene = SceneManager.GetActiveScene();
 
+        var ingameUI = GameObject.FindWithTag("PlayerUI");
         if (ingameUI is not null)
-            ingameUI.gameObject.SetActive(false);
-        if (playerMove is not null)
-            playerMove.gameObject.SetActive(false);
+        {
+            Destroy(ingameUI);
+        }
+
+        var player = GameObject.FindAnyObjectByType<PlayerParam>(FindObjectsInactive.Include);
+        if (player is not null)
+        {
+            SceneManager.MoveGameObjectToScene(player.gameObject, scene);
+            Destroy(player.gameObject);
+        }
+
+        var camera = GameObject.FindAnyObjectByType<PlayerCameraBrain>(FindObjectsInactive.Include);
+        if (camera is not null)
+        {
+            SceneManager.MoveGameObjectToScene(camera.gameObject, scene);
+            camera.DisposeCameras();
+        }
+
+        var input = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
+        if (input is not null)
+        {
+            SceneManager.MoveGameObjectToScene(input.gameObject, scene);
+            Destroy(input.gameObject);
+        }
+
+        var logic = GameObject.FindAnyObjectByType<GameLogic>(FindObjectsInactive.Include);
+        if (logic is not null)
+        {
+            SceneManager.MoveGameObjectToScene(logic.gameObject, scene);
+            Destroy(logic.gameObject);
+        }
     }
 }

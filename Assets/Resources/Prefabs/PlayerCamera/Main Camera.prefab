@@ -271,6 +271,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LockOnRadius: 10
-  MaxDistanceToCapture: 200
+  MaxDistanceToCapture: 10
   PlayerFollowingCam: {fileID: 0}
   LockOnCamera: {fileID: 0}

@@ -8,7 +8,7 @@ public class ObjectCuller : MonoBehaviour
     [SerializeField, Tooltip("この値より遠い場合に見えなくする")]
     private float _distanceToImbisible;
 
-    [SerializeField, Tooltip("ターゲット")] private Transform _target;
+    private Transform _target;
 
     private MeshRenderer _renderer;
 
@@ -25,7 +25,11 @@ public class ObjectCuller : MonoBehaviour
             _renderer = c;
         }
 
-        StartCoroutine(nameof(Task));
+        if (_target is not null)
+        {
+            _target = GameObject.Find("Player").transform;
+            StartCoroutine(nameof(Task));
+        }
     }
 
     private void OnApplicationQuit()
