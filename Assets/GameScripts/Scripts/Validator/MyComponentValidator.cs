@@ -366,7 +366,7 @@ public class MyComponentValidator : MonoBehaviour
     }
 
     /// <summary> インゲームのオブジェクトを使い回すのでひとまずInActiveにスイッチ </summary>
-    private void Dispose_InGameObject()
+    public void Dispose_InGameObject()
     {
         var scene = SceneManager.GetActiveScene();
 

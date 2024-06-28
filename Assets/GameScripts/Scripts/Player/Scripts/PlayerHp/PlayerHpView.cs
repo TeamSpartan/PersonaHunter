@@ -60,6 +60,8 @@ public class PlayerHpView : MonoBehaviour
 	{
 		yield return new WaitForSeconds(_dieWaitTime);
 		_diePanel.SetActive(false);
+		var validator = GameObject.FindAnyObjectByType<MyComponentValidator>(FindObjectsInactive.Include);
+		validator.Dispose_InGameObject();
 		_sceneLoader = FindAnyObjectByType<SceneLoader>(FindObjectsInactive.Include);
 		_sceneLoader.LoadSceneByName("Title");
 	}

@@ -148,7 +148,6 @@ namespace Player.Action
 				{
 					OnMove(PlayerInputsAction.Instance.GetMoveInput());
 					PlayerRotate(_dir);
-					//SpeedChange();
 				}
 				else if (!_playerParam.GetIsAvoid)
 				{

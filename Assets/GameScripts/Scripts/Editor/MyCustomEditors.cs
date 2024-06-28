@@ -44,9 +44,11 @@ public class SingledObjectEditor : Editor
     public override void OnInspectorGUI()
     {
         GUILayout.Label("<color=#ff0000> DDOLに登録されているインスタンスです </color>", DesignInfoStyle.GetExplainGUILayout());
-        GUILayout.Box(@"<color=#ff0000> 
-                            このオブジェクトはボス撃破ムービーで破棄されるべきです。
-                            </color>", DesignInfoStyle.GetMoreExplainGUILayout());
+        GUILayout.Box(@"<color=#ffff00> 
+        このオブジェクトはボス撃破ムービーで破棄されるべきです。
+        もし途中でプレイヤが死ぬならそのタイミングで破棄されるべきです。
+        ComponentValidatorクラスでDisposeメソッドを呼べばよい。
+        </color>", DesignInfoStyle.GetMoreExplainGUILayout());
         base.OnInspectorGUI();
     }
 }
