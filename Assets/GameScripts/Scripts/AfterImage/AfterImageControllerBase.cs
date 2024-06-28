@@ -71,7 +71,7 @@ public abstract class AfterImageControllerBase : MonoBehaviour
                     return;
                 }
 
-                Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(_createIntervalTime))
+                Observable.Interval(TimeSpan.FromSeconds(_createIntervalTime))
                         .Subscribe(_ =>
                         {
                             // プールから残像を取得してオリジナルのポーズと合わせる
