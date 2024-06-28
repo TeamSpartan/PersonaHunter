@@ -7,7 +7,6 @@ using Player.Input;
 using UnityEngine;
 using SgLibUnite.CodingBooster;
 using SgLibUnite.Singleton;
-using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 
 // コードクリーン実施 【6/24：菅沼】
@@ -121,6 +120,11 @@ namespace PlayerCam.Scripts
             }
         }
 
+        // private void Awake()
+        // {
+        //     // GameObject.DontDestroyOnLoad(gameObject);
+        // }
+
         protected override void ToDoAtAwakeSingleton()
         {
             SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged;
@@ -166,6 +170,7 @@ namespace PlayerCam.Scripts
             var cam = GameObject
                 .FindObjectsByType<CinemachineVirtualCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None)
                 .ToList();
+
             foreach (var virtualCamera in cam)
             {
                 if (LockOnCamera != virtualCamera && PlayerFollowingCam != virtualCamera)
@@ -179,20 +184,20 @@ namespace PlayerCam.Scripts
             GameObject.DontDestroyOnLoad(_lockOnCam.gameObject);
         }
 
+        // カメラを有効または無効にする
+        public void DisposeCameras()
+        {
+            var scene = SceneManager.GetActiveScene();
+            SceneManager.MoveGameObjectToScene(_playerFollowCam.gameObject, scene);
+            SceneManager.MoveGameObjectToScene(_lockOnCam.gameObject, scene);
+        }
+
         private void SceneManagerOnactiveSceneChanged(Scene arg0, Scene arg1)
         {
-            if (arg0.name is ConstantValues.BossScene /* || arg0.name is ConstantValues.InGameScene*/)
+            if (arg0.name is ConstantValues.BossScene)
             {
-                // DDOL解除
-                SceneManager.MoveGameObjectToScene(_playerFollowCam.gameObject, arg0);
-                SceneManager.MoveGameObjectToScene(_lockOnCam.gameObject, arg0);
-                // デストロォォォォォイィィィィィィィ
-                Destroy(_playerFollowCam.gameObject);
-                Destroy(_lockOnCam.gameObject);
-
-                _playerInput.ELockOnTriggered -= LockOnTriggerred;
-                _playerInput.EvtCamRightTarget -= LockOnToRightTarget;
-                _playerInput.EvtCamLeftTarget -= LockOnToLeftTarget;
+                _playerFollowCam.gameObject.SetActive(false);
+                _lockOnCam.gameObject.SetActive(false);
             }
         }
 
@@ -379,19 +384,20 @@ namespace PlayerCam.Scripts
             if (_playerInput is null)
             {
                 _playerInput = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
-                if (!_playerInput.gameObject.activeSelf)
+                if (_playerInput is not null && !_playerInput.gameObject.activeSelf)
                 {
                     _playerInput.gameObject.SetActive(true);
                 }
             }
-            
-            var input = _playerInput;
 
-            _moveX = input.GetMoveValue().x;
-            _moveY = input.GetMoveValue().y;
+            if (_playerInput is not null)
+            {
+                _moveX = _playerInput.GetMoveValue().x;
+                _moveY = _playerInput.GetMoveValue().y;
 
-            _mouseX = input.GetCamMoveValue().x;
-            _mouseY = input.GetCamMoveValue().y;
+                _mouseX = _playerInput.GetCamMoveValue().x;
+                _mouseY = _playerInput.GetCamMoveValue().y;
+            }
         }
 
         /// <summary>

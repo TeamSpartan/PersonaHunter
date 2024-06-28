@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Player.Param;
 using UnityEngine;
 using UnityEditor;
 
@@ -21,7 +22,7 @@ public class GameLogicEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        GUILayout.Label("<color=#ff0000> シングルトン インスタンス</color>", DesignInfoStyle.GetExplainGUILayout());
+        GUILayout.Label("<color=#ff0000> シングルトン インスタンス エピローグで破棄</color>", DesignInfoStyle.GetExplainGUILayout());
         base.OnInspectorGUI();
     }
 }
@@ -41,7 +42,27 @@ public class PlayerCameraBrainEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        GUILayout.Label("<color=#ff0000> シングルトン インスタンス</color>", DesignInfoStyle.GetExplainGUILayout());
+        GUILayout.Label("<color=#ff0000> シングルトン インスタンス エピローグで破棄</color>", DesignInfoStyle.GetExplainGUILayout());
+        base.OnInspectorGUI();
+    }
+}
+
+[CustomEditor(typeof(PlayerParam))]
+public class PlayerParam : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        GUILayout.Label("<color=#ff0000> シングルトン インスタンス エピローグで破棄</color>", DesignInfoStyle.GetExplainGUILayout());
+        base.OnInspectorGUI();
+    }
+}
+
+[CustomEditor(typeof(PlayerInputsAction))]
+public class PlayerInputsAction : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        GUILayout.Label("<color=#ff0000> シングルトン インスタンス エピローグで破棄</color>", DesignInfoStyle.GetExplainGUILayout());
         base.OnInspectorGUI();
     }
 }

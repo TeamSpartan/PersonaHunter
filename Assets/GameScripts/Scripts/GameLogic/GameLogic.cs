@@ -46,6 +46,8 @@ public class GameLogic
 
     #endregion
 
+    public bool IsPausing => _isPausing;
+
     /// <summary> ガウス差分クラス </summary>
     private DifferenceOfGaussian _dog;
 
@@ -131,18 +133,9 @@ public class GameLogic
     /// <summary> 一時停止を開始する </summary>
     public void StartPause()
     {
-        if (_playerInputs is null)
-        {
-            _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
-            if (!_playerInputs.gameObject.activeSelf)
-            {
-                _playerInputs.gameObject.SetActive(true);
-            }
-        }
+        if (_playerInputs.PauseInputBlocked) return;
 
-        // インゲーム入力のブロック
-        _playerInputs.ControllerInputBlocked
-            = _playerInputs.ExternalInputBlocked = true;
+        SetInGameInputBlocked(true);
 
         EPause?.Invoke();
 
@@ -174,18 +167,9 @@ public class GameLogic
     /// <summary> 一時停止を終了する </summary>
     public void StartResume()
     {
-        if (_playerInputs is null)
-        {
-            _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
-            if (!_playerInputs.gameObject.activeSelf)
-            {
-                _playerInputs.gameObject.SetActive(true);
-            }
-        }
+        if (_playerInputs.PauseInputBlocked) return;
 
-        // インゲーム入力のブロック解除
-        _playerInputs.ControllerInputBlocked
-            = _playerInputs.ExternalInputBlocked = false;
+        SetInGameInputBlocked(false);
 
         EResume?.Invoke();
 
@@ -274,13 +258,13 @@ public class GameLogic
     public void Initialize() // シングルトンでシーンに常駐してるので初期化ように実装
     {
         _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
-        if (!_ingameUI.gameObject.activeSelf)
+        if (_ingameUI is not null && !_ingameUI.gameObject.activeSelf)
         {
             _ingameUI.gameObject.SetActive(true);
         }
 
         _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
-        if (!_playerInputs.gameObject.activeSelf)
+        if (_playerInputs is not null && !_playerInputs.gameObject.activeSelf)
         {
             _playerInputs.gameObject.SetActive(true);
         }
@@ -300,18 +284,43 @@ public class GameLogic
         GetDoGComponent();
     }
 
+
+    /// <summary> ポーズ入力のブロックをする。 condition = True でブロック </summary>
+    /// <param name="condition"></param>
+    public void SetPauseInputBlocked(bool condition)
+    {
+        _playerInputs.PauseInputBlocked = condition;
+    }
+
+    /// <summary> インゲームの入力をブロックするかコンディションを更新する </summary>
+    /// <param name="blockInput"></param>
+    public void SetInGameInputBlocked(bool blockInput)
+    {
+        if (_playerInputs is null)
+        {
+            _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
+            if (!_playerInputs.gameObject.activeSelf)
+            {
+                _playerInputs.gameObject.SetActive(true);
+            }
+        }
+
+        // インゲーム入力のブロック解除
+        _playerInputs.ControllerInputBlocked
+            = _playerInputs.ExternalInputBlocked = blockInput;
+    }
+
     private void GetDoGComponent()
     {
         // ガウス差分クラスの取得
         _volume = GameObject.FindFirstObjectByType<Volume>(FindObjectsInactive.Include);
-        if (!_volume.gameObject.activeSelf)
+        if (_volume is not null && !_volume.gameObject.activeSelf)
         {
             _volume.gameObject.SetActive(true);
-        }
-
-        if (_volume.profile.TryGet(out DifferenceOfGaussian dog))
-        {
-            _dog = dog;
+            if (_volume.profile.TryGet(out DifferenceOfGaussian dog))
+            {
+                _dog = dog;
+            }
         }
     }
 }
