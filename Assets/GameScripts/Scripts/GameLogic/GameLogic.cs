@@ -133,6 +133,8 @@ public class GameLogic
     /// <summary> 一時停止を開始する </summary>
     public void StartPause()
     {
+        if (_playerInputs.PauseInputBlocked) return;
+
         SetInGameInputBlocked(true);
 
         EPause?.Invoke();
@@ -165,6 +167,8 @@ public class GameLogic
     /// <summary> 一時停止を終了する </summary>
     public void StartResume()
     {
+        if (_playerInputs.PauseInputBlocked) return;
+
         SetInGameInputBlocked(false);
 
         EResume?.Invoke();
@@ -280,14 +284,14 @@ public class GameLogic
         GetDoGComponent();
     }
 
-    
+
     /// <summary> ポーズ入力のブロックをする。 condition = True でブロック </summary>
     /// <param name="condition"></param>
     public void SetPauseInputBlocked(bool condition)
     {
         _playerInputs.PauseInputBlocked = condition;
     }
-    
+
     /// <summary> インゲームの入力をブロックするかコンディションを更新する </summary>
     /// <param name="blockInput"></param>
     public void SetInGameInputBlocked(bool blockInput)

@@ -207,7 +207,7 @@ public class MyComponentValidator : MonoBehaviour
     {
         // インゲーム入力をブロック
         _gameLogic.SetInGameInputBlocked(true);
-                
+
         // ポーズ入力をブロック 【入力タイプがUIになるのを防ぐ】
         _gameLogic.SetPauseInputBlocked(true);
 
@@ -291,6 +291,9 @@ public class MyComponentValidator : MonoBehaviour
     /// <summary> ボス撃破時に実行する処理群 </summary>
     private void TaskOnBossDefeated()
     {
+        _gameLogic.SetInGameInputBlocked(true);
+        _gameLogic.SetPauseInputBlocked(true);
+
         var defeatedMovieGO = Resources.Load<GameObject>("Prefabs/Video/BossDefeated");
 
         var panel = GameObject.Instantiate(_moviePanel);
@@ -302,6 +305,8 @@ public class MyComponentValidator : MonoBehaviour
         {
             Destroy(panel);
             Destroy(movie_defeated);
+            _gameLogic.SetInGameInputBlocked(false);
+            _gameLogic.SetPauseInputBlocked(false);
         };
     }
 
