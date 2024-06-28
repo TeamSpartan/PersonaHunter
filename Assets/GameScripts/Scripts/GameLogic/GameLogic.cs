@@ -6,16 +6,19 @@ using DG.Tweening;
 using Player.Input;
 using SgLibUnite.Systems;
 using SgLibUnite.Singleton;
+using UnityEditor;
 using UnityEngine.SceneManagement;
 
-// コードクリーン実施 【６／２２：菅沼】
+// コードクリーン実施 【6/26：菅沼】
 // 各くそコードのリファクタ
 
 /* インゲームシーンとボスシーン間でガウス差分の
  ポスプロのボリュームの参照を保持したいのでシングルトン */
 
 #region 設計思想
+
 // シングルトンパターン 適応で Title シーン から ヒエラルキーに常駐する
+
 #endregion
 
 // 作成：菅沼
@@ -68,7 +71,7 @@ public class GameLogic
     {
     }
 
-    private void Start()    // 生成時 初期化
+    private void Start() // 生成時 初期化
     {
         Initialize();
     }
@@ -76,12 +79,24 @@ public class GameLogic
     private void Update()
     {
         // ガウス差分クラスに対して毎フレーム始点のオーバーライドをする
-        _dog.center.Override(Vector2.one * .5f);
+        if (_dog is not null)
+        {
+            _dog.center.Override(Vector2.one * .5f);
+        }
+        else
+        {
+            GetDoGComponent();
+        }
     }
 
     /// <summary> 敵のトランスフォームを登録 </summary>
     public void ApplyEnemyTransform(Transform enemy)
     {
+        if (_enemies is null)
+        {
+            _enemies = new List<Transform>();
+        }
+
         _enemies.Add(enemy);
     }
 
@@ -116,10 +131,19 @@ public class GameLogic
     /// <summary> 一時停止を開始する </summary>
     public void StartPause()
     {
+        if (_playerInputs is null)
+        {
+            _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
+            if (!_playerInputs.gameObject.activeSelf)
+            {
+                _playerInputs.gameObject.SetActive(true);
+            }
+        }
+
         // インゲーム入力のブロック
         _playerInputs.ControllerInputBlocked
             = _playerInputs.ExternalInputBlocked = true;
-        
+
         EPause?.Invoke();
 
         foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
@@ -135,16 +159,34 @@ public class GameLogic
             }
         }
 
+        if (_ingameUI is null)
+        {
+            _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
+            if (!_ingameUI.gameObject.activeSelf)
+            {
+                _ingameUI.gameObject.SetActive(true);
+            }
+        }
+
         _ingameUI.DisplayPausingPanel();
     }
 
     /// <summary> 一時停止を終了する </summary>
     public void StartResume()
     {
+        if (_playerInputs is null)
+        {
+            _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
+            if (!_playerInputs.gameObject.activeSelf)
+            {
+                _playerInputs.gameObject.SetActive(true);
+            }
+        }
+
         // インゲーム入力のブロック解除
         _playerInputs.ControllerInputBlocked
             = _playerInputs.ExternalInputBlocked = false;
-        
+
         EResume?.Invoke();
 
         foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
@@ -160,12 +202,23 @@ public class GameLogic
             }
         }
 
+        if (_ingameUI is null)
+        {
+            _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
+            if (!_ingameUI.gameObject.activeSelf)
+            {
+                _ingameUI.gameObject.SetActive(true);
+            }
+        }
+
         _ingameUI.ClosePausingPanel();
     }
 
     /// <summary> 集中 を 発火する </summary>
     public void StartDiveInZone()
     {
+        if (_enemies.Count < 1 || _enemies is null) return;
+
         foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
         {
             if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
@@ -185,6 +238,8 @@ public class GameLogic
     /// <summary> 集中 を 収束する </summary>
     public void GetOutOverZone()
     {
+        if (_enemies.Count < 1 || _enemies is null) return;
+
         foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
         {
             if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
@@ -218,13 +273,23 @@ public class GameLogic
     /// <summary> 初期化処理 </summary>
     public void Initialize() // シングルトンでシーンに常駐してるので初期化ように実装
     {
-        _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>();
-        _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>();
+        _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
+        if (!_ingameUI.gameObject.activeSelf)
+        {
+            _ingameUI.gameObject.SetActive(true);
+        }
+
+        _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
+        if (!_playerInputs.gameObject.activeSelf)
+        {
+            _playerInputs.gameObject.SetActive(true);
+        }
 
         SceneManager.activeSceneChanged += (arg0, scene) => { _enemies.Clear(); };
 
         // SceneLoader が Nullである場合には生成。
-        if (GameObject.FindFirstObjectByType<SceneLoader>() is null)
+        var loader = GameObject.FindFirstObjectByType<SceneLoader>(FindObjectsInactive.Include);
+        if (loader is null)
         {
             var sceneLoader = Resources.Load<GameObject>("Prefabs/GameSystem/SceneLoader");
 
@@ -232,13 +297,21 @@ public class GameLogic
             _sceneLoader = obj.GetComponent<SceneLoader>();
         }
 
+        GetDoGComponent();
+    }
+
+    private void GetDoGComponent()
+    {
         // ガウス差分クラスの取得
-        if (GameObject.FindAnyObjectByType<Volume>() is not null)
+        _volume = GameObject.FindFirstObjectByType<Volume>(FindObjectsInactive.Include);
+        if (!_volume.gameObject.activeSelf)
         {
-            _volume = GameObject.FindFirstObjectByType<Volume>();
-            if (_volume.profile.TryGet(out _dog))
-            {
-            }
+            _volume.gameObject.SetActive(true);
+        }
+
+        if (_volume.profile.TryGet(out DifferenceOfGaussian dog))
+        {
+            _dog = dog;
         }
     }
 }

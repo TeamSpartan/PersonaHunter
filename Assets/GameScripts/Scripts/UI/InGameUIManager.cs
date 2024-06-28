@@ -65,15 +65,15 @@ public class InGameUIManager : WindowManager
 
     private void OnEnable()
     {
-        base.EventAtStart += TaskOnStart;
+        base.EventAtStart += ToDoOnStart;
     }
 
     private void OnDisable()
     {
-        base.EventAtStart -= TaskOnStart;
+        base.EventAtStart -= ToDoOnStart;
     }
 
-    public void TaskOnStart()
+    public void ToDoOnStart()
     {
         var gl = GameObject.FindAnyObjectByType<GameLogic>();
         gl.EPause += () =>

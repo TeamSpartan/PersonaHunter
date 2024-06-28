@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using Player.Zone;
+using PlayerCam.Scripts;
 using SgLibUnite.Singleton;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 #region 設計
+
 // シングルトンはご法度で運用する
+
 #endregion
 
 // コードクリーン実施 【６／２２ ： 菅沼】
@@ -38,7 +41,8 @@ namespace Player.Input
     /// <summary>
     /// 入力バッファクラス
     /// </summary>
-    public class PlayerInputsAction : SingletonBaseClass<PlayerInputsAction>, IInputValueReferencable, ILockOnEventFirable
+    public class PlayerInputsAction : SingletonBaseClass<PlayerInputsAction>, IInputValueReferencable,
+        ILockOnEventFirable
     {
         private static PlayerInputsAction _instance;
         public static PlayerInputsAction Instance => _instance;
@@ -67,6 +71,8 @@ namespace Player.Input
 
         private bool _isExternalInputBlocked;
         private bool _playerControllerInputBlocked;
+
+        private PlayerCameraBrain _cameraBrain;
 
         /// <summary> コントローラ以外の入力がブロックされてるか </summary>
         public bool ExternalInputBlocked
@@ -105,14 +111,16 @@ namespace Player.Input
 
         ///<summary>ダッシュする</summary>
         public bool IsRunning => _isRunning;
-        
+
         private void OnEnable()
         {
             if (_instance == null)
-            {_instance = this;}
+            {
+                _instance = this;
+            }
 
             _gameInputs = new();
-            
+
             _gameInputs.Enable();
             InGameInput_AddingDelegate();
         }
@@ -130,6 +138,12 @@ namespace Player.Input
             _gameLogic.EResume += () => { _inputQueue.Clear(); };
 
             _zoneTimeController = GameLogic.FindAnyObjectByType<ZoneTimeController>();
+
+            _cameraBrain = GameObject.FindAnyObjectByType<PlayerCameraBrain>(FindObjectsInactive.Include);
+            if (!_cameraBrain.gameObject.activeSelf)
+            {
+                _cameraBrain.gameObject.SetActive(true);
+            }
         }
 
         private void OnGUI() // デバッグ表示
@@ -139,6 +153,7 @@ namespace Player.Input
                 @$"
                 Input Type : {_inputType.ToString()}
                 Input Blocked : {_isExternalInputBlocked} , {_playerControllerInputBlocked}
+                Locking On : {_cameraBrain.LockingOn}
                 ");
         }
 
@@ -303,6 +318,7 @@ namespace Player.Input
         {
             if (context.ReadValueAsButton())
             {
+                Debug.Log("ゾーン 入力あり");
                 if (_zoneTimeController is null)
                 {
                     _zoneTimeController = GameObject.FindAnyObjectByType<ZoneTimeController>();
@@ -311,7 +327,6 @@ namespace Player.Input
                 if (!_zoneTimeController.GetIsSlowTime)
                 {
                     _zoneTimeController.StartDull();
-                    // Debug.Log("Zone");
                 }
             }
         }
@@ -420,7 +435,7 @@ namespace Player.Input
             //Pause
             _gameInputs.Player.Pause.started += OnPause;
             _gameInputs.Player.Pause.canceled += OnPause;
-            
+
             //Dash
             _gameInputs.Player.Dash.started += OnRun;
         }

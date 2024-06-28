@@ -51,7 +51,7 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""id"": ""d8a7a99c-cfed-44e7-ad08-8cd0ad85ad3d"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Press"",
+                    ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
@@ -96,7 +96,7 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""id"": ""ffe14d07-dca0-4bc7-8b19-8d58429e1c08"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Press"",
+                    ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
@@ -275,7 +275,7 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""6949c4d8-760f-44ba-9750-fd32e7ce7337"",
                     ""path"": ""<Gamepad>/rightStickPress"",
-                    ""interactions"": ""Hold(duration=1)"",
+                    ""interactions"": ""Press(behavior=2)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""LockOn"",
@@ -286,7 +286,7 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""aa51d537-4f39-4fdc-abbd-db2dea6c9b39"",
                     ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
+                    ""interactions"": ""Hold(duration=1)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""LockOn"",

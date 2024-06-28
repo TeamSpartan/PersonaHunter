@@ -9,6 +9,8 @@ TagManager:
   - PlayerUI
   - LockOnCam
   - FollowCam
+  - FirstSelectedUIElement
+  - ThisSceneOnly
   layers:
   - Default
   - TransparentFX

@@ -100436,6 +100436,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 251356259322932679, guid: 68c556d611e122b4b8b6a7e62f247949,
         type: 3}
+      propertyPath: _invisibleWhenStarted.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 251356259322932679, guid: 68c556d611e122b4b8b6a7e62f247949,
+        type: 3}
       propertyPath: _invisibleWhenStarted.Array.data[2]
       value: 
       objectReference: {fileID: 1588382757}
@@ -100474,10 +100479,20 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.GameObject, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 3756139555364992302, guid: 68c556d611e122b4b8b6a7e62f247949,
+        type: 3}
+      propertyPath: m_TagString
+      value: ThisSceneOnly
+      objectReference: {fileID: 0}
     - target: {fileID: 3857667365975742147, guid: 68c556d611e122b4b8b6a7e62f247949,
         type: 3}
       propertyPath: m_Name
       value: InGameUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4252045673557813934, guid: 68c556d611e122b4b8b6a7e62f247949,
+        type: 3}
+      propertyPath: m_TagString
+      value: FirstSelectedUIElement
       objectReference: {fileID: 0}
     - target: {fileID: 6182078267060479850, guid: 68c556d611e122b4b8b6a7e62f247949,
         type: 3}
