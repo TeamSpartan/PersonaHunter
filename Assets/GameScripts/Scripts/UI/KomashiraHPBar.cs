@@ -34,7 +34,6 @@ public class KomashiraHPBar : MonoBehaviour
         GameObject.Destroy(this.gameObject);
     }
 
-
     private void Start()
     {
         _mainCam = GameObject.FindAnyObjectByType<PlayerCameraBrain>().GetComponent<Camera>();
@@ -45,19 +44,18 @@ public class KomashiraHPBar : MonoBehaviour
         {
             slider.interactable = false;
         }
+    }
 
-        SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged;
+    private void OnDestroy()
+    {
+        SceneManager.activeSceneChanged -= SceneManagerOnactiveSceneChanged;
     }
 
     private void SceneManagerOnactiveSceneChanged(Scene arg0, Scene arg1)
     {
-        if (arg0.name == ConstantValues.InGameScene)
+        if (arg1.name is not ConstantValues.InGameScene)
         {
-            if (transform.root.CompareTag("PlayerUI"))
-            {
-                SceneManager.MoveGameObjectToScene(gameObject, arg1);
-            }
-
+            SceneManager.MoveGameObjectToScene(gameObject, arg1);
             DestroySelf();
         }
     }

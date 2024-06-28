@@ -22,7 +22,7 @@ namespace PlayerCam.Scripts
     /// プレイヤ追跡とロックオンターゲットのロックオンを提供。
     /// </summary>
     public class PlayerCameraBrain
-        : SingletonBaseClass<PlayerCameraBrain>
+        : MonoBehaviour
     {
         #region Parameter Exposing
 
@@ -120,16 +120,11 @@ namespace PlayerCam.Scripts
             }
         }
 
-        // private void Awake()
-        // {
-        //     // GameObject.DontDestroyOnLoad(gameObject);
-        // }
-
-        protected override void ToDoAtAwakeSingleton()
+        private void Awake()
         {
             SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged;
         }
-
+        
         private void Start()
         {
             Initialize();

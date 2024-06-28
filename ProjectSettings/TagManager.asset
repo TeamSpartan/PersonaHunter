@@ -11,6 +11,8 @@ TagManager:
   - FollowCam
   - FirstSelectedUIElement
   - ThisSceneOnly
+  - OptionWindow
+  - OmotegariVolume
   layers:
   - Default
   - TransparentFX
