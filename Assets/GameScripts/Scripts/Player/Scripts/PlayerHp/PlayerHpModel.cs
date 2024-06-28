@@ -76,15 +76,16 @@ public class PlayerHpModel : MonoBehaviour
         //無敵時間中
         if (_playerParam.GetIsDamage)
         {
+            _playerParam.SetIsAttack(false);
+            _playerParam.SetIsAvoid(false);
+            _playerParam.SetIsJustAvoid(false);
+            _playerParam.SetIsParry(false);
+            _playerParam.SetIsRun(false);
+            
             if (_frameSinceLastHit > _invincibilityFrame)
             {
                 _frameSinceLastHit = 0;
                 _playerParam.SetIsDamage(false);
-
-                if (_playerParam.GetIsAnimation)
-                {
-                    _playerParam.SetIsAnimation(false);
-                }
             }
             else
             {

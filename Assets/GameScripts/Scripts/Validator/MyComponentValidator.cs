@@ -275,6 +275,8 @@ public class MyComponentValidator : MonoBehaviour
 
         // ぬえをまたまた初期化
         GameObject.FindAnyObjectByType<NuweBrain>().Initialize();
+
+        _input.enabled = false;
     }
 
     /// <summary> ボス登場シーンの再生が完了したら </summary>
@@ -284,6 +286,9 @@ public class MyComponentValidator : MonoBehaviour
 
         GameObject.Destroy(source.gameObject);
         _player.SetActive(true);
+        
+        // 入力バッファ有効化
+        _input.enabled = true;
 
         // 入力ブロックを解除
         var input = GameObject.FindAnyObjectByType<PlayerInputsAction>();
