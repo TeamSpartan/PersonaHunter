@@ -223,6 +223,7 @@ public class MyComponentValidator : MonoBehaviour
 
         // ポーズ入力をブロック 【入力タイプがUIになるのを防ぐ】
         _gameLogic.SetPauseInputBlocked(true);
+        Cursor.lockState = CursorLockMode.Locked;
 
         var ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
         if (!ingameUI.gameObject.activeSelf)

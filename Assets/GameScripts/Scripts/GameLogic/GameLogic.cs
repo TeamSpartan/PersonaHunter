@@ -306,6 +306,9 @@ public class GameLogic
         // インゲーム入力のブロック解除
         _playerInputs.ControllerInputBlocked
             = _playerInputs.ExternalInputBlocked = blockInput;
+
+        
+        Cursor.lockState = blockInput ? CursorLockMode.None : CursorLockMode.Locked;
     }
 
     private void GetDoGComponent()
