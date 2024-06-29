@@ -7,6 +7,7 @@ using Player.Input;
 using Player.Param;
 using PlayerCam.Scripts;
 using SgLibUnite.Systems;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Playables;
@@ -242,6 +243,10 @@ public class MyComponentValidator : MonoBehaviour
         {
             _player = GameObject.FindWithTag("Player");
         }
+        
+        _input.ClearInputBuffer();
+        
+        _input.enabled = false;
 
         _player.SetActive(false);
 
@@ -276,8 +281,6 @@ public class MyComponentValidator : MonoBehaviour
 
         // ぬえをまたまた初期化
         GameObject.FindAnyObjectByType<NuweBrain>().Initialize();
-
-        _input.enabled = false;
     }
 
     /// <summary> ボス登場シーンの再生が完了したら </summary>
@@ -287,7 +290,7 @@ public class MyComponentValidator : MonoBehaviour
 
         GameObject.Destroy(source.gameObject);
         _player.SetActive(true);
-        
+
         // 入力バッファ有効化
         _input.enabled = true;
 
@@ -326,7 +329,7 @@ public class MyComponentValidator : MonoBehaviour
             Destroy(movie_defeated);
             _gameLogic.SetInGameInputBlocked(false);
             _gameLogic.SetPauseInputBlocked(false);
-            
+
             // インゲームでつかっていたオブジェクトを破棄
             Dispose_InGameObject();
         };

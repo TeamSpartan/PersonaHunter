@@ -252,6 +252,11 @@ namespace Player.Input
             }
         }
 
+        public void ClearInputBuffer()
+        {
+            _inputQueue.Clear();
+        }
+
         ///<summary>キューの最初の要素を確認する</summary>
         public PlayerInputTypes CheckInputQueue()
         {
@@ -456,18 +461,27 @@ namespace Player.Input
 
             //Attack
             _gameInputs.Player.Attack.started += OnAttack;
+            _gameInputs.Player.Attack.performed += OnAttack;
+            _gameInputs.Player.Attack.canceled += OnAttack;
 
             //Parry
             _gameInputs.Player.Parry.started += OnParry;
+            _gameInputs.Player.Parry.performed += OnParry;
+            _gameInputs.Player.Parry.canceled += OnParry;
 
             //Avoid
             _gameInputs.Player.Avoid.started += OnAvoid;
+            _gameInputs.Player.Avoid.performed += OnAvoid;
+            _gameInputs.Player.Avoid.canceled += OnAvoid;
 
             //Zone
             _gameInputs.Player.Zone.started += OnZone;
+            _gameInputs.Player.Zone.performed += OnZone;
+            _gameInputs.Player.Zone.canceled += OnZone;
 
             //Camera
             _gameInputs.Player.Camera.started += OnCamera;
+            _gameInputs.Player.Camera.performed += OnCamera;
             _gameInputs.Player.Camera.canceled += OnCamera;
 
             //LockOn
@@ -482,25 +496,36 @@ namespace Player.Input
 
             //Dash
             _gameInputs.Player.Dash.started += OnRun;
+            _gameInputs.Player.Dash.performed += OnRun;
+            _gameInputs.Player.Dash.canceled += OnRun;
         }
 
         void InGameInput_RemoveDelegate()
         {
             //Move
             _gameInputs.Player.Move.started -= OnMove;
+            _gameInputs.Player.Move.performed -= OnMove;
             _gameInputs.Player.Move.canceled -= OnMove;
 
             //Attack
             _gameInputs.Player.Attack.started -= OnAttack;
+            _gameInputs.Player.Attack.performed -= OnAttack;
+            _gameInputs.Player.Attack.canceled -= OnAttack;
 
             //Parry
             _gameInputs.Player.Parry.started -= OnParry;
+            _gameInputs.Player.Parry.performed -= OnParry;
+            _gameInputs.Player.Parry.canceled -= OnParry;
 
             //Avoid
             _gameInputs.Player.Avoid.started -= OnAvoid;
+            _gameInputs.Player.Avoid.performed -= OnAvoid;
+            _gameInputs.Player.Avoid.canceled -= OnAvoid;
 
             //Zone
             _gameInputs.Player.Zone.started -= OnZone;
+            _gameInputs.Player.Zone.performed -= OnZone;
+            _gameInputs.Player.Zone.canceled -= OnZone;
 
             //Camera
             _gameInputs.Player.Camera.started -= OnCamera;

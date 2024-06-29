@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using Player.Input;
 using Player.Param;
@@ -44,6 +45,19 @@ namespace Player.Action
 		private DOTween _doTween;
 
 		private float _speed;
+
+		public Vector3 MovementDirection
+		{
+			get
+			{
+				return _dir;
+			}
+
+			set
+			{
+				_dir = value;
+			}
+		}
 
 		/// <summary>プレイヤーの移動処理のメソッド </summary>
 		private void OnMove(Vector2 inputValue)
@@ -130,7 +144,7 @@ namespace Player.Action
 			return transform;
 		}
 
-		public void Start()
+		private void Start()
 		{
 			_rb = GetComponent<Rigidbody>();
 			_animator = GetComponentInChildren<Animator>();
@@ -140,7 +154,7 @@ namespace Player.Action
 			_speed = _walkSpeed;
 		}
 
-		public void FixedUpdate()
+		private void FixedUpdate()
 		{
 			if (GroundCheck())
 			{
@@ -158,6 +172,11 @@ namespace Player.Action
 			{
 				_rb.AddForce(Vector3.down * _gravityValue);
 			}
+		}
+
+		private void OnDisable()
+		{
+			MovementDirection = Vector3.zero;
 		}
 
 		void SpeedChange()
