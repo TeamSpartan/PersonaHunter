@@ -12,7 +12,9 @@ namespace Player.Action
 	{
 		[SerializeField, Header("回避距離")] private float _avoidRange = 5f;
 		[SerializeField] private float _maxDrag = 20f;
-		[SerializeField, Header("空気抵抗をMaxまでする時間")] private float _duration = 1.5f;
+
+		[SerializeField, Header("空気抵抗をMaxまでする時間")]
+		private float _duration = 1.5f;
 		public System.Action OnAvoidSuccess;
 		public System.Action<float> OnJustAvoidSuccess;
 
@@ -26,13 +28,7 @@ namespace Player.Action
 		private AfterImageSkinnedMeshController _afterImageController;
 		private int _avoidId = Animator.StringToHash("IsAvoid");
 		private float _drag;
-
-		private void OnEnable()
-		{
-			OnAvoidSuccess += () => Debug.Log("回避成功");
-			OnJustAvoidSuccess += _ => Debug.Log("ジャスト回避成功");
-		}
-
+		
 		private void Start()
 		{
 			_animator = GetComponent<Animator>();
@@ -51,6 +47,7 @@ namespace Player.Action
 				Avoided();
 			}
 
+			//移動の処理
 			if (PlayerInputsAction.Instance.GetCurrentInputType == PlayerInputTypes.Avoid)
 			{
 				if (_saveInputValue == Vector2.zero)
@@ -66,18 +63,19 @@ namespace Player.Action
 				_rb.AddForce(_playerMove.GetSlopeMoveDirection(_dir * _avoidRange, _playerMove.NormalRay()),
 					ForceMode.Impulse);
 				_playerMove.PlayerRotate(_dir);
-
 			}
 		}
 
 		void Avoided()
 		{
-			if (_playerParam.GetIsAvoid)
+			if (_playerParam.GetIsAnimation)
 			{
 				return;
 			}
 
 			_saveInputValue = PlayerInputsAction.Instance.GetMoveInput();
+			_playerParam.BoolInitialize();
+			_playerParam.AnimatorInitialize();
 			_playerParam.SetIsAnimation(true);
 			_animator.SetTrigger(_avoidId);
 			_afterImageController.IsCreate = true;
@@ -96,6 +94,8 @@ namespace Player.Action
 				return;
 			}
 
+			_playerParam.BoolInitialize();
+			_playerParam.SetIsAnimation(true);
 			_playerParam.SetIsAvoid(true);
 		}
 

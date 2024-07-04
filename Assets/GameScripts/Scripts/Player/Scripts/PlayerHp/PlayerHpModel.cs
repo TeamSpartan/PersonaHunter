@@ -1,8 +1,10 @@
 ﻿using System;
 using Player.Action;
+using Player.Input;
 using Player.Param;
 using UniRx;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class PlayerHpModel : MonoBehaviour
@@ -16,6 +18,7 @@ public class PlayerHpModel : MonoBehaviour
     [SerializeField, Header("リジェネ回復量"), Range(1f, 100f)]
     private float _regenerationSpeed;
 
+    private PlayerInputsAction _input;
     private Animator _animator;
     private int _dieId = Animator.StringToHash("IsDie");
     private int _takeDamageId = Animator.StringToHash("IsTakeDamage");
@@ -58,6 +61,7 @@ public class PlayerHpModel : MonoBehaviour
         _initialHp = _playerParam.GetInitialHp;
         _nue = GameObject.FindFirstObjectByType<NuweBrain>();
         _mob = GameObject.FindFirstObjectByType<KomashiraBrain>();
+        _input = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
         SceneManager.sceneLoaded += SceneManagerOnsceneLoaded;
         ResetDamage();
     }
@@ -76,16 +80,12 @@ public class PlayerHpModel : MonoBehaviour
         //無敵時間中
         if (_playerParam.GetIsDamage)
         {
-            _playerParam.SetIsAttack(false);
-            _playerParam.SetIsAvoid(false);
-            _playerParam.SetIsJustAvoid(false);
-            _playerParam.SetIsParry(false);
-            _playerParam.SetIsRun(false);
             
             if (_frameSinceLastHit > _invincibilityFrame)
             {
                 _frameSinceLastHit = 0;
-                _playerParam.SetIsDamage(false);
+                _playerParam.BoolInitialize();
+                _input.ClearInputBuffer();
             }
             else
             {
@@ -146,7 +146,7 @@ public class PlayerHpModel : MonoBehaviour
         //普通の回避
         if (_playerParam.GetIsAvoid)
         {
-            _playerAvoid.OnAvoidSuccess.Invoke();
+            _playerAvoid.OnAvoidSuccess?.Invoke();
             return;
         }
 
@@ -164,13 +164,18 @@ public class PlayerHpModel : MonoBehaviour
             OnReceiveDamage?.Invoke(InitialHp, _playerCurrentHp);
             _regenerationTimer = 0;
             SetRegenerate(false);
+            _playerParam.BoolInitialize();
+            _playerParam.AnimatorInitialize();
             _playerParam.SetIsDamage(true);
+            _playerParam.SetIsAnimation(true);
             _animator.SetTrigger(_takeDamageId);
         }
 
         //at time of death
         if (_playerCurrentHp <= 0f)
         {
+            _playerParam.BoolInitialize();
+            _playerParam.AnimatorInitialize();
             _animator.SetTrigger(_dieId);
             _playerParam.SetIsDie(true);
             OnDie?.Invoke();
@@ -211,5 +216,12 @@ public class PlayerHpModel : MonoBehaviour
     void SetRegenerate(bool value)
     {
         _isRegeneration = value;
+    }
+    
+    
+    public void EndTakeDamageActions()
+    {
+        _playerParam.SetIsAnimation(false);
+        PlayerInputsAction.Instance.EndAction();
     }
 }

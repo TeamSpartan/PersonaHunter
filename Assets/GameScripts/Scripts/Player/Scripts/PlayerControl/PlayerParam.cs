@@ -1,5 +1,6 @@
 ﻿using System;
 using SgLibUnite.Singleton;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Player.Param
@@ -9,11 +10,19 @@ namespace Player.Param
     {
         [SerializeField, Header("初期HP")] private float initialHp = 5f;
         [SerializeField, Header("初期攻撃力")] private float initialAtk = 10f;
-
         [SerializeField, Header("ジャスト回避で増加するゾーンゲージの量")]
         private float increaseValueOfJustAvoid = 1f;
-
         [SerializeField, Header("パリィで与える体感値")] private float giveValueOfParry = 5f;
+        
+        private Animator _animator;
+        
+        private int _parryID = Animator.StringToHash("IsParry");
+        private int _avoidID = Animator.StringToHash("IsAvoid");
+        private int _rightAttackID = Animator.StringToHash("RightAttack");
+        private int _leftAttackID = Animator.StringToHash("LeftAttack");
+        private int _dieID = Animator.StringToHash("IsDie");
+        private int _takeDamageID = Animator.StringToHash("IsTakeDamage");
+        private int _runID = Animator.StringToHash("Speed");
 
         private bool _isAttack;
         private bool _isAvoid;
@@ -23,6 +32,11 @@ namespace Player.Param
         private bool _isAnimation;
         private bool _isRun;
         private bool _isDie;
+
+        private void Start()
+        {
+            _animator = GetComponent<Animator>();
+        }
 
         //=================参照用==========================================================
         ///<summary>初期HP(参照用)</summary>
@@ -86,5 +100,30 @@ namespace Player.Param
         
         /// <summary>死亡判定(変更用)</summary>
         public bool SetIsDie(bool value) => _isDie = value;
+        
+        //初期化用
+        public void BoolInitialize()
+        {
+            _isAttack = false;
+            _isAvoid = false;
+            _isJustAvoid = false;
+            _isDamage = false;
+            _isParry = false;
+            _isAnimation = false;
+            _isRun = false;
+            _isDie = false;
+        }
+
+        ///<summary>アニメータートリガーのリセット</summary>
+        public void AnimatorInitialize()
+        {
+            _animator.ResetTrigger(_parryID);
+            _animator.ResetTrigger(_avoidID);
+            _animator.ResetTrigger(_rightAttackID);
+            _animator.ResetTrigger(_leftAttackID);
+            _animator.ResetTrigger(_dieID);
+            _animator.ResetTrigger(_takeDamageID);
+            _animator.SetFloat(_runID, 0f);
+        }
     }
 }
