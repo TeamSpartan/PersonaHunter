@@ -18,15 +18,22 @@ public class PlayerHpView : MonoBehaviour
 	private float _dieWaitTime = 3f;
 	[SerializeField] private Image healthImage;
 	[SerializeField] private Image burnImage;
+	private Animator _animator;
 	private SceneLoader _sceneLoader;
 
 	private Tween _burnEffect;
 
 	private void Start()
 	{
+		_animator = GetComponent<Animator>();
 		healthImage.fillAmount = 1f;
 		burnImage.fillAmount = 1f;
 		_diePanel?.SetActive(false);
+	}
+
+	public void SetIdleAnimate()
+	{
+		_animator.Play("Idle");
 	}
 
 	///<summary>受ダメージ時にゲージを変化させる</summary>

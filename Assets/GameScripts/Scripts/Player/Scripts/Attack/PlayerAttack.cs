@@ -85,6 +85,7 @@ public class PlayerAttack : MonoBehaviour
 		if (_currentName != 1)
 		{
 			//右からの攻撃
+			_playerParam.AnimatorInitialize();
 			_animator.SetTrigger("RightAttack");
 			_currentName = 1;
 			_playerParam.SetIsAnimation(true);
@@ -93,8 +94,10 @@ public class PlayerAttack : MonoBehaviour
 		else
 		{
 			//左からの攻撃
+			_playerParam.AnimatorInitialize();
 			_animator.SetTrigger("LeftAttack");
 			_currentName = 2;
+			_playerParam.BoolInitialize();
 			_playerParam.SetIsAnimation(true);
 			_leftAttack.Play();
 		}
@@ -117,6 +120,8 @@ public class PlayerAttack : MonoBehaviour
 			return;
 		}
 
+		_playerParam.BoolInitialize();
+		_playerParam.SetIsAnimation(true);
 		_playerParam.SetIsAttack(true);
 	}
 

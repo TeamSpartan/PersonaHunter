@@ -22,8 +22,8 @@ namespace Player.Action
 
 		private void Start()
 		{
-			_playerParam = GetComponentInParent<PlayerParam>();
-			_animator = GetComponentInParent<Animator>();
+			_playerParam = GetComponent<PlayerParam>();
+			_animator = GetComponent<Animator>();
 			_zoneObj = GetComponentInChildren<ZoneObj>();
 		}
 
@@ -38,12 +38,15 @@ namespace Player.Action
 
 		void Parried()
 		{
-			if (_playerParam.GetIsParry)
+			if (_playerParam.GetIsAnimation)
 			{
+				Debug.Log("aa");
 				return;
 			}
 
 			PlayerInputsAction.Instance.RunCancel();
+			_playerParam.BoolInitialize();
+			_playerParam.AnimatorInitialize();
 			_playerParam.SetIsAnimation(true);
 			_animator.SetTrigger(_parryID);
 		}
@@ -60,10 +63,13 @@ namespace Player.Action
 		{
 			if (_playerParam.GetIsParry)
 			{
+				Debug.Log("なぜアニメーションしている");
 				return;
 			}
 
+			_playerParam.BoolInitialize();
 			_playerParam.SetIsParry(true);
+			_playerParam.SetIsAnimation(true);
 		}
 
 		public void EndParry()

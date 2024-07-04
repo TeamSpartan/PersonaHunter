@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-///<summary>summary</summary>
+///<summary></summary>
 public class PlayerHpPresenter : MonoBehaviour
 {
 	private PlayerHpModel _playerHpModel;
