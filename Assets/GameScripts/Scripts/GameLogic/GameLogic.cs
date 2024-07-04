@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Rendering;
-using DG.Tweening;
-using Player.Input;
-using SgLibUnite.Systems;
-using SgLibUnite.Singleton;
-using UnityEditor;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using UnityEngine.Rendering;
+using SgLibUnite.Systems;
+using Player.Input;
+using UnityEngine;
+using DG.Tweening;
+using System;
 
 // コードクリーン実施 【6/26：菅沼】
 // 各くそコードのリファクタ
@@ -51,20 +49,20 @@ public class GameLogic
     /// <summary> ガウス差分クラス </summary>
     private DifferenceOfGaussian _dog;
 
-    /// <summary> ポスプロをかけるために必要なVolumeクラス </summary>
-    private Volume _volume;
-
-    /// <summary> シーン遷移クラス </summary>
-    private SceneLoader _sceneLoader;
-
-    /// <summary> 敵のトランスフォーム </summary>
-    private List<Transform> _enemies = new List<Transform>();
+    /// <summary> 入力バッファクラス </summary>
+    private PlayerInputsAction _playerInputs;
 
     /// <summary> インゲームUI管理クラス </summary>
     private InGameUIManager _ingameUI;
 
-    /// <summary> 入力バッファクラス </summary>
-    private PlayerInputsAction _playerInputs;
+    /// <summary> 敵のトランスフォーム </summary>
+    private List<Transform> _enemies = new List<Transform>();
+
+    /// <summary> シーン遷移クラス </summary>
+    private SceneLoader _sceneLoader;
+
+    /// <summary> ポスプロをかけるために必要なVolumeクラス </summary>
+    private Volume _volume;
 
     // ポーズ中のフラグ
     private bool _isPausing;
@@ -135,7 +133,10 @@ public class GameLogic
 
         SetInGameInputBlocked(true);
 
-        EPause?.Invoke();
+        if (EPause is not null)
+        {
+            EPause.Invoke();
+        }
 
         foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
         {
@@ -169,7 +170,10 @@ public class GameLogic
 
         SetInGameInputBlocked(false);
 
-        EResume?.Invoke();
+        if (EResume is not null)
+        {
+            EResume.Invoke();
+        }
 
         foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
         {
@@ -307,7 +311,7 @@ public class GameLogic
         _playerInputs.ControllerInputBlocked
             = _playerInputs.ExternalInputBlocked = blockInput;
 
-        
+
         Cursor.lockState = blockInput ? CursorLockMode.None : CursorLockMode.Locked;
     }
 

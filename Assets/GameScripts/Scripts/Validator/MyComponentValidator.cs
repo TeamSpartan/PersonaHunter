@@ -1,18 +1,14 @@
-using System;
-using System.Collections;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-using System.Linq;
+using UnityEngine.EventSystems;
+using UnityEngine.Playables;
+using SgLibUnite.Systems;
+using PlayerCam.Scripts;
 using Player.Action;
 using Player.Input;
 using Player.Param;
-using PlayerCam.Scripts;
-using SgLibUnite.Systems;
-using UnityEditor;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.Playables;
-using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 // コードクリーン 実施 【6/26日 ： 菅沼】
 // リファクタも実施
@@ -33,17 +29,34 @@ public class MyComponentValidator : MonoBehaviour
     // このクラスのオブジェクトが破棄されたときに同時に破棄するオブジェクトのリスト
     [SerializeField] private List<GameObject> _destroyTargetOnDestroyedThis;
 
-    private GameObject _firstSelectedUIElemInScene;
+    /// <summary> クライアントデータ </summary>
     private ClientDataHolder _clientData;
-    private GameLogic _gameLogic;
-    private GameObject _player;
-    private GameObject _moviePanel;
-    private PlayerCameraBrain _cameraBrain;
-    private InGameUIManager _inGameUIManager;
+
+    /// <summary> 入力バッファ </summary>
     private PlayerInputsAction _input;
 
-    private bool _playedPrologue;
+    /// <summary> プレイヤカメラ </summary>
+    private PlayerCameraBrain _cameraBrain;
+
+    /// <summary> インゲームUIマネージャ </summary>
+    private InGameUIManager _inGameUIManager;
+
+    /// <summary> そのシーンにのみ存在できるオブジェクトのリスト </summary>
     private List<GameObject> _thisSceneOnlyObj;
+
+    /// <summary> プレイヤ </summary>
+    private GameObject _player;
+
+    /// <summary> ムービーのパネル </summary>
+    private GameObject _moviePanel;
+
+    /// <summary> 最初に選択されるUIエレメント </summary>
+    private GameObject _firstSelectedUIElemInScene;
+
+    /// <summary> ゲームロジック </summary>
+    private GameLogic _gameLogic;
+
+    private bool _playedPrologue;
 
     // Start is called before the first frame update
     private void Start()
@@ -243,9 +256,9 @@ public class MyComponentValidator : MonoBehaviour
         {
             _player = GameObject.FindWithTag("Player");
         }
-        
+
         _input.ClearInputBuffer();
-        
+
         _input.enabled = false;
 
         _player.SetActive(false);
