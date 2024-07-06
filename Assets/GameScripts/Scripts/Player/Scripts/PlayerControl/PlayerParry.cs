@@ -54,7 +54,7 @@ namespace Player.Action
 		//パリィの成功
 		public void ParrySuccess()
 		{
-			//_zoneObj.IncreaseGaugeValue(_playerParam.GetGiveValueOfParry);
+			_zoneObj.IncreaseGaugeValue(_playerParam.GetGiveValueOfParry);
 			_parrySucceedEffect.Play();
 		}
 
@@ -63,7 +63,7 @@ namespace Player.Action
 		{
 			if (_playerParam.GetIsParry)
 			{
-				Debug.Log("なぜアニメーションしている");
+				_playerParam.SetIsParry(false);
 				return;
 			}
 
