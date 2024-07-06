@@ -308,8 +308,7 @@ public class MyComponentValidator : MonoBehaviour
         _input.enabled = true;
 
         // 入力ブロックを解除
-        var input = GameObject.FindAnyObjectByType<PlayerInputsAction>();
-        input.ControllerInputBlocked = input.ExternalInputBlocked = false;
+        _input.ControllerInputBlocked = _input.ExternalInputBlocked = false;
 
         // ぬえのHPバーを表示
         var nuweHP = GameObject.FindAnyObjectByType<NuweHpViewer>(FindObjectsInactive.Include);
