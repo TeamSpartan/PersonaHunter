@@ -111,12 +111,6 @@ namespace Player.Input
 
         /* フラグだったらIsから始める */
 
-        ///<summary>ロックオン</summary>
-        public bool IsLockingOn => _isLockingOn;
-
-        ///<summary>ゾーン中か否か</summary>
-        public bool IsInZone => _isInZone;
-
         ///<summary>ダッシュする</summary>
         public bool IsRunning => _isRunning;
 
@@ -162,8 +156,9 @@ namespace Player.Input
                 ,
                 @$"
                 Input Type : {_inputType.ToString()}
-                Input Blocked : {_isExternalInputBlocked} , {_playerControllerInputBlocked}
-				Move Input : {GetMoveInput().ToString()}
+Input Blocked : {_isExternalInputBlocked} , {_playerControllerInputBlocked}
+Move Input : {GetMoveInput().ToString()}
+InZone : {_zoneTimeController.GetIsSlowTime}
 				");
         }
 
@@ -480,15 +475,23 @@ namespace Player.Input
 
             //Attack
             _gameInputs.Player.Attack.started += OnAttack;
+            _gameInputs.Player.Attack.performed += OnAttack;
+            _gameInputs.Player.Attack.canceled += OnAttack;
 
             //Parry
             _gameInputs.Player.Parry.started += OnParry;
+            _gameInputs.Player.Parry.performed += OnParry;
+            _gameInputs.Player.Parry.canceled += OnParry;
 
             //Avoid
             _gameInputs.Player.Avoid.started += OnAvoid;
+            _gameInputs.Player.Avoid.performed += OnAvoid;
+            _gameInputs.Player.Avoid.canceled += OnAvoid;
 
             //Zone
             _gameInputs.Player.Zone.started += OnZone;
+            _gameInputs.Player.Zone.performed += OnZone;
+            _gameInputs.Player.Zone.canceled += OnZone;
 
             //Camera
             _gameInputs.Player.Camera.started += OnCamera;
@@ -497,12 +500,18 @@ namespace Player.Input
 
             //LockOn
             _gameInputs.Player.LockOn.started += OnLockOn;
+            _gameInputs.Player.LockOn.performed += OnLockOn;
+            _gameInputs.Player.LockOn.canceled += OnLockOn;
 
             //Pause
             _gameInputs.Player.Pause.started += OnPause;
+            _gameInputs.Player.Pause.performed += OnPause;
+            _gameInputs.Player.Pause.canceled += OnPause;
 
             //Dash
             _gameInputs.Player.Dash.started += OnRun;
+            _gameInputs.Player.Dash.performed += OnRun;
+            _gameInputs.Player.Dash.canceled += OnRun;
         }
 
         void InGameInput_RemoveDelegate()
@@ -514,15 +523,23 @@ namespace Player.Input
 
             //Attack
             _gameInputs.Player.Attack.started -= OnAttack;
+            _gameInputs.Player.Attack.performed -= OnAttack;
+            _gameInputs.Player.Attack.canceled -= OnAttack;
 
             //Parry
             _gameInputs.Player.Parry.started -= OnParry;
+            _gameInputs.Player.Parry.performed -= OnParry;
+            _gameInputs.Player.Parry.canceled -= OnParry;
 
             //Avoid
             _gameInputs.Player.Avoid.started -= OnAvoid;
+            _gameInputs.Player.Avoid.performed -= OnAvoid;
+            _gameInputs.Player.Avoid.canceled -= OnAvoid;
 
             //Zone
             _gameInputs.Player.Zone.started -= OnZone;
+            _gameInputs.Player.Zone.performed -= OnZone;
+            _gameInputs.Player.Zone.canceled -= OnZone;
 
             //Camera
             _gameInputs.Player.Camera.started -= OnCamera;
@@ -531,22 +548,29 @@ namespace Player.Input
 
             //LockOn
             _gameInputs.Player.LockOn.started -= OnLockOn;
+            _gameInputs.Player.LockOn.performed -= OnLockOn;
+            _gameInputs.Player.LockOn.canceled -= OnLockOn;
             //Pause
             _gameInputs.Player.Pause.started -= OnPause;
+            _gameInputs.Player.Pause.performed -= OnPause;
+            _gameInputs.Player.Pause.canceled -= OnPause;
         }
 
         void UIInput_AddDelegate()
         {
             //Cancel
             _gameInputs.UI.Cancel.started += OnCancel;
+            _gameInputs.UI.Cancel.performed += OnCancel;
             _gameInputs.UI.Cancel.canceled += OnCancel;
 
             //決定
             _gameInputs.UI.Decision.started += OnDecision;
+            _gameInputs.UI.Decision.performed += OnDecision;
             _gameInputs.UI.Decision.canceled += OnDecision;
 
             //変更確定
             _gameInputs.UI.Confirm.started += OnConfirm;
+            _gameInputs.UI.Confirm.performed += OnConfirm;
             _gameInputs.UI.Confirm.canceled += OnConfirm;
 
             //UI移動
@@ -559,14 +583,17 @@ namespace Player.Input
         {
             //Cancel
             _gameInputs.UI.Cancel.started -= OnCancel;
+            _gameInputs.UI.Cancel.performed -= OnCancel;
             _gameInputs.UI.Cancel.canceled -= OnCancel;
 
             //決定
             _gameInputs.UI.Decision.started -= OnDecision;
+            _gameInputs.UI.Decision.performed -= OnDecision;
             _gameInputs.UI.Decision.canceled -= OnDecision;
 
             //変更確定
             _gameInputs.UI.Confirm.started -= OnConfirm;
+            _gameInputs.UI.Confirm.performed -= OnConfirm;
             _gameInputs.UI.Confirm.canceled -= OnConfirm;
 
             //UI移動

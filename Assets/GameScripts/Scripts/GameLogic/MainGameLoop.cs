@@ -7,7 +7,7 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 
-// コードクリーン実施 【6/26：菅沼】
+// コードクリーン実施 【7/7：菅沼】
 // 各くそコードのリファクタ
 
 /* インゲームシーンとボスシーン間でガウス差分の
@@ -41,6 +41,12 @@ public class MainGameLoop
     /// <summary> システム面でのイベントをここへ登録。
     /// 画面リジュームが走ったらこれを呼び出す </summary>
     public event Action EResume;
+
+    /// <summary> ゾーンに入った時のタスク </summary>
+    public event Action EDiveInZone;
+
+    /// <summary> ゾーンから出た時のタスク </summary>
+    public event Action EGetOutZone;
 
     #endregion
 
@@ -203,40 +209,20 @@ public class MainGameLoop
     /// <summary> 集中 を 発火する </summary>
     public void StartDiveInZone()
     {
-        if (_enemies.Count < 1 || _enemies is null) return;
-
-        foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
+        if (EDiveInZone is not null)
         {
-            if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
-            {
-                komashira.StartFreeze();
-            }
-
-            if (enemy.gameObject.TryGetComponent<NuweBrain>(out var nue))
-            {
-                nue.StartFreeze();
-            }
+            EDiveInZone();
         }
-
+        
         PlayDoGEffect();
     }
 
     /// <summary> 集中 を 収束する </summary>
     public void GetOutOverZone()
     {
-        if (_enemies.Count < 1 || _enemies is null) return;
-
-        foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
+        if (EGetOutZone is not null)
         {
-            if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
-            {
-                komashira.EndFreeze();
-            }
-
-            if (enemy.gameObject.TryGetComponent<NuweBrain>(out var nue))
-            {
-                nue.EndFreeze();
-            }
+            EGetOutZone();
         }
 
         DOTween.To((_) => { _dog.elapsedTime.Override(_); },

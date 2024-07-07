@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 using SgLibUnite.BehaviourTree;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -72,7 +73,7 @@ public class KomashiraBrain : MonoBehaviour
     /// <summary> パトロールパスのポイントのインデックス </summary>
     private int _patrolPathIndex;
 
-    private MainGameLoop loop;
+    private MainGameLoop _loop;
 
     #endregion
 
@@ -161,12 +162,14 @@ public class KomashiraBrain : MonoBehaviour
         _slider = _bar.GetComponent<Slider>();
         _slider.maxValue = _maxHealthPoint;
 
-        loop = GameObject.FindAnyObjectByType<MainGameLoop>();
+        _loop = GameObject.FindAnyObjectByType<MainGameLoop>();
         var t = transform;
         var p = transform.position;
         p += Vector3.up;
         t.position = p;
-        loop.ApplyEnemyTransform(t);
+        _loop.ApplyEnemyTransform(t);
+        _loop.EDiveInZone += StartFreeze;
+        _loop.EGetOutZone += EndFreeze;
 
         SetupComponent();
         SetupBehaviours();
@@ -178,6 +181,17 @@ public class KomashiraBrain : MonoBehaviour
         if (_tree.CurrentYieldedEvent != _think)
         {
             _tree.YieldAllBehaviourTo(_think);
+        }
+
+        SceneManager.activeSceneChanged += OnactiveSceneChanged;
+    }
+
+    private void OnactiveSceneChanged(Scene arg0, Scene arg1)
+    {
+        if (_loop is not null && SceneManager.GetActiveScene().name is not ConstantValues.InGameScene)
+        {
+            _loop.EDiveInZone -= StartFreeze;
+            _loop.EGetOutZone -= EndFreeze;
         }
     }
 
@@ -526,6 +540,9 @@ public class KomashiraBrain : MonoBehaviour
                 _tree.EndYieldBehaviourFrom(_currentYielded);
                 _tree.YieldAllBehaviourTo(_death);
             }
+
+            _loop.EDiveInZone -= StartFreeze;
+            _loop.EGetOutZone -= EndFreeze;
         }
     }
 
@@ -541,7 +558,7 @@ public class KomashiraBrain : MonoBehaviour
         _tree.PauseBT();
 
         // 死亡通知
-        loop.NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType.Komashira, gameObject);
+        _loop.NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType.Komashira, gameObject);
 
         // コンポーネントの破棄
         _bar.DestroySelf();

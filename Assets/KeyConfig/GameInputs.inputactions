@@ -65,7 +65,7 @@
                     "id": "805185c0-2dfe-4b1a-8ef0-b6a25c010566",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press",
+                    "interactions": "",
                     "initialStateCheck": false
                 },
                 {
@@ -352,7 +352,7 @@
                     "name": "",
                     "id": "d6115eac-1056-4175-a4fe-c4143c1117fa",
                     "path": "<XInputController>/buttonNorth",
-                    "interactions": "",
+                    "interactions": "Hold",
                     "processors": "",
                     "groups": "",
                     "action": "Zone",
@@ -363,18 +363,7 @@
                     "name": "",
                     "id": "e66517c7-fb05-43e9-bfbb-07ed75c36035",
                     "path": "<Keyboard>/m",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Zone",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d6532ecc-9337-4769-a91c-67e1b10e71b3",
-                    "path": "<Gamepad>/buttonNorth",
-                    "interactions": "",
+                    "interactions": "Hold",
                     "processors": "",
                     "groups": "",
                     "action": "Zone",

@@ -245,14 +245,12 @@ namespace SgLibUnite.BehaviourTree
         public void PauseBT()
         {
             _isPausing = true;
-            Debug.Log($"BT ポージング");
         }
 
         public void StartBT()
         {
             _isPausing = false;
             _currentBehaviour.Begin();
-            Debug.Log($"BT スターティング");
         }
     }
 }

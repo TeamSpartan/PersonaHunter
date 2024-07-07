@@ -2,6 +2,7 @@ using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 // コードクリーン実施 【6/22：菅沼】
@@ -63,7 +64,7 @@ public class NuweBrain : MonoBehaviour
     [SerializeField, Header("ボス撃破後のイベント")] private UnityEvent _bossDefeatedEvent;
 
     [SerializeField] private ParticleSystem _rushEffect;
-    
+
     [SerializeField] private ParticleSystem _clawEffect;
 
     /// <summary> ベースのダメージ量 </summary>
@@ -197,7 +198,7 @@ public class NuweBrain : MonoBehaviour
     /// <summary> 突進攻撃時の当たり判定中かのフラグ </summary>
     private bool _isCheckingRushColDetection;
 
-    private MainGameLoop loop;
+    private MainGameLoop _loop;
 
     private NuweHpViewer _hpView;
 
@@ -224,7 +225,7 @@ public class NuweBrain : MonoBehaviour
     public void Kill()
     {
         _healthPoint = 0;
-        
+
         _tree.EndYieldBehaviourFrom(_currentYielded);
         _tree.YieldAllBehaviourTo(_death);
     }
@@ -414,7 +415,7 @@ public class NuweBrain : MonoBehaviour
             }
         }
     }
-    
+
     public void Initialize()
     {
         _hpView = GameObject.FindAnyObjectByType<NuweHpViewer>(FindObjectsInactive.Include);
@@ -422,20 +423,35 @@ public class NuweBrain : MonoBehaviour
         {
             _hpView.gameObject.SetActive(true);
         }
-        
-        loop = GameObject.FindAnyObjectByType<MainGameLoop>(FindObjectsInactive.Include);
-        if (!loop.gameObject.activeSelf)
+
+        _loop = GameObject.FindAnyObjectByType<MainGameLoop>(FindObjectsInactive.Include);
+        if (!_loop.gameObject.activeSelf)
         {
-            loop.gameObject.SetActive(true);
+            _loop.gameObject.SetActive(true);
         }
-        loop.ApplyEnemyTransform(transform);
+
+        _loop.ApplyEnemyTransform(transform);
+        _loop.EDiveInZone += StartFreeze;
+        _loop.EGetOutZone += EndFreeze;
 
         SetupBehaviours();
         MakeTransitions();
-        
+
         _tree.StartBT();
-        
+
         SetupComponent();
+
+        SceneManager.activeSceneChanged += OnactiveSceneChanged;
+    }
+
+    private void OnactiveSceneChanged(Scene arg0, Scene arg1)
+    {
+        if (_loop is not null && SceneManager.GetActiveScene().name is not ConstantValues.BossScene)
+        {
+            Debug.Log($"鵺 デリゲート 登録 解除");
+            _loop.EDiveInZone -= StartFreeze;
+            _loop.EGetOutZone -= EndFreeze;
+        }
     }
 
     public void FixedUpdate()
@@ -481,7 +497,8 @@ public class NuweBrain : MonoBehaviour
         _death.SetYieldMode(true);
         _death.EBegin += () =>
         {
-            GameObject.FindAnyObjectByType<MainGameLoop>().NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType.Nue, gameObject);
+            GameObject.FindAnyObjectByType<MainGameLoop>()
+                .NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType.Nue, gameObject);
         };
 
         _flinch.AddBehaviour(Flinch);
@@ -686,6 +703,8 @@ public class NuweBrain : MonoBehaviour
     {
         _currentYielded = _death;
 
+        _loop.EDiveInZone -= StartFreeze;
+        _loop.EGetOutZone -= EndFreeze;
         _tree.PauseBT();
         // コンポーネントの破棄
         Destroy(GetComponent<Rigidbody>());
