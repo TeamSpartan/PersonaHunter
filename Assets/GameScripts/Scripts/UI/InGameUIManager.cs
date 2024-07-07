@@ -75,7 +75,7 @@ public class InGameUIManager : WindowManager
 
     public void ToDoOnStart()
     {
-        var gl = GameObject.FindAnyObjectByType<GameLogic>();
+        var gl = GameObject.FindAnyObjectByType<MainGameLoop>();
         gl.EPause += () =>
         {
             GameObject.FindAnyObjectByType<EventSystem>().SetSelectedGameObject(_firstSelectedOnPause);

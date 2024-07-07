@@ -23,12 +23,12 @@ namespace Player.Zone
         public void SetFinishFlag(bool flag) => _finishFlag = flag;
 
         private ZoneObj _zoneObj;
-        private GameLogic _gameLogic;
+        private MainGameLoop mainGameLoop;
 
         private void Start()
         {
             _zoneObj = FindObjectOfType<ZoneObj>();
-            _gameLogic = FindAnyObjectByType<GameLogic>();
+            mainGameLoop = FindAnyObjectByType<MainGameLoop>();
         }
 
         IEnumerator ZoneTimerCountDown()
@@ -52,7 +52,7 @@ namespace Player.Zone
 
             _exitFlag = false;
             _isSlowTime = true;
-            _gameLogic.StartDiveInZone();
+            mainGameLoop.StartDiveInZone();
             _zoneObj.StartDull();
             this.StartCoroutine(this.ZoneTimerCountDown());
 
@@ -68,7 +68,7 @@ namespace Player.Zone
         {
             _exitFlag = true;
             _isSlowTime = false;
-            _gameLogic.GetOutOverZone();
+            mainGameLoop.GetOutOverZone();
             _zoneObj.EndDull();
 
 #if UNITY_EDITOR

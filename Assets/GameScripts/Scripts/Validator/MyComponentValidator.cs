@@ -54,7 +54,7 @@ public class MyComponentValidator : MonoBehaviour
     private GameObject _firstSelectedUIElemInScene;
 
     /// <summary> ゲームロジック </summary>
-    private GameLogic _gameLogic;
+    private MainGameLoop mainGameLoop;
 
     private bool _playedPrologue;
 
@@ -81,8 +81,8 @@ public class MyComponentValidator : MonoBehaviour
 
         _thisSceneOnlyObj = GameObject.FindGameObjectsWithTag("ThisSceneOnly").ToList();
 
-        _gameLogic = GameObject.FindAnyObjectByType<GameLogic>(FindObjectsInactive.Include);
-        if (_gameLogic is not null && !_gameLogic.gameObject.activeSelf)
+        mainGameLoop = GameObject.FindAnyObjectByType<MainGameLoop>(FindObjectsInactive.Include);
+        if (mainGameLoop is not null && !mainGameLoop.gameObject.activeSelf)
         {
             gameObject.gameObject.SetActive(true);
         }
@@ -143,7 +143,7 @@ public class MyComponentValidator : MonoBehaviour
                 GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include).gameObject.SetActive(true);
                 GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include).gameObject.SetActive(true);
 
-                _gameLogic.Initialize();
+                mainGameLoop.Initialize();
                 _cameraBrain.Initialize();
                 _inGameUIManager.ToDoOnStart();
                 _input.InputType = InputType.Player;
@@ -157,7 +157,7 @@ public class MyComponentValidator : MonoBehaviour
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.TransitedBossScene;
 
                 ValidationOnBossScene();
-                _gameLogic.Initialize();
+                mainGameLoop.Initialize();
                 _cameraBrain.Initialize();
                 _inGameUIManager.ToDoOnStart();
                 _input.InputType = InputType.Player;
@@ -233,10 +233,10 @@ public class MyComponentValidator : MonoBehaviour
     private void ValidationOnBossScene()
     {
         // インゲーム入力をブロック
-        _gameLogic.SetInGameInputBlocked(true);
+        mainGameLoop.SetInGameInputBlocked(true);
 
         // ポーズ入力をブロック 【入力タイプがUIになるのを防ぐ】
-        _gameLogic.SetPauseInputBlocked(true);
+        mainGameLoop.SetPauseInputBlocked(true);
         Cursor.lockState = CursorLockMode.Locked;
 
         var ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
@@ -285,12 +285,12 @@ public class MyComponentValidator : MonoBehaviour
         {
             Destroy(movie_appearance);
             Destroy(panel);
-            _gameLogic.SetInGameInputBlocked(false);
-            _gameLogic.SetPauseInputBlocked(false);
+            mainGameLoop.SetInGameInputBlocked(false);
+            mainGameLoop.SetPauseInputBlocked(false);
         };
 
         // ロジックへイベント登録
-        _gameLogic.TaskOnBossDefeated += TaskOnBossDefeated;
+        mainGameLoop.TaskOnBossDefeated += TaskOnBossDefeated;
 
         // ぬえをまたまた初期化
         GameObject.FindAnyObjectByType<NuweBrain>().Initialize();
@@ -325,8 +325,8 @@ public class MyComponentValidator : MonoBehaviour
     /// <summary> ボス撃破時に実行する処理群 </summary>
     private void TaskOnBossDefeated()
     {
-        _gameLogic.SetInGameInputBlocked(true);
-        _gameLogic.SetPauseInputBlocked(true);
+        mainGameLoop.SetInGameInputBlocked(true);
+        mainGameLoop.SetPauseInputBlocked(true);
 
         var defeatedMovieGO = Resources.Load<GameObject>("Prefabs/Video/BossDefeated");
 
@@ -339,8 +339,8 @@ public class MyComponentValidator : MonoBehaviour
         {
             Destroy(panel);
             Destroy(movie_defeated);
-            _gameLogic.SetInGameInputBlocked(false);
-            _gameLogic.SetPauseInputBlocked(false);
+            mainGameLoop.SetInGameInputBlocked(false);
+            mainGameLoop.SetPauseInputBlocked(false);
 
             // インゲームでつかっていたオブジェクトを破棄
             Dispose_InGameObject();
@@ -432,7 +432,7 @@ public class MyComponentValidator : MonoBehaviour
             Destroy(input.gameObject);
         }
 
-        var logic = GameObject.FindAnyObjectByType<GameLogic>(FindObjectsInactive.Include);
+        var logic = GameObject.FindAnyObjectByType<MainGameLoop>(FindObjectsInactive.Include);
         if (logic is not null)
         {
             SceneManager.MoveGameObjectToScene(logic.gameObject, scene);

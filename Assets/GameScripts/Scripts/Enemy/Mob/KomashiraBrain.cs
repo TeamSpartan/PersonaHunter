@@ -72,7 +72,7 @@ public class KomashiraBrain : MonoBehaviour
     /// <summary> パトロールパスのポイントのインデックス </summary>
     private int _patrolPathIndex;
 
-    private GameLogic _logic;
+    private MainGameLoop loop;
 
     #endregion
 
@@ -161,12 +161,12 @@ public class KomashiraBrain : MonoBehaviour
         _slider = _bar.GetComponent<Slider>();
         _slider.maxValue = _maxHealthPoint;
 
-        _logic = GameObject.FindAnyObjectByType<GameLogic>();
+        loop = GameObject.FindAnyObjectByType<MainGameLoop>();
         var t = transform;
         var p = transform.position;
         p += Vector3.up;
         t.position = p;
-        _logic.ApplyEnemyTransform(t);
+        loop.ApplyEnemyTransform(t);
 
         SetupComponent();
         SetupBehaviours();
@@ -541,7 +541,7 @@ public class KomashiraBrain : MonoBehaviour
         _tree.PauseBT();
 
         // 死亡通知
-        _logic.NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType.Komashira, gameObject);
+        loop.NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType.Komashira, gameObject);
 
         // コンポーネントの破棄
         _bar.DestroySelf();

@@ -102,7 +102,7 @@ namespace PlayerCam.Scripts
         // プレイヤ入力クラス
         private PlayerInputsAction _playerInput;
 
-        private GameLogic _logic;
+        private MainGameLoop loop;
 
         #endregion
 
@@ -133,7 +133,7 @@ namespace PlayerCam.Scripts
         public void Initialize()
         {
             // ゲームロジックを取得
-            _logic = GameObject.FindAnyObjectByType<GameLogic>();
+            loop = GameObject.FindAnyObjectByType<MainGameLoop>();
 
             // 検索にひっかかった最初のオブジェクトをプレイヤとする
             this._playerCurrent = GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include).transform;
@@ -533,7 +533,7 @@ namespace PlayerCam.Scripts
 
         public List<Transform> GetLockableTargets()
         {
-            return _logic.GetEnemies().Where(_ =>
+            return loop.GetEnemies().Where(_ =>
                     Vector3.Distance(_playerCurrent.position, _.position) <= MaxDistanceToCapture
                     || Camera.main.WorldToScreenPoint(_.position).x <= Camera.main.pixelWidth - 1
                     && Camera.main.WorldToScreenPoint(_.position).y <= Camera.main.pixelHeight - 1

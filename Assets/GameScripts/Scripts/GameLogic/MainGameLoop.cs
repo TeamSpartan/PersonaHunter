@@ -23,7 +23,7 @@ using System;
 /// <summary>
 /// オモテガリ ゲームロジック
 /// </summary>
-public class GameLogic
+public class MainGameLoop
     : MonoBehaviour, IEnemyDieNotifiable
 {
     #region ゲームシステム構成クラス内イベント

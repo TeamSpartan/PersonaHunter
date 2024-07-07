@@ -51,7 +51,7 @@ namespace Player.Input
         private Queue<PlayerInputTypes> _inputQueue = new();
         private GameInputs _gameInputs; // 低レベルAPIクラス   InputSystemのイベント提供クラス
 
-        private GameLogic _gameLogic;
+        private MainGameLoop mainGameLoop;
         private ZoneTimeController _zoneTimeController;
 
         private Vector2 _inputVector;
@@ -143,11 +143,11 @@ namespace Player.Input
 
         private void Start()
         {
-            _gameLogic = GameObject.FindAnyObjectByType<GameLogic>();
-            _gameLogic.EPause += () => { _inputQueue.Clear(); };
-            _gameLogic.EResume += () => { _inputQueue.Clear(); };
+            mainGameLoop = GameObject.FindAnyObjectByType<MainGameLoop>();
+            mainGameLoop.EPause += () => { _inputQueue.Clear(); };
+            mainGameLoop.EResume += () => { _inputQueue.Clear(); };
 
-            _zoneTimeController = GameLogic.FindAnyObjectByType<ZoneTimeController>();
+            _zoneTimeController = MainGameLoop.FindAnyObjectByType<ZoneTimeController>();
 
             _cameraBrain = GameObject.FindAnyObjectByType<PlayerCameraBrain>(FindObjectsInactive.Include);
             if (_cameraBrain is not null && !_cameraBrain.gameObject.activeSelf)
@@ -433,9 +433,9 @@ namespace Player.Input
         {
             if (context.ReadValueAsButton())
             {
-                _gameLogic.PauseResumeInputFired();
+                mainGameLoop.PauseResumeInputFired();
 
-                if (!PauseInputBlocked && _gameLogic.IsPausing)
+                if (!PauseInputBlocked && mainGameLoop.IsPausing)
                 {
                     _inputType = InputType.UI;
                 }

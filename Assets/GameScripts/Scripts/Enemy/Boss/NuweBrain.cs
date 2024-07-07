@@ -197,7 +197,7 @@ public class NuweBrain : MonoBehaviour
     /// <summary> 突進攻撃時の当たり判定中かのフラグ </summary>
     private bool _isCheckingRushColDetection;
 
-    private GameLogic _logic;
+    private MainGameLoop loop;
 
     private NuweHpViewer _hpView;
 
@@ -423,12 +423,12 @@ public class NuweBrain : MonoBehaviour
             _hpView.gameObject.SetActive(true);
         }
         
-        _logic = GameObject.FindAnyObjectByType<GameLogic>(FindObjectsInactive.Include);
-        if (!_logic.gameObject.activeSelf)
+        loop = GameObject.FindAnyObjectByType<MainGameLoop>(FindObjectsInactive.Include);
+        if (!loop.gameObject.activeSelf)
         {
-            _logic.gameObject.SetActive(true);
+            loop.gameObject.SetActive(true);
         }
-        _logic.ApplyEnemyTransform(transform);
+        loop.ApplyEnemyTransform(transform);
 
         SetupBehaviours();
         MakeTransitions();
@@ -481,7 +481,7 @@ public class NuweBrain : MonoBehaviour
         _death.SetYieldMode(true);
         _death.EBegin += () =>
         {
-            GameObject.FindAnyObjectByType<GameLogic>().NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType.Nue, gameObject);
+            GameObject.FindAnyObjectByType<MainGameLoop>().NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType.Nue, gameObject);
         };
 
         _flinch.AddBehaviour(Flinch);
