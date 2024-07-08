@@ -44,6 +44,7 @@ public class KomashiraHPBar : MonoBehaviour
         {
             slider.interactable = false;
         }
+        SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged;
     }
 
     private void OnDestroy()
@@ -55,7 +56,7 @@ public class KomashiraHPBar : MonoBehaviour
     {
         if (arg1.name is not ConstantValues.InGameScene)
         {
-            SceneManager.MoveGameObjectToScene(gameObject, arg1);
+            // SceneManager.MoveGameObjectToScene(gameObject, arg1);
             DestroySelf();
         }
     }

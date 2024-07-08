@@ -122,9 +122,9 @@ namespace PlayerCam.Scripts
 
         private void Awake()
         {
-            SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged;
+            SceneManager.activeSceneChanged += OnactiveSceneChanged;
         }
-        
+
         private void Start()
         {
             Initialize();
@@ -185,20 +185,39 @@ namespace PlayerCam.Scripts
             var scene = SceneManager.GetActiveScene();
             SceneManager.MoveGameObjectToScene(_playerFollowCam.gameObject, scene);
             SceneManager.MoveGameObjectToScene(_lockOnCam.gameObject, scene);
+            Destroy(_playerFollowCam.gameObject);
+            Destroy(_lockOnCam.gameObject);
         }
 
-        private void SceneManagerOnactiveSceneChanged(Scene arg0, Scene arg1)
+        private void OnactiveSceneChanged(Scene arg0, Scene arg1)
         {
-            if (arg0.name is ConstantValues.BossScene)
+            if (arg1.name is not ConstantValues.BossScene)
             {
-                _playerFollowCam.gameObject.SetActive(false);
-                _lockOnCam.gameObject.SetActive(false);
+                if (_playerFollowCam is not null && _playerFollowCam.gameObject is not null)
+                {
+                    SceneManager.MoveGameObjectToScene(_playerFollowCam.gameObject, arg1);
+                }
+
+                if (_lockOnCam is not null && _lockOnCam.gameObject is not null)
+                {
+                    SceneManager.MoveGameObjectToScene(_lockOnCam.gameObject, arg1);
+                }
+
+                if (_playerFollowCam is not null)
+                {
+                    Destroy(_playerFollowCam.gameObject);
+                }
+
+                if (_lockOnCam is not null)
+                {
+                    Destroy(_lockOnCam.gameObject);
+                }
             }
         }
 
         private void OnDisable()
         {
-            SceneManager.activeSceneChanged -= SceneManagerOnactiveSceneChanged;
+            SceneManager.activeSceneChanged -= OnactiveSceneChanged;
         }
 
         private void Update()
