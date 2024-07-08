@@ -24,7 +24,7 @@ using UnityEngine;
 /// ユーザー定義のゲーム開始時にヴァリデーション処理を受け持つクラス。
 /// あくまでもシーン遷移後の処理をするのみに留める
 /// </summary>
-public class MyComponentValidator : MonoBehaviour
+public class MainLoopValidator : MonoBehaviour
 {
     // このクラスのオブジェクトが破棄されたときに同時に破棄するオブジェクトのリスト
     [SerializeField] private List<GameObject> _destroyTargetOnDestroyedThis;
@@ -227,6 +227,8 @@ public class MyComponentValidator : MonoBehaviour
                 GameObject.Destroy(obj);
             }
         }
+        
+        Dispose_InGameObject();
     }
 
     /// <summary> ボスシーンでのヴァリエーション </summary>
@@ -409,6 +411,14 @@ public class MyComponentValidator : MonoBehaviour
         if (volume is not null)
         {
             SceneManager.MoveGameObjectToScene(volume, scene);
+            Destroy(volume);
+        }
+
+        var afterImage = GameObject.FindWithTag("AfterImage");
+        if (afterImage is not null)
+        {
+            SceneManager.MoveGameObjectToScene(afterImage, scene);
+            Destroy(afterImage);
         }
 
         var player = GameObject.FindAnyObjectByType<PlayerParam>(FindObjectsInactive.Include);
@@ -423,6 +433,7 @@ public class MyComponentValidator : MonoBehaviour
         {
             SceneManager.MoveGameObjectToScene(camera.gameObject, scene);
             camera.DisposeCameras();
+            Destroy(camera.gameObject);
         }
 
         var input = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
