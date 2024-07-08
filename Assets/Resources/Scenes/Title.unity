@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 262.38358, g: 325.10843, b: 430.30963, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -190,7 +190,7 @@ PrefabInstance:
     - target: {fileID: 5469982363699824443, guid: 78ac16f7cb961364e8096d2f4721c267,
         type: 3}
       propertyPath: m_Name
-      value: TitleSceneBackGround
+      value: TitleSceneBackGround_Movie
       objectReference: {fileID: 0}
     - target: {fileID: 9196305503757108373, guid: 78ac16f7cb961364e8096d2f4721c267,
         type: 3}
@@ -718,6 +718,46 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618602219366537241, guid: d9af35f07310280498662c1482a28749,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618602219366537241, guid: d9af35f07310280498662c1482a28749,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618602219366537241, guid: d9af35f07310280498662c1482a28749,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 707964379}
+    - target: {fileID: 4618602219366537241, guid: d9af35f07310280498662c1482a28749,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618602219366537241, guid: d9af35f07310280498662c1482a28749,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LoadSceneByName
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618602219366537241, guid: d9af35f07310280498662c1482a28749,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SgLibUnite.Systems.SceneLoader, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618602219366537241, guid: d9af35f07310280498662c1482a28749,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Epilogue
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618602219366537241, guid: d9af35f07310280498662c1482a28749,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6032231252911587360, guid: d9af35f07310280498662c1482a28749,
         type: 3}

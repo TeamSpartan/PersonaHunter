@@ -13,6 +13,7 @@ TagManager:
   - ThisSceneOnly
   - OptionWindow
   - OmotegariVolume
+  - AfterImage
   layers:
   - Default
   - TransparentFX
