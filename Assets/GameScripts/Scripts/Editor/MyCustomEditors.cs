@@ -28,7 +28,7 @@ public static class DesignInfoStyle
     }
 }
 
-[CustomEditor(typeof(MyComponentValidator))]
+[CustomEditor(typeof(MainLoopValidator))]
 public class MyComponentValidatorEditor : Editor
 {
     public override void OnInspectorGUI()

@@ -213,7 +213,7 @@ public class MainGameLoop
         {
             EDiveInZone();
         }
-        
+
         PlayDoGEffect();
     }
 
@@ -257,7 +257,7 @@ public class MainGameLoop
             _playerInputs.gameObject.SetActive(true);
         }
 
-        SceneManager.activeSceneChanged += (arg0, scene) => { _enemies.Clear(); };
+        SceneManager.activeSceneChanged += OnactiveSceneChanged;
 
         // SceneLoader が Nullである場合には生成。
         var loader = GameObject.FindFirstObjectByType<SceneLoader>(FindObjectsInactive.Include);
@@ -272,6 +272,16 @@ public class MainGameLoop
         GetDoGComponent();
     }
 
+    private void OnactiveSceneChanged(Scene arg0, Scene arg1)
+    {
+        _enemies.Clear();
+        if (arg1.name is not ConstantValues.BossScene && gameObject is not null)
+        {
+            SceneManager.MoveGameObjectToScene(gameObject, arg1);
+            Destroy(gameObject);
+            SceneManager.activeSceneChanged -= OnactiveSceneChanged;
+        }
+    }
 
     /// <summary> ポーズ入力のブロックをする。 condition = True でブロック </summary>
     /// <param name="condition"></param>
