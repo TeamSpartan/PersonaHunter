@@ -61,6 +61,11 @@ public class MainLoopValidator : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        // Move Main Display To Game Window
+        List<DisplayInfo> dInfo = new List<DisplayInfo>();
+        Screen.GetDisplayLayout(dInfo);
+        Screen.MoveMainWindowTo(dInfo[0], dInfo[1].workArea.position);
+        
         Validation();
         SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged_DestroyThisSceneOnlyObj;
     }
