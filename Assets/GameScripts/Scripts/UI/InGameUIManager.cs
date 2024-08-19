@@ -47,7 +47,6 @@ public class InGameUIManager : WindowManager
     {
         if (_pausePanel.TryGetComponent<CanvasGroup>(out var canvasGroup))
         {
-            Debug.Log($"ポーズ");
             canvasGroup.alpha = 1;
             canvasGroup.interactable = canvasGroup.blocksRaycasts = true;
         }
@@ -57,7 +56,6 @@ public class InGameUIManager : WindowManager
     {
         if (_pausePanel.TryGetComponent<CanvasGroup>(out var canvasGroup))
         {
-            Debug.Log($"ポーズ おわり");
             canvasGroup.alpha = 0;
             canvasGroup.interactable = canvasGroup.blocksRaycasts = false;
         }
