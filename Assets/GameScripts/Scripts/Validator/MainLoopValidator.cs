@@ -349,6 +349,9 @@ public class MainLoopValidator : MonoBehaviour
     {
         mainGameLoop.SetInGameInputBlocked(true);
         mainGameLoop.SetPauseInputBlocked(true);
+        
+        // BGMを止める
+        GameObject.FindAnyObjectByType<AudioSource>().Pause();
 
         var defeatedMovieGO = Resources.Load<GameObject>("Prefabs/Video/BossDefeated");
 

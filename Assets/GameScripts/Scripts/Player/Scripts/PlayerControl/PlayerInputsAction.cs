@@ -152,6 +152,7 @@ namespace Player.Input
 
         private void OnGUI() // デバッグ表示
         {
+            return;
             GUI.Box(new Rect(0f, 0f, 700f, 600f)
                 ,
                 @$"
