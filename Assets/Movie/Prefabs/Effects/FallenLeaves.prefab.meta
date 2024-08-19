@@ -1,6 +1,12 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/GameScripts/Scripts/SoundCri.meta
+guid: 20a27f959dd6fbf4fbbaead9be328e3f
+folderAsset: yes
+DefaultImporter:
+========
 guid: 9bef68f35e4b75a409a617fa6a25a772
 PrefabImporter:
+>>>>>>>> 44658f249eb4aeb2ebfd446d55740ba5fddb3e43:Assets/Movie/Prefabs/Effects/FallenLeaves.prefab.meta
   externalObjects: {}
   userData: 
   assetBundleName: 
