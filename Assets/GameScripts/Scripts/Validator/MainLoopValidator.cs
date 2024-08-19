@@ -64,7 +64,10 @@ public class MainLoopValidator : MonoBehaviour
         // Move Main Display To Game Window
         List<DisplayInfo> dInfo = new List<DisplayInfo>();
         Screen.GetDisplayLayout(dInfo);
-        Screen.MoveMainWindowTo(dInfo[0], dInfo[1].workArea.position);
+        if (dInfo.Count > 1)
+        {
+            Screen.MoveMainWindowTo(dInfo[0], dInfo[1].workArea.position);
+        }   // モニタが２以上あるなら
         
         Validation();
         SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged_DestroyThisSceneOnlyObj;
