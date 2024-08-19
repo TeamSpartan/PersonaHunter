@@ -9,6 +9,7 @@ using Player.Input;
 using Player.Param;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem.UI;
 
 // コードクリーン 実施 【6/26日 ： 菅沼】
 // リファクタも実施
@@ -67,8 +68,8 @@ public class MainLoopValidator : MonoBehaviour
         if (dInfo.Count > 1)
         {
             Screen.MoveMainWindowTo(dInfo[0], dInfo[1].workArea.position);
-        }   // モニタが２以上あるなら
-        
+        } // モニタが２以上あるなら
+
         Validation();
         SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged_DestroyThisSceneOnlyObj;
     }
@@ -182,6 +183,15 @@ public class MainLoopValidator : MonoBehaviour
         }
     }
 
+    public void SkipPrologue()
+    {
+        // スキップ入力
+        _clientData.NotifyPlayedPrologue();
+
+        GameObject.FindAnyObjectByType<SceneLoader>()
+            .LoadSceneByName(ConstantValues.TitleScene);
+    }
+
     private void OnDestroy()
     {
         foreach (var target in _destroyTargetOnDestroyedThis)
@@ -235,7 +245,7 @@ public class MainLoopValidator : MonoBehaviour
                 GameObject.Destroy(obj);
             }
         }
-        
+
         Dispose_InGameObject();
     }
 
@@ -297,7 +307,9 @@ public class MainLoopValidator : MonoBehaviour
             Destroy(panel);
             mainGameLoop.SetInGameInputBlocked(false);
             mainGameLoop.SetPauseInputBlocked(false);
-        };
+
+            GameObject.FindAnyObjectByType<AudioSource>().Play();
+        }; // 登場ムービーの再生が終わったら
 
         // ロジックへイベント登録
         mainGameLoop.TaskOnBossDefeated += TaskOnBossDefeated;
