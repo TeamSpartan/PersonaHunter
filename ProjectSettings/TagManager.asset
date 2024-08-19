@@ -3,7 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Nue
+  - SpawnPos
+  - PlayerUI
+  - LockOnCam
+  - FollowCam
+  - FirstSelectedUIElement
+  - ThisSceneOnly
+  - OptionWindow
+  - OmotegariVolume
+  - AfterImage
   layers:
   - Default
   - TransparentFX
@@ -13,9 +23,9 @@ TagManager:
   - UI
   - Player
   - CustomPLPass
-  - 
-  - 
-  - 
+  - Ground
+  - Boss
+  - NuweJuvenile
   - 
   - 
   - 

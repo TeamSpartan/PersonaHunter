@@ -1,178 +1,193 @@
-using System;
+using DG.Tweening;
+using Player.Input;
+using Player.Param;
+using PlayerCam.Scripts;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Player.Action
 {
-	//Rigidbodyを強制的にアタッチする
 	[RequireComponent(typeof(Rigidbody))]
-	public class PlayerMove : MonoBehaviour
+	public class PlayerMove : MonoBehaviour, IPlayerCameraTrasable
 	{
-		/// <summary>プレイヤーのRigidbody </summary>
-		Rigidbody _rb;
+		[SerializeField, Header("プレイヤーの回転速度")] float _rotateSpeed = 20f;
 
-		/// <summary>接地判定 </summary>
-		bool _IsGround;
+		[SerializeField, Header("カメラの回転速度")] private float _cameraRotateSpeed = 3f;
 
-		/// <summary>プレイヤーの移動方向 </summary>
-		Vector3 _dir;
+		[SerializeField, Header("歩く速度")] float _walkSpeed = 10f;
 
-		/// <summary>プレイヤーの進行方向を保存する </summary>
-		Quaternion _targetRotation;
+		[SerializeField, Header("走る速度")] private float _runSpeed = 20f;
+		[SerializeField, Header("走るまでの時間")] private float _runTransitionTime = 1f;
 
-		[SerializeField, Tooltip("プレイヤーの回転速度")]
-		float rotateSpeed = 10f;
+		[Header("接地判定の長さ")] [SerializeField, Tooltip("接地判定Y方向のオフセット"), Range(0, -1)]
+		float _groundOffSetY = -0.14f;
 
-		[SerializeField, Tooltip("プレイヤーの移動速度")]
-		float moveSpeed = 10f;
+		[SerializeField, Header("接地判定の半径"), Range(0, 1)]
+		float _groundRadius = 0.5f;
 
-		[SerializeField, Tooltip("プレイヤーの高さ")] float playerHeight = 1f;
+		[SerializeField, Header("重力の大きさ")] private float _gravityValue = 30f;
 
-		[Header("接地判定")] [SerializeField, Tooltip("接地判定Y方向のオフセット"), Range(0, -1)]
-		float groundOffSetY = -0.14f;
-
-		[SerializeField, Tooltip("接地判定の半径"), Range(0, 1)]
-		float groundRadius = 0.5f;
+		[SerializeField, Header("ノーマル判定Rayの長さ")]
+		private float _rayLength = 0.3f;
 
 		[SerializeField, Tooltip("接地判定が反応するLayer")]
-		LayerMask groundLayers;
+		LayerMask _groundLayers;
 
-		[Header("傾斜")] [SerializeField, Tooltip("最大傾斜角度")]
-		float maxSlopeAngle;
+		[SerializeField] private GameObject _player;
 
+		Rigidbody _rb;
+		Vector3 _dir;
 		RaycastHit _slopeHit;
-		private GameInputs _gameInputs;
 		private Animator _animator;
 		private Vector3 _groundNormalVector;
+		private PlayerParam _playerParam;
+		private PlayerCameraBrain _playerCamera;
+		private DOTween _doTween;
 
-		private void OnEnable()
+		private float _speed;
+
+		public Vector3 MovementDirection
 		{
-			_gameInputs = new();
-			_gameInputs.Enable();
-		}
+			get
+			{
+				return _dir;
+			}
 
-		private void OnDisable()
-		{
-			_gameInputs.Disable();
-		}
-
-		void Start()
-		{
-			_rb = GetComponent<Rigidbody>();
-			_animator = GetComponentInChildren<Animator>();
-		}
-
-		void Update()
-		{
-			//速度制限をする
-			//SpeedControl();
-
-			Debug.DrawRay(transform.position, Vector3.down, Color.red, playerHeight * 0.5f + 5f);
-		}
-
-		private void FixedUpdate()
-		{
-			OnMove(_gameInputs.Player.Move);
-			//接地判定
-			_IsGround = GroundCheck();
+			set
+			{
+				_dir = value;
+			}
 		}
 
 		/// <summary>プレイヤーの移動処理のメソッド </summary>
-		private void OnMove(InputAction context)
+		private void OnMove(Vector2 inputValue)
 		{
 			//プレイヤーの移動方向を決める
-			Vector2 inputValue = context.ReadValue<Vector2>();
 			_dir = new Vector3(inputValue.x, 0, inputValue.y);
 			_dir = Camera.main.transform.TransformDirection(_dir);
 			_dir.y = 0;
 			_dir = _dir.normalized;
 
-			//滑らかに進行方向に回転させる
-			if (_dir.magnitude > 0)
+			//走っていると
+			if (PlayerInputsAction.Instance.IsRunning)
 			{
-				_targetRotation = Quaternion.LookRotation(_dir, Vector3.up);
-			}
-
-			transform.rotation = Quaternion.RotateTowards(transform.rotation, _targetRotation, rotateSpeed);
-
-
-			//傾斜を登っているのかを判定する
-			if (OnSlope())
-			{
-				_rb.AddForce(_dir * moveSpeed * 20f, ForceMode.Force);
-				//傾斜で浮かないための処理
-				if (_rb.velocity.y > 0)
-					_rb.AddForce(Vector3.down * 80f, ForceMode.Force);
+				_rb.velocity = GetSlopeMoveDirection(_dir * _speed, NormalRay());
 			}
 			else
 			{
-				_rb.AddForce(_dir * moveSpeed * 10f, ForceMode.Force);
+				_rb.velocity = GetSlopeMoveDirection(_dir * _speed, NormalRay());
 			}
 
-			SpeedControl();
+			if (PlayerInputsAction.Instance.GetMoveInput() == Vector2.zero)
+			{
+				_rb.velocity = Vector3.zero;
+			}
+
 			_animator.SetFloat("Speed", _dir.magnitude);
-			//傾斜なら重力を無くす
-			_rb.useGravity = !OnSlope();
+		}
+
+		///<summary>プレイヤーの向き</summary>
+		public void PlayerRotate(Vector3 dir)
+		{
+			if (_playerCamera.LockingOn)
+			{
+				_player.transform.forward +=
+					Vector3.Lerp(_player.transform.forward, dir, Time.deltaTime * _rotateSpeed);
+			}
+			else
+			{
+				_player.transform.forward +=
+					Vector3.Lerp(_player.transform.forward, dir, Time.deltaTime * _rotateSpeed);
+				if (PlayerInputsAction.Instance.GetCurrentInputType != PlayerInputTypes.Avoid)
+					transform.forward += Vector3.Lerp(transform.forward, dir, Time.deltaTime * _cameraRotateSpeed);
+			}
 		}
 
 		/// <summary>プレイヤーの接地判定を判定するメソッド </summary>
-		/// <returns>接地判定</returns>	
+		/// <returns>接地判定</returns>
 		bool GroundCheck()
 		{
 			//オフセットを計算して接地判定の球の位置を設定する
 			Vector3 spherePosition =
-				new Vector3(transform.position.x, transform.position.y - groundOffSetY, transform.position.z);
+				new Vector3(transform.position.x, transform.position.y - _groundOffSetY, transform.position.z);
 
-			Debug.DrawRay(spherePosition, Vector3.down, Color.green, playerHeight * 0.5f + 5f);
 			//接地判定を返す
-			return Physics.CheckSphere(spherePosition, groundRadius, groundLayers, QueryTriggerInteraction.Ignore);
+			return Physics.CheckSphere(spherePosition, _groundRadius, _groundLayers, QueryTriggerInteraction.Ignore);
 		}
 
-		/// <summary>プレイヤーの速度制限のメソッド </summary>
-		void SpeedControl()
+		///<summary>法線ベクトルを返す</summary>
+		public Vector3 NormalRay()
 		{
-			//傾斜での速度制限
-			if (OnSlope())
+			RaycastHit hit;
+			Ray ray = new Ray(transform.position, Vector3.down * _rayLength);
+			if (Physics.Raycast(ray, out hit, _rayLength, _groundLayers))
 			{
-				if (_rb.velocity.magnitude > moveSpeed)
-					_rb.velocity = _rb.velocity.normalized * moveSpeed;
-			}
-			else
-			{
-				Vector3 flatVel = new Vector3(_rb.velocity.x, 0f, _rb.velocity.z);
-				//速度制限をする
-				if (flatVel.magnitude > moveSpeed)
-				{
-					Vector3 limitVel = flatVel.normalized * moveSpeed;
-					_rb.velocity = new Vector3(limitVel.x, _rb.velocity.y, limitVel.z);
-				}
-			}
-		}
-
-		/// <summary>
-		/// 傾斜の判定をするメソッド
-		/// </summary>
-		/// <returns>地面が登れる傾斜であるのかを判定</returns>
-		bool OnSlope()
-		{
-			//接地していたら地面の角度を求める
-			if (Physics.Raycast(transform.position, Vector3.down, out _slopeHit, playerHeight * 0.5f + 0.3f,
-				    groundLayers))
-			{
-				float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
-				return angle < maxSlopeAngle && angle != 0;
+				Debug.DrawRay(transform.position, Vector3.down * _rayLength, Color.cyan);
+				return hit.normal;
 			}
 
-			return false;
+			return Vector3.zero;
 		}
 
 		/// <summary>
 		/// 傾斜に合わせたベクトルに変えるメソッド
 		/// </summary>
 		/// <returns>傾斜に合わせたベクトル</returns>
-		Vector3 GetSlopeMoveDirection()
+		/// <param name="dir"></param>
+		public Vector3 GetSlopeMoveDirection(Vector3 dir, Vector3 normalVector)
 		{
-			return Vector3.ProjectOnPlane(_dir, _slopeHit.normal).normalized;
+			return Vector3.ProjectOnPlane(dir, normalVector);
+		}
+
+		public Transform GetPlayerCamTrasableTransform()
+		{
+			return transform;
+		}
+
+		private void Start()
+		{
+			_rb = GetComponent<Rigidbody>();
+			_animator = GetComponentInChildren<Animator>();
+			_playerParam = GetComponent<PlayerParam>();
+			_playerCamera = FindObjectOfType<PlayerCameraBrain>();
+			_playerParam.SetIsRun(false);
+			_speed = _walkSpeed;
+		}
+
+		private void FixedUpdate()
+		{
+			if (GroundCheck())
+			{
+				if (!_playerParam.GetIsAnimation)
+				{
+					OnMove(PlayerInputsAction.Instance.GetMoveInput());
+					PlayerRotate(_dir);
+				}
+				else if (!_playerParam.GetIsAvoid)
+				{
+					_rb.velocity = Vector3.zero;
+				}
+			}
+			else
+			{
+				_rb.AddForce(Vector3.down * _gravityValue);
+			}
+		}
+
+		private void OnDisable()
+		{
+			MovementDirection = Vector3.zero;
+		}
+
+		void SpeedChange()
+		{
+			if (_playerParam.GetIsRun)
+			{
+				_speed = _runSpeed;
+			}
+			else
+			{
+				_speed = _walkSpeed;
+			}
 		}
 	}
 }

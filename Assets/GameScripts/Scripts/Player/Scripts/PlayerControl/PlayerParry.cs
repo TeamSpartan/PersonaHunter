@@ -1,27 +1,30 @@
-﻿using Player.Input;
+﻿using System;
+using Player.Input;
 using Player.Param;
+using Player.Zone;
+using SgLibUnite.CodingBooster;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player.Action
 {
 	[RequireComponent(typeof(PlayerParam))]
-	[RequireComponent(typeof(Animator))]
 	///<summary>プレイヤーのパリー</summary>
-	public class PlayerParry : MonoBehaviour
+	public class PlayerParry : MonoBehaviour, IAbleToParry
 	{
-		public event System.Action OnParryStart,
-			OnParrySuccess,
-			OnEndParry,
-			OnDuringParry;
+		[SerializeField] private ParticleSystem _parrySucceedEffect;
 
 		private int _parryID = Animator.StringToHash("IsParry");
 		private PlayerParam _playerParam;
 		private Animator _animator;
+		private CBooster _cBooster = new();
+		private ZoneObj _zoneObj;
 
 		private void Start()
 		{
-			_playerParam = GetComponentInParent<PlayerParam>();
-			_animator = GetComponentInParent<Animator>();
+			_playerParam = GetComponent<PlayerParam>();
+			_animator = GetComponent<Animator>();
+			_zoneObj = GetComponentInChildren<ZoneObj>();
 		}
 
 		private void Update()
@@ -35,28 +38,38 @@ namespace Player.Action
 
 		void Parried()
 		{
-			if (_playerParam.GetIsParry)
+			if (_playerParam.GetIsAnimation)
 			{
-				OnDuringParry?.Invoke();
+				Debug.Log("aa");
 				return;
 			}
 
+			PlayerInputsAction.Instance.RunCancel();
+			_playerParam.BoolInitialize();
+			_playerParam.AnimatorInitialize();
 			_playerParam.SetIsAnimation(true);
 			_animator.SetTrigger(_parryID);
 		}
 
+		//パリィの成功
+		public void ParrySuccess()
+		{
+			_zoneObj.IncreaseGaugeValue(_playerParam.GetGiveValueOfParry);
+			_parrySucceedEffect.Play();
+		}
 
 		///<summary>アニメーションイベントで呼び出す用</summary>------------------------------------------------------------------
 		public void Parry()
 		{
 			if (_playerParam.GetIsParry)
 			{
-				OnDuringParry?.Invoke();
+				_playerParam.SetIsParry(false);
 				return;
 			}
 
+			_playerParam.BoolInitialize();
 			_playerParam.SetIsParry(true);
-			OnParryStart?.Invoke();
+			_playerParam.SetIsAnimation(true);
 		}
 
 		public void EndParry()
@@ -66,7 +79,6 @@ namespace Player.Action
 				return;
 			}
 
-			OnEndParry?.Invoke();
 			_playerParam.SetIsParry(false);
 		}
 
@@ -75,6 +87,11 @@ namespace Player.Action
 			PlayerInputsAction.Instance.DeleteInputQueue(PlayerInputTypes.Parry);
 			_playerParam.SetIsAnimation(false);
 			PlayerInputsAction.Instance.EndAction();
+		}
+
+		public bool NotifyPlayerIsGuarding()
+		{
+			return _playerParam.GetIsParry;
 		}
 	}
 }

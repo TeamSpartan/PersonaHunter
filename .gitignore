@@ -70,3 +70,8 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+Assets/CRIMW/
+Assets/CriData/
+Assets/Plugins/cri_ware_unity.bundle/
+Assets/Plugins/cri_ware_unity.bundle.meta
+Assets/FontAssets/
