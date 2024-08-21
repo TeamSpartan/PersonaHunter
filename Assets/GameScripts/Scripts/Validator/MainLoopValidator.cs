@@ -177,12 +177,33 @@ public class MainLoopValidator : MonoBehaviour
             Destroy(target);
     }
 
+    /// <summary>
+    /// PressAnyButtonが押された時のイベント。プロローグ再生が終わっているかによって処理が変化
+    /// </summary>
+    public void OnPressedAnyButton()
+    {
+        var eventSystem = GameObject.FindAnyObjectByType<EventSystem>(); // 今アクティブなイベントシステムのクラスが欲しい
+        // EventSystem の選択オブジェクトを変更
+        if (_clientData.PlayedPrologue)
+        {
+            eventSystem.firstSelectedGameObject = null;
+            // PressAnyButtonのパネル
+            var panel = GameObject.Find("PressAnyButtonPanel");
+            if ((panel is not null))
+                GameObject.Destroy(panel);
+
+            eventSystem.SetSelectedGameObject(GameObject.FindGameObjectWithTag("FirstSelectedUIElement"));
+        }
+        else
+        {
+            GameObject.FindAnyObjectByType<SceneLoader>().LoadSceneByName(ConstantValues.PrologueScene);
+        }
+    }
+
     /// <summary> タイトルシーンのヴァリデーション </summary>
     private void ValidationOnTitleScene()
     {
         Dispose_InGameObject();
-
-        var eventSystem = GameObject.FindAnyObjectByType<EventSystem>(); // 今アクティブなイベントシステムのクラスが欲しい
 
         // タイトル画面のバックグラウンドのオブジェクト
         var obj = GameObject.Find("TitleImageBackGround");
@@ -194,18 +215,6 @@ public class MainLoopValidator : MonoBehaviour
                 group.alpha = _clientData.PlayedPrologue ? 1 : 0;
                 group.interactable = group.blocksRaycasts = _clientData.PlayedPrologue;
             }
-        }
-
-        // EventSystem の選択オブジェクトを変更
-        if (_clientData.PlayedPrologue)
-        {
-            eventSystem.firstSelectedGameObject = null;
-            // PressAnyButtonのパネル
-            var panel = GameObject.Find("PressAnyButtonPanel");
-            if ((panel is not null))
-                GameObject.Destroy(panel);
-
-            eventSystem.SetSelectedGameObject(GameObject.FindGameObjectWithTag("FirstSelectedUIElement"));
         }
     }
 
