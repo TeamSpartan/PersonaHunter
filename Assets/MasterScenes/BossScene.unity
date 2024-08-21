@@ -503,9 +503,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 387767042}
+  - component: {fileID: 387767043}
   m_Layer: 0
   m_Name: SpawnPos
-  m_TagString: SpawnPos
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -525,6 +526,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 170.72, z: 0}
+--- !u!114 &387767043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387767041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a4e2d49727c4edcbf24a218998e97f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _direction: {x: 0, y: 0, z: -2.74}
 --- !u!1001 &401344399
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23892,7 +23906,7 @@ GameObject:
   - component: {fileID: 2040271594}
   - component: {fileID: 2040271593}
   m_Layer: 0
-  m_Name: Audio Source
+  m_Name: BGM Source
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23908,7 +23922,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 261873a5d9b46c84ba4a49db5ccaf0d3, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 48703bf8868d78a45afd1b4c397bba3e, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
