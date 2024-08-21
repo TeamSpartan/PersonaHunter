@@ -55,9 +55,7 @@ public class MainLoopValidator : MonoBehaviour
     private GameObject _firstSelectedUIElemInScene;
 
     /// <summary> ゲームロジック </summary>
-    private MainGameLoop mainGameLoop;
-
-    private bool _playedPrologue;
+    private MainGameLoop _mainGameLoop;
 
     // Start is called before the first frame update
     private void Start()
@@ -86,12 +84,12 @@ public class MainLoopValidator : MonoBehaviour
     private void Validation()
     {
         _clientData = Resources.Load<ClientDataHolder>("Prefabs/GameSystem/ClientDataHolder");
-        _firstSelectedUIElemInScene = GameObject.FindWithTag("FirstSelectedUIElement");
+        _firstSelectedUIElemInScene = GameObject.FindGameObjectWithTag("FirstSelectedUIElement");
 
         _thisSceneOnlyObj = GameObject.FindGameObjectsWithTag("ThisSceneOnly").ToList();
 
-        mainGameLoop = GameObject.FindAnyObjectByType<MainGameLoop>(FindObjectsInactive.Include);
-        if (mainGameLoop is not null && !mainGameLoop.gameObject.activeSelf)
+        _mainGameLoop = GameObject.FindAnyObjectByType<MainGameLoop>(FindObjectsInactive.Include);
+        if (_mainGameLoop is not null && !_mainGameLoop.gameObject.activeSelf)
         {
             gameObject.gameObject.SetActive(true);
         }
@@ -152,7 +150,7 @@ public class MainLoopValidator : MonoBehaviour
                 GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include).gameObject.SetActive(true);
                 GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include).gameObject.SetActive(true);
 
-                mainGameLoop.Initialize();
+                _mainGameLoop.Initialize();
                 _cameraBrain.Initialize();
                 _inGameUIManager.ToDoOnStart();
                 _input.InputType = InputType.Player;
@@ -166,7 +164,7 @@ public class MainLoopValidator : MonoBehaviour
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.TransitedBossScene;
 
                 ValidationOnBossScene();
-                mainGameLoop.Initialize();
+                _mainGameLoop.Initialize();
                 _cameraBrain.Initialize();
                 _inGameUIManager.ToDoOnStart();
                 _input.InputType = InputType.Player;
@@ -203,60 +201,45 @@ public class MainLoopValidator : MonoBehaviour
     /// <summary> タイトルシーンのヴァリデーション </summary>
     private void ValidationOnTitleScene()
     {
-        // プロローグを再生したかの静的フィールドにアクセス
-        if (_clientData is not null)
-        {
-            _playedPrologue = _clientData.PlayedPrologue;
-        }
-
-        // EventSystem の選択オブジェクトを変更
-        if (_clientData.PlayedPrologue)
-        {
-            var eventSystem = GameObject.FindAnyObjectByType<EventSystem>(); // 今アクティブなイベントシステムのクラスが欲しい
-            if (eventSystem is not null)
-            {
-                if (_firstSelectedUIElemInScene is null)
-                {
-                    _firstSelectedUIElemInScene = GameObject.FindGameObjectWithTag("FirstSelectedUIElement");
-                }
-
-                eventSystem.firstSelectedGameObject = _firstSelectedUIElemInScene;
-            }
-        }
-
+        Dispose_InGameObject();
+        
+        var eventSystem = GameObject.FindAnyObjectByType<EventSystem>(); // 今アクティブなイベントシステムのクラスが欲しい
+        
         // タイトル画面のバックグラウンドのオブジェクト
-        var obj = GameObject.Find("TitleImageBackGround"); // ##
+        var obj = GameObject.Find("TitleImageBackGround");
         if (obj is not null)
         {
             var group = obj.transform.GetComponentInChildren<CanvasGroup>();
             if (group is not null)
             {
-                group.alpha = _playedPrologue ? 1 : 0;
-                group.interactable = group.blocksRaycasts = _playedPrologue;
+                group.alpha = _clientData.PlayedPrologue ? 1 : 0;
+                group.interactable = group.blocksRaycasts = _clientData.PlayedPrologue;
             }
         }
-
-        // PressAnyButtonのパネル
-        obj = GameObject.Find("PressAnyButtonPanel"); // ## 
-        if (obj is not null)
+        
+        // EventSystem の選択オブジェクトを変更
+        if (_clientData.PlayedPrologue)
         {
-            if (_playedPrologue)
+            eventSystem.firstSelectedGameObject = null;
+            // PressAnyButtonのパネル
+            var panel = GameObject.Find("PressAnyButtonPanel");
+            if ((panel is not null))
             {
-                GameObject.Destroy(obj);
+                GameObject.Destroy(panel);
             }
-        }
 
-        Dispose_InGameObject();
+            eventSystem.SetSelectedGameObject(GameObject.FindGameObjectWithTag("FirstSelectedUIElement"));
+        }
     }
 
     /// <summary> ボスシーンでのヴァリエーション </summary>
     private void ValidationOnBossScene()
     {
         // インゲーム入力をブロック
-        mainGameLoop.SetInGameInputBlocked(true);
+        _mainGameLoop.SetInGameInputBlocked(true);
 
         // ポーズ入力をブロック 【入力タイプがUIになるのを防ぐ】
-        mainGameLoop.SetPauseInputBlocked(true);
+        _mainGameLoop.SetPauseInputBlocked(true);
         Cursor.lockState = CursorLockMode.Locked;
 
         var ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
@@ -305,14 +288,14 @@ public class MainLoopValidator : MonoBehaviour
         {
             Destroy(movie_appearance);
             Destroy(panel);
-            mainGameLoop.SetInGameInputBlocked(false);
-            mainGameLoop.SetPauseInputBlocked(false);
+            _mainGameLoop.SetInGameInputBlocked(false);
+            _mainGameLoop.SetPauseInputBlocked(false);
 
             GameObject.FindAnyObjectByType<AudioSource>().Play();
         }; // 登場ムービーの再生が終わったら
 
         // ロジックへイベント登録
-        mainGameLoop.TaskOnBossDefeated += TaskOnBossDefeated;
+        _mainGameLoop.TaskOnBossDefeated += TaskOnBossDefeated;
 
         // ぬえをまたまた初期化
         GameObject.FindAnyObjectByType<NuweBrain>().Initialize();
@@ -347,9 +330,9 @@ public class MainLoopValidator : MonoBehaviour
     /// <summary> ボス撃破時に実行する処理群 </summary>
     private void TaskOnBossDefeated()
     {
-        mainGameLoop.SetInGameInputBlocked(true);
-        mainGameLoop.SetPauseInputBlocked(true);
-        
+        _mainGameLoop.SetInGameInputBlocked(true);
+        _mainGameLoop.SetPauseInputBlocked(true);
+
         // BGMを止める
         GameObject.FindAnyObjectByType<AudioSource>().Pause();
 
@@ -364,8 +347,8 @@ public class MainLoopValidator : MonoBehaviour
         {
             Destroy(panel);
             Destroy(movie_defeated);
-            mainGameLoop.SetInGameInputBlocked(false);
-            mainGameLoop.SetPauseInputBlocked(false);
+            _mainGameLoop.SetInGameInputBlocked(false);
+            _mainGameLoop.SetPauseInputBlocked(false);
 
             // インゲームでつかっていたオブジェクトを破棄
             Dispose_InGameObject();

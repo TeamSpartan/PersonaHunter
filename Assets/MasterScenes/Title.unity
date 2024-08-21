@@ -1638,6 +1638,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PressAnyButtonPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 3178215844150867158, guid: 06f4bf53ceff5d046b5defdaeb2fb96a,
+        type: 3}
+      propertyPath: m_Name
+      value: PressAnyButtonText
+      objectReference: {fileID: 0}
     - target: {fileID: 4275251721684821907, guid: 06f4bf53ceff5d046b5defdaeb2fb96a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1827,6 +1832,22 @@ MonoBehaviour:
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: Prologue
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 9
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 365483569}
+          m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+          m_MethodName: Play
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Select
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!82 &7421450936925382570
