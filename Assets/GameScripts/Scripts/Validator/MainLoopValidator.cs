@@ -8,6 +8,7 @@ using Player.Action;
 using Player.Input;
 using Player.Param;
 using System.Linq;
+using GameScripts.Scripts.GameLogic;
 using UnityEngine;
 using UnityEngine.InputSystem.UI;
 
@@ -353,12 +354,12 @@ public class MainLoopValidator : MonoBehaviour
     private void SpawnPlayerToPoint()
     {
         var player = GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include);
-        var spawnPos = GameObject.FindWithTag("SpawnPos");
+        var spawnPos = GameObject.FindAnyObjectByType<PlayerSpawnPos>();
 
         if (player is not null && spawnPos is not null)
         {
             player.transform.position = spawnPos.transform.position;
-            player.transform.rotation = spawnPos.transform.rotation;
+            player.transform.forward = spawnPos.Direction.normalized;
         }
     }
 

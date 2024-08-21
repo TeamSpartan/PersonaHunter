@@ -162,6 +162,8 @@ public class KomashiraBrain : MonoBehaviour
         _slider = _bar.GetComponent<Slider>();
         _slider.maxValue = _maxHealthPoint;
 
+        GetComponent<Rigidbody>().mass = 100;
+
         _loop = GameObject.FindAnyObjectByType<MainGameLoop>();
         var t = transform;
         var p = transform.position;
