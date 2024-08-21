@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.15588214, g: 0.1876072, b: 0.3446994, a: 1}
+  m_IndirectSpecularColor: {r: 0.15581997, g: 0.18753079, b: 0.3445888, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -100014,7 +100014,7 @@ GameObject:
   - component: {fileID: 1916706006}
   - component: {fileID: 1916706005}
   m_Layer: 0
-  m_Name: Audio Source
+  m_Name: BGM Source
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -100034,7 +100034,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

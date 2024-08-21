@@ -1,3 +1,4 @@
+using System;
 using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
@@ -242,9 +243,6 @@ public class NuweBrain : MonoBehaviour
 
     public void StartFreeze()
     {
-        // _anim.SetLayerWeight(0, 0f);
-        // _anim.SetLayerWeight(1, 1f);
-
         _tree.EndYieldBehaviourFrom(_currentYielded);
         _tree.PauseBT();
 
@@ -254,9 +252,6 @@ public class NuweBrain : MonoBehaviour
 
     public void EndFreeze()
     {
-        // _anim.SetLayerWeight(0, 1f);
-        // _anim.SetLayerWeight(1, 0f);
-
         _tree.StartBT();
         _anim.enabled = true;
     }
@@ -276,9 +271,7 @@ public class NuweBrain : MonoBehaviour
     private void OnTriggerEnter(Collider other) // 右手、しっぽ、本体 にアタッチされているコライダーからの当たり判定のイベント
     {
         if (other.CompareTag("Player"))
-        {
             CheckPlayerIsGuarding(other);
-        }
     }
 
     public void PlayRushEffect()
@@ -570,11 +563,11 @@ public class NuweBrain : MonoBehaviour
     private void ResetAgentPath() => _agent.ResetPath();
 
     /// <summary> プレイヤのトランスフォームを取得する </summary>
-    private Transform PlayerPR => GameObject.FindWithTag("Player").transform;
+    private Transform Player => GameObject.FindWithTag("Player").transform;
 
     private void FindPlayerDirection()
     {
-        _player = PlayerPR;
+        _player = Player;
         _playerDirection = _player.position - transform.position;
     }
 
@@ -610,11 +603,13 @@ public class NuweBrain : MonoBehaviour
         {
             ResetAgentPath();
         }
+
+        Debug.Log($"IDLE");
     }
 
     private void GetClose() // プレイヤとの距離を詰める
     {
-        _player = PlayerPR;
+        _player = Player;
         if (_agent.destination != _player.position && !_agent.hasPath)
         {
             var rand = Random.Range(1f, 100f);
@@ -628,29 +623,28 @@ public class NuweBrain : MonoBehaviour
                 _anim.SetTrigger("Walk");
                 _agent.speed = _baseMoveSpeed;
             }
-
-            _agent.SetDestination(_player.position);
         }
+
+        _agent.SetDestination(_player.position);
 
         // もしプレイヤに近づけたらAwaitへ戻る
-        if (_agent.hasPath)
+        var dis = Vector3.Distance(transform.position, _agent.destination);
+        if (dis < _tailAttackRange)
         {
-            var dis = Vector3.Distance(transform.position, _agent.destination);
-            if (dis < _tailAttackRange)
-            {
-                _tree.JumpTo(_await);
-            }
+            _tree.JumpTo(_await);
         }
+
+        Debug.Log($"GETTING CLOSE");
     }
 
     private void Await() // 指定した時間待ち、プレイヤの位置や相対的な向きに応じて次にとるビヘイビアへ移行する
     {
-        _elapsedAwaitingTime += Time.deltaTime;
+        _elapsedAwaitingTime += Time.fixedDeltaTime;
 
         FindPlayerDirection();
         var dot = Vector3.Dot(_playerDirection.normalized, transform.forward);
         var forwardRadian = Mathf.Cos(90f * (3f / 4f) * Mathf.Deg2Rad);
-        _player = PlayerPR;
+        _player = Player;
 
         var playerIsForward = dot > 0 && dot > forwardRadian;
         var playerIsSide = Mathf.Abs(dot) < forwardRadian;
@@ -696,6 +690,8 @@ public class NuweBrain : MonoBehaviour
 
             Random.InitState(Random.Range(0, 128));
         }
+
+        Debug.Log($"AWAITING");
     }
 
 
@@ -725,6 +721,8 @@ public class NuweBrain : MonoBehaviour
             _flinchPoint = 0;
             _anim.SetTrigger("EndFlinch");
         }
+
+        Debug.Log($"FLINCH");
     }
 
     private void Stumble() // パリィ発生時のイベント
@@ -737,6 +735,8 @@ public class NuweBrain : MonoBehaviour
             _elapsedStumbleingTime = 0;
             _anim.SetTrigger("EndParry");
         }
+
+        Debug.Log($"STUMBLE");
     }
 
     private void Rush() // 突進攻撃
@@ -757,6 +757,8 @@ public class NuweBrain : MonoBehaviour
                 _tree.JumpTo(_await);
             }
         }
+
+        Debug.Log($"RUSHING");
     }
 
     private void Tail() // しっぽ攻撃
@@ -767,6 +769,15 @@ public class NuweBrain : MonoBehaviour
         {
             _agent.SetDestination(transform.position);
         }
+
+        if ((_agent.hasPath) && DistanceFromPlayer > _tailAttackRange)
+        {
+            _agent.ResetPath();
+            _tree.EndYieldBehaviourFrom(_tail);
+            _tree.JumpTo(_await);
+        }
+
+        Debug.Log($"TAIL");
     }
 
     private void Claw() // ひっかき攻撃
@@ -777,6 +788,8 @@ public class NuweBrain : MonoBehaviour
         {
             _agent.SetDestination(transform.position);
         }
+
+        Debug.Log($"CLAW");
     }
 
     private void LookPlayer() // プレイヤを向く
@@ -794,6 +807,8 @@ public class NuweBrain : MonoBehaviour
         {
             _tree.EndYieldBehaviourFrom(_lookPlayer);
         }
+
+        Debug.Log($"LOOKING PLAYER");
     }
 
     public void OnDisable()

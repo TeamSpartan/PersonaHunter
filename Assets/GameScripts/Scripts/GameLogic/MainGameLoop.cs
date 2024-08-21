@@ -82,31 +82,22 @@ public class MainGameLoop
     {
         // ガウス差分クラスに対して毎フレーム始点のオーバーライドをする
         if (_dog is not null)
-        {
             _dog.center.Override(Vector2.one * .5f);
-        }
         else
-        {
             GetDoGComponent();
-        }
     }
 
     /// <summary> 敵のトランスフォームを登録 </summary>
     public void ApplyEnemyTransform(Transform enemy)
     {
         if (_enemies is null)
-        {
             _enemies = new List<Transform>();
-        }
 
         _enemies.Add(enemy);
     }
 
     /// <summary> 敵を取得する </summary>
-    public List<Transform> GetEnemies()
-    {
-        return _enemies;
-    }
+    public List<Transform> GetEnemies() => _enemies;
 
     /// <summary> ポーズ リジューム が走る時に呼び出す </summary>
     public void PauseResumeInputFired()
@@ -114,13 +105,9 @@ public class MainGameLoop
         _isPausing = !_isPausing;
 
         if (_isPausing)
-        {
             StartPause();
-        }
         else
-        {
             StartResume();
-        }
     }
 
     /// <summary> ガウス差分ポスプロをかける </summary>
@@ -140,30 +127,22 @@ public class MainGameLoop
         SetInGameInputBlocked(true);
 
         if (EPause is not null)
-        {
             EPause.Invoke();
-        }
 
         foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
         {
             if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
-            {
                 komashira.StartFreeze();
-            }
 
             if (enemy.gameObject.TryGetComponent<NuweBrain>(out var nue))
-            {
                 nue.StartFreeze();
-            }
         }
 
         if (_ingameUI is null)
         {
             _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
             if (!_ingameUI.gameObject.activeSelf)
-            {
                 _ingameUI.gameObject.SetActive(true);
-            }
         }
 
         _ingameUI.DisplayPausingPanel();
@@ -177,30 +156,24 @@ public class MainGameLoop
         SetInGameInputBlocked(false);
 
         if (EResume is not null)
-        {
             EResume.Invoke();
-        }
+
 
         foreach (var enemy in _enemies) // 各敵コンポーネントに対して操作
         {
             if (enemy.gameObject.TryGetComponent<KomashiraBrain>(out var komashira))
-            {
                 komashira.EndFreeze();
-            }
+
 
             if (enemy.gameObject.TryGetComponent<NuweBrain>(out var nue))
-            {
                 nue.EndFreeze();
-            }
         }
 
         if (_ingameUI is null)
         {
             _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
             if (!_ingameUI.gameObject.activeSelf)
-            {
                 _ingameUI.gameObject.SetActive(true);
-            }
         }
 
         _ingameUI.ClosePausingPanel();
@@ -210,9 +183,8 @@ public class MainGameLoop
     public void StartDiveInZone()
     {
         if (EDiveInZone is not null)
-        {
             EDiveInZone();
-        }
+
 
         PlayDoGEffect();
     }
@@ -221,9 +193,8 @@ public class MainGameLoop
     public void GetOutOverZone()
     {
         if (EGetOutZone is not null)
-        {
             EGetOutZone();
-        }
+
 
         DOTween.To((_) => { _dog.elapsedTime.Override(_); },
             1f, 0f, .75f);
@@ -247,15 +218,13 @@ public class MainGameLoop
     {
         _ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
         if (_ingameUI is not null && !_ingameUI.gameObject.activeSelf)
-        {
             _ingameUI.gameObject.SetActive(true);
-        }
+
 
         _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
         if (_playerInputs is not null && !_playerInputs.gameObject.activeSelf)
-        {
             _playerInputs.gameObject.SetActive(true);
-        }
+
 
         SceneManager.activeSceneChanged += OnactiveSceneChanged;
 
@@ -298,9 +267,7 @@ public class MainGameLoop
         {
             _playerInputs = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
             if (!_playerInputs.gameObject.activeSelf)
-            {
                 _playerInputs.gameObject.SetActive(true);
-            }
         }
 
         // インゲーム入力のブロック解除
@@ -316,12 +283,8 @@ public class MainGameLoop
         // ガウス差分クラスの取得
         _volume = GameObject.FindFirstObjectByType<Volume>(FindObjectsInactive.Include);
         if (_volume is not null && !_volume.gameObject.activeSelf)
-        {
             _volume.gameObject.SetActive(true);
-        }
         else if (_volume is not null && _volume.profile.TryGet(out DifferenceOfGaussian dog))
-        {
             _dog = dog;
-        }
     }
 }

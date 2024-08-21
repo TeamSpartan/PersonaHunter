@@ -64,9 +64,8 @@ public class MainLoopValidator : MonoBehaviour
         List<DisplayInfo> dInfo = new List<DisplayInfo>();
         Screen.GetDisplayLayout(dInfo);
         if (dInfo.Count > 1)
-        {
             Screen.MoveMainWindowTo(dInfo[0], dInfo[1].workArea.position);
-        } // モニタが２以上あるなら
+        // モニタが２以上あるなら
 
         Validation();
         SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged_DestroyThisSceneOnlyObj;
@@ -75,9 +74,7 @@ public class MainLoopValidator : MonoBehaviour
     private void SceneManagerOnactiveSceneChanged_DestroyThisSceneOnlyObj(Scene arg0, Scene arg1)
     {
         foreach (var o in _thisSceneOnlyObj)
-        {
             Destroy(o);
-        }
     }
 
     /// <summary> 各シーンに配置されたこのコンポーネントがアタッチされているオブジェクトが初期化されたタイミングで呼ばれる </summary>
@@ -90,15 +87,13 @@ public class MainLoopValidator : MonoBehaviour
 
         _mainGameLoop = GameObject.FindAnyObjectByType<MainGameLoop>(FindObjectsInactive.Include);
         if (_mainGameLoop is not null && !_mainGameLoop.gameObject.activeSelf)
-        {
             gameObject.gameObject.SetActive(true);
-        }
+
 
         _cameraBrain = GameObject.FindAnyObjectByType<PlayerCameraBrain>(FindObjectsInactive.Include);
         if (_cameraBrain is not null && !_cameraBrain.gameObject.activeSelf)
-        {
             _cameraBrain.gameObject.SetActive(true);
-        }
+
 
         var playerMove = GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include);
         if (playerMove is not null && !playerMove.gameObject.activeSelf)
@@ -109,42 +104,32 @@ public class MainLoopValidator : MonoBehaviour
 
         _inGameUIManager = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
         if (_inGameUIManager is not null && !_inGameUIManager.gameObject.activeSelf)
-        {
             _inGameUIManager.gameObject.SetActive(true);
-        }
 
         _input = GameObject.FindAnyObjectByType<PlayerInputsAction>(FindObjectsInactive.Include);
         if (_input is not null && !_input.gameObject.activeSelf)
-        {
             _input.gameObject.SetActive(true);
-        }
         else if (_input is not null)
-        {
             // 【初期値はUIの入力タイプ】
             _input.InputType = InputType.UI;
-        }
+
 
         var scene = SceneManager.GetActiveScene();
 
         switch (scene.name)
         {
             case ConstantValues.TitleScene:
-            {
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Title;
 
                 ValidationOnTitleScene();
                 break;
-            }
 
             case ConstantValues.PrologueScene:
-            {
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Prologue;
 
                 break;
-            }
 
             case ConstantValues.InGameScene:
-            {
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.InGame;
 
                 GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include).gameObject.SetActive(true);
@@ -157,10 +142,8 @@ public class MainLoopValidator : MonoBehaviour
 
                 SpawnPlayerToPoint();
                 break;
-            }
 
             case ConstantValues.BossScene:
-            {
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.TransitedBossScene;
 
                 ValidationOnBossScene();
@@ -170,14 +153,11 @@ public class MainLoopValidator : MonoBehaviour
                 _input.InputType = InputType.Player;
 
                 break;
-            }
 
             case ConstantValues.EpilogueScene:
-            {
                 _clientData.CurrentSceneStatus = ClientDataHolder.InGameSceneStatus.Epilogue;
 
                 break;
-            }
         }
     }
 
@@ -193,18 +173,16 @@ public class MainLoopValidator : MonoBehaviour
     private void OnDestroy()
     {
         foreach (var target in _destroyTargetOnDestroyedThis)
-        {
             Destroy(target);
-        }
     }
 
     /// <summary> タイトルシーンのヴァリデーション </summary>
     private void ValidationOnTitleScene()
     {
         Dispose_InGameObject();
-        
+
         var eventSystem = GameObject.FindAnyObjectByType<EventSystem>(); // 今アクティブなイベントシステムのクラスが欲しい
-        
+
         // タイトル画面のバックグラウンドのオブジェクト
         var obj = GameObject.Find("TitleImageBackGround");
         if (obj is not null)
@@ -216,7 +194,7 @@ public class MainLoopValidator : MonoBehaviour
                 group.interactable = group.blocksRaycasts = _clientData.PlayedPrologue;
             }
         }
-        
+
         // EventSystem の選択オブジェクトを変更
         if (_clientData.PlayedPrologue)
         {
@@ -224,9 +202,7 @@ public class MainLoopValidator : MonoBehaviour
             // PressAnyButtonのパネル
             var panel = GameObject.Find("PressAnyButtonPanel");
             if ((panel is not null))
-            {
                 GameObject.Destroy(panel);
-            }
 
             eventSystem.SetSelectedGameObject(GameObject.FindGameObjectWithTag("FirstSelectedUIElement"));
         }
@@ -244,21 +220,18 @@ public class MainLoopValidator : MonoBehaviour
 
         var ingameUI = GameObject.FindAnyObjectByType<InGameUIManager>(FindObjectsInactive.Include);
         if (!ingameUI.gameObject.activeSelf)
-        {
             ingameUI.BossHPBarSetActive(true);
-        }
+
 
         // コマシラ のHPバーを削除
         foreach (var komashiraHpBar in GameObject.FindObjectsByType<KomashiraHPBar>(FindObjectsSortMode.None))
-        {
             Destroy(komashiraHpBar.gameObject);
-        }
+
 
         // プレイヤ隠ぺい
         if (_player is null)
-        {
             _player = GameObject.FindWithTag("Player");
-        }
+
 
         _input.ClearInputBuffer();
 
@@ -291,7 +264,7 @@ public class MainLoopValidator : MonoBehaviour
             _mainGameLoop.SetInGameInputBlocked(false);
             _mainGameLoop.SetPauseInputBlocked(false);
 
-            GameObject.FindAnyObjectByType<AudioSource>().Play();
+            GameObject.Find("BGM Source").GetComponent<AudioSource>().Play();
         }; // 登場ムービーの再生が終わったら
 
         // ロジックへイベント登録
@@ -318,9 +291,8 @@ public class MainLoopValidator : MonoBehaviour
         // ぬえのHPバーを表示
         var nuweHP = GameObject.FindAnyObjectByType<NuweHpViewer>(FindObjectsInactive.Include);
         if (!nuweHP.gameObject.activeSelf)
-        {
             nuweHP.gameObject.SetActive(true);
-        }
+
 
         nuweHP.SetVisible(true);
 
@@ -334,7 +306,7 @@ public class MainLoopValidator : MonoBehaviour
         _mainGameLoop.SetPauseInputBlocked(true);
 
         // BGMを止める
-        GameObject.FindAnyObjectByType<AudioSource>().Pause();
+        GameObject.Find("BGM Source").GetComponent<AudioSource>().Pause();
 
         var defeatedMovieGO = Resources.Load<GameObject>("Prefabs/Video/BossDefeated");
 
@@ -363,20 +335,16 @@ public class MainLoopValidator : MonoBehaviour
         var playerUI = GameObject.FindWithTag("PlayerUI");
 
         if (player is not null)
-        {
             Destroy(player);
-        }
+
 
         if (playerUI is not null)
-        {
             Destroy(playerUI);
-        }
+
 
         var sl = GameObject.FindAnyObjectByType<SceneLoader>(FindObjectsInactive.Include);
         if (sl is not null && !sl.gameObject.activeSelf)
-        {
             sl.gameObject.SetActive(true);
-        }
 
         sl.LoadSceneByName(ConstantValues.EpilogueScene);
     }
