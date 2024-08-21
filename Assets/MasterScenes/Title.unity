@@ -208,6 +208,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1619334064}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &325135136 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6473171719771247451, guid: e22f43277a250984899e3fb33e17053d,
+    type: 3}
+  m_PrefabInstance: {fileID: 937651384}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0904446ee0555b94990a19c08c7cd216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &365483565 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1933936084885103280, guid: 06f4bf53ceff5d046b5defdaeb2fb96a,
@@ -1822,16 +1834,16 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 707964379}
-          m_TargetAssemblyTypeName: SgLibUnite.Systems.SceneLoader, Assembly-CSharp
-          m_MethodName: LoadSceneByName
-          m_Mode: 5
+        - m_Target: {fileID: 325135136}
+          m_TargetAssemblyTypeName: MainLoopValidator, Assembly-CSharp
+          m_MethodName: OnPressedAnyButton
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: Prologue
+            m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
   - eventID: 9
