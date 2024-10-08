@@ -34,6 +34,8 @@ public class MainGameLoop
     /// <summary> ボスが撃破された時のタスク（処理、イベント） </summary>
     public event Action TaskOnBossDefeated;
 
+    public event Action TaskOnBossMorphologicalChange;
+
     /// <summary> システム面でのイベントをここへ登録。
     /// 画面ポーズが走ったらこれを呼び出す </summary>
     public event Action EPause;
@@ -211,6 +213,11 @@ public class MainGameLoop
             case IEnemyDieNotifiable.EnemyType.Komashira:
                 break;
         }
+    }
+
+    public void NotifyEnemyIsMorphologicalChange()
+    {
+        TaskOnBossMorphologicalChange();
     }
 
     /// <summary> 初期化処理 </summary>

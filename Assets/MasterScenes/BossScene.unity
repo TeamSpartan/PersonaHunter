@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 262.38358, g: 325.10843, b: 430.30963, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -24120,35 +24120,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 8428747892230092, guid: 89e5f9332ead92746b6a7fd664f985e5, type: 3}
-      propertyPath: startDelay.scalar
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 815269023361789357, guid: 89e5f9332ead92746b6a7fd664f985e5,
-        type: 3}
-      propertyPath: startDelay.minScalar
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3199381639820229577, guid: 89e5f9332ead92746b6a7fd664f985e5,
-        type: 3}
-      propertyPath: startDelay.minScalar
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5508456793776809857, guid: 89e5f9332ead92746b6a7fd664f985e5,
-        type: 3}
-      propertyPath: startDelay.scalar
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6556183649886811114, guid: 89e5f9332ead92746b6a7fd664f985e5,
-        type: 3}
-      propertyPath: startDelay.scalar
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6802837515602677474, guid: 89e5f9332ead92746b6a7fd664f985e5,
-        type: 3}
-      propertyPath: startDelay.scalar
-      value: 0.3
-      objectReference: {fileID: 0}
     - target: {fileID: 8085484195887162152, guid: 89e5f9332ead92746b6a7fd664f985e5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -24197,16 +24168,6 @@ PrefabInstance:
     - target: {fileID: 8085484195887162152, guid: 89e5f9332ead92746b6a7fd664f985e5,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8711108314378158275, guid: 89e5f9332ead92746b6a7fd664f985e5,
-        type: 3}
-      propertyPath: startDelay.scalar
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8818349006668578991, guid: 89e5f9332ead92746b6a7fd664f985e5,
-        type: 3}
-      propertyPath: startDelay.scalar
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8898754032291805586, guid: 89e5f9332ead92746b6a7fd664f985e5,

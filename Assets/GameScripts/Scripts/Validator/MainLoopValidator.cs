@@ -279,6 +279,7 @@ public class MainLoopValidator : MonoBehaviour
 
         // ロジックへイベント登録
         _mainGameLoop.TaskOnBossDefeated += TaskOnBossDefeated;
+        _mainGameLoop.TaskOnBossMorphologicalChange += TaskOnBossMorphologicalChange;
 
         // ぬえをまたまた初期化
         GameObject.FindAnyObjectByType<NuweBrain>().Initialize();
@@ -357,6 +358,37 @@ public class MainLoopValidator : MonoBehaviour
             sl.gameObject.SetActive(true);
 
         sl.LoadSceneByName(ConstantValues.EpilogueScene);
+    }
+
+    /// <summary> ボスの第２形態移行時のに実行する処理群 </summary>
+    public void TaskOnBossMorphologicalChange()
+    {
+        _mainGameLoop.SetInGameInputBlocked(true);
+        _mainGameLoop.SetPauseInputBlocked(true);
+
+        var defeatedMovieGO = Resources.Load<GameObject>("Prefabs/Video/BossMorphologicalChange");
+
+        var panel = GameObject.Instantiate(_moviePanel);
+        var movie_defeated = GameObject.Instantiate(defeatedMovieGO);
+
+        var pd_defeated = movie_defeated.GetComponent<PlayableDirector>();
+        pd_defeated.paused += OnloopPointReached_BossMorphologicalChange;
+        pd_defeated.paused += (source) =>
+        {
+            Destroy(panel);
+            Destroy(movie_defeated);
+            _mainGameLoop.SetInGameInputBlocked(false);
+            _mainGameLoop.SetPauseInputBlocked(false);
+            Debug.Log("MovieEnd");
+        };
+    }
+    
+    /// <summary> ボス第２形態ムービー再生後 </summary>
+    private void OnloopPointReached_BossMorphologicalChange(PlayableDirector source)
+    {
+        // インゲームのコンテンツに使用していたオブジェクトを破棄
+        var nuwe = GameObject.FindAnyObjectByType<NuweBrain>(FindObjectsInactive.Include);
+        nuwe.BackToAwait();
     }
 
     /// <summary> プレイヤーを指定の位置にスポーン </summary>
