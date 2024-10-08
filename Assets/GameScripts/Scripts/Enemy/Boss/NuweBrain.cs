@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 // コードクリーン実施 【6/22：菅沼】
@@ -43,6 +44,9 @@ public class NuweBrain : MonoBehaviour
     [SerializeField, Range(10f, 100f), Header("突進攻撃 範囲")]
     private float _rushAttackRange;
 
+    [SerializeField, Range(1f, 100f), Header("刀攻撃　範囲")]
+    private float _slashAttackRange;
+
     [SerializeField, Header("プレイヤ レイヤマスク")]
     private LayerMask _playerLayers;
 
@@ -54,11 +58,16 @@ public class NuweBrain : MonoBehaviour
     [SerializeField, Range(1f, 50f), Header("怒り時の移動速度")]
     private float _moveSpeedOnMad;
 
+    [SerializeField, Range(0f, 1f), Header("第二形態移行時HP割合")]
+    private float _formTransitionHp;
+
     [SerializeField, Header("右前足首 ボーン")] private Transform _rightWristBone;
 
     [SerializeField, Header("首の付け根 ボーン")] private Transform _neckRootBone;
 
     [SerializeField, Header("しっぽ ボーン")] private Transform _tailBone;
+
+    [SerializeField, Header("刀")]　private GameObject _katana;
 
     [SerializeField, Header("ベースのダメージ")] private float _baseDamage;
 
@@ -67,6 +76,8 @@ public class NuweBrain : MonoBehaviour
     [SerializeField] private ParticleSystem _rushEffect;
 
     [SerializeField] private ParticleSystem _clawEffect;
+
+    [SerializeField] private ParticleSystem _SladhEffect;
 
     /// <summary> ベースのダメージ量 </summary>
     public float GetBaseDamage => _baseDamage;
@@ -99,6 +110,9 @@ public class NuweBrain : MonoBehaviour
     /// <summary> 死亡行動 </summary>
     private BTBehaviour _death = new();
 
+    /// <summary>形態変化行動</summary>
+    private BTBehaviour _morphologicalChange = new();
+
     /// <summary> パリィ成功時の行動 </summary>
     private BTBehaviour _stumble = new();
 
@@ -110,6 +124,9 @@ public class NuweBrain : MonoBehaviour
 
     /// <summary> 突進攻撃 </summary>
     private BTBehaviour _rush = new();
+
+    /// <summary> 刀攻撃 </summary>
+    private BTBehaviour _slash = new();
 
     /// <summary> プレイヤを向く </summary>
     private BTBehaviour _lookPlayer = new();
@@ -172,7 +189,7 @@ public class NuweBrain : MonoBehaviour
     /// <summary> ひるみ値 : 100 で怯み状態に移行 </summary>
     private float _flinchPoint;
 
-    /// <summary> 体力値 : 0 で死亡状態へ移行 </summary>
+    /// <summary> 体力値 : 0 で死亡状態へ移行 体力値 : 割合 で第２形態へ移行 </summary>
     private float _healthPoint;
 
     /// <summary> プレイヤとの距離 </summary>
@@ -199,6 +216,12 @@ public class NuweBrain : MonoBehaviour
     /// <summary> 突進攻撃時の当たり判定中かのフラグ </summary>
     private bool _isCheckingRushColDetection;
 
+    /// <summary> 刀攻撃時の当たり判定中かのフラグ </summary>
+    private bool _isCheckingSlashColDetection;
+
+    /// <summary> 第２形態に移行Movieを再生したかのフラグ </summary>
+    private bool _isMorphologicalChange;
+
     private MainGameLoop _loop;
 
     private NuweHpViewer _hpView;
@@ -219,6 +242,13 @@ public class NuweBrain : MonoBehaviour
             {
                 _tree.EndYieldBehaviourFrom(_currentYielded);
                 _tree.YieldAllBehaviourTo(_death);
+            }
+            else if (GetNueForm() == NueFormType.SecondForm && !_isMorphologicalChange)
+            {
+                _tree.EndYieldBehaviourFrom(_currentYielded);
+                _tree.YieldAllBehaviourTo(_morphologicalChange);
+                _katana.SetActive(true);
+                _isMorphologicalChange = true;
             }
         }
     }
@@ -258,14 +288,17 @@ public class NuweBrain : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        Vector3 nowpos = transform.position;
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, _sightRange);
+        Gizmos.DrawWireSphere(nowpos, _sightRange);
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, _clawAttackRange);
+        Gizmos.DrawWireSphere(nowpos, _clawAttackRange);
         Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, _tailAttackRange);
+        Gizmos.DrawWireSphere(nowpos, _tailAttackRange);
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, _rushAttackRange);
+        Gizmos.DrawWireSphere(nowpos, _rushAttackRange);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(nowpos, _slashAttackRange);
     }
 
     private void OnTriggerEnter(Collider other) // 右手、しっぽ、本体 にアタッチされているコライダーからの当たり判定のイベント
@@ -294,6 +327,15 @@ public class NuweBrain : MonoBehaviour
         _clawEffect.Stop();
     }
 
+    public void PlaySlashEffect()
+    {
+        _SladhEffect.Play();
+    }
+    public void StopSlashEffect()
+    {
+        _SladhEffect.Stop();
+    }
+
     /// <summary>
     /// 当たり判定で検出したオブジェクト(i) のトランスフォームに対応したぬえの攻撃タイプを判定。
     /// <para>
@@ -318,7 +360,31 @@ public class NuweBrain : MonoBehaviour
             ret = NueAttackType.Claw;
         }
 
+        if (other == _katana.transform)
+        {
+            ret = NueAttackType.Slash;
+        }
+
         return ret;
+    }
+
+    /// <summary>
+    /// 形態の判定　一定割合以下で第２形態
+    /// </summary>
+    /// <returns></returns>
+    public NueFormType GetNueForm()
+    {
+        var form = NueFormType.None;
+        if (_healthPoint / _healthMaxValue <= _formTransitionHp)
+        {
+            form = NueFormType.SecondForm;
+        }
+        else
+        {
+            form = NueFormType.FirstForm;
+        }
+
+        return form;
     }
 
     /// <summary>
@@ -329,6 +395,17 @@ public class NuweBrain : MonoBehaviour
         Rush,
         Claw,
         Tail,
+        Slash,
+        None
+    }
+
+    /// <summary>
+    /// ぬえ　形態のバリエーション　列挙型
+    /// </summary>
+    public enum NueFormType
+    {
+        FirstForm,
+        SecondForm,
         None
     }
 
@@ -387,6 +464,22 @@ public class NuweBrain : MonoBehaviour
     public void DisableTailCollider()
     {
         _tailBone.GetComponent<Collider>().enabled = false;
+    }
+
+    /// <summary>
+    /// 刀のコライダーを有効化
+    /// </summary>
+    public void EnableKatanaCollider()
+    {
+        _katana.GetComponent<Collider>().enabled = true;
+    }
+
+    /// <summary>
+    /// 刀のコライダーを無効化
+    /// </summary>
+    public void DisableKatanaCollider()
+    {
+        _katana.GetComponent<Collider>().enabled = false;
     }
 
     public Transform GetLockableObjectTransform()
@@ -494,6 +587,15 @@ public class NuweBrain : MonoBehaviour
                 .NotifyEnemyIsDeath(IEnemyDieNotifiable.EnemyType.Nue, gameObject);
         };
 
+        _morphologicalChange.AddBehaviour(MorphologicalChange);
+        _morphologicalChange.SetYieldMode(true);
+        _morphologicalChange.EBegin += () =>
+        {
+            Debug.Log("SecondMovieStart");
+            GameObject.FindAnyObjectByType<MainGameLoop>()
+                .NotifyEnemyIsMorphologicalChange();
+        };
+
         _flinch.AddBehaviour(Flinch);
         _flinch.SetYieldMode(true);
         _flinch.EEnd += ResetAgentPath;
@@ -515,6 +617,10 @@ public class NuweBrain : MonoBehaviour
         _claw.EBegin += () => { _anim.SetTrigger("Claw"); };
         _claw.SetYieldMode(true);
 
+        _slash.AddBehaviour(Slash);
+        _slash.EBegin += () => { _anim.SetTrigger("Katana_Slash"); };
+        _slash.SetYieldMode(true);
+
         _lookPlayer.AddBehaviour(LookPlayer);
         _lookPlayer.SetYieldMode(true);
         _lookPlayer.EBegin += FindPlayerDirection;
@@ -533,6 +639,8 @@ public class NuweBrain : MonoBehaviour
             _claw,
             _tail,
             _rush,
+            _slash,
+            _morphologicalChange,
             _lookPlayer,
         };
 
@@ -668,13 +776,38 @@ public class NuweBrain : MonoBehaviour
             // ひっかき距離内かつ正面にいるとき
             if (playerIsForward && clawRange)
             {
-                if (rand > 50)
+                switch (GetNueForm())
                 {
-                    _tree.YieldAllBehaviourTo(_claw);
-                }
-                else
-                {
-                    _tree.YieldAllBehaviourTo(_tail);
+                    case NueFormType.FirstForm:
+                        if (rand > 50)
+                        {
+                            _tree.YieldAllBehaviourTo(_claw);
+                        }
+                        else
+                        {
+                            _tree.YieldAllBehaviourTo(_tail);
+                        }
+
+                        break;
+
+                    case NueFormType.SecondForm:
+                        if (rand > 30)
+                        {
+                            if (rand > 70)
+                            {
+                                _tree.YieldAllBehaviourTo(_slash);
+                            }
+                            else
+                            {
+                                _tree.YieldAllBehaviourTo(_claw);
+                            }
+                        }
+                        else
+                        {
+                            _tree.YieldAllBehaviourTo(_tail);
+                        }
+
+                        break;
                 }
             }
 
@@ -694,6 +827,10 @@ public class NuweBrain : MonoBehaviour
         Debug.Log($"AWAITING");
     }
 
+    private void MorphologicalChange() //第２形態移行
+    {
+        _currentYielded = _morphologicalChange;
+    }
 
     private void Death()
     {
@@ -702,6 +839,7 @@ public class NuweBrain : MonoBehaviour
         _loop.EDiveInZone -= StartFreeze;
         _loop.EGetOutZone -= EndFreeze;
         _tree.PauseBT();
+
         // コンポーネントの破棄
         Destroy(GetComponent<Rigidbody>());
         Destroy(_anim);
@@ -790,6 +928,18 @@ public class NuweBrain : MonoBehaviour
         }
 
         Debug.Log($"CLAW");
+    }
+
+    private void Slash() //刀攻撃
+    {
+        _currentYielded = _slash;
+
+        if (_agent.destination != transform.position && !_agent.hasPath)
+        {
+            _agent.SetDestination(transform.position);
+        }
+
+        Debug.Log($"Slash");
     }
 
     private void LookPlayer() // プレイヤを向く

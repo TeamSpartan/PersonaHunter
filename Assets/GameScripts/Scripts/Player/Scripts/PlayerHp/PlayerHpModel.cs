@@ -111,6 +111,9 @@ public class PlayerHpModel : MonoBehaviour
                 case NuweBrain.NueAttackType.Tail:
                     AddDamage(_nue.GetBaseDamage);
                     break;
+                case NuweBrain.NueAttackType.Slash:
+                    AddDamage(_nue.GetBaseDamage);
+                    break;
                 default:
                     throw new Exception("ぬえの攻撃の攻撃タイプがわかりません");
             }
