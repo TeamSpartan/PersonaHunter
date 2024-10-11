@@ -79,6 +79,7 @@ public class NuweBrain : MonoBehaviour
 
     [SerializeField] private ParticleSystem _SladhEffect;
 
+
     /// <summary> ベースのダメージ量 </summary>
     public float GetBaseDamage => _baseDamage;
 
@@ -182,6 +183,9 @@ public class NuweBrain : MonoBehaviour
 
     /// <summary> アニメータ </summary>
     private Animator _anim;
+
+    ///<summary>オーディオマネージャー</summary>
+    private AudioManager _audioManager;
 
     /// <summary> プレイヤの方向 </summary>
     private Vector3 _playerDirection;
@@ -331,6 +335,7 @@ public class NuweBrain : MonoBehaviour
     {
         _SladhEffect.Play();
     }
+
     public void StopSlashEffect()
     {
         _SladhEffect.Stop();
@@ -482,6 +487,96 @@ public class NuweBrain : MonoBehaviour
         _katana.GetComponent<Collider>().enabled = false;
     }
 
+    /// <summary>
+    /// 歩くSEならす
+    /// </summary>
+    public void PlayWalkSE()
+    {
+        if (_audioManager == null) return;
+        _audioManager.PlaySE("BossWalk");
+    }
+
+    /// <summary>
+    /// 歩くSEならす
+    /// </summary>
+    public void PlayRunSE()
+    {
+        if (_audioManager == null) return;
+        _audioManager.PlaySE("BossWalk");
+    }
+
+    /// <summary>
+    /// 歩くSEならす
+    /// </summary>
+    public void PlayScratchSE()
+    {
+        if (_audioManager == null) return;
+        _audioManager.PlaySE("BossWalk");
+    }
+
+    /// <summary>
+    /// 歩くSEならす
+    /// </summary>
+    public void PlayMowingDownSE()
+    {
+        if (_audioManager == null) return;
+        _audioManager.PlaySE("BossWalk");
+    }
+
+    /// <summary>
+    /// 歩くSEならす
+    /// </summary>
+    public void PlayRushSE()
+    {
+        if (_audioManager == null) return;
+        _audioManager.PlaySE("BossWalk");
+    }
+
+    /// <summary>
+    /// 歩くSEならす
+    /// </summary>
+    public void PlayDamageSE()
+    {
+        if (_audioManager == null) return;
+        _audioManager.PlaySE("BossWalk");
+    }
+
+    /// <summary>
+    /// 歩くSEならす
+    /// </summary>
+    public void PlayDownSE()
+    {
+        if (_audioManager == null) return;
+        _audioManager.PlaySE("BossWalk");
+    }
+
+    /// <summary>
+    /// 歩くSEならす
+    /// </summary>
+    public void PlayJumpSE()
+    {
+        if (_audioManager == null) return;
+        _audioManager.PlaySE("BossWalk");
+    }
+
+    /// <summary>
+    /// 歩くSEならす
+    /// </summary>
+    public void PlayParrySE()
+    {
+        if (_audioManager == null) return;
+        _audioManager.PlaySE("BossWalk");
+    }
+
+    /// <summary>
+    /// 歩くSEならす
+    /// </summary>
+    public void PlayBarrierSE()
+    {
+        if (_audioManager == null) return;
+        _audioManager.PlaySE("BossWalk");
+    }
+
     public Transform GetLockableObjectTransform()
     {
         return this.transform;
@@ -504,6 +599,7 @@ public class NuweBrain : MonoBehaviour
 
     public void Initialize()
     {
+        _audioManager = FindAnyObjectByType<AudioManager>();
         _hpView = GameObject.FindAnyObjectByType<NuweHpViewer>(FindObjectsInactive.Include);
         if (!_hpView.gameObject.activeSelf)
         {

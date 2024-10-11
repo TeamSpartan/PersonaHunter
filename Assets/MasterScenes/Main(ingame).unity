@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.15606369, g: 0.18657471, b: 0.32473472, a: 1}
+  m_IndirectSpecularColor: {r: 0.15606369, g: 0.18780056, b: 0.34506944, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -47597,6 +47597,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 25159943910531902, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 5865805917774433710, guid: 84819322e829faa498c61421b9bd61ea,
+        type: 2}
     - target: {fileID: 1240702944688159771, guid: efde119a70a0ba842b64fe655e66a03b,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -83449,6 +83455,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8070292773428138616, guid: e4f65e3960720324d833d92f853fc65d,
         type: 3}
+      propertyPath: _dieME
+      value: 
+      objectReference: {fileID: 8300000, guid: 9b61ff13c7542154f8525d533a38eda8, type: 3}
+    - target: {fileID: 8070292773428138616, guid: e4f65e3960720324d833d92f853fc65d,
+        type: 3}
       propertyPath: _diePanel
       value: 
       objectReference: {fileID: 1459833530}
@@ -83462,6 +83473,11 @@ PrefabInstance:
       propertyPath: healthImage
       value: 
       objectReference: {fileID: 1927894393}
+    - target: {fileID: 8070292773428138616, guid: e4f65e3960720324d833d92f853fc65d,
+        type: 3}
+      propertyPath: _audioSource
+      value: 
+      objectReference: {fileID: 1568940988}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -83484,6 +83500,12 @@ Transform:
 --- !u!1 &1568940987 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4590208593656262728, guid: e4f65e3960720324d833d92f853fc65d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1568940985}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &1568940988 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 2054125749098907068, guid: e4f65e3960720324d833d92f853fc65d,
     type: 3}
   m_PrefabInstance: {fileID: 1568940985}
   m_PrefabAsset: {fileID: 0}
@@ -100039,7 +100061,8 @@ AudioSource:
   m_GameObject: {fileID: 1916706004}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 4571179270569207446, guid: 84819322e829faa498c61421b9bd61ea,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: 125f701ff8724684683212e5fd52aca2, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -100503,6 +100526,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1193830377997878424, guid: 68c556d611e122b4b8b6a7e62f247949,
+        type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 5865805917774433710, guid: 84819322e829faa498c61421b9bd61ea,
+        type: 2}
     - target: {fileID: 1557121024251967275, guid: 68c556d611e122b4b8b6a7e62f247949,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgument
@@ -100563,6 +100592,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9064925607784105693, guid: 68c556d611e122b4b8b6a7e62f247949,
+        type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 5865805917774433710, guid: 84819322e829faa498c61421b9bd61ea,
+        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
