@@ -10,9 +10,11 @@ using UnityEngine.UI;
 /// </summary>
 public class PlayerHpView : MonoBehaviour
 {
+	[SerializeField, Header("死亡時のパネル")] private GameObject _diePanel;
+	[SerializeField] private AudioSource _audioSource;
+	[SerializeField, Header("DieME")] private AudioClip _dieME;
 	[SerializeField, Header("HPが減る速度")] private float _duration;
 	[SerializeField, Header("赤ゲージが残る時間")] private float _waitTime = .2f;
-	[SerializeField, Header("死亡時のパネル")] private GameObject _diePanel;
 
 	[SerializeField, Header("死亡後何秒後にシーン移動するか")]
 	private float _dieWaitTime = 3f;
@@ -21,7 +23,7 @@ public class PlayerHpView : MonoBehaviour
 	private Animator _animator;
 	private SceneLoader _sceneLoader;
 
-	private Tween _burnEffect;
+	private Sequence _sequence;
 
 	private void Start()
 	{
@@ -41,10 +43,12 @@ public class PlayerHpView : MonoBehaviour
 	///<param name="CurrentHp"	>現在のHP</param>
 	public void SetGauge(float InitialHp, float CurrentHp)
 	{
-		_burnEffect?.Kill();
+		_sequence = DOTween.Sequence();
 		healthImage.DOFillAmount(CurrentHp / InitialHp, _duration).OnComplete(() =>
 		{
-			_burnEffect = burnImage.DOFillAmount(CurrentHp / InitialHp, _duration * 0.5f).SetDelay(_waitTime);
+			_sequence.AppendInterval(_waitTime)
+				.AppendCallback(() => {FindAnyObjectByType<AudioManager>()?.PlaySE("Heal"); })
+				.Append(burnImage.DOFillAmount(CurrentHp / InitialHp, _duration * 0.5f));
 		});
 	}
 
@@ -65,11 +69,14 @@ public class PlayerHpView : MonoBehaviour
 
 	IEnumerator WaitDie()
 	{
+		_audioSource.clip = _dieME;
+		_audioSource.Play();
 		yield return new WaitForSeconds(_dieWaitTime);
 		_diePanel.SetActive(false);
 		var validator = GameObject.FindAnyObjectByType<MainLoopValidator>(FindObjectsInactive.Include);
 		validator.Dispose_InGameObject();
 		_sceneLoader = FindAnyObjectByType<SceneLoader>(FindObjectsInactive.Include);
+		_audioSource.Stop();
 		_sceneLoader.LoadSceneByName("Title");
 	}
 }

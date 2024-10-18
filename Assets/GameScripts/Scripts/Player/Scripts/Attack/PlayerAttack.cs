@@ -19,12 +19,15 @@ public class PlayerAttack : MonoBehaviour
 	
 	[SerializeField] private ParticleSystem _leftAttack;
 
+	private AudioManager _audioManager;
+
 	private bool _isGiveDamage = false;
 
 	private void Start()
 	{
 		_animator = GetComponent<Animator>();
 		_playerParam = GetComponent<PlayerParam>();
+		_audioManager = FindAnyObjectByType<AudioManager>();
 	}
 
 	private void Update()
@@ -154,6 +157,20 @@ public class PlayerAttack : MonoBehaviour
 			AttackClear();
 			PlayerInputsAction.Instance.EndAction();
 		}
+	}
+
+	public void Attack1SE()
+	{
+		_audioManager.PlaySE("PlayerAttack1");
+	}
+	public void Attack2SE()
+	{
+		_audioManager.PlaySE("PlayerAttack2");
+	}
+
+	public void WalkSE()
+	{
+		_audioManager.PlaySE("PlayerWalk");
 	}
 
 	private void OnDrawGizmos()

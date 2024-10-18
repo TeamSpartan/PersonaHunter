@@ -51,6 +51,8 @@ PlayableDirector:
   m_SceneBindings:
   - key: {fileID: -3647581673558130190, guid: 1c917235998535e4e82090ed4aa2b457, type: 2}
     value: {fileID: -190071257972085638}
+  - key: {fileID: -1933741377964647883, guid: 1c917235998535e4e82090ed4aa2b457, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References:
     - c6caec55fcf63364ca8487ccd1ca9ade: {fileID: 7130425703024379148}
@@ -62,7 +64,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7784396793679752587}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: e74e7b5c9c7bfed488fb52d8e731ee10, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 0cdca8cc3b8eac643b0bd52160596920, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -76,12 +78,14 @@ VideoPlayer:
   m_TimeUpdateMode: 2
   m_PlaybackSpeed: 1
   m_AudioOutputMode: 0
-  m_TargetAudioSources: []
-  m_DirectAudioVolumes: []
+  m_TargetAudioSources:
+  - {fileID: 0}
+  m_DirectAudioVolumes:
+  - 1
   m_Url: 
-  m_EnabledAudioTracks: 
-  m_DirectAudioMutes: 
-  m_ControlledAudioTrackCount: 0
+  m_EnabledAudioTracks: 01
+  m_DirectAudioMutes: 00
+  m_ControlledAudioTrackCount: 1
   m_PlayOnAwake: 0
   m_SkipOnDrop: 1
   m_Looping: 1

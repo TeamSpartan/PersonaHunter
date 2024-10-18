@@ -9,6 +9,9 @@ namespace Player.Zone
         [SerializeField, Tooltip("制限時間"), Header("制限時間")]
         private float zoneTimeLimit = 10f;
 
+        [SerializeField] private AudioSource _audioSource;
+        [SerializeField, Header("ゾーン時ME")] private AudioClip _audioClip;
+
         private bool _exitFlag = true; // 終了時フラグ
         private bool _finishFlag = true; // 強制終了フラグ
         private bool _isSlowTime; // SlowTime中かどうかのフラグ
@@ -55,6 +58,8 @@ namespace Player.Zone
             mainGameLoop.StartDiveInZone();
             _zoneObj.StartDull();
             this.StartCoroutine(this.ZoneTimerCountDown());
+            _audioSource.clip = _audioClip;
+            _audioSource.Play();
 
 #if UNITY_EDITOR
             Debug.Log("EnterSlowTime");
@@ -70,6 +75,7 @@ namespace Player.Zone
             _isSlowTime = false;
             mainGameLoop.GetOutOverZone();
             _zoneObj.EndDull();
+            _audioSource.Stop();
 
 #if UNITY_EDITOR
             Debug.Log("ExitSlowTime");
