@@ -15,6 +15,7 @@ namespace Player.Param
         [SerializeField, Header("パリィで与える体感値")] private float giveValueOfParry = 5f;
         
         private Animator _animator;
+        private AudioManager _audioManager;
         
         private int _parryID = Animator.StringToHash("IsParry");
         private int _avoidID = Animator.StringToHash("IsAvoid");
@@ -36,6 +37,7 @@ namespace Player.Param
         private void Start()
         {
             _animator = GetComponent<Animator>();
+            _audioManager = FindAnyObjectByType<AudioManager>();
         }
 
         //=================参照用==========================================================
@@ -124,6 +126,95 @@ namespace Player.Param
             _animator.ResetTrigger(_dieID);
             _animator.ResetTrigger(_takeDamageID);
             _animator.SetFloat(_runID, 0f);
+        }
+
+        /// <summary>
+        /// 歩行SE再生
+        /// </summary>
+        public void PlayWalkSE()
+        {
+            if(!_audioManager) return;
+            _audioManager.PlaySE("PlayerWalk");
+        }
+        /// <summary>
+        /// 走行SE再生
+        /// </summary>
+        public void PlayRunSE()
+        {
+            if(!_audioManager) return;
+            _audioManager.PlaySE("PlayerRun");
+        }
+        /// <summary>
+        /// ダメージSE再生
+        /// </summary>
+        public void PlayDamageSE()
+        {
+            if(!_audioManager) return;
+            _audioManager.PlaySE("PLayerDamage");
+        }
+        /// <summary>
+        /// 回避SE再生
+        /// </summary>
+        public void PlayAvoidSE()
+        {
+            if(!_audioManager) return;
+            _audioManager.PlaySE("PlayerAvoid");
+        }
+        /// <summary>
+        /// 右攻撃SE再生
+        /// </summary>
+        public void PlayAttack1SE()
+        {
+            if(!_audioManager) return;
+            _audioManager.PlaySE("PlayerAttack1");
+        }
+        /// <summary>
+        /// 左攻撃SE再生
+        /// </summary>
+        public void PlayAttack2SE()
+        {
+            if(!_audioManager) return;
+            _audioManager.PlaySE("PlayerAttack2");
+        }
+        /// <summary>
+        /// パリィSE再生
+        /// </summary>
+        public void PlayParrySE()
+        {
+            if(!_audioManager) return;
+            _audioManager.PlaySE("PlayerParry");
+        }
+        /// <summary>
+        /// ダメージVoice再生
+        /// </summary>
+        public void PlayDamageVoice()
+        {
+            if(!_audioManager) return;
+            _audioManager.PlayVoice("PlayerDamageVoice");
+        }
+        /// <summary>
+        /// ダウンVoice再生
+        /// </summary>
+        public void PlayDownVoice()
+        {
+            if(!_audioManager) return;
+            _audioManager.PlayVoice("PlayerDown");
+        }
+        /// <summary>
+        /// 右攻撃Voice再生
+        /// </summary>
+        public void PlayAttack1Voice()
+        {
+            if(!_audioManager) return;
+            _audioManager.PlayVoice("PlayerAttack1Voice");
+        }
+        /// <summary>
+        /// 左攻撃Voice再生
+        /// </summary>
+        public void PlayAttack2Voice()
+        {
+            if(!_audioManager) return;
+            _audioManager.PlayVoice("PlayerAttack2Voice");
         }
     }
 }

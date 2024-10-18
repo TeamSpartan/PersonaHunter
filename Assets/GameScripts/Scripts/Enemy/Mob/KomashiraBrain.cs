@@ -56,6 +56,8 @@ public class KomashiraBrain : MonoBehaviour
 
     private KomashiraHPBar _bar;
 
+    private AudioManager _audioManager;
+
     /// <summary> 体力 </summary>
     private float _healthPoint;
 
@@ -153,6 +155,64 @@ public class KomashiraBrain : MonoBehaviour
         _neckBone.GetComponent<Collider>().enabled = false;
     }
 
+    /// <summary>
+    /// 歩行SE再生
+    /// </summary>
+    public void PlayWalkSE()
+    {
+        if(!_audioManager)return;
+        _audioManager.PlaySE("EnemyWalk");
+    }
+    /// <summary>
+    /// ジャンピング攻撃SE再生
+    /// </summary>
+    public void PlayJumpingAttackSE()
+    {
+        if(!_audioManager)return;
+        _audioManager.PlaySE("EnemyAttackJumping");
+    }
+    /// <summary>
+    /// ひっかき攻撃SE再生
+    /// </summary>
+    public void PlayScratchSE()
+    {
+        if(!_audioManager)return;
+        _audioManager.PlaySE("EnemyAttackScratch");
+    }
+    /// <summary>
+    /// ダメージSE再生
+    /// </summary>
+    public void PlayDamageSE()
+    {
+        if(!_audioManager)return;
+        _audioManager.PlaySE("EnemyDamage");
+    }
+    /// <summary>
+    /// ジャンプSE再生
+    /// </summary>
+    public void PlayJumpSE()
+    {
+        if(!_audioManager)return;
+        _audioManager.PlaySE("");
+    }
+    /// <summary>
+    /// 着地音SE再生
+    /// </summary>
+    public void PlayJumpAgoSE()
+    {
+        if(!_audioManager)return;
+        _audioManager.PlaySE("EnemyJumpAgo");
+    }
+    /// <summary>
+    /// ダウンSE再生
+    /// </summary>
+    public void PlayDownSE()
+    {
+        if(!_audioManager)return;
+        _audioManager.PlaySE("EnemyDown");
+    }
+    
+    
     private void Start()
     {
         var bar = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/UI/KomashiraHPBar"));

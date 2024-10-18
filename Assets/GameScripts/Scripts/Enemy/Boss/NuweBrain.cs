@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using SgLibUnite.BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
@@ -77,7 +78,9 @@ public class NuweBrain : MonoBehaviour
 
     [SerializeField] private ParticleSystem _clawEffect;
 
-    [SerializeField] private ParticleSystem _SladhEffect;
+    [SerializeField] private ParticleSystem _slashEffect;
+    
+    [SerializeField] private ParticleSystem _slamEffect;
 
 
     /// <summary> ベースのダメージ量 </summary>
@@ -128,6 +131,9 @@ public class NuweBrain : MonoBehaviour
 
     /// <summary> 刀攻撃 </summary>
     private BTBehaviour _slash = new();
+
+    ///<summary>たたきつけ攻撃</summary>
+    private BTBehaviour _slam = new();
 
     /// <summary> プレイヤを向く </summary>
     private BTBehaviour _lookPlayer = new();
@@ -238,6 +244,8 @@ public class NuweBrain : MonoBehaviour
         {
             _healthPoint -= dmg;
             _flinchPoint += dmg * .25f;
+            
+            _audioManager?.PlaySE("BossDamage");
 
             // ゲージの表示を更新
             _hpView.SetGauge(_healthMaxValue, _healthPoint);
@@ -333,12 +341,21 @@ public class NuweBrain : MonoBehaviour
 
     public void PlaySlashEffect()
     {
-        _SladhEffect.Play();
+        _slashEffect.Play();
     }
 
     public void StopSlashEffect()
     {
-        _SladhEffect.Stop();
+        _slashEffect.Stop();
+    }
+
+    public void PlaySlamEffect()
+    {
+        _slamEffect.Play();
+    }
+    public void StopSlamEffect()
+    {
+        _slamEffect.Stop();
     }
 
     /// <summary>
@@ -497,7 +514,7 @@ public class NuweBrain : MonoBehaviour
     }
 
     /// <summary>
-    /// 歩くSEならす
+    /// 走るSEならす
     /// </summary>
     public void PlayRunSE()
     {
@@ -506,75 +523,75 @@ public class NuweBrain : MonoBehaviour
     }
 
     /// <summary>
-    /// 歩くSEならす
+    /// ひっかき攻撃SEならす
     /// </summary>
     public void PlayScratchSE()
     {
         if (_audioManager == null) return;
-        _audioManager.PlaySE("BossWalk");
+        _audioManager.PlaySE("BossAttackScratch");
     }
 
     /// <summary>
-    /// 歩くSEならす
+    /// 薙ぎ払い攻撃SEならす
     /// </summary>
     public void PlayMowingDownSE()
     {
         if (_audioManager == null) return;
-        _audioManager.PlaySE("BossWalk");
+        _audioManager.PlaySE("BossAttackMowingDown");
     }
 
     /// <summary>
-    /// 歩くSEならす
+    /// 突進攻撃SEならす
     /// </summary>
     public void PlayRushSE()
     {
         if (_audioManager == null) return;
-        _audioManager.PlaySE("BossWalk");
+        _audioManager.PlaySE("EnemyAttackRush");
     }
 
     /// <summary>
-    /// 歩くSEならす
+    /// ダメージSEならす
     /// </summary>
     public void PlayDamageSE()
     {
         if (_audioManager == null) return;
-        _audioManager.PlaySE("BossWalk");
+        _audioManager.PlaySE("BossDamage");
     }
 
     /// <summary>
-    /// 歩くSEならす
+    /// ダウンSEならす
     /// </summary>
     public void PlayDownSE()
     {
         if (_audioManager == null) return;
-        _audioManager.PlaySE("BossWalk");
+        _audioManager.PlaySE("BossDown");
     }
 
     /// <summary>
-    /// 歩くSEならす
+    /// ジャンプSEならす
     /// </summary>
     public void PlayJumpSE()
     {
         if (_audioManager == null) return;
-        _audioManager.PlaySE("BossWalk");
+        _audioManager.PlaySE("BossJump");
     }
 
     /// <summary>
-    /// 歩くSEならす
+    /// 受パリィSEならす
     /// </summary>
     public void PlayParrySE()
     {
         if (_audioManager == null) return;
-        _audioManager.PlaySE("BossWalk");
+        _audioManager.PlaySE("BossPary");
     }
 
     /// <summary>
-    /// 歩くSEならす
+    /// よろけSEならす
     /// </summary>
     public void PlayBarrierSE()
     {
         if (_audioManager == null) return;
-        _audioManager.PlaySE("BossWalk");
+        _audioManager.PlaySE("BossBarrier");
     }
 
     public Transform GetLockableObjectTransform()
@@ -687,9 +704,9 @@ public class NuweBrain : MonoBehaviour
         _morphologicalChange.SetYieldMode(true);
         _morphologicalChange.EBegin += () =>
         {
-            Debug.Log("SecondMovieStart");
             GameObject.FindAnyObjectByType<MainGameLoop>()
                 .NotifyEnemyIsMorphologicalChange();
+            _katana.SetActive(true);
         };
 
         _flinch.AddBehaviour(Flinch);
@@ -717,6 +734,10 @@ public class NuweBrain : MonoBehaviour
         _slash.EBegin += () => { _anim.SetTrigger("Katana_Slash"); };
         _slash.SetYieldMode(true);
 
+        _slam.AddBehaviour(Slam);
+        _slam.EBegin += () => { _anim.SetTrigger("Slam"); };
+        _slam.SetYieldMode(true);
+
         _lookPlayer.AddBehaviour(LookPlayer);
         _lookPlayer.SetYieldMode(true);
         _lookPlayer.EBegin += FindPlayerDirection;
@@ -736,6 +757,7 @@ public class NuweBrain : MonoBehaviour
             _tail,
             _rush,
             _slash,
+            _slam,
             _morphologicalChange,
             _lookPlayer,
         };
@@ -855,16 +877,18 @@ public class NuweBrain : MonoBehaviour
         var rushRange = Physics.CheckSphere(transform.position, _rushAttackRange, _playerLayers);
         var tailRange = Physics.CheckSphere(transform.position, _tailAttackRange, _playerLayers);
         var clawRange = Physics.CheckSphere(transform.position, _clawAttackRange, _playerLayers);
+        var slashRange = Physics.CheckSphere(transform.position, _slashAttackRange, _playerLayers);
 
         if (_elapsedAwaitingTime > _awaitingTime)
         {
             _elapsedAwaitingTime = 0;
 
             var rand = Random.Range(1f, 100f);
+            var randLongRange = Random.Range(1f, 100f);
             _tree.EndYieldBehaviourFrom(_currentYielded);
 
             // 突進距離以内かつしっぽ攻撃圏外
-            if (rushRange && !tailRange)
+            if (rushRange && !slashRange)
             {
                 _tree.YieldAllBehaviourTo(_rush);
             }
@@ -887,29 +911,27 @@ public class NuweBrain : MonoBehaviour
                         break;
 
                     case NueFormType.SecondForm:
-                        if (rand > 30)
+                        if (rand > 50)
                         {
-                            if (rand > 70)
-                            {
-                                _tree.YieldAllBehaviourTo(_slash);
-                            }
-                            else
-                            {
-                                _tree.YieldAllBehaviourTo(_claw);
-                            }
+                            _tree.YieldAllBehaviourTo(_claw);
                         }
                         else
                         {
-                            _tree.YieldAllBehaviourTo(_tail);
+                            _tree.YieldAllBehaviourTo(_slam);
                         }
 
                         break;
                 }
             }
 
-            if (playerIsForward && tailRange)
+            if (playerIsForward && tailRange && (randLongRange > 50 || GetNueForm() == NueFormType.FirstForm))
             {
                 _tree.YieldAllBehaviourTo(_tail);
+            }
+
+            if (playerIsForward && slashRange && GetNueForm() == NueFormType.SecondForm)
+            {
+                _tree.YieldAllBehaviourTo(_slash);
             }
 
             if (playerIsSide)
@@ -1036,6 +1058,18 @@ public class NuweBrain : MonoBehaviour
         }
 
         Debug.Log($"Slash");
+    }
+
+    private void Slam() // たたきつけ攻撃
+    {
+        _currentYielded = _slam;
+
+        if (_agent.destination != transform.position && !_agent.hasPath)
+        {
+            _agent.SetDestination(transform.position);
+        }
+
+        Debug.Log($"Slam");
     }
 
     private void LookPlayer() // プレイヤを向く

@@ -9,11 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2197333487080719269}
+  - component: {fileID: 7163317567442714975}
   - component: {fileID: 3424372364239536831}
   - component: {fileID: 4666643045497099721}
   - component: {fileID: 9035966018458708561}
   - component: {fileID: 4997189217883511009}
   - component: {fileID: 4857367223096231455}
+  - component: {fileID: 4460344488808828326}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -36,6 +38,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7163317567442714975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2319952288655073715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 945d3b8983fba85468479d9aa350595c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3424372364239536831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,7 +109,7 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: cc738e7e5796e1d4b9b37bbeffab2214, type: 3}
   - SoundName: Crow
     Clip: {fileID: 8300000, guid: cf0391526dc18104e9ca74b5f48fe8e0, type: 3}
-  - SoundName: Oriru
+  - SoundName: Oruri
     Clip: {fileID: 8300000, guid: 1c91a4a8e5a46fc43a4454e47ecdbdcf, type: 3}
   - SoundName: PheasantPigeon
     Clip: {fileID: 8300000, guid: b50043e79d95e33468a25216d93e15b5, type: 3}
@@ -143,6 +157,7 @@ MonoBehaviour:
   _MESource: {fileID: 9035966018458708561}
   _SESource: {fileID: 4997189217883511009}
   _VoiceSource: {fileID: 4857367223096231455}
+  _environmentSource: {fileID: 0}
 --- !u!82 &4666643045497099721
 AudioSource:
   m_ObjectHideFlags: 0
@@ -447,6 +462,103 @@ AudioSource:
     type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &4460344488808828326
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2319952288655073715}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 4434968614361290598, guid: 84819322e829faa498c61421b9bd61ea,
+    type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

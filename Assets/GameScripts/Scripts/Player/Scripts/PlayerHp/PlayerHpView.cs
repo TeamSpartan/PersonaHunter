@@ -23,7 +23,7 @@ public class PlayerHpView : MonoBehaviour
 	private Animator _animator;
 	private SceneLoader _sceneLoader;
 
-	private Tween _burnEffect;
+	private Sequence _sequence;
 
 	private void Start()
 	{
@@ -43,10 +43,12 @@ public class PlayerHpView : MonoBehaviour
 	///<param name="CurrentHp"	>現在のHP</param>
 	public void SetGauge(float InitialHp, float CurrentHp)
 	{
-		_burnEffect?.Kill();
+		_sequence = DOTween.Sequence();
 		healthImage.DOFillAmount(CurrentHp / InitialHp, _duration).OnComplete(() =>
 		{
-			_burnEffect = burnImage.DOFillAmount(CurrentHp / InitialHp, _duration * 0.5f).SetDelay(_waitTime);
+			_sequence.AppendInterval(_waitTime)
+				.AppendCallback(() => {FindAnyObjectByType<AudioManager>()?.PlaySE("Heal"); })
+				.Append(burnImage.DOFillAmount(CurrentHp / InitialHp, _duration * 0.5f));
 		});
 	}
 

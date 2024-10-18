@@ -344,6 +344,7 @@ public class MainLoopValidator : MonoBehaviour
         // インゲームのコンテンツに使用していたオブジェクトを破棄
         var player = GameObject.FindAnyObjectByType<PlayerMove>(FindObjectsInactive.Include).gameObject;
         var playerUI = GameObject.FindWithTag("PlayerUI");
+        var audioManager = FindAnyObjectByType<AudioManager>();
 
         if (player is not null)
             Destroy(player);
@@ -352,6 +353,8 @@ public class MainLoopValidator : MonoBehaviour
         if (playerUI is not null)
             Destroy(playerUI);
 
+        if(audioManager is not null)
+            Destroy(audioManager.gameObject);
 
         var sl = GameObject.FindAnyObjectByType<SceneLoader>(FindObjectsInactive.Include);
         if (sl is not null && !sl.gameObject.activeSelf)
@@ -365,6 +368,8 @@ public class MainLoopValidator : MonoBehaviour
     {
         _mainGameLoop.SetInGameInputBlocked(true);
         _mainGameLoop.SetPauseInputBlocked(true);
+        
+        GameObject.Find("BGM Source").GetComponent<AudioSource>().Pause();
 
         var defeatedMovieGO = Resources.Load<GameObject>("Prefabs/Video/BossMorphologicalChange");
 
@@ -389,6 +394,7 @@ public class MainLoopValidator : MonoBehaviour
         // インゲームのコンテンツに使用していたオブジェクトを破棄
         var nuwe = GameObject.FindAnyObjectByType<NuweBrain>(FindObjectsInactive.Include);
         nuwe.BackToAwait();
+        GameObject.Find("BGM Source").GetComponent<AudioSource>().Play();
     }
 
     /// <summary> プレイヤーを指定の位置にスポーン </summary>
