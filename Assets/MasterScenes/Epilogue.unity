@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 262.38358, g: 325.10843, b: 430.30963, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -218,7 +218,7 @@ RectTransform:
   m_GameObject: {fileID: 539290658}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1090614722}
@@ -519,7 +519,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -803}
+  m_AnchoredPosition: {x: 0, y: -1540}
   m_SizeDelta: {x: 1920, y: 4050}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1090614723
@@ -543,8 +543,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
-    m_FontSize: 12
+    m_Font: {fileID: 12800000, guid: 7836c66f805291c4db37e64bad390cb1, type: 3}
+    m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -552,15 +552,13 @@ MonoBehaviour:
     m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "<size=100>Team Spartan</size>\n<size=90>Director</size>\n<size=60>\u5869\u898B\u548C\u771F</size>\n<size=90>Lead
-    Planner</size>\n<size=60>\u7530\u4E2D\u7F8E\u58EB</size>\n<size=90>System Planner</size>\n<size=60>\u5DE5\u85E4\u6A39</size>\n<size=90>Planner</size>\n<size=60>\u6E21\u90E8\u52A0\u5948</size>\n<size=60>\u91DD\u8C37\u512A\u5E0C</size>\n<size=90>Art
-    Director</size>\n<size=90>Character</size>\n<size=60>\u5C71\u672C\u7A42\u4E43\u91CC</size>\n<size=90>BackGround
-    Designer</size>\n<size=60>\u79CB\u5143\u7A1C\u5E73</size>\n<size=60></size>\n<size=60>\u8C37\u5E73\u967D</size>\n<size=90>2D
-    Designer</size>\n<size=60>\u5C71\u672C\u7A42\u4E43\u91CC</size>\n<size=60>\u4E38\u5C71\u7406\u6C99</size>\n<size=60>\u5C71\u6839\u7ACB\u8056</size>\n<size=90>Animator</size>\n<size=60>\u6B66\u5185\u60A0\u771F</size>\n<size=90>Motioner</size>\n<size=60>\u8352\u4E95\u5805</size>\n<size=60>\u6C34\u68EE\u53CB\u4E5F</size>\n<size=90>Nuwe</size>\n<size=60>\u5F8C\u85E4\u3072\u3088\u308A</size>\n<size=90>Komashira</size>\n<size=60>\u4F0A\u85E4\u9F8D\u5E73</size>\n<size=90>Effects</size>\n<size=60>\u4F50\u91CE\u5143\u4EBA</size>\n<size=90>Sound
-    Creator</size>\n<size=60>\u68EE\u7530\u4E98\u5E0C</size>\n<size=90>Main Programmer</size>\n<size=60>\u83C5\u6CBC\u30EC\u30F3\u30BE</size>\n<size=90>Programmer</size>\n<size=60>\u5DDD\u53E3\u88D5\u4ECB</size>\n<size=60>\u4E94\u5CF6\u7389\u6A39</size>"
+  m_Text: "\u30C7\u30A3\u30EC\u30AF\u30BF\u30FC\u3000\u5869\u898B\u548C\u771F\r\n\r\n\r\n\r\n\uFF1C\u30D7\u30E9\u30F3\u30CA\u30FC\uFF1E\r\n\r\n\u30EA\u30FC\u30C9\u30D7\u30E9\u30F3\u30CA\u30FC\u3000\u7530\u4E2D\u7F8E\u58EB\r\n\r\n\r\n\u30D7\u30E9\u30F3\u30CA\u30FC\u3000\u5DE5\u85E4\u6A39\r\n\r\n\u30D7\u30E9\u30F3\u30CA\u30FC\u3000\u91DD\u8C37\u512A\u5E0C\r\n\r\n\u30D7\u30E9\u30F3\u30CA\u30FC\u3000\u6E21\u90E8\u52A0\u5948\r\n\r\n\r\n\r\n\r\n\uFF1C\u30D7\u30ED\u30B0\u30E9\u30DE\u30FC\uFF1E\r\n\r\n\u30EA\u30FC\u30C9\u30D7\u30ED\u30B0\u30E9\u30DE\u30FC\u3000\u83C5\u6CBC\u9023\u66FD\r\n\r\n\r\n\u30D7\u30ED\u30B0\u30E9\u30DE\u30FC\u3000\u5DDD\u53E3\u88D5\u4ECB\r\n\r\n\u30D7\u30ED\u30B0\u30E9\u30DE\u30FC\u3000\u4E94\u5CF6\u7389\u6A39\r\n\r\n\u30D7\u30ED\u30B0\u30E9\u30DE\u30FC\u3000\u5869\u898B\u548C\u771F\r\n\r\n\r\n\r\n\r\n\uFF1C\u30A2\u30FC\u30C8\uFF1E\r\n\r\n\u30A2\u30FC\u30C8\u30C7\u30A3\u30EC\u30AF\u30BF\u30FC\u3000\u5C71\u672C\u7A42\u4E43\u91CC\r\n\r\n\r\n2D\u30C7\u30B6\u30A4\u30CA\u30FC\u3000\u4E38\u5C71\u7406\u6C99\r\n\r\n2D\u30C7\u30B6\u30A4\u30CA\u30FC\u3000\u5C71\u6839\u7ACB\u8056\r\n\r\n\r\n\u30AD\u30E3\u30E9\u30AF\u30BF\u30FC\u3000\u4F0A\u85E4\u9F8D\u5E73\r\n\r\n\u30AD\u30E3\u30E9\u30AF\u30BF\u30FC\u3000\u5F8C\u85E4\u3072\u3088\u308A\r\n\r\n\u30AD\u30E3\u30E9\u30AF\u30BF\u30FC\u3000\u5C71\u672C\u7A42\u4E43\u91CC\r\n\r\n\r\n\u80CC\u666F\u3000\u79CB\u5143\u7A1C\u5E73\r\n\r\n\u80CC\u666F\u3000\u8C37\u5E73\u967D\r\n\r\n\r\n\u30E2\u30FC\u30B7\u30E7\u30F3\u3000\u8352\u4E95\u5805\r\n\r\n\u30E2\u30FC\u30B7\u30E7\u30F3\u3000\u6C34\u68EE\u53CB\u4E5F\r\n\r\n\r\n\u30A8\u30D5\u30A7\u30AF\u30C8\u3000\u4F50\u91CE\u5143\u4EBA\r\n\r\n\r\n\u30A2\u30CB\u30E1\u30FC\u30B7\u30E7\u30F3\u3000\u592A\u7530\u6D77\u4EBA\r\n\r\n\u30A2\u30CB\u30E1\u30FC\u30B7\u30E7\u30F3\u3000\u6B66\u5185\u60A0\u771F\r\n\r\n\r\n\r\n\r\n\r\n\uFF1C\u30B5\u30A6\u30F3\u30C9\uFF1E\r\n\r\nBGM\u3000\u68EE\u7530\u4E98\u5E0C\r\n\r\n\u30DC\u30A4\u30B9\u3000\u5185\u7530\u8309\u7A42\r\n\r\n\r\n\uFF1C\u4F7F\u7528\u97F3\u6E90\uFF1E\r\n\r\nBGM\u3000\u97F3\u306E\u5712\u3000\r\n\r\nBGM\u3000\u30D5\u30EA\u30FC\u97F3\u697D\u7D20\u6750
+    H/MIX GALLERY\u3000\r\n\r\n\r\n\u52B9\u679C\u97F3\u3000OtoLogic\r\n\r\n\u52B9\u679C\u97F3\u3000On-Jin
+    \uFF5E\u97F3\u4EBA\uFF5E\r\n\r\n\u52B9\u679C\u97F3\u3000Springin\u2019Sound Stock\r\n\r\n\u52B9\u679C\u97F3\u3000\u30DD\u30B1\u30C3\u30C8\u30B5\u30A6\u30F3\u30C9\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\u5236\u4F5C\u3000TeamSpartan\n\n\n\n\n\n\n\n\n\n\n\n\n<size=100>Thank
+    you for playing</size>"
 --- !u!222 &1090614724
 CanvasRenderer:
   m_ObjectHideFlags: 0

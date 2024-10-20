@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Player.Zone
 {
@@ -11,6 +12,8 @@ namespace Player.Zone
 
         [SerializeField] private AudioSource _audioSource;
         [SerializeField, Header("ゾーン時ME")] private AudioClip _audioClip;
+        [SerializeField] private GameObject _zoneButtonImage;
+        [SerializeField] private GameObject _InzoneButtonImage;
 
         private bool _exitFlag = true; // 終了時フラグ
         private bool _finishFlag = true; // 強制終了フラグ
@@ -53,6 +56,8 @@ namespace Player.Zone
         {
             if (_isSlowTime || _zoneObj.ActiveZoneObjCount < 1) return;
 
+            _zoneButtonImage.SetActive(false);
+            _InzoneButtonImage.SetActive(true);
             _exitFlag = false;
             _isSlowTime = true;
             mainGameLoop.StartDiveInZone();
@@ -71,6 +76,8 @@ namespace Player.Zone
         /// </summary>
         public void EndDull()
         {
+            _zoneButtonImage.SetActive(true);
+            _InzoneButtonImage.SetActive(false);
             _exitFlag = true;
             _isSlowTime = false;
             mainGameLoop.GetOutOverZone();
