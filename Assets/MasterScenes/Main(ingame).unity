@@ -5592,6 +5592,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 166440513}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &168261427 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7827393958668337708, guid: 68c556d611e122b4b8b6a7e62f247949,
+    type: 3}
+  m_PrefabInstance: {fileID: 1927894392}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &168988656
 GameObject:
   m_ObjectHideFlags: 0
@@ -39895,6 +39901,12 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!82 &790798236 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 4460344488808828326, guid: d11d8498920b1ba4fab341e99a258d16,
+    type: 3}
+  m_PrefabInstance: {fileID: 1807811811}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &793865747
 GameObject:
   m_ObjectHideFlags: 0
@@ -41037,7 +41049,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &807085471
 Transform:
   m_ObjectHideFlags: 0
@@ -66618,6 +66630,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1316279917}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1317417103 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4508665276867872455, guid: 68c556d611e122b4b8b6a7e62f247949,
+    type: 3}
+  m_PrefabInstance: {fileID: 1927894392}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1317844974
 GameObject:
   m_ObjectHideFlags: 0
@@ -83453,6 +83471,16 @@ PrefabInstance:
       propertyPath: initialHp
       value: 1545.4
       objectReference: {fileID: 0}
+    - target: {fileID: 7517392817221623603, guid: e4f65e3960720324d833d92f853fc65d,
+        type: 3}
+      propertyPath: _zoneButtonImage
+      value: 
+      objectReference: {fileID: 1317417103}
+    - target: {fileID: 7517392817221623603, guid: e4f65e3960720324d833d92f853fc65d,
+        type: 3}
+      propertyPath: _InzoneButtonImage
+      value: 
+      objectReference: {fileID: 168261427}
     - target: {fileID: 8070292773428138616, guid: e4f65e3960720324d833d92f853fc65d,
         type: 3}
       propertyPath: _dieME
@@ -93494,6 +93522,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3424372364239536831, guid: d11d8498920b1ba4fab341e99a258d16,
         type: 3}
+      propertyPath: _environmentSource
+      value: 
+      objectReference: {fileID: 790798236}
+    - target: {fileID: 3424372364239536831, guid: d11d8498920b1ba4fab341e99a258d16,
+        type: 3}
       propertyPath: _audioSourcesList.Array.size
       value: 46
       objectReference: {fileID: 0}
@@ -100724,12 +100757,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1193830377997878424, guid: 68c556d611e122b4b8b6a7e62f247949,
-        type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: 5865805917774433710, guid: 84819322e829faa498c61421b9bd61ea,
-        type: 2}
     - target: {fileID: 1557121024251967275, guid: 68c556d611e122b4b8b6a7e62f247949,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgument
@@ -100790,12 +100817,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9064925607784105693, guid: 68c556d611e122b4b8b6a7e62f247949,
+    - target: {fileID: 7827393958668337708, guid: 68c556d611e122b4b8b6a7e62f247949,
         type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: 5865805917774433710, guid: 84819322e829faa498c61421b9bd61ea,
-        type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -111933,6 +111959,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3615920236480191070, guid: 1443dc7f8789bd841b7c2926750ac9aa,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8952496438431966164, guid: 1443dc7f8789bd841b7c2926750ac9aa,
         type: 3}

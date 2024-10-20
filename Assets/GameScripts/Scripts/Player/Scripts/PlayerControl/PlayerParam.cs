@@ -150,7 +150,7 @@ namespace Player.Param
         public void PlayDamageSE()
         {
             if(!_audioManager) return;
-            _audioManager.PlaySE("PLayerDamage");
+            _audioManager.PlaySE("PlayerDamage");
         }
         /// <summary>
         /// 回避SE再生

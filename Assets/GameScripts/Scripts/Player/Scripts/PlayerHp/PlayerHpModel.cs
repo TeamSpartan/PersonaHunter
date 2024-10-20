@@ -119,7 +119,7 @@ public class PlayerHpModel : MonoBehaviour
             }
         }
 
-        if (_mob != null)
+        if (_mob != null && other.gameObject.layer == 10)
         {
             AddDamage(_mob.GetBaseDamage);
         }
