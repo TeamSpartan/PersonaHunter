@@ -476,8 +476,6 @@ InZone : {_zoneTimeController.GetIsSlowTime}
 
             //Attack
             _gameInputs.Player.Attack.started += OnAttack;
-            _gameInputs.Player.Attack.performed += OnAttack;
-            _gameInputs.Player.Attack.canceled += OnAttack;
 
             //Parry
             _gameInputs.Player.Parry.started += OnParry;

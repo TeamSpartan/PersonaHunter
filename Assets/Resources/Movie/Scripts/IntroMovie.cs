@@ -23,6 +23,8 @@ public class IntroMovie : MonoBehaviour
     {
         _cIndex = 0;
         _textBox.text = _text[_cIndex];
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     /// <summary>
