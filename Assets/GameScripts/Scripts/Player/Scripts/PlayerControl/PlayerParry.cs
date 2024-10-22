@@ -85,6 +85,7 @@ namespace Player.Action
 		public void EndParryActions()
 		{
 			PlayerInputsAction.Instance.DeleteInputQueue(PlayerInputTypes.Parry);
+			PlayerInputsAction.Instance.DeleteInputQueue(PlayerInputTypes.Avoid);
 			_playerParam.SetIsAnimation(false);
 			PlayerInputsAction.Instance.EndAction();
 		}

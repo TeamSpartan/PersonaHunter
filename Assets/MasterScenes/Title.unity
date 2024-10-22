@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 262.38358, g: 325.10843, b: 430.30963, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -429,6 +429,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 25159943910531902, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 5865805917774433710, guid: 84819322e829faa498c61421b9bd61ea,
+        type: 2}
     - target: {fileID: 1018697101819752063, guid: efde119a70a0ba842b64fe655e66a03b,
         type: 3}
       propertyPath: m_Value
@@ -975,6 +981,12 @@ PrefabInstance:
       propertyPath: m_PlayOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 980188043226217756, guid: d9af35f07310280498662c1482a28749,
+        type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 5865805917774433710, guid: 84819322e829faa498c61421b9bd61ea,
+        type: 2}
     - target: {fileID: 1339737060708528079, guid: d9af35f07310280498662c1482a28749,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1050,6 +1062,12 @@ PrefabInstance:
       propertyPath: m_PlayOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2176377403980850469, guid: d9af35f07310280498662c1482a28749,
+        type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 5865805917774433710, guid: 84819322e829faa498c61421b9bd61ea,
+        type: 2}
     - target: {fileID: 3117661448448407374, guid: d9af35f07310280498662c1482a28749,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1075,6 +1093,12 @@ PrefabInstance:
       propertyPath: m_PlayOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3767763043653658013, guid: d9af35f07310280498662c1482a28749,
+        type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 5865805917774433710, guid: 84819322e829faa498c61421b9bd61ea,
+        type: 2}
     - target: {fileID: 4618602219366537241, guid: d9af35f07310280498662c1482a28749,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -2039,7 +2063,8 @@ AudioSource:
   m_GameObject: {fileID: 7421450936925382565}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 5865805917774433710, guid: 84819322e829faa498c61421b9bd61ea,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
