@@ -135,6 +135,7 @@ namespace Player.Action
 			_afterImageController.IsCreate = false;
 			_rb.drag = _drag;
 			PlayerInputsAction.Instance.DeleteInputQueue(PlayerInputTypes.Avoid);
+			PlayerInputsAction.Instance.DeleteInputQueue(PlayerInputTypes.Parry);
 			_playerParam.SetIsAnimation(false);
 			PlayerInputsAction.Instance.EndAction();
 			
