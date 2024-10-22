@@ -429,6 +429,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1018697101819752063, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: m_Value
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1240702944688159771, guid: efde119a70a0ba842b64fe655e66a03b,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgument
@@ -439,11 +444,43 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2516762456956284179, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: m_Value
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999948869858730798, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: _soundType
+      value: SE
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999948869858730798, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: _audioMixer
+      value: 
+      objectReference: {fileID: 24100000, guid: 84819322e829faa498c61421b9bd61ea,
+        type: 2}
+    - target: {fileID: 3256842094490766196, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3256842094490766196, guid: efde119a70a0ba842b64fe655e66a03b,
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3338947931925067727, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: _soundType
+      value: BGM
+      objectReference: {fileID: 0}
+    - target: {fileID: 3338947931925067727, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: _audioMixer
+      value: 
+      objectReference: {fileID: 24100000, guid: 84819322e829faa498c61421b9bd61ea,
+        type: 2}
     - target: {fileID: 3667872865685800652, guid: efde119a70a0ba842b64fe655e66a03b,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -454,6 +491,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5483925832598594626, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: m_Value
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 6264907616193421098, guid: efde119a70a0ba842b64fe655e66a03b,
         type: 3}
       propertyPath: m_Name
@@ -461,7 +503,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6634191013104881565, guid: efde119a70a0ba842b64fe655e66a03b,
         type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6634191013104881565, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6634191013104881565, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8001579604741865801, guid: efde119a70a0ba842b64fe655e66a03b,
@@ -519,6 +571,23 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9171892831302972710, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: _soundType
+      value: Voice
+      objectReference: {fileID: 0}
+    - target: {fileID: 9171892831302972710, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: _audioMixer
+      value: 
+      objectReference: {fileID: 24100000, guid: 84819322e829faa498c61421b9bd61ea,
+        type: 2}
+    - target: {fileID: 9171892831302972710, guid: efde119a70a0ba842b64fe655e66a03b,
+        type: 3}
+      propertyPath: _audioMixerGroup
+      value: 
+      objectReference: {fileID: 4571179270569207446, guid: 84819322e829faa498c61421b9bd61ea,
+        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

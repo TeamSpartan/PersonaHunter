@@ -40,7 +40,6 @@ namespace Player.Action
 		{
 			if (_playerParam.GetIsAnimation)
 			{
-				Debug.Log("aa");
 				return;
 			}
 
@@ -56,6 +55,7 @@ namespace Player.Action
 		{
 			_zoneObj.IncreaseGaugeValue(_playerParam.GetGiveValueOfParry);
 			_parrySucceedEffect.Play();
+			_playerParam.PlayParrySE();
 		}
 
 		///<summary>アニメーションイベントで呼び出す用</summary>------------------------------------------------------------------
